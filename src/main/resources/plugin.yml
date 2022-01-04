@@ -3,3 +3,6 @@ author: Minota
 version: 1.0.0
 description: Plugin for managing UHCs.
 main: pink.mino.kraftwerk.Kraftwerk
+depend:
+  - ProtocolLib
+  - JDA

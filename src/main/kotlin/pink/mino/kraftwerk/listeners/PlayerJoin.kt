@@ -9,11 +9,11 @@ class PlayerJoin : Listener {
     @EventHandler
     fun onPlayerJoin(e: PlayerJoinEvent) {
         val player = e.player
-        Chat.sendCenteredMessage(player, "&8&m------------------------")
+        Chat.sendCenteredMessage(player, "&8&m-------------------------------------------")
         Chat.sendCenteredMessage(player, "")
         Chat.sendCenteredMessage(player, "&fWelcome to prototype UHC!")
         Chat.sendCenteredMessage(player, "&fWe hope you have fun!")
         Chat.sendCenteredMessage(player, "")
-        Chat.sendCenteredMessage(player, "&8&m------------------------")
+        Chat.sendCenteredMessage(player, "&8&m-------------------------------------------")
     }
 }
