@@ -3,6 +3,58 @@ author: Minota
 version: 1.0.0
 description: Plugin for managing UHCs.
 main: pink.mino.kraftwerk.Kraftwerk
+commands:
+  heal:
+    description: Heals you or a given player.
+  feed:
+    description: Feeds you or a given player.
+  clear:
+    description: Clears you or a given player's inventory.
+    aliases:
+      - ci
+  cleareffects:
+    description: Clears you or a given player's potion effects.
+    aliases:
+      - ce
+  fly:
+    description: Toggles you or a given player's flight.
+  gm:
+    description: Changes you or a provided player's gamemode.
+  gamemode:
+    description: Changes you or a provided player's gamemode.
+  gmsp:
+    description: Changes you or a provided player's gamemode to Spectator.
+  gmc:
+    description: Changes you or a provided player's gamemode to Creative.
+  gms:
+    description: Changes you or a provided player's gamemode to Survival.
+  gma:
+    description: Changes you or a provided player's gamemode to Adventure.
+  pm:
+    description: Sends a message to your team.
+  team:
+    description: General team commands.
+  health:
+    description: Gets the health of a given user.
+    aliases:
+      - h
+  whitelist:
+    description: Whitelist settings/config.
+    aliases:
+      - wl
+  pregen:
+    description: Creates and pregenerates your world.
+    aliases:
+      - pregenerate
+      - createworld
+      - cw
+  message:
+    aliases:
+      - msg
+      - tell
+      - whisper
+      - w
+    description: Privately message a user.
 depend:
   - ProtocolLib
   - JDA

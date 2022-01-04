@@ -8,7 +8,8 @@ import com.comphenix.protocol.events.PacketAdapter
 import com.comphenix.protocol.events.PacketEvent
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
-import pink.mino.kraftwerk.discord.Main
+import pink.mino.kraftwerk.commands.*
+import pink.mino.kraftwerk.discord.Discord
 import pink.mino.kraftwerk.listeners.*
 
 
@@ -29,6 +30,26 @@ class Kraftwerk : JavaPlugin() {
         Bukkit.getServer().pluginManager.registerEvents(Command(), this)
         Bukkit.getServer().pluginManager.registerEvents(WorldInitialize(), this)
 
+        /* Registering commands */
+        getCommand("clear").executor = ClearInventoryCommand()
+        getCommand("cleareffects").executor = ClearPotionEffectsCommand()
+        getCommand("feed").executor = FeedCommand()
+        getCommand("heal").executor = HealCommand()
+        getCommand("fly").executor = FlyCommand()
+
+        getCommand("msg").executor = MessageCommand()
+
+        getCommand("gm").executor = GamemodeCommand()
+        getCommand("gamemode").executor = GamemodeCommand()
+        getCommand("gma").executor = GamemodeCommand()
+        getCommand("gms").executor = GamemodeCommand()
+        getCommand("gmsp").executor = GamemodeCommand()
+        getCommand("gmc").executor = GamemodeCommand()
+
+        getCommand("pregen").executor = PregenCommand()
+
+
+
         /* ProtocolLib stuff */
         if (Bukkit.getPluginManager().getPlugin("ProtocolLib") == null) {
             println("You need ProtocolLib in order to use this plugin.")
@@ -37,7 +58,7 @@ class Kraftwerk : JavaPlugin() {
         }
 
         /* Discord */
-        Main.main()
+        Discord.main()
 
         /* This just enables Hardcore Hearts */
         protocolManager?.addPacketListener(object : PacketAdapter(this, ListenerPriority.NORMAL, PacketType.Play.Server.LOGIN) {
