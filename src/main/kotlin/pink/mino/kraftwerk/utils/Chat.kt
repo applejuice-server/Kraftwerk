@@ -6,11 +6,11 @@ import org.bukkit.entity.Player
 
 class Chat {
     companion object {
-        private val CENTER_PX = 154
+        private const val CENTER_PX = 154
 
+        /* Function to get centered MOTDs */
         fun centerMotd(message: String): String {
-            var message = message
-            message = ChatColor.translateAlternateColorCodes('&', message)
+            val text = ChatColor.translateAlternateColorCodes('&', message)
             var messagePxSize = 0
             var previousCode = false
             var isBold = false
@@ -18,7 +18,7 @@ class Chat {
             var lastSpaceIndex = 0
             var toSendAfter: String? = null
             var recentColorCode = ""
-            for (c in message.toCharArray()) {
+            for (c in text.toCharArray()) {
                 if (c == '§') {
                     previousCode = true
                     continue
@@ -39,8 +39,8 @@ class Chat {
                     messagePxSize++
                 }
                 if (messagePxSize >= 240) {
-                    toSendAfter = recentColorCode + message.substring(lastSpaceIndex + 1, message.length)
-                    message = message.substring(0, lastSpaceIndex + 1)
+                    toSendAfter = recentColorCode + text.substring(lastSpaceIndex + 1, text.length)
+                    text.substring(0, lastSpaceIndex + 1)
                     break
                 }
                 charIndex++
@@ -57,17 +57,18 @@ class Chat {
             if (toSendAfter != null) {
                 centerMotd(toSendAfter)
             }
-            return sb.toString() + message
+            return sb.toString() + text
         }
 
+        /* Function to send centered messages to players */
         fun sendCenteredMessage(player: Player, message: String?) {
-            var message = message
-            if (message == null || message == "") player.sendMessage("")
-            message = ChatColor.translateAlternateColorCodes('&', message)
+            var text = message
+            if (text == null || text == "") player.sendMessage("")
+            text = ChatColor.translateAlternateColorCodes('&', message)
             var messagePxSize = 0
             var previousCode = false
             var isBold = false
-            for (c in message.toCharArray()) {
+            for (c in text.toCharArray()) {
                 if (c == '§') {
                     previousCode = true
                     continue
@@ -92,7 +93,15 @@ class Chat {
                 sb.append(" ")
                 compensated += spaceLength
             }
-            player.sendMessage(sb.toString() + message)
+            player.sendMessage(sb.toString() + text)
+        }
+
+        /* Simple function to send colored messages to players */
+        fun sendMessage(player: Player, message: String?) {
+            var text = message
+            if (text == null || text == "") player.sendMessage("")
+            text = ChatColor.translateAlternateColorCodes('&', message)
+            player.sendMessage(text)
         }
     }
 }
