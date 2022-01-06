@@ -8,6 +8,8 @@ class Chat {
     companion object {
         private const val CENTER_PX = 154
 
+        val prefix = "&8[&4UHC&8]&7"
+
         /* Function to get centered MOTDs */
         fun centerMotd(message: String): String {
             val text = ChatColor.translateAlternateColorCodes('&', message)

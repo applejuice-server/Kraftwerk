@@ -12,11 +12,11 @@ class MessageCommand : CommandExecutor {
 
     override fun onCommand(sender: CommandSender, cmd: Command, lbl: String, args: Array<String>): Boolean {
         if (args.isEmpty()) {
-            Chat.sendMessage(sender as Player, "&7You need a user to send a message to.")
+            Chat.sendMessage(sender as Player, "&cYou need a user to send a message to.")
             return false
         }
         if (args.size < 2) {
-            Chat.sendMessage(sender as Player, "&7You need a message to send to the user.")
+            Chat.sendMessage(sender as Player, "&cYou need a message to send to the user.")
             return false
         }
 
@@ -24,7 +24,7 @@ class MessageCommand : CommandExecutor {
         for (i in 1 until args.size) message += args[i] + " "
         val target = Bukkit.getPlayer(args[0])
         if (target == null) {
-            Chat.sendMessage(sender as Player,"&7You need a valid user to send this to.")
+            Chat.sendMessage(sender as Player,"&cYou need a valid user to send this to.")
             return false
         }
         val player = sender as Player

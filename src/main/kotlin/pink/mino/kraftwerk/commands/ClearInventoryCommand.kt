@@ -15,7 +15,7 @@ class ClearInventoryCommand : CommandExecutor {
 
     override fun onCommand(sender: CommandSender, cmd: Command, lbl: String, args: Array<String>): Boolean {
         if (!sender.hasPermission("uhc.staff.ci")) {
-            Chat.sendMessage(sender as Player, "&cYou don't have permission to use this command.")
+            Chat.sendMessage(sender as Player, "${Chat.prefix} &cYou don't have permission to use this command.")
             return false
         }
         if (args.isEmpty()) {
@@ -35,7 +35,7 @@ class ClearInventoryCommand : CommandExecutor {
                 openInventory.topInventory.clear()
             }
 
-            Chat.sendMessage(player, "&7You've cleared your own inventory.")
+            Chat.sendMessage(player, "${Chat.prefix} &7You've cleared your own inventory.")
         } else {
             if (args[0] == "*") {
                 for (online in ArrayList(Bukkit.getServer().onlinePlayers)) {
@@ -53,14 +53,14 @@ class ClearInventoryCommand : CommandExecutor {
                     if (openInventory.type == InventoryType.CRAFTING) {
                         openInventory.topInventory.clear()
                     }
-                    Chat.sendMessage(online, "&7Your inventory has been cleared by §c${sender.name}§7.")
+                    Chat.sendMessage(online, "${Chat.prefix} &7Your inventory has been cleared by §c${sender.name}§7.")
                 }
-                Chat.sendMessage(sender as Player, "&7You've cleared all players' inventories.")
+                Chat.sendMessage(sender as Player, "${Chat.prefix} &7You've cleared all players' inventories.")
                 return true
             } else {
                 val target = Bukkit.getServer().getPlayer(args[0])
                 if (target == null) {
-                    Chat.sendMessage(sender as Player, "&7That player is not online or has never logged onto the server.")
+                    Chat.sendMessage(sender as Player, "${Chat.prefix} &7That player is not online or has never logged onto the server.")
                 }
                 val inv = target.inventory
 
@@ -77,8 +77,8 @@ class ClearInventoryCommand : CommandExecutor {
                     openInventory.topInventory.clear()
                 }
 
-                Chat.sendMessage(target, "&7Your inventory has been cleared by &c${sender.name}&7.")
-                Chat.sendMessage(sender as Player, "&7Cleared &c${target.name}'s&7 inventory.")
+                Chat.sendMessage(target, "${Chat.prefix} &7Your inventory has been cleared by &c${sender.name}&7.")
+                Chat.sendMessage(sender as Player, "${Chat.prefix} &7Cleared &c${target.name}'s&7 inventory.")
                 return true
             }
         }

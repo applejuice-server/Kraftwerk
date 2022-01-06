@@ -11,7 +11,7 @@ class GamemodeCommand : CommandExecutor {
 
     override fun onCommand(sender: CommandSender, cmd: Command, lbl: String, args: Array<String>): Boolean {
         if (!sender.hasPermission("uhc.staff.gamemode")) {
-            Chat.sendMessage(sender as Player, "&cYou don't have permission to use this command.")
+            Chat.sendMessage(sender as Player, "${Chat.prefix} &cYou don't have permission to use this command.")
             return false
         }
 
@@ -20,19 +20,19 @@ class GamemodeCommand : CommandExecutor {
             when (cmd.name) {
                 "gmsp" -> {
                     player.gameMode = GameMode.SPECTATOR
-                    Chat.sendMessage(player, "&7Set your gamemode to §cSpectator§7.")
+                    Chat.sendMessage(player, "${Chat.prefix} &7Set your gamemode to §cSpectator§7.")
                 }
                 "gmc" -> {
                     player.gameMode = GameMode.CREATIVE
-                    Chat.sendMessage(player, "&7Set your gamemode to §cCreative§7.")
+                    Chat.sendMessage(player, "${Chat.prefix} &7Set your gamemode to §cCreative§7.")
                 }
                 "gma" -> {
                     player.gameMode = GameMode.ADVENTURE
-                    Chat.sendMessage(player, "&7Set your gamemode to §cAdventure§7.")
+                    Chat.sendMessage(player, "${Chat.prefix} &7Set your gamemode to §cAdventure§7.")
                 }
                 "gms" -> {
                     player.gameMode = GameMode.SURVIVAL
-                    Chat.sendMessage(player, "&7Set your gamemode to §cSurvival§7.")
+                    Chat.sendMessage(player, "${Chat.prefix} &7Set your gamemode to §cSurvival§7.")
                 }
             }
         } else {
@@ -40,65 +40,65 @@ class GamemodeCommand : CommandExecutor {
                 "s" -> {
                     val player = sender as Player
                     player.gameMode = GameMode.SURVIVAL
-                    Chat.sendMessage(player, "&7Set your gamemode to §cSurvival§7.")
+                    Chat.sendMessage(player, "${Chat.prefix} &7Set your gamemode to §cSurvival§7.")
                 }
                 "0" -> {
                     val player = sender as Player
                     player.gameMode = GameMode.SURVIVAL
-                    Chat.sendMessage(player, "&7Set your gamemode to §cSurvival§7.")
+                    Chat.sendMessage(player, "${Chat.prefix} &7Set your gamemode to §cSurvival§7.")
                 }
                 "survival" -> {
                     val player = sender as Player
                     player.gameMode = GameMode.SURVIVAL
-                    Chat.sendMessage(player, "&7Set your gamemode to §cSurvival§7.")
+                    Chat.sendMessage(player, "${Chat.prefix} &7Set your gamemode to §cSurvival§7.")
                 }
 
                 "c" -> {
                     val player = sender as Player
                     player.gameMode = GameMode.CREATIVE
-                    Chat.sendMessage(player, "&7Set your gamemode to §cCreative§7.")
+                    Chat.sendMessage(player, "${Chat.prefix} &7Set your gamemode to §cCreative§7.")
                 }
                 "1" -> {
                     val player = sender as Player
                     player.gameMode = GameMode.CREATIVE
-                    Chat.sendMessage(player, "&7Set your gamemode to §cCreative§7.")
+                    Chat.sendMessage(player, "${Chat.prefix} &7Set your gamemode to §cCreative§7.")
                 }
                 "creative" -> {
                     val player = sender as Player
                     player.gameMode = GameMode.CREATIVE
-                    Chat.sendMessage(player, "&7Set your gamemode to §cCreative§7.")
+                    Chat.sendMessage(player, "${Chat.prefix} &7Set your gamemode to §cCreative§7.")
                 }
 
                 "a" -> {
                     val player = sender as Player
                     player.gameMode = GameMode.ADVENTURE
-                    Chat.sendMessage(player, "&7Set your gamemode to §cAdventure§7.")
+                    Chat.sendMessage(player, "${Chat.prefix} &7Set your gamemode to §cAdventure§7.")
                 }
                 "2" -> {
                     val player = sender as Player
                     player.gameMode = GameMode.ADVENTURE
-                    Chat.sendMessage(player, "&7Set your gamemode to §cAdventure§7.")
+                    Chat.sendMessage(player, "${Chat.prefix} 7Set your gamemode to §cAdventure§7.")
                 }
                 "adventure" -> {
                     val player = sender as Player
                     player.gameMode = GameMode.ADVENTURE
-                    Chat.sendMessage(player, "&7Set your gamemode to §cAdventure§7.")
+                    Chat.sendMessage(player, "${Chat.prefix} &7Set your gamemode to §cAdventure§7.")
                 }
 
                 "3" -> {
                     val player = sender as Player
                     player.gameMode = GameMode.SPECTATOR
-                    Chat.sendMessage(player, "&7Set your gamemode to §cSpectator§7.")
+                    Chat.sendMessage(player, "${Chat.prefix} &7Set your gamemode to §cSpectator§7.")
                 }
                 "sp" -> {
                     val player = sender as Player
                     player.gameMode = GameMode.SPECTATOR
-                    Chat.sendMessage(player, "&7Set your gamemode to §cSpectator§7.")
+                    Chat.sendMessage(player, "${Chat.prefix} &7Set your gamemode to §cSpectator§7.")
                 }
                 "spectator" -> {
                     val player = sender as Player
                     player.gameMode = GameMode.SPECTATOR
-                    Chat.sendMessage(player, "&7Set your gamemode to §cSpectator§7.")
+                    Chat.sendMessage(player, "${Chat.prefix} &7Set your gamemode to §cSpectator§7.")
                 }
             }
         }

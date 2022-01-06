@@ -8,10 +8,9 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 import pink.mino.kraftwerk.Kraftwerk
-import pink.mino.kraftwerk.utils.ActionBar
+import pink.mino.kraftwerk.features.PregenActionBar
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.Settings
-import kotlin.math.floor
 
 
 class PregenCommand : CommandExecutor {
@@ -20,15 +19,25 @@ class PregenCommand : CommandExecutor {
 
     override fun onCommand(sender: CommandSender, command: Command, label: String?, args: Array<String>): Boolean {
         if (!sender.hasPermission("uhc.command.pregen")) {
-            sender.sendMessage("${ChatColor.RED}You don't have permission to use this command.")
+            sender.sendMessage("${Chat.prefix} ${ChatColor.RED}You don't have permission to use this command.")
             return false
         }
 
         if (args.isEmpty() || args[1].isEmpty()) {
-            Chat.sendMessage(sender as Player, "&7Invalid usage: ${ChatColor.GREEN}/pregen <world> <border>")
+            Chat.sendMessage(sender as Player, "${Chat.prefix} &7Invalid usage: ${ChatColor.RED}/pregen <world> <border> &8or&c /pregen cancel")
             return false
         }
-
+        if (args[0] === "cancel") {
+            if (Config.fillTask.valid()) {
+                Chat.sendMessage(sender as Player, "${Chat.prefix} Okay, cancelling the pregeneration task.")
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
+                    "wb fill cancel"
+                )
+            } else {
+                Chat.sendMessage(sender as Player, "${Chat.prefix} There is no valid pregeneration task running.")
+            }
+        }
+        Chat.sendMessage(sender as Player, "${Chat.prefix} &7Please standby, this will take a while.")
 
         val wc = WorldCreator(args[0])
         wc.environment(World.Environment.NORMAL)
@@ -52,29 +61,13 @@ class PregenCommand : CommandExecutor {
             "wb fill confirm"
         )
 
-        Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "&7Pregeneration started in &f${args[0]}&7."))
-
-        runActionBar()
+        Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "${Chat.prefix} &7Pregeneration started in &8'&c${args[0]}&8'&7."))
+        PregenActionBar().runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 20L)
         settings.data!!.set("pregen.border", args[1])
         settings.data!!.set("pregen.world", args[0])
         settings.saveData()
 
         return true
     }
-
-    private fun runActionBar() {
-        Bukkit.getServer().scheduler.scheduleSyncRepeatingTask(JavaPlugin.getPlugin(Kraftwerk::class.java) /* ? */, Runnable breakout@{
-            if (Config.fillTask.valid()) {
-                val players = Bukkit.getServer().onlinePlayers
-                for (player in players) {
-                    ActionBar.sendActionBarMessage(player, "&7Progress: &c${floor(Config.fillTask.percentageCompleted)}% &8| &7World: &c${Config.fillTask.refWorld()}")
-                }
-            } else {
-                Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "&7Pregeneration is now finished."))
-                Bukkit.getServer().scheduler.cancelTask(1)
-            }
-        }, 0, 1)
-    }
-
 
 }

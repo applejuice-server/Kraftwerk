@@ -11,6 +11,7 @@ import org.bukkit.plugin.java.JavaPlugin
 import pink.mino.kraftwerk.commands.*
 import pink.mino.kraftwerk.discord.Discord
 import pink.mino.kraftwerk.listeners.*
+import pink.mino.kraftwerk.utils.Settings
 
 
 class Kraftwerk : JavaPlugin() {
@@ -69,6 +70,7 @@ class Kraftwerk : JavaPlugin() {
             }
         })
 
+        Settings.instance.setup(this)
 
         Bukkit.getLogger().info("Kraftwerk enabled")
     }
