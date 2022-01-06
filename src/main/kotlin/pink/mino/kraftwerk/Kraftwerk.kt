@@ -49,6 +49,7 @@ class Kraftwerk : JavaPlugin() {
         getCommand("team").executor = TeamCommand()
         getCommand("health").executor = HealthCommand()
         getCommand("pm").executor = PMCommand()
+        getCommand("pmc").executor = PMCCommand()
 
         /* ProtocolLib stuff */
         if (Bukkit.getPluginManager().getPlugin("ProtocolLib") == null) {

@@ -32,6 +32,8 @@ commands:
     description: Changes you or a provided player's gamemode to Adventure.
   pm:
     description: Sends a message to your team.
+  pmc:
+    description: Sends your coordinates to your team.
   team:
     description: General team commands.
   health:
