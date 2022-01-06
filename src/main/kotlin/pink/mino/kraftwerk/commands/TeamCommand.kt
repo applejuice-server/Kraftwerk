@@ -13,7 +13,8 @@ import pink.mino.kraftwerk.features.Teams
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GameState
 import pink.mino.kraftwerk.utils.Settings
-import kotlin.random.Random.Default.nextInt
+import java.util.*
+
 
 class TeamCommand : CommandExecutor {
 
@@ -34,18 +35,18 @@ class TeamCommand : CommandExecutor {
 
         if (args.isEmpty()) {
             Chat.sendMessage(sender as Player, Chat.line)
-            Chat.sendMessage(sender, "${Chat.prefix} &a/team create ${ChatColor.DARK_GRAY}-${ChatColor.WHITE} Creates a team.")
-            Chat.sendMessage(sender, "${Chat.prefix} &a/team invite <player> ${ChatColor.DARK_GRAY}-${ChatColor.WHITE} Invites a player to your team.")
-            Chat.sendMessage(sender, "${Chat.prefix} &a/team leave ${ChatColor.DARK_GRAY}-${ChatColor.WHITE} Leave your team.")
-            Chat.sendMessage(sender, "${Chat.prefix} &a/team accept <player> ${ChatColor.DARK_GRAY}-${ChatColor.WHITE} Accept a player's team invite.")
-            Chat.sendMessage(sender, "${Chat.prefix} &a/team list ${ChatColor.DARK_GRAY}-${ChatColor.WHITE} Brings a list of teams and their members.")
-            Chat.sendMessage(sender, "${Chat.prefix} &a/pm <message> ${ChatColor.DARK_GRAY}-${ChatColor.WHITE} Talk in team chat.")
-            Chat.sendMessage(sender, "${Chat.prefix} &a/pmc ${ChatColor.DARK_GRAY}-${ChatColor.WHITE} Send your coordinates.")
+            Chat.sendMessage(sender, "${Chat.prefix} &f/team create ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Creates a team.")
+            Chat.sendMessage(sender, "${Chat.prefix} &f/team invite <player> ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Invites a player to your team.")
+            Chat.sendMessage(sender, "${Chat.prefix} &f/team leave ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Leave your team.")
+            Chat.sendMessage(sender, "${Chat.prefix} &f/team accept <player> ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Accept a player's team invite.")
+            Chat.sendMessage(sender, "${Chat.prefix} &f/team list ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Brings a list of teams and their members.")
+            Chat.sendMessage(sender, "${Chat.prefix} &f/pm <message> ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Talk in team chat.")
+            Chat.sendMessage(sender, "${Chat.prefix} &f/pmc ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Send your coordinates.")
             Chat.sendMessage(sender, Chat.line)
             if (sender.hasPermission("uhc.staff.team")) {
-                Chat.sendMessage(sender, "${Chat.prefix} &a/team reset ${ChatColor.DARK_GRAY}-${ChatColor.WHITE} Reset all teams.")
-                Chat.sendMessage(sender, "${Chat.prefix} &a/team management <on/off> ${ChatColor.DARK_GRAY}-${ChatColor.WHITE} Enable/disable team management.")
-                Chat.sendMessage(sender, "${Chat.prefix} &a/team size <size> ${ChatColor.DARK_GRAY}-${ChatColor.WHITE} Set the size of teams.")
+                Chat.sendMessage(sender, "${Chat.prefix} &f/team reset ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Reset all teams.")
+                Chat.sendMessage(sender, "${Chat.prefix} &f/team management <on/off> ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Enable/disable team management.")
+                Chat.sendMessage(sender, "${Chat.prefix} &f/team size <size> ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Set the size of teams.")
                 Chat.sendMessage(sender, Chat.line)
             }
         } else if (args[0] == "create") {
@@ -70,8 +71,8 @@ class TeamCommand : CommandExecutor {
                 }
             }
 
-            oTeams[nextInt(oTeams.size)].addPlayer(player)
-            player.sendMessage("${Chat.prefix} Team created! Use ${ChatColor.WHITE}/team invite <player>${ChatColor.GRAY} to invite a player.")
+            oTeams[Random().nextInt(oTeams.size)].addPlayer(player)
+            Chat.sendMessage(player, "${Chat.prefix} Team created! Use ${ChatColor.WHITE}/team invite <player>${ChatColor.GRAY} to invite a player.")
         } else if (args[0] == "invite") {
             val player = sender as Player
             val oPlayer = player as OfflinePlayer
@@ -121,7 +122,7 @@ class TeamCommand : CommandExecutor {
                 Chat.sendMessage(sender as Player, "${ChatColor.RED}You don't have permission to use this command.")
                 return false
             }
-            if (args[1].isEmpty()) {
+            if (args.size < 2) {
                 Chat.sendMessage(sender as Player, "${ChatColor.RED}You need to send a valid teamsize.")
                 return false
             }
@@ -156,12 +157,12 @@ class TeamCommand : CommandExecutor {
                     return false
                 }
 
-                player.sendMessage("${Chat.prefix} Request accepted.")
+                Chat.sendMessage(player, "${Chat.prefix} Request accepted.")
                 team.addPlayer(player)
                 for (players in team.players) {
                     if (players is Player) {
                         players.sendMessage(Chat.line)
-                        players.sendMessage("${Chat.prefix} ${ChatColor.WHITE}${player.name}${ChatColor.GRAY} joined your team.")
+                        Chat.sendMessage(players, "${Chat.prefix} ${ChatColor.WHITE}${player.name}${ChatColor.GRAY} joined your team.")
                         players.sendMessage(Chat.line)
                     }
                 }
@@ -175,17 +176,21 @@ class TeamCommand : CommandExecutor {
                 Chat.sendMessage(sender as Player, "${ChatColor.RED}You don't have permission to use this command.")
                 return false
             }
-            if (args[1] != "on" || args[1] != "off") {
+            if (args.size === 1) {
+                Chat.sendMessage(sender as Player, "${Chat.prefix} Invalid usage: ${ChatColor.WHITE}/team management on/off")
+                return false
+            }
+            if (args[1] != "on" && args[1] != "off") {
                 Chat.sendMessage(sender as Player, "${Chat.prefix} Invalid usage: ${ChatColor.WHITE}/team management on/off")
                 return false
             }
             Chat.sendMessage(sender as Player, Chat.line)
             if (args[1] == "on") {
-                settings.data!!.set("game.ffa", true)
-                Chat.sendMessage(sender, "${Chat.prefix} ${ChatColor.GRAY}Team management has been set to ${ChatColor.WHITE}off${ChatColor.GRAY}.")
-            } else if (args[1] == "off") {
                 settings.data!!.set("game.ffa", false)
                 Chat.sendMessage(sender, "${Chat.prefix} ${ChatColor.GRAY}Team management has been set to ${ChatColor.WHITE}on${ChatColor.GRAY}.")
+            } else if (args[1] == "off") {
+                settings.data!!.set("game.ffa", true)
+                Chat.sendMessage(sender, "${Chat.prefix} ${ChatColor.GRAY}Team management has been set to ${ChatColor.WHITE}off${ChatColor.GRAY}.")
             }
             settings.saveData()
             Chat.sendMessage(sender, Chat.line)
@@ -201,7 +206,7 @@ class TeamCommand : CommandExecutor {
                 }
             }
             player.sendMessage(Chat.line)
-            player.sendMessage("${Chat.prefix} You've reset all teams.")
+            Chat.sendMessage(player, "${Chat.prefix} You've reset all teams.")
             player.sendMessage(Chat.line)
         } else if (args[0] == "leave") {
             val player = sender as Player
@@ -221,11 +226,11 @@ class TeamCommand : CommandExecutor {
                 return true
             }
             team.removePlayer(player)
-            player.sendMessage("${Chat.prefix} You left your team.")
+            Chat.sendMessage(player, "${Chat.prefix} You left your team.")
             for (players in team.players) {
                 if (players is Player) {
                     players.sendMessage(Chat.line)
-                    players.sendMessage("${Chat.prefix}${ChatColor.WHITE}${player.name}${ChatColor.GRAY} left your team.")
+                    Chat.sendMessage(players, "${Chat.prefix}${ChatColor.WHITE}${player.name}${ChatColor.GRAY} left your team.")
                     players.sendMessage(Chat.line)
                 }
             }

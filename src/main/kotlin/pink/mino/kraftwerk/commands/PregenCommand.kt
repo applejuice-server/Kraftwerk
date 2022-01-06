@@ -63,7 +63,7 @@ class PregenCommand : CommandExecutor {
 
         Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "${Chat.prefix} &7Pregeneration started in &8'&c${args[0]}&8'&7."))
         PregenActionBar().runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 20L)
-        settings.data!!.set("pregen.border", args[1])
+        settings.data!!.set("pregen.border", args[1].toInt())
         settings.data!!.set("pregen.world", args[0])
         settings.saveData()
 

@@ -7,6 +7,7 @@ import org.bukkit.plugin.java.JavaPlugin
 import pink.mino.kraftwerk.commands.*
 import pink.mino.kraftwerk.discord.Discord
 import pink.mino.kraftwerk.features.HardcoreHearts
+import pink.mino.kraftwerk.features.Teams
 import pink.mino.kraftwerk.listeners.*
 import pink.mino.kraftwerk.utils.GameState
 import pink.mino.kraftwerk.utils.Settings
@@ -35,9 +36,7 @@ class Kraftwerk : JavaPlugin() {
         getCommand("feed").executor = FeedCommand()
         getCommand("heal").executor = HealCommand()
         getCommand("fly").executor = FlyCommand()
-
-        getCommand("msg").executor = MessageCommand()
-        getCommand("team").executor = TeamCommand()
+        getCommand("pregen").executor = PregenCommand()
 
         getCommand("gm").executor = GamemodeCommand()
         getCommand("gamemode").executor = GamemodeCommand()
@@ -46,9 +45,10 @@ class Kraftwerk : JavaPlugin() {
         getCommand("gmsp").executor = GamemodeCommand()
         getCommand("gmc").executor = GamemodeCommand()
 
-        getCommand("pregen").executor = PregenCommand()
-
-
+        getCommand("msg").executor = MessageCommand()
+        getCommand("team").executor = TeamCommand()
+        getCommand("health").executor = HealthCommand()
+        getCommand("pm").executor = PMCommand()
 
         /* ProtocolLib stuff */
         if (Bukkit.getPluginManager().getPlugin("ProtocolLib") == null) {
@@ -64,6 +64,7 @@ class Kraftwerk : JavaPlugin() {
         protocolManager?.addPacketListener(HardcoreHearts())
 
         Settings.instance.setup(this)
+        Teams.manager.setupTeams()
 
         if (Settings.instance.data!!.contains("game.state")) {
             GameState.setState(GameState.valueOf(Settings.instance.data!!.getString("game.state")))
