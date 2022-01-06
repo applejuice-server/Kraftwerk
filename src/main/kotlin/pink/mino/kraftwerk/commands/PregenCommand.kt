@@ -19,7 +19,7 @@ class PregenCommand : CommandExecutor {
 
     override fun onCommand(sender: CommandSender, command: Command, label: String?, args: Array<String>): Boolean {
         if (!sender.hasPermission("uhc.command.pregen")) {
-            sender.sendMessage("${Chat.prefix} ${ChatColor.RED}You don't have permission to use this command.")
+            Chat.sendMessage(sender as Player, "${Chat.prefix} ${ChatColor.RED}You don't have permission to use this command.")
             return false
         }
 

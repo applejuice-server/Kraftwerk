@@ -1,16 +1,14 @@
 package pink.mino.kraftwerk
 
-import com.comphenix.protocol.PacketType
 import com.comphenix.protocol.ProtocolLibrary
 import com.comphenix.protocol.ProtocolManager
-import com.comphenix.protocol.events.ListenerPriority
-import com.comphenix.protocol.events.PacketAdapter
-import com.comphenix.protocol.events.PacketEvent
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 import pink.mino.kraftwerk.commands.*
 import pink.mino.kraftwerk.discord.Discord
+import pink.mino.kraftwerk.features.HardcoreHearts
 import pink.mino.kraftwerk.listeners.*
+import pink.mino.kraftwerk.utils.GameState
 import pink.mino.kraftwerk.utils.Settings
 
 
@@ -39,6 +37,7 @@ class Kraftwerk : JavaPlugin() {
         getCommand("fly").executor = FlyCommand()
 
         getCommand("msg").executor = MessageCommand()
+        getCommand("team").executor = TeamCommand()
 
         getCommand("gm").executor = GamemodeCommand()
         getCommand("gamemode").executor = GamemodeCommand()
@@ -62,15 +61,17 @@ class Kraftwerk : JavaPlugin() {
         Discord.main()
 
         /* This just enables Hardcore Hearts */
-        protocolManager?.addPacketListener(object : PacketAdapter(this, ListenerPriority.NORMAL, PacketType.Play.Server.LOGIN) {
-            override fun onPacketSending(e: PacketEvent) {
-                if(e.packetType.equals(PacketType.Play.Server.LOGIN)) {
-                    e.packet.booleans.write(0, true)
-                }
-            }
-        })
+        protocolManager?.addPacketListener(HardcoreHearts())
 
         Settings.instance.setup(this)
+
+        if (Settings.instance.data!!.contains("game.state")) {
+            GameState.setState(GameState.valueOf(Settings.instance.data!!.getString("game.state")))
+            Bukkit.getLogger().info("Game state set to ${Settings.instance.data!!.getString("game.state")}.")
+        } else {
+            GameState.setState(GameState.LOBBY)
+            Bukkit.getLogger().info("Game state set to Lobby.")
+        }
 
         Bukkit.getLogger().info("Kraftwerk enabled")
     }
