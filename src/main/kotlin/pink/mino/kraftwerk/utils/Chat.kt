@@ -12,6 +12,10 @@ class Chat {
         const val dash = "§8»"
         const val line = "§8§m-------------------------------------"
 
+        fun colored(message: String): String {
+            return (ChatColor.translateAlternateColorCodes('&', message))
+        }
+
         /* Function to get centered MOTDs */
         fun centerMotd(message: String): String {
             val text = ChatColor.translateAlternateColorCodes('&', message)

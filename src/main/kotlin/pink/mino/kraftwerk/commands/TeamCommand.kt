@@ -130,7 +130,7 @@ class TeamCommand : CommandExecutor {
                 Chat.sendMessage(sender as Player, "${ChatColor.RED}You need to send a valid teamsize.")
                 return false
             }
-            settings.data!!.set("game.teamSize", args[1])
+            settings.data!!.set("game.teamSize", args[1].toInt())
             settings.saveData()
             Chat.sendMessage(sender as Player, Chat.line)
             Chat.sendMessage(sender, "${Chat.prefix} ${ChatColor.GRAY}The teamsize has been set to ${ChatColor.WHITE}${args[1]}${ChatColor.GRAY}.")

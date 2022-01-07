@@ -26,6 +26,7 @@ class Kraftwerk : JavaPlugin() {
         /* Registering listeners */
         Bukkit.getServer().pluginManager.registerEvents(ServerListPing(), this)
         Bukkit.getServer().pluginManager.registerEvents(PlayerJoin(), this)
+        Bukkit.getServer().pluginManager.registerEvents(PlayerQuit(), this)
         Bukkit.getServer().pluginManager.registerEvents(PlayerDeath(), this)
         Bukkit.getServer().pluginManager.registerEvents(Command(), this)
         Bukkit.getServer().pluginManager.registerEvents(WorldInitialize(), this)
@@ -37,6 +38,8 @@ class Kraftwerk : JavaPlugin() {
         getCommand("heal").executor = HealCommand()
         getCommand("fly").executor = FlyCommand()
         getCommand("pregen").executor = PregenCommand()
+        getCommand("config").executor = ConfigCommand()
+        getCommand("whitelist").executor = WhitelistCommand()
 
         getCommand("gm").executor = GamemodeCommand()
         getCommand("gamemode").executor = GamemodeCommand()

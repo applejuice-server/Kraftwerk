@@ -50,6 +50,10 @@ commands:
       - pregenerate
       - createworld
       - cw
+  config:
+    description: Opens the configuration for UHC.
+    aliases:
+      - uhc
   message:
     aliases:
       - msg
