@@ -7,6 +7,7 @@ import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import pink.mino.kraftwerk.utils.Chat
+import pink.mino.kraftwerk.utils.ReplyTo
 
 class MessageCommand : CommandExecutor {
 
@@ -30,6 +31,9 @@ class MessageCommand : CommandExecutor {
         val player = sender as Player
         Chat.sendMessage(sender, "&7To: &f${target.displayName} &8- &7$message")
         Chat.sendMessage(target, "&7From: &f${player.displayName} &8- &7$message")
+
+        ReplyTo.setRepliedTo(player.uniqueId, target.uniqueId)
+
         player.playSound(player.location, Sound.NOTE_PLING, 10.toFloat(), 0.toFloat())
         target.playSound(player.location, Sound.NOTE_PLING, 10.toFloat(), 0.toFloat())
         return true

@@ -49,6 +49,7 @@ class Kraftwerk : JavaPlugin() {
         getCommand("gmc").executor = GamemodeCommand()
 
         getCommand("msg").executor = MessageCommand()
+        getCommand("reply").executor = ReplyCommand()
         getCommand("team").executor = TeamCommand()
         getCommand("health").executor = HealthCommand()
         getCommand("pm").executor = PMCommand()
