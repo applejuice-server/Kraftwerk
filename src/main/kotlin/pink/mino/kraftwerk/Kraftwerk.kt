@@ -30,6 +30,8 @@ class Kraftwerk : JavaPlugin() {
         Bukkit.getServer().pluginManager.registerEvents(PlayerDeath(), this)
         Bukkit.getServer().pluginManager.registerEvents(Command(), this)
         Bukkit.getServer().pluginManager.registerEvents(WorldInitialize(), this)
+        Bukkit.getServer().pluginManager.registerEvents(WeatherChange(), this)
+        Bukkit.getServer().pluginManager.registerEvents(FoodChange(), this)
 
         /* Registering commands */
         getCommand("clear").executor = ClearInventoryCommand()
@@ -39,6 +41,8 @@ class Kraftwerk : JavaPlugin() {
         getCommand("fly").executor = FlyCommand()
         getCommand("pregen").executor = PregenCommand()
         getCommand("config").executor = ConfigCommand()
+        getCommand("editconfig").executor = EditConfigCommand()
+
         getCommand("whitelist").executor = WhitelistCommand()
 
         getCommand("gm").executor = GamemodeCommand()

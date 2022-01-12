@@ -7,10 +7,13 @@ import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
+import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.meta.SkullMeta
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GuiBuilder
 import pink.mino.kraftwerk.utils.Settings
+
 
 class ConfigCommand : CommandExecutor {
 
@@ -91,6 +94,7 @@ class ConfigCommand : CommandExecutor {
 
         val miningRules = ItemStack(Material.DIAMOND_PICKAXE)
         val miningRulesMeta = miningRules.itemMeta
+        miningRulesMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES)
         miningRulesMeta.displayName = ChatColor.translateAlternateColorCodes('&', "&4Mining Rules")
         miningRulesMeta.lore = listOf(
             Chat.colored(Chat.line),
@@ -109,6 +113,7 @@ class ConfigCommand : CommandExecutor {
 
         val events = ItemStack(Material.WATCH)
         val eventsMeta = events.itemMeta
+        eventsMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES)
         eventsMeta.displayName = Chat.colored("&4Events")
         eventsMeta.lore = listOf(
             Chat.colored(Chat.line),
@@ -124,7 +129,7 @@ class ConfigCommand : CommandExecutor {
             }
             it.isCancelled = true
         }
-        val matchpost = ItemStack(Material.MAP)
+        val matchpost = ItemStack(Material.PAPER)
         val matchpostMeta = matchpost.itemMeta
         matchpostMeta.displayName = Chat.colored("&4Matchpost")
         matchpostMeta.lore = listOf(
@@ -133,7 +138,43 @@ class ConfigCommand : CommandExecutor {
             Chat.colored(Chat.line)
         )
         matchpost.itemMeta = matchpostMeta
-
+        gui.item(14, matchpost).onClick runnable@{
+            if (player.hasPermission("uhc.staff")) {
+                Bukkit.dispatchCommand(player as CommandSender, "editconfig matchpost")
+            }
+            it.isCancelled = true
+        }
+        val potions = ItemStack(Material.GLASS_BOTTLE)
+        val potionsMeta = potions.itemMeta
+        potionsMeta.displayName = Chat.colored("&4Potions")
+        potionsMeta.lore = listOf(
+            Chat.colored(Chat.line),
+            Chat.colored("&7Coming soon."),
+            Chat.colored(Chat.line)
+        )
+        potions.itemMeta = potionsMeta
+        gui.item(15, potions).onClick runnable@{
+            if (player.hasPermission("uhc.staff")) {
+                Bukkit.dispatchCommand(player as CommandSender, "editconfig potions")
+            }
+            it.isCancelled = true
+        }
+        val host = ItemStack(Material.SKULL_ITEM, 1, 3)
+        val hostMeta = host.itemMeta as SkullMeta
+        hostMeta.displayName = Chat.colored("&4Host")
+        hostMeta.owner = "minota"
+        hostMeta.lore = listOf(
+            Chat.colored(Chat.line),
+            Chat.colored("&7The host for this game is "),
+            Chat.colored(Chat.line)
+        )
+        host.itemMeta = hostMeta
+        gui.item(16, host).onClick runnable@{
+            if (player.hasPermission("uhc.staff")) {
+                Bukkit.dispatchCommand(player as CommandSender, "editconfig host")
+            }
+            it.isCancelled = true
+        }
         player.openInventory(gui.make())
         return true
     }

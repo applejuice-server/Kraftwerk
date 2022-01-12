@@ -54,6 +54,10 @@ commands:
     description: Opens the configuration for UHC.
     aliases:
       - uhc
+  editconfig:
+    description: Edits the configuration for UHC.
+    aliases:
+      - edituhc
   message:
     aliases:
       - msg
