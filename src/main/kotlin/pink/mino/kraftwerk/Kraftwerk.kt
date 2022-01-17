@@ -7,10 +7,11 @@ import org.bukkit.plugin.java.JavaPlugin
 import pink.mino.kraftwerk.commands.*
 import pink.mino.kraftwerk.discord.Discord
 import pink.mino.kraftwerk.features.HardcoreHearts
+import pink.mino.kraftwerk.features.Settings
 import pink.mino.kraftwerk.features.Teams
+import pink.mino.kraftwerk.features.options.ConfigOptionHandler
 import pink.mino.kraftwerk.listeners.*
 import pink.mino.kraftwerk.utils.GameState
-import pink.mino.kraftwerk.utils.Settings
 
 
 class Kraftwerk : JavaPlugin() {
@@ -74,6 +75,7 @@ class Kraftwerk : JavaPlugin() {
 
         Settings.instance.setup(this)
         Teams.manager.setupTeams()
+        ConfigOptionHandler.setup()
 
         if (Settings.instance.data!!.contains("game.state")) {
             GameState.setState(GameState.valueOf(Settings.instance.data!!.getString("game.state")))
@@ -83,10 +85,10 @@ class Kraftwerk : JavaPlugin() {
             Bukkit.getLogger().info("Game state set to Lobby.")
         }
 
-        Bukkit.getLogger().info("Kraftwerk enabled")
+        Bukkit.getLogger().info("Kraftwerk enabled.")
     }
     override fun onDisable() {
-        Bukkit.getLogger().info("Kraftwerk disabled")
+        Bukkit.getLogger().info("Kraftwerk disabled.")
     }
 
 }

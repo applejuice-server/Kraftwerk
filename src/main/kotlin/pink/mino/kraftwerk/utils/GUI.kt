@@ -86,6 +86,5 @@ class GuiBuilder : Listener {
         name = "Inventory"
         rows = 1
         items = HashMap()
-        runnableHashMap = HashMap()
-    }
+        runnableHashMap = HashMap()    }
 }

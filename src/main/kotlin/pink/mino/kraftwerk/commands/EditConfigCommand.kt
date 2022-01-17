@@ -1,15 +1,17 @@
 package pink.mino.kraftwerk.commands
 
 import org.bukkit.ChatColor
-import org.bukkit.Sound
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
+import org.bukkit.inventory.ItemStack
+import pink.mino.kraftwerk.features.options.ConfigOptionHandler
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GuiBuilder
 
 class EditConfigCommand : CommandExecutor {
+
     override fun onCommand(
         sender: CommandSender?,
         command: Command?,
@@ -21,24 +23,31 @@ class EditConfigCommand : CommandExecutor {
             Chat.sendMessage(player, "&cYou don't have permission to execute this command.")
             return false
         }
-        val gui = GuiBuilder().rows(4).name(ChatColor.translateAlternateColorCodes('&', "&4Edit UHC Config"))
-
-        if (args[0] === "options") {
-            TODO("Options")
-        } else if (args[0] === "events") {
-            TODO("Events")
-        } else if (args[0] === "matchpost") {
-            TODO("Matchpost")
-        } else if (args[0] === "rules") {
-            TODO("Rules")
-        } else if (args[0] === "mining_rules") {
-            TODO("Mining Rules")
-        } else if (args[0] === "host") {
-            TODO("Host")
-        } else if (args[0] === "potions") {
-            TODO("Potions")
+        if (args.isEmpty()) {
+            // TODO("Make a main config editor menu")
+            Chat.sendMessage(player, "&cYou need to provide a valid menu to edit.")
+            return false
         }
-        player.playSound(player.location, Sound.LEVEL_UP, 10.toFloat(), 10.toFloat())
+        val gui = GuiBuilder().rows(4).name(ChatColor.translateAlternateColorCodes('&', "&4Edit UHC Config"))
+        if (args[0].lowercase() == "options") {
+            var iterator = 0
+            for (option in ConfigOptionHandler.configOptions) {
+                if (option.category === "options") {
+                    val item = ItemStack(option.material)
+                    val itemMeta = item.itemMeta
+                    itemMeta.displayName = Chat.colored("&c${option.name}")
+                    itemMeta.lore = listOf(
+                        Chat.colored("&7${option.description}")
+                    )
+                    item.itemMeta = itemMeta
+                    gui.item(iterator, item).onClick runnable@ {
+                        it.isCancelled = true
+                        ConfigOptionHandler.getOption(option.name)?.toggle()
+                    }
+                    iterator++
+                }
+            }
+        }
         player.openInventory(gui.make())
         return true
     }

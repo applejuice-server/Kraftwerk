@@ -9,10 +9,10 @@ import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.scoreboard.Team
+import pink.mino.kraftwerk.features.Settings
 import pink.mino.kraftwerk.features.Teams
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GameState
-import pink.mino.kraftwerk.utils.Settings
 import java.util.*
 
 

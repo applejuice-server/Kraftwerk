@@ -9,8 +9,8 @@ import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 import pink.mino.kraftwerk.Kraftwerk
 import pink.mino.kraftwerk.features.PregenActionBar
+import pink.mino.kraftwerk.features.Settings
 import pink.mino.kraftwerk.utils.Chat
-import pink.mino.kraftwerk.utils.Settings
 
 
 class PregenCommand : CommandExecutor {

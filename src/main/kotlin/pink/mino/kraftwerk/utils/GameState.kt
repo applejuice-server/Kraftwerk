@@ -1,5 +1,6 @@
 package pink.mino.kraftwerk.utils
 
+import pink.mino.kraftwerk.features.Settings
 import java.util.*
 
 enum class GameState {

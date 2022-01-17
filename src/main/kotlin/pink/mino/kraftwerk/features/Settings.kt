@@ -1,4 +1,4 @@
-package pink.mino.kraftwerk.utils
+package pink.mino.kraftwerk.features
 
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor

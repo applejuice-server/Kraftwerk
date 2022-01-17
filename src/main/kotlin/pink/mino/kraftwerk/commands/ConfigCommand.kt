@@ -3,6 +3,7 @@ package pink.mino.kraftwerk.commands
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.Material
+import org.bukkit.Sound
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
@@ -10,20 +11,15 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.SkullMeta
+import pink.mino.kraftwerk.features.Settings
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GuiBuilder
-import pink.mino.kraftwerk.utils.Settings
 
 
 class ConfigCommand : CommandExecutor {
 
     private fun getOption(option: String): String {
-        if(Settings.instance.data!!.getString("game.settings.${option}").isNullOrEmpty()) {
-            Settings.instance.data!!.set("game.settings.${option}", false)
-            Settings.instance.saveData()
-        }
-        val op = Settings.instance.data!!.getString("game.settings.${option}").toBoolean()
-
+        val op = Settings.instance.data!!.getString("game.options.${option}").toBoolean()
         return if (op) {
             "Enabled"
         } else {
@@ -32,12 +28,7 @@ class ConfigCommand : CommandExecutor {
     }
 
     private fun getRule(rule: String): String {
-        if(Settings.instance.data!!.getString("game.rules.${rule}").isNullOrEmpty()) {
-            Settings.instance.data!!.set("game.rules.${rule}", false)
-            Settings.instance.saveData()
-        }
         val op = Settings.instance.data!!.getString("game.rules.${rule}").toBoolean()
-
         return if (op) {
             "Allowed"
         } else {
@@ -175,6 +166,7 @@ class ConfigCommand : CommandExecutor {
             }
             it.isCancelled = true
         }
+        player.playSound(player.location, Sound.LEVEL_UP, 10.toFloat(), 10.toFloat())
         player.openInventory(gui.make())
         return true
     }
