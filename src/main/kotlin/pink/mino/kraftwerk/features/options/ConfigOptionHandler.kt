@@ -11,6 +11,10 @@ class ConfigOptionHandler {
 
         fun setup() {
             addOption(AbsorptionOption())
+            addOption(AntiStoneOption())
+            addOption(GoldenHeadsOption())
+            addOption(NotchAppleOption())
+            addOption(HorsesOption())
             configOptions.sortWith(Comparator.comparing(ConfigOption::name))
         }
 
@@ -18,9 +22,9 @@ class ConfigOptionHandler {
             return configOptions
         }
 
-        fun getOption(name: String?): ConfigOption? {
+        fun getOption(id: String?): ConfigOption? {
             for (configOption in configOptions) {
-                if (configOption.name == name) {
+                if (configOption.id == id) {
                     return configOption
                 }
             }

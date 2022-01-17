@@ -35,14 +35,21 @@ class EditConfigCommand : CommandExecutor {
                 if (option.category === "options") {
                     val item = ItemStack(option.material)
                     val itemMeta = item.itemMeta
-                    itemMeta.displayName = Chat.colored("&c${option.name}")
+                    var color: String = if (option.enabled) "&a"
+                    else "&c"
+                    itemMeta.displayName = Chat.colored("${color}${option.name}")
                     itemMeta.lore = listOf(
                         Chat.colored("&7${option.description}")
                     )
                     item.itemMeta = itemMeta
                     gui.item(iterator, item).onClick runnable@ {
                         it.isCancelled = true
-                        ConfigOptionHandler.getOption(option.name)?.toggle()
+                        ConfigOptionHandler.getOption(option.id)?.toggle()
+                        color = if (option.enabled) "&a"
+                        else "&c"
+                        val meta = it.currentItem.itemMeta
+                        meta.displayName = Chat.colored("${color}${option.name}")
+                        it.currentItem.itemMeta = meta
                     }
                     iterator++
                 }

@@ -6,6 +6,7 @@ import org.bukkit.event.Listener
 import pink.mino.kraftwerk.features.Settings
 import pink.mino.kraftwerk.utils.Chat
 
+
 abstract class ConfigOption(
     var name: String,
     var description: String,
@@ -16,7 +17,12 @@ abstract class ConfigOption(
 ): Listener {
 
     init {
-        if (!enabled) enabled = false
+        if (Settings.instance.data!!.getString("game.$category.$id").isNullOrEmpty()) {
+            enabled = false
+            Settings.instance.data!!.set("game.$category.$id", enabled)
+            Settings.instance.saveData()
+        }
+        enabled = Settings.instance.data!!.getBoolean("game.$category.$id")
     }
 
     fun toggle() {
@@ -26,7 +32,8 @@ abstract class ConfigOption(
         } else {
             "&cdisabled"
         }
-        Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} &c$name&7 has been $changerText&7."))
+        onToggle(enabled)
+        Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} &e$name&7 has been $changerText&7."))
         Settings.instance.data!!.set("game.$category.$id", enabled)
         Settings.instance.saveData()
     }
@@ -39,9 +46,11 @@ abstract class ConfigOption(
         } else {
             "&cdisabled"
         }
-        Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} &c$name&7 has been $changerText&7."))
+        onToggle(to)
+        Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} &e$name&7 has been $changerText&7."))
         Settings.instance.data!!.set("game.$category.$id", to)
         Settings.instance.saveData()
     }
 
+    open fun onToggle(to: Boolean) {}
 }

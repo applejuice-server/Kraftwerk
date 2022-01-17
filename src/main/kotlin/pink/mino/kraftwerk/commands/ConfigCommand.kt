@@ -46,13 +46,14 @@ class ConfigCommand : CommandExecutor {
         optionsMeta.lore = listOf(
             Chat.colored(Chat.line),
             Chat.colored("&7Absorption ${Chat.dash} &c${getOption("absorption")}"),
-            Chat.colored("&7Notch Apples ${Chat.dash} &c${getOption("notch-apples")}"),
-            Chat.colored("&7Golden Heads ${Chat.dash} &c${getOption("golden-heads")}"),
+            Chat.colored("&7Notch Apples ${Chat.dash} &c${getOption("notchapples")}"),
+            Chat.colored("&7Golden Heads ${Chat.dash} &c${getOption("goldenheads")}"),
             Chat.colored("&7Horses ${Chat.dash} &c${getOption("horses")}"),
-            Chat.colored("&7Split Enchants ${Chat.dash} &c${getOption("split-enchants")}"),
-            Chat.colored("&7Double Arrows ${Chat.dash} &c${getOption("double-arrows")}"),
-            Chat.colored("&7Fire Weapons ${Chat.dash} &c${getOption("fire-weapons")}"),
+            Chat.colored("&7Split Enchants ${Chat.dash} &c${getOption("splitenchants")}"),
+            Chat.colored("&7Double Arrows ${Chat.dash} &c${getOption("doublearrows")}"),
+            Chat.colored("&7Fire Weapons ${Chat.dash} &c${getOption("fireweapons")}"),
             Chat.colored("&7Bookshelves ${Chat.dash} &c${getOption("bookshelves")}"),
+            Chat.colored("&7AntiStone ${Chat.dash} &c${getOption("antistone")}"),
             Chat.colored(Chat.line),
         )
         options.itemMeta = optionsMeta
