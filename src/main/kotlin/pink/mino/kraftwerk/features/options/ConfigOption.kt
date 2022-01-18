@@ -2,6 +2,7 @@ package pink.mino.kraftwerk.features.options
 
 import org.bukkit.Bukkit
 import org.bukkit.Material
+import org.bukkit.command.CommandExecutor
 import org.bukkit.event.Listener
 import pink.mino.kraftwerk.features.Settings
 import pink.mino.kraftwerk.utils.Chat
@@ -13,7 +14,10 @@ abstract class ConfigOption(
     var category: String,
     var id: String,
     var material: Material,
-    var enabled: Boolean = false
+    var enabled: Boolean = false,
+    var command: Boolean = false,
+    var commandName: String = "none",
+    var executor: CommandExecutor? = null
 ): Listener {
 
     init {

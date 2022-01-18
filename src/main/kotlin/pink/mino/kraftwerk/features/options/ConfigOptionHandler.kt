@@ -15,6 +15,8 @@ class ConfigOptionHandler {
             addOption(GoldenHeadsOption())
             addOption(NotchAppleOption())
             addOption(HorsesOption())
+            addOption(SplitEnchantsOption())
+            addOption(BookshelvesOption())
             configOptions.sortWith(Comparator.comparing(ConfigOption::name))
         }
 
@@ -34,6 +36,9 @@ class ConfigOptionHandler {
         private fun addOption(configOption: ConfigOption) {
             configOptions.add(configOption)
             Bukkit.getPluginManager().registerEvents(configOption, JavaPlugin.getPlugin(Kraftwerk::class.java))
+            if (configOption.command) {
+                JavaPlugin.getPlugin(Kraftwerk::class.java).getCommand(configOption.commandName).executor = configOption.executor
+            }
         }
     }
 }

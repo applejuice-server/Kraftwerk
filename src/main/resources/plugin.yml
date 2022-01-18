@@ -69,6 +69,8 @@ commands:
     aliases:
       - r
     description: Privately reply to a user.
+  split:
+    description: Split your enchants.
 depend:
   - ProtocolLib
   - JDA

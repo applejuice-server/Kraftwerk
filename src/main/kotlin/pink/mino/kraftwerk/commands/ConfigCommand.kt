@@ -50,7 +50,6 @@ class ConfigCommand : CommandExecutor {
             Chat.colored("&7Golden Heads ${Chat.dash} &c${getOption("goldenheads")}"),
             Chat.colored("&7Horses ${Chat.dash} &c${getOption("horses")}"),
             Chat.colored("&7Split Enchants ${Chat.dash} &c${getOption("splitenchants")}"),
-            Chat.colored("&7Double Arrows ${Chat.dash} &c${getOption("doublearrows")}"),
             Chat.colored("&7Fire Weapons ${Chat.dash} &c${getOption("fireweapons")}"),
             Chat.colored("&7Bookshelves ${Chat.dash} &c${getOption("bookshelves")}"),
             Chat.colored("&7AntiStone ${Chat.dash} &c${getOption("antistone")}"),
