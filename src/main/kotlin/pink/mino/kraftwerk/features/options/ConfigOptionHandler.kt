@@ -17,6 +17,7 @@ class ConfigOptionHandler {
             addOption(HorsesOption())
             addOption(SplitEnchantsOption())
             addOption(BookshelvesOption())
+            addOption(FireWeaponsOption())
             configOptions.sortWith(Comparator.comparing(ConfigOption::name))
         }
 
