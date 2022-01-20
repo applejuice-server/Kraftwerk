@@ -31,10 +31,18 @@ abstract class ConfigOption(
 
     fun toggle() {
         enabled = !enabled
-        val changerText: String = if (enabled) {
-            "&aenabled"
+        val changerText: String = if (category === "rules") {
+            if (enabled) {
+                "&aallowed"
+            } else {
+                "&cdisallowed"
+            }
         } else {
-            "&cdisabled"
+            if (enabled) {
+                "&aenabled"
+            } else {
+                "&cdisabled"
+            }
         }
         onToggle(enabled)
         Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} &e$name&7 has been $changerText&7."))
@@ -45,10 +53,18 @@ abstract class ConfigOption(
     @JvmName("setEnabled1")
     fun setEnabled(to: Boolean) {
         enabled = to
-        val changerText: String = if (enabled) {
-            "&aenabled"
+        val changerText: String = if (category === "rules") {
+            if (enabled) {
+                "&aallowed"
+            } else {
+                "&cdisallowed"
+            }
         } else {
-            "&cdisabled"
+            if (enabled) {
+                "&aenabled"
+            } else {
+                "&cdisabled"
+            }
         }
         onToggle(to)
         Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} &e$name&7 has been $changerText&7."))

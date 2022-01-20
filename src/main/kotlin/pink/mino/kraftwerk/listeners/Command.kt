@@ -7,7 +7,22 @@ import pink.mino.kraftwerk.utils.Chat
 
 class Command : Listener {
 
-    private val blockedCommands = arrayListOf<String>("/me", "/minecraft:me")
+    private val blockedCommands = arrayListOf(
+        "/me",
+        "/minecraft:me",
+
+        "//calculate",
+        "//calc",
+        "//solve",
+        "//eval",
+        "//evaluate",
+
+        "/worldedit:/calculate",
+        "/worldedit:/calc",
+        "/worldedit:/solve",
+        "/worldedit:/eval",
+        "/worldedit:/evaluate"
+    )
 
     @EventHandler
     fun onPlayerCommand(e: PlayerCommandPreprocessEvent) {

@@ -72,7 +72,7 @@ class ConfigCommand : CommandExecutor {
             Chat.colored("&7Stalking ${Chat.dash} &c${getRule("stalking")}"),
             Chat.colored("&7Stealing ${Chat.dash} &c${getRule("stealing")}"),
             Chat.colored("&7Skybasing ${Chat.dash} &c${getRule("skybasing")}"),
-            Chat.colored("&7Running at Meetup ${Chat.dash} &c${getRule("running-at-meetup")}"),
+            Chat.colored("&7Running at Meetup ${Chat.dash} &c${getRule("runningatmu")}"),
             Chat.colored(Chat.line),
         )
         rules.itemMeta = rulesMeta
@@ -97,7 +97,7 @@ class ConfigCommand : CommandExecutor {
         miningRules.itemMeta = miningRulesMeta
         gui.item(12, miningRules).onClick runnable@{
             if (player.hasPermission("uhc.staff")) {
-                Bukkit.dispatchCommand(player as CommandSender, "editconfig mining_rules")
+                Bukkit.dispatchCommand(player as CommandSender, "editconfig rules")
             }
             it.isCancelled = true
         }

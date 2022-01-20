@@ -31,6 +31,9 @@ class Discord : ListenerAdapter() {
             commands.addCommands(
                 CommandData("ip", "View the IP for the server.")
             )
+            commands.addCommands(
+                CommandData("togglealerts", "Removes/adds the Notify role in the Discord server.")
+            )
 
             commands.queue()
         }

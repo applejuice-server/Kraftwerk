@@ -18,11 +18,31 @@ class ConfigOptionHandler {
             addOption(SplitEnchantsOption())
             addOption(BookshelvesOption())
             addOption(FireWeaponsOption())
+
+            addOption(CrossteamingOption())
+            addOption(StalkingOption())
+            addOption(StealingOption())
+            addOption(SkybasingOption())
+            addOption(RunningAtMeetupOption())
+
+            addOption(RollarcoasteringOption())
+            addOption(StripminingOption())
+            addOption(PokeholingOption())
             configOptions.sortWith(Comparator.comparing(ConfigOption::name))
         }
 
         fun getOptions(): ArrayList<ConfigOption> {
             return configOptions
+        }
+
+        fun getOptionsByCategory(category: String): ArrayList<ConfigOption> {
+            val list = ArrayList<ConfigOption>()
+            for (configOption in configOptions) {
+                if (configOption.category === category) {
+                    list.add(configOption)
+                }
+            }
+            return list
         }
 
         fun getOption(id: String?): ConfigOption? {
