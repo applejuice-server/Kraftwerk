@@ -7,7 +7,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 import pink.mino.kraftwerk.utils.Chat
 
-class PlayerJoin : Listener {
+class PlayerJoinListener : Listener {
     @EventHandler
     fun onPlayerJoin(e: PlayerJoinEvent) {
         val player = e.player

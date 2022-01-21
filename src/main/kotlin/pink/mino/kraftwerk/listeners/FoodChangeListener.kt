@@ -7,7 +7,7 @@ import org.bukkit.event.entity.FoodLevelChangeEvent
 import java.util.*
 
 
-class FoodChange : Listener {
+class FoodChangeListener : Listener {
     @EventHandler
     fun onFoodLevelChange(event: FoodLevelChangeEvent) {
         if (event.foodLevel < (event.entity as Player).foodLevel) {

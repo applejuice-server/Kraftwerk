@@ -1,6 +1,6 @@
 package pink.mino.kraftwerk.utils
 
-import pink.mino.kraftwerk.features.Settings
+import pink.mino.kraftwerk.features.SettingsFeature
 import java.util.*
 
 enum class GameState {
@@ -13,8 +13,8 @@ enum class GameState {
          */
         fun setState(state: GameState) {
             currentState = state
-            Settings.instance.data?.set("game.state", state.name.uppercase(Locale.getDefault()))
-            Settings.instance.saveData()
+            SettingsFeature.instance.data?.set("game.state", state.name.uppercase(Locale.getDefault()))
+            SettingsFeature.instance.saveData()
         }
 
         var currentState: GameState? = null

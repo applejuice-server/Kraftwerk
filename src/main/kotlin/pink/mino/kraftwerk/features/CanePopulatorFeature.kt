@@ -8,7 +8,7 @@ import org.bukkit.block.BlockFace
 import org.bukkit.generator.BlockPopulator
 import java.util.*
 
-class CanePopulator : BlockPopulator() {
+class CanePopulatorFeature : BlockPopulator() {
 
     private var canePatchChance = 0
     private var cane: Material? = null

@@ -7,7 +7,7 @@ import com.comphenix.protocol.events.PacketEvent
 import org.bukkit.plugin.java.JavaPlugin
 import pink.mino.kraftwerk.Kraftwerk
 
-class HardcoreHearts : PacketAdapter(JavaPlugin.getPlugin(Kraftwerk::class.java), ListenerPriority.NORMAL, PacketType.Play.Server.LOGIN) {
+class HardcoreHeartsFeature : PacketAdapter(JavaPlugin.getPlugin(Kraftwerk::class.java), ListenerPriority.NORMAL, PacketType.Play.Server.LOGIN) {
     override fun onPacketSending(e: PacketEvent) {
         if(e.packetType.equals(PacketType.Play.Server.LOGIN)) {
             e.packet.booleans.write(0, true)

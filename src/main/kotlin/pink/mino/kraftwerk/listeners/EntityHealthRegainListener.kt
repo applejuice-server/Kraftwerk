@@ -5,7 +5,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityRegainHealthEvent
 
-class EntityHealthRegain : Listener {
+class EntityHealthRegainListener : Listener {
     @EventHandler
     fun onEntityRegainHealth(event: EntityRegainHealthEvent) {
         if (event.entity !is Player) return

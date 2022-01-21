@@ -74,3 +74,4 @@ commands:
 depend:
   - ProtocolLib
   - JDA
+  - Vault

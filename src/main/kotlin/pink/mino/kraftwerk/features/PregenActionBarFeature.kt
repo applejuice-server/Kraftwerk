@@ -8,7 +8,7 @@ import pink.mino.kraftwerk.utils.ActionBar
 import pink.mino.kraftwerk.utils.Chat
 import kotlin.math.roundToInt
 
-class PregenActionBar : BukkitRunnable() {
+class PregenActionBarFeature : BukkitRunnable() {
     override fun run() {
         if (Config.fillTask.valid()) {
             val players = Bukkit.getServer().onlinePlayers

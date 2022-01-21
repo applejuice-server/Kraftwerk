@@ -6,7 +6,7 @@ import org.bukkit.entity.Player
 import org.bukkit.scoreboard.Scoreboard
 import org.bukkit.scoreboard.Team
 
-class Teams private constructor() {
+class TeamsFeature private constructor() {
     private val sb: Scoreboard = Bukkit.getScoreboardManager().mainScoreboard
     private val teams = ArrayList<Team>()
 
@@ -89,6 +89,6 @@ class Teams private constructor() {
     }
 
     companion object {
-        val manager = Teams()
+        val manager = TeamsFeature()
     }
 }

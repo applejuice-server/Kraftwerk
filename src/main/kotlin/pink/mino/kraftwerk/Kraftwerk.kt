@@ -12,9 +12,9 @@ import org.bukkit.material.MaterialData
 import org.bukkit.plugin.java.JavaPlugin
 import pink.mino.kraftwerk.commands.*
 import pink.mino.kraftwerk.discord.Discord
-import pink.mino.kraftwerk.features.HardcoreHearts
-import pink.mino.kraftwerk.features.Settings
-import pink.mino.kraftwerk.features.Teams
+import pink.mino.kraftwerk.features.HardcoreHeartsFeature
+import pink.mino.kraftwerk.features.SettingsFeature
+import pink.mino.kraftwerk.features.TeamsFeature
 import pink.mino.kraftwerk.features.options.ConfigOptionHandler
 import pink.mino.kraftwerk.listeners.*
 import pink.mino.kraftwerk.utils.GameState
@@ -30,15 +30,16 @@ class Kraftwerk : JavaPlugin() {
 
     override fun onEnable() {
         /* Registering listeners */
-        Bukkit.getServer().pluginManager.registerEvents(ServerListPing(), this)
-        Bukkit.getServer().pluginManager.registerEvents(PlayerJoin(), this)
-        Bukkit.getServer().pluginManager.registerEvents(PlayerQuit(), this)
-        Bukkit.getServer().pluginManager.registerEvents(PlayerDeath(), this)
-        Bukkit.getServer().pluginManager.registerEvents(Command(), this)
-        Bukkit.getServer().pluginManager.registerEvents(WorldInitialize(), this)
-        Bukkit.getServer().pluginManager.registerEvents(WeatherChange(), this)
-        Bukkit.getServer().pluginManager.registerEvents(FoodChange(), this)
-        Bukkit.getServer().pluginManager.registerEvents(EntityHealthRegain(), this)
+        Bukkit.getServer().pluginManager.registerEvents(ServerListPingListener(), this)
+        Bukkit.getServer().pluginManager.registerEvents(PlayerJoinListener(), this)
+        Bukkit.getServer().pluginManager.registerEvents(PlayerQuitListener(), this)
+        Bukkit.getServer().pluginManager.registerEvents(PlayerDeathListener(), this)
+        Bukkit.getServer().pluginManager.registerEvents(CommandListener(), this)
+        Bukkit.getServer().pluginManager.registerEvents(ChatListener(), this)
+        Bukkit.getServer().pluginManager.registerEvents(WorldInitializeListener(), this)
+        Bukkit.getServer().pluginManager.registerEvents(WeatherChangeListener(), this)
+        Bukkit.getServer().pluginManager.registerEvents(FoodChangeListener(), this)
+        Bukkit.getServer().pluginManager.registerEvents(EntityHealthRegainListener(), this)
 
         /* Registering commands */
         getCommand("clear").executor = ClearInventoryCommand()
@@ -77,16 +78,16 @@ class Kraftwerk : JavaPlugin() {
         Discord.main()
 
         /* This just enables Hardcore Hearts */
-        protocolManager?.addPacketListener(HardcoreHearts())
+        protocolManager?.addPacketListener(HardcoreHeartsFeature())
 
-        Settings.instance.setup(this)
-        Teams.manager.setupTeams()
+        SettingsFeature.instance.setup(this)
+        TeamsFeature.manager.setupTeams()
         ConfigOptionHandler.setup()
         addRecipes()
 
-        if (Settings.instance.data!!.contains("game.state")) {
-            GameState.setState(GameState.valueOf(Settings.instance.data!!.getString("game.state")))
-            Bukkit.getLogger().info("Game state set to ${Settings.instance.data!!.getString("game.state")}.")
+        if (SettingsFeature.instance.data!!.contains("game.state")) {
+            GameState.setState(GameState.valueOf(SettingsFeature.instance.data!!.getString("game.state")))
+            Bukkit.getLogger().info("Game state set to ${SettingsFeature.instance.data!!.getString("game.state")}.")
         } else {
             GameState.setState(GameState.LOBBY)
             Bukkit.getLogger().info("Game state set to Lobby.")

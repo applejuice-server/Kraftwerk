@@ -9,7 +9,7 @@ import org.bukkit.plugin.java.JavaPlugin
 import pink.mino.kraftwerk.Kraftwerk
 
 
-class PlayerDeath : Listener {
+class PlayerDeathListener : Listener {
     @EventHandler
     fun onPlayerDeath(e: PlayerDeathEvent) {
         val player = e.entity as Player

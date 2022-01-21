@@ -5,7 +5,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.server.ServerListPingEvent
 import pink.mino.kraftwerk.utils.Chat
 
-class ServerListPing : Listener {
+class ServerListPingListener : Listener {
     @EventHandler
     fun onServerListPing(e: ServerListPingEvent) {
         val text = Chat.colored("&4Xestra &cUHC\n")

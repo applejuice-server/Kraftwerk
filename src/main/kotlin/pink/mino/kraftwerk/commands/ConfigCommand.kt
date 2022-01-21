@@ -11,7 +11,7 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.SkullMeta
-import pink.mino.kraftwerk.features.Settings
+import pink.mino.kraftwerk.features.SettingsFeature
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GuiBuilder
 
@@ -19,7 +19,7 @@ import pink.mino.kraftwerk.utils.GuiBuilder
 class ConfigCommand : CommandExecutor {
 
     private fun getOption(option: String): String {
-        val op = Settings.instance.data!!.getString("game.options.${option}").toBoolean()
+        val op = SettingsFeature.instance.data!!.getString("game.options.${option}").toBoolean()
         return if (op) {
             "Enabled"
         } else {
@@ -28,7 +28,7 @@ class ConfigCommand : CommandExecutor {
     }
 
     private fun getRule(rule: String): String {
-        val op = Settings.instance.data!!.getString("game.rules.${rule}").toBoolean()
+        val op = SettingsFeature.instance.data!!.getString("game.rules.${rule}").toBoolean()
         return if (op) {
             "Allowed"
         } else {

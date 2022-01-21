@@ -5,7 +5,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerCommandPreprocessEvent
 import pink.mino.kraftwerk.utils.Chat
 
-class Command : Listener {
+class CommandListener : Listener {
 
     private val blockedCommands = arrayListOf(
         "/me",

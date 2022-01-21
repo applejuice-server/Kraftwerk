@@ -9,7 +9,7 @@ import java.io.File
 import java.io.IOException
 
 
-class Settings private constructor() {
+class SettingsFeature private constructor() {
     /**
      * Gets the data config.
      * @return the config.
@@ -56,6 +56,6 @@ class Settings private constructor() {
     }
 
     companion object {
-        val instance = Settings()
+        val instance = SettingsFeature()
     }
 }

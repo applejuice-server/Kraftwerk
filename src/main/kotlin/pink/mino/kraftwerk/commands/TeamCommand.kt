@@ -9,8 +9,8 @@ import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.scoreboard.Team
-import pink.mino.kraftwerk.features.Settings
-import pink.mino.kraftwerk.features.Teams
+import pink.mino.kraftwerk.features.SettingsFeature
+import pink.mino.kraftwerk.features.TeamsFeature
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GameState
 import java.util.*
@@ -19,15 +19,15 @@ import java.util.*
 class TeamCommand : CommandExecutor {
 
     private var invites = HashMap<Player, ArrayList<Player>>()
-    private val settings: Settings = Settings.instance
+    private val settings: SettingsFeature = SettingsFeature.instance
 
     override fun onCommand(sender: CommandSender, cmd: Command, lbl: String, args: Array<String>): Boolean {
 
         if (!sender.hasPermission("uhc.staff.team")) {
-            if (Settings.instance.data!!.getString("game.ffa").toBoolean()) {
+            if (SettingsFeature.instance.data!!.getString("game.ffa").toBoolean()) {
                 Chat.sendMessage(sender as Player, "${ChatColor.RED}You can't use this command at the moment. (It's an FFA game or Random teams)")
                 return false
-            } else if (GameState.valueOf(Settings.instance.data!!.getString("game.state")) != GameState.LOBBY) {
+            } else if (GameState.valueOf(SettingsFeature.instance.data!!.getString("game.state")) != GameState.LOBBY) {
                 Chat.sendMessage(sender as Player, "${ChatColor.RED}You can't use this command at the moment.")
                 return false
             }
@@ -55,17 +55,17 @@ class TeamCommand : CommandExecutor {
                 player.sendMessage("${ChatColor.RED}You are already on a team.")
                 return true
             }
-            if (Settings.instance.data!!.getString("game.ffa").toBoolean()) {
+            if (SettingsFeature.instance.data!!.getString("game.ffa").toBoolean()) {
                 player.sendMessage("${ChatColor.RED}You can't use this command at the moment.")
                 return true
             }
-            if (GameState.valueOf(Settings.instance.data!!.getString("game.state")) !== GameState.LOBBY) {
+            if (GameState.valueOf(SettingsFeature.instance.data!!.getString("game.state")) !== GameState.LOBBY) {
                 player.sendMessage("${ChatColor.RED}You can't use this command at the moment.")
                 return true
             }
             val oTeams = ArrayList<Team>()
 
-            for (team in Teams.manager.getTeams()) {
+            for (team in TeamsFeature.manager.getTeams()) {
                 if (team.size == 0) {
                     oTeams.add(team)
                 }
@@ -82,7 +82,7 @@ class TeamCommand : CommandExecutor {
                 player.sendMessage("${ChatColor.RED}You are not on a team.")
                 return true
             }
-            if (team.size >= Settings.instance.data!!.getString("game.teamSize").toInt()) {
+            if (team.size >= SettingsFeature.instance.data!!.getString("game.teamSize").toInt()) {
                 player.sendMessage("${ChatColor.RED}Your team has reached the max teamsize.")
                 return true
             }
@@ -139,7 +139,7 @@ class TeamCommand : CommandExecutor {
             val player = sender as Player
             val target = Bukkit.getServer().getPlayer(args[1])
             val team = target.scoreboard.getPlayerTeam(target)
-            if (Settings.instance.data!!.getString("game.ffa").toBoolean()) {
+            if (SettingsFeature.instance.data!!.getString("game.ffa").toBoolean()) {
                 player.sendMessage("${ChatColor.RED}This is an FFA game.")
                 return true
             }
@@ -152,7 +152,7 @@ class TeamCommand : CommandExecutor {
                 return false
             }
             if (invites.containsKey(target) && invites[target]!!.contains(player)) {
-                if (team.size >= Settings.instance.data!!.getString("game.teamSize").toInt()) {
+                if (team.size >= SettingsFeature.instance.data!!.getString("game.teamSize").toInt()) {
                     player.sendMessage("${ChatColor.RED}That team has reached the max teamsize.")
                     return false
                 }
@@ -200,7 +200,7 @@ class TeamCommand : CommandExecutor {
                 return false
             }
             val player = sender as Player
-            for (team in Teams.manager.getTeams()) {
+            for (team in TeamsFeature.manager.getTeams()) {
                 for (p in team.players) {
                     team.removePlayer(p)
                 }
@@ -211,7 +211,7 @@ class TeamCommand : CommandExecutor {
         } else if (args[0] == "leave") {
             val player = sender as Player
             val team = player.scoreboard.getPlayerTeam(player)
-            if (Settings.instance.data!!.getString("game.ffa").toBoolean()) {
+            if (SettingsFeature.instance.data!!.getString("game.ffa").toBoolean()) {
                 player.sendMessage("${ChatColor.RED}You can't do this command at the moment.")
                 return true
             }

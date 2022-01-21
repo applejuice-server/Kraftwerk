@@ -8,14 +8,14 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 import pink.mino.kraftwerk.Kraftwerk
-import pink.mino.kraftwerk.features.PregenActionBar
-import pink.mino.kraftwerk.features.Settings
+import pink.mino.kraftwerk.features.PregenActionBarFeature
+import pink.mino.kraftwerk.features.SettingsFeature
 import pink.mino.kraftwerk.utils.Chat
 
 
 class PregenCommand : CommandExecutor {
 
-    private val settings: Settings = Settings.instance
+    private val settings: SettingsFeature = SettingsFeature.instance
 
     override fun onCommand(sender: CommandSender, command: Command, label: String?, args: Array<String>): Boolean {
         if (!sender.hasPermission("uhc.command.pregen")) {
@@ -62,7 +62,7 @@ class PregenCommand : CommandExecutor {
         )
 
         Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "${Chat.prefix} &7Pregeneration started in &8'&c${args[0]}&8'&7."))
-        PregenActionBar().runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 20L)
+        PregenActionBarFeature().runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 20L)
         settings.data!!.set("pregen.border", args[1].toInt())
         settings.data!!.set("pregen.world", args[0])
         settings.saveData()
