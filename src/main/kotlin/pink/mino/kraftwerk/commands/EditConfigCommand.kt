@@ -8,6 +8,7 @@ import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import pink.mino.kraftwerk.features.SettingsFeature
 import pink.mino.kraftwerk.features.options.ConfigOptionHandler
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GuiBuilder
@@ -86,6 +87,112 @@ class EditConfigCommand : CommandExecutor {
                     iterator++
                 }
             }
+        } else if (args[0] == "events") {
+            gui = GuiBuilder().rows(5).name(ChatColor.translateAlternateColorCodes('&', "&4Edit UHC Config"))
+            size = 44
+            val finalHeal = ItemStack(Material.REDSTONE)
+            val pvp = ItemStack(Material.IRON_SWORD)
+            val meetup = ItemStack(Material.BEACON)
+
+            val fhMeta = finalHeal.itemMeta
+            val pvpMeta = pvp.itemMeta
+            val muMeta = meetup.itemMeta
+            fhMeta.displayName = Chat.colored("&cFinal Heal")
+            pvpMeta.displayName = Chat.colored("&cPvP")
+            muMeta.displayName = Chat.colored("&cMeetup")
+
+            fhMeta.lore = listOf(
+                Chat.colored("&7Final Heal happens in &c${SettingsFeature.instance.data!!.getInt("game.events.final-heal")} minutes&7.")
+            )
+            pvpMeta.lore = listOf(
+                Chat.colored("&7PvP happens in &c${SettingsFeature.instance.data!!.getInt("game.events.pvp")} minutes&7.")
+            )
+            muMeta.lore = listOf(
+                Chat.colored("&7Meetup happens in &c${SettingsFeature.instance.data!!.getInt("game.events.meetup")} minutes&7.")
+            )
+
+            finalHeal.itemMeta = fhMeta
+            pvp.itemMeta = pvpMeta
+            meetup.itemMeta = muMeta
+
+            gui.item(20, finalHeal).onClick runnable@ {
+                it.isCancelled = true
+            }
+            gui.item(22, pvp).onClick runnable@ {
+                it.isCancelled = true
+            }
+            gui.item(24, meetup).onClick runnable@ {
+                it.isCancelled = true
+            }
+
+            val addFinalHeal = ItemStack(Material.WOOL, 1, 5)
+            val addPvP = ItemStack(Material.WOOL, 1, 5)
+            val addMeetup = ItemStack(Material.WOOL, 1, 5)
+
+            val removeFinalHeal = ItemStack(Material.WOOL, 1, 14)
+            val removePvP = ItemStack(Material.WOOL, 1, 14)
+            val removeMeetup = ItemStack(Material.WOOL, 1, 14)
+
+            val afhMeta = addFinalHeal.itemMeta
+            afhMeta.displayName = Chat.colored("&aAdd +1")
+            afhMeta.lore = listOf(
+                Chat.colored("&7Add one to the Final Heal timer.")
+            )
+            val apMeta = addPvP.itemMeta
+            apMeta.displayName = Chat.colored("&aAdd +1")
+            apMeta.lore = listOf(
+                Chat.colored("&7Add one to the PvP timer.")
+            )
+            val amMeta = addMeetup.itemMeta
+            amMeta.displayName = Chat.colored("&aAdd +1")
+            amMeta.lore = listOf(
+                Chat.colored("&7Add one to the Meetup timer.")
+            )
+
+            val rfhMeta = removeFinalHeal.itemMeta
+            rfhMeta.displayName = Chat.colored("&cRemove -1")
+            rfhMeta.lore = listOf(
+                Chat.colored("&7Remove one from the Final Heal timer.")
+            )
+            val rpMeta = removePvP.itemMeta
+            rpMeta.displayName = Chat.colored("&cRemove -1")
+            rpMeta.lore = listOf(
+                Chat.colored("&7Remove one from the PvP timer.")
+            )
+            val rmMeta = removeMeetup.itemMeta
+            rmMeta.displayName = Chat.colored("&cRemove -1")
+            rmMeta.lore = listOf(
+                Chat.colored("&7Remove one from the Meetup timer.")
+            )
+
+            addFinalHeal.itemMeta = afhMeta
+            addPvP.itemMeta = apMeta
+            addMeetup.itemMeta = amMeta
+
+            removeMeetup.itemMeta = rmMeta
+            removePvP.itemMeta = rpMeta
+            removeFinalHeal.itemMeta = rfhMeta
+
+            gui.item(11, addFinalHeal).onClick runnable@ {
+                it.isCancelled = true
+            }
+            gui.item(13, addPvP).onClick runnable@ {
+                it.isCancelled = true
+            }
+            gui.item(15, addMeetup).onClick runnable@ {
+                it.isCancelled = true
+            }
+
+            gui.item(29, removeFinalHeal).onClick runnable@ {
+                it.isCancelled = true
+            }
+            gui.item(31, removePvP).onClick runnable@ {
+                it.isCancelled = true
+            }
+            gui.item(33, removeMeetup).onClick runnable@ {
+                it.isCancelled = true
+            }
+
         }
         val back = ItemStack(Material.ARROW)
         val backMeta = back.itemMeta

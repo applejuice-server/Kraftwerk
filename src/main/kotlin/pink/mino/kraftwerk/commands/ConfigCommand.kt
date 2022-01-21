@@ -27,6 +27,10 @@ class ConfigCommand : CommandExecutor {
         }
     }
 
+    private fun getEventTime(event: String): Int {
+        return SettingsFeature.instance.data!!.getInt("game.events.${event}")
+    }
+
     private fun getRule(rule: String): String {
         val op = SettingsFeature.instance.data!!.getString("game.rules.${rule}").toBoolean()
         return if (op) {
@@ -108,9 +112,9 @@ class ConfigCommand : CommandExecutor {
         eventsMeta.displayName = Chat.colored("&4Events")
         eventsMeta.lore = listOf(
             Chat.colored(Chat.line),
-            Chat.colored("&7Final Heal ${Chat.dash} &c"),
-            Chat.colored("&7PvP ${Chat.dash} &c"),
-            Chat.colored("&7Meetup ${Chat.dash} &c"),
+            Chat.colored("&7Final Heal ${Chat.dash} &c${getEventTime("final-heal")} min."),
+            Chat.colored("&7PvP ${Chat.dash} &c${getEventTime("pvp")} min."),
+            Chat.colored("&7Meetup ${Chat.dash} &c${getEventTime("meetup")} min."),
             Chat.colored(Chat.line)
         )
         events.itemMeta = eventsMeta
