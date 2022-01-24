@@ -173,24 +173,79 @@ class EditConfigCommand : CommandExecutor {
             removePvP.itemMeta = rpMeta
             removeFinalHeal.itemMeta = rfhMeta
 
-            gui.item(11, addFinalHeal).onClick runnable@ {
-                it.isCancelled = true
+            gui.item(11, addFinalHeal).onClick runnable@ { clickEvent ->
+                clickEvent.isCancelled = true
+                SettingsFeature.instance.data!!.set("game.events.final-heal", SettingsFeature.instance.data!!.getInt("game.events.final-heal") + 1)
+                SettingsFeature.instance.saveData()
+                fhMeta.lore = listOf(
+                    Chat.colored("&7Final Heal happens in &c${SettingsFeature.instance.data!!.getInt("game.events.final-heal")} minutes&7.")
+                )
+                finalHeal.itemMeta = fhMeta
+                gui.item(20, finalHeal).onClick runnable@ {
+                    it.isCancelled = true
+                }
             }
-            gui.item(13, addPvP).onClick runnable@ {
+            gui.item(13, addPvP).onClick runnable@ { it ->
                 it.isCancelled = true
+                SettingsFeature.instance.data!!.set("game.events.pvp", SettingsFeature.instance.data!!.getInt("game.events.pvp") + 1)
+                SettingsFeature.instance.saveData()
+                pvpMeta.lore = listOf(
+                    Chat.colored("&7PvP happens in &c${SettingsFeature.instance.data!!.getInt("game.events.pvp")} minutes&7.")
+                )
+                pvp.itemMeta = pvpMeta
+                gui.item(22, pvp).onClick runnable@ {
+                    it.isCancelled = true
+                }
             }
-            gui.item(15, addMeetup).onClick runnable@ {
-                it.isCancelled = true
+            gui.item(15, addMeetup).onClick runnable@ { clickEvent ->
+                clickEvent.isCancelled = true
+                SettingsFeature.instance.data!!.set("game.events.meetup", SettingsFeature.instance.data!!.getInt("game.events.meetup") + 1)
+                SettingsFeature.instance.saveData()
+                muMeta.lore = listOf(
+                    Chat.colored("&7Meetup happens in &c${SettingsFeature.instance.data!!.getInt("game.events.meetup")} minutes&7.")
+                )
+                meetup.itemMeta = muMeta
+                gui.item(24, meetup).onClick runnable@ {
+                    it.isCancelled = true
+                }
             }
 
-            gui.item(29, removeFinalHeal).onClick runnable@ {
-                it.isCancelled = true
+            gui.item(29, removeFinalHeal).onClick runnable@ { clickEvent ->
+                clickEvent.isCancelled = true
+                SettingsFeature.instance.data!!.set("game.events.final-heal", SettingsFeature.instance.data!!.getInt("game.events.final-heal") - 1)
+                SettingsFeature.instance.saveData()
+                fhMeta.lore = listOf(
+                    Chat.colored("&7Final Heal happens in &c${SettingsFeature.instance.data!!.getInt("game.events.final-heal")} minutes&7.")
+                )
+                finalHeal.itemMeta = fhMeta
+                gui.item(20, finalHeal).onClick runnable@ {
+                    it.isCancelled = true
+                }
             }
-            gui.item(31, removePvP).onClick runnable@ {
-                it.isCancelled = true
+            gui.item(31, removePvP).onClick runnable@ { clickEvent ->
+                clickEvent.isCancelled = true
+                SettingsFeature.instance.data!!.set("game.events.pvp", SettingsFeature.instance.data!!.getInt("game.events.pvp") - 1)
+                SettingsFeature.instance.saveData()
+                pvpMeta.lore = listOf(
+                    Chat.colored("&7PvP happens in &c${SettingsFeature.instance.data!!.getInt("game.events.pvp")} minutes&7.")
+                )
+                pvp.itemMeta = pvpMeta
+                gui.item(22, pvp).onClick runnable@ {
+                    it.isCancelled = true
+                }
+
             }
-            gui.item(33, removeMeetup).onClick runnable@ {
-                it.isCancelled = true
+            gui.item(33, removeMeetup).onClick runnable@ { clickEvent ->
+                clickEvent.isCancelled = true
+                SettingsFeature.instance.data!!.set("game.events.meetup", SettingsFeature.instance.data!!.getInt("game.events.meetup") - 1)
+                SettingsFeature.instance.saveData()
+                muMeta.lore = listOf(
+                    Chat.colored("&7Meetup happens in &c${SettingsFeature.instance.data!!.getInt("game.events.meetup")} minutes&7.")
+                )
+                meetup.itemMeta = muMeta
+                gui.item(24, meetup).onClick runnable@ {
+                    it.isCancelled = true
+                }
             }
 
         }
