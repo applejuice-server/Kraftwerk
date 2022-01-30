@@ -7,6 +7,7 @@ import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
+import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import pink.mino.kraftwerk.features.SettingsFeature
 import pink.mino.kraftwerk.features.options.ConfigOptionHandler
@@ -88,8 +89,8 @@ class EditConfigCommand : CommandExecutor {
                 }
             }
         } else if (args[0] == "events") {
-            gui = GuiBuilder().rows(5).name(ChatColor.translateAlternateColorCodes('&', "&4Edit UHC Config"))
-            size = 44
+            gui = GuiBuilder().rows(1).name(ChatColor.translateAlternateColorCodes('&', "&4Edit UHC Config"))
+            size = 8
             val finalHeal = ItemStack(Material.REDSTONE)
             val pvp = ItemStack(Material.IRON_SWORD)
             val meetup = ItemStack(Material.BEACON)
@@ -102,152 +103,107 @@ class EditConfigCommand : CommandExecutor {
             muMeta.displayName = Chat.colored("&cMeetup")
 
             fhMeta.lore = listOf(
-                Chat.colored("&7Final Heal happens in &c${SettingsFeature.instance.data!!.getInt("game.events.final-heal")} minutes&7.")
+                Chat.colored("&7Final Heal happens in &c${SettingsFeature.instance.data!!.getInt("game.events.final-heal")} minutes&7."),
+                "",
+                Chat.colored("&8LMB&7 to add &aone&7."),
+                Chat.colored("&8RMB&7 to subtract &cone&7.")
             )
             pvpMeta.lore = listOf(
-                Chat.colored("&7PvP happens in &c${SettingsFeature.instance.data!!.getInt("game.events.pvp")} minutes&7.")
+                Chat.colored("&7PvP happens in &c${SettingsFeature.instance.data!!.getInt("game.events.pvp")} minutes&7."),
+                "",
+                Chat.colored("&8LMB&7 to add &aone&7."),
+                Chat.colored("&8RMB&7 to subtract &cone&7.")
             )
             muMeta.lore = listOf(
-                Chat.colored("&7Meetup happens in &c${SettingsFeature.instance.data!!.getInt("game.events.meetup")} minutes&7.")
+                Chat.colored("&7Meetup happens in &c${SettingsFeature.instance.data!!.getInt("game.events.meetup")} minutes&7."),
+                "",
+                Chat.colored("&8LMB&7 to add &aone&7."),
+                Chat.colored("&8RMB&7 to subtract &cone&7.")
             )
 
             finalHeal.itemMeta = fhMeta
             pvp.itemMeta = pvpMeta
             meetup.itemMeta = muMeta
-
-            gui.item(20, finalHeal).onClick runnable@ {
+            gui.item(2, finalHeal).onClick runnable@ {
                 it.isCancelled = true
+                if (it.click.isLeftClick) {
+                    SettingsFeature.instance.data!!.set("game.events.final-heal", SettingsFeature.instance.data!!.getInt("game.events.final-heal") + 1)
+                    SettingsFeature.instance.saveData()
+                    val meta = it.currentItem.itemMeta
+                    meta.lore = listOf(
+                        Chat.colored(Chat.colored("&7Final Heal happens in &c${SettingsFeature.instance.data!!.getInt("game.events.final-heal")} minutes&7.")),
+                        "",
+                        Chat.colored("&8LMB&7 to add &aone&7."),
+                        Chat.colored("&8RMB&7 to subtract &cone&7.")
+                    )
+                    it.currentItem.itemMeta = meta
+                } else if (it.click.isRightClick) {
+                    SettingsFeature.instance.data!!.set("game.events.final-heal", SettingsFeature.instance.data!!.getInt("game.events.final-heal") - 1)
+                    SettingsFeature.instance.saveData()
+                    val meta = it.currentItem.itemMeta
+                    meta.lore = listOf(
+                        Chat.colored(Chat.colored("&7Final Heal happens in &c${SettingsFeature.instance.data!!.getInt("game.events.final-heal")} minutes&7.")),
+                        "",
+                        Chat.colored("&8LMB&7 to add &aone&7."),
+                        Chat.colored("&8RMB&7 to subtract &cone&7.")
+                    )
+                    it.currentItem.itemMeta = meta
+                }
             }
-            gui.item(22, pvp).onClick runnable@ {
+            gui.item(4, pvp).onClick runnable@ {
                 it.isCancelled = true
+                if (it.click.isLeftClick) {
+                    SettingsFeature.instance.data!!.set("game.events.pvp", SettingsFeature.instance.data!!.getInt("game.events.pvp") + 1)
+                    SettingsFeature.instance.saveData()
+                    val meta = it.currentItem.itemMeta
+                    meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES)
+                    meta.lore = listOf(
+                        Chat.colored(Chat.colored("&7PvP happens in &c${SettingsFeature.instance.data!!.getInt("game.events.pvp")} minutes&7.")),
+                        "",
+                        Chat.colored("&8LMB&7 to add &aone&7."),
+                        Chat.colored("&8RMB&7 to subtract &cone&7.")
+                    )
+                    it.currentItem.itemMeta = meta
+                } else if (it.click.isRightClick) {
+                    SettingsFeature.instance.data!!.set("game.events.pvp", SettingsFeature.instance.data!!.getInt("game.events.pvp") - 1)
+                    SettingsFeature.instance.saveData()
+                    val meta = it.currentItem.itemMeta
+                    meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES)
+                    meta.lore = listOf(
+                        Chat.colored(Chat.colored("&7PvP happens in &c${SettingsFeature.instance.data!!.getInt("game.events.pvp")} minutes&7.")),
+                        "",
+                        Chat.colored("&8LMB&7 to add &aone&7."),
+                        Chat.colored("&8RMB&7 to subtract &cone&7.")
+                    )
+                    it.currentItem.itemMeta = meta
+                }
             }
-            gui.item(24, meetup).onClick runnable@ {
+            gui.item(6, meetup).onClick runnable@ {
                 it.isCancelled = true
-            }
-
-            val addFinalHeal = ItemStack(Material.WOOL, 1, 5)
-            val addPvP = ItemStack(Material.WOOL, 1, 5)
-            val addMeetup = ItemStack(Material.WOOL, 1, 5)
-
-            val removeFinalHeal = ItemStack(Material.WOOL, 1, 14)
-            val removePvP = ItemStack(Material.WOOL, 1, 14)
-            val removeMeetup = ItemStack(Material.WOOL, 1, 14)
-
-            val afhMeta = addFinalHeal.itemMeta
-            afhMeta.displayName = Chat.colored("&aAdd +1")
-            afhMeta.lore = listOf(
-                Chat.colored("&7Add one to the Final Heal timer.")
-            )
-            val apMeta = addPvP.itemMeta
-            apMeta.displayName = Chat.colored("&aAdd +1")
-            apMeta.lore = listOf(
-                Chat.colored("&7Add one to the PvP timer.")
-            )
-            val amMeta = addMeetup.itemMeta
-            amMeta.displayName = Chat.colored("&aAdd +1")
-            amMeta.lore = listOf(
-                Chat.colored("&7Add one to the Meetup timer.")
-            )
-
-            val rfhMeta = removeFinalHeal.itemMeta
-            rfhMeta.displayName = Chat.colored("&cRemove -1")
-            rfhMeta.lore = listOf(
-                Chat.colored("&7Remove one from the Final Heal timer.")
-            )
-            val rpMeta = removePvP.itemMeta
-            rpMeta.displayName = Chat.colored("&cRemove -1")
-            rpMeta.lore = listOf(
-                Chat.colored("&7Remove one from the PvP timer.")
-            )
-            val rmMeta = removeMeetup.itemMeta
-            rmMeta.displayName = Chat.colored("&cRemove -1")
-            rmMeta.lore = listOf(
-                Chat.colored("&7Remove one from the Meetup timer.")
-            )
-
-            addFinalHeal.itemMeta = afhMeta
-            addPvP.itemMeta = apMeta
-            addMeetup.itemMeta = amMeta
-
-            removeMeetup.itemMeta = rmMeta
-            removePvP.itemMeta = rpMeta
-            removeFinalHeal.itemMeta = rfhMeta
-
-            gui.item(11, addFinalHeal).onClick runnable@ { clickEvent ->
-                clickEvent.isCancelled = true
-                SettingsFeature.instance.data!!.set("game.events.final-heal", SettingsFeature.instance.data!!.getInt("game.events.final-heal") + 1)
-                SettingsFeature.instance.saveData()
-                fhMeta.lore = listOf(
-                    Chat.colored("&7Final Heal happens in &c${SettingsFeature.instance.data!!.getInt("game.events.final-heal")} minutes&7.")
-                )
-                finalHeal.itemMeta = fhMeta
-                gui.item(20, finalHeal).onClick runnable@ {
-                    it.isCancelled = true
+                if (it.click.isLeftClick) {
+                    SettingsFeature.instance.data!!.set("game.events.meetup", SettingsFeature.instance.data!!.getInt("game.events.meetup") + 1)
+                    SettingsFeature.instance.saveData()
+                    val meta = it.currentItem.itemMeta
+                    meta.lore = listOf(
+                        Chat.colored(Chat.colored("&7Meetup happens in &c${SettingsFeature.instance.data!!.getInt("game.events.meetup")} minutes&7.")),
+                        "",
+                        Chat.colored("&8LMB&7 to add &aone&7."),
+                        Chat.colored("&8RMB&7 to subtract &cone&7.")
+                    )
+                    it.currentItem.itemMeta = meta
+                } else if (it.click.isRightClick) {
+                    SettingsFeature.instance.data!!.set("game.events.meetup", SettingsFeature.instance.data!!.getInt("game.events.meetup") - 1)
+                    SettingsFeature.instance.saveData()
+                    val meta = it.currentItem.itemMeta
+                    meta.lore = listOf(
+                        Chat.colored(Chat.colored("&7Meetup happens in &c${SettingsFeature.instance.data!!.getInt("game.events.meetup")} minutes&7.")),
+                        "",
+                        Chat.colored("&8LMB&7 to add &aone&7."),
+                        Chat.colored("&8RMB&7 to subtract &cone&7.")
+                    )
+                    it.currentItem.itemMeta = meta
                 }
             }
-            gui.item(13, addPvP).onClick runnable@ { it ->
-                it.isCancelled = true
-                SettingsFeature.instance.data!!.set("game.events.pvp", SettingsFeature.instance.data!!.getInt("game.events.pvp") + 1)
-                SettingsFeature.instance.saveData()
-                pvpMeta.lore = listOf(
-                    Chat.colored("&7PvP happens in &c${SettingsFeature.instance.data!!.getInt("game.events.pvp")} minutes&7.")
-                )
-                pvp.itemMeta = pvpMeta
-                gui.item(22, pvp).onClick runnable@ {
-                    it.isCancelled = true
-                }
-            }
-            gui.item(15, addMeetup).onClick runnable@ { clickEvent ->
-                clickEvent.isCancelled = true
-                SettingsFeature.instance.data!!.set("game.events.meetup", SettingsFeature.instance.data!!.getInt("game.events.meetup") + 1)
-                SettingsFeature.instance.saveData()
-                muMeta.lore = listOf(
-                    Chat.colored("&7Meetup happens in &c${SettingsFeature.instance.data!!.getInt("game.events.meetup")} minutes&7.")
-                )
-                meetup.itemMeta = muMeta
-                gui.item(24, meetup).onClick runnable@ {
-                    it.isCancelled = true
-                }
-            }
-
-            gui.item(29, removeFinalHeal).onClick runnable@ { clickEvent ->
-                clickEvent.isCancelled = true
-                SettingsFeature.instance.data!!.set("game.events.final-heal", SettingsFeature.instance.data!!.getInt("game.events.final-heal") - 1)
-                SettingsFeature.instance.saveData()
-                fhMeta.lore = listOf(
-                    Chat.colored("&7Final Heal happens in &c${SettingsFeature.instance.data!!.getInt("game.events.final-heal")} minutes&7.")
-                )
-                finalHeal.itemMeta = fhMeta
-                gui.item(20, finalHeal).onClick runnable@ {
-                    it.isCancelled = true
-                }
-            }
-            gui.item(31, removePvP).onClick runnable@ { clickEvent ->
-                clickEvent.isCancelled = true
-                SettingsFeature.instance.data!!.set("game.events.pvp", SettingsFeature.instance.data!!.getInt("game.events.pvp") - 1)
-                SettingsFeature.instance.saveData()
-                pvpMeta.lore = listOf(
-                    Chat.colored("&7PvP happens in &c${SettingsFeature.instance.data!!.getInt("game.events.pvp")} minutes&7.")
-                )
-                pvp.itemMeta = pvpMeta
-                gui.item(22, pvp).onClick runnable@ {
-                    it.isCancelled = true
-                }
-
-            }
-            gui.item(33, removeMeetup).onClick runnable@ { clickEvent ->
-                clickEvent.isCancelled = true
-                SettingsFeature.instance.data!!.set("game.events.meetup", SettingsFeature.instance.data!!.getInt("game.events.meetup") - 1)
-                SettingsFeature.instance.saveData()
-                muMeta.lore = listOf(
-                    Chat.colored("&7Meetup happens in &c${SettingsFeature.instance.data!!.getInt("game.events.meetup")} minutes&7.")
-                )
-                meetup.itemMeta = muMeta
-                gui.item(24, meetup).onClick runnable@ {
-                    it.isCancelled = true
-                }
-            }
-
         }
         val back = ItemStack(Material.ARROW)
         val backMeta = back.itemMeta
