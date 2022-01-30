@@ -18,6 +18,7 @@ class ConfigOptionHandler {
             addOption(SplitEnchantsOption())
             addOption(BookshelvesOption())
             addOption(FireWeaponsOption())
+            addOption(AntiBurnOption())
 
             addOption(CrossteamingOption())
             addOption(StalkingOption())

@@ -57,6 +57,7 @@ class ConfigCommand : CommandExecutor {
             Chat.colored("&7Fire Weapons ${Chat.dash} &c${getOption("fireweapons")}"),
             Chat.colored("&7Bookshelves ${Chat.dash} &c${getOption("bookshelves")}"),
             Chat.colored("&7AntiStone ${Chat.dash} &c${getOption("antistone")}"),
+            Chat.colored("&7AntiBurn ${Chat.dash} &c${getOption("antiburn")}"),
             Chat.colored(Chat.line),
         )
         options.itemMeta = optionsMeta
@@ -112,9 +113,11 @@ class ConfigCommand : CommandExecutor {
         eventsMeta.displayName = Chat.colored("&4Events")
         eventsMeta.lore = listOf(
             Chat.colored(Chat.line),
+            "",
             Chat.colored("&7Final Heal ${Chat.dash} &c${getEventTime("final-heal")} min."),
             Chat.colored("&7PvP ${Chat.dash} &c${getEventTime("pvp")} min."),
             Chat.colored("&7Meetup ${Chat.dash} &c${getEventTime("meetup")} min."),
+            "",
             Chat.colored(Chat.line)
         )
         events.itemMeta = eventsMeta
@@ -127,11 +130,24 @@ class ConfigCommand : CommandExecutor {
         val matchpost = ItemStack(Material.PAPER)
         val matchpostMeta = matchpost.itemMeta
         matchpostMeta.displayName = Chat.colored("&4Matchpost")
-        matchpostMeta.lore = listOf(
-            Chat.colored(Chat.line),
-            Chat.colored("&7Coming soon."),
-            Chat.colored(Chat.line)
-        )
+        if (player.hasPermission("uhc.staff")) {
+            matchpostMeta.lore = listOf(
+                Chat.colored(Chat.line),
+                "",
+                Chat.colored("&7Coming soon."),
+                "",
+                Chat.colored(Chat.line),
+                Chat.colored("&7Set the matchpost using &c/matchpost <id>")
+            )
+        } else {
+            matchpostMeta.lore = listOf(
+                Chat.colored(Chat.line),
+                "",
+                Chat.colored("&7Coming soon."),
+                "",
+                Chat.colored(Chat.line)
+            )
+        }
         matchpost.itemMeta = matchpostMeta
         gui.item(14, matchpost).onClick runnable@{
             if (player.hasPermission("uhc.staff")) {
@@ -158,11 +174,24 @@ class ConfigCommand : CommandExecutor {
         val hostMeta = host.itemMeta as SkullMeta
         hostMeta.displayName = Chat.colored("&4Host")
         hostMeta.owner = "minota"
-        hostMeta.lore = listOf(
-            Chat.colored(Chat.line),
-            Chat.colored("&7The host for this game is "),
-            Chat.colored(Chat.line)
-        )
+        if (player.hasPermission("uhc.staff")) {
+            hostMeta.lore = listOf(
+                Chat.colored(Chat.line),
+                "",
+                Chat.colored("&7The host for this game is "),
+                "",
+                Chat.colored(Chat.line),
+                Chat.colored("&cClick to set yourself as host.")
+            )
+        } else {
+            hostMeta.lore = listOf(
+                Chat.colored(Chat.line),
+                "",
+                Chat.colored("&7The host for this game is "),
+                "",
+                Chat.colored(Chat.line)
+            )
+        }
         host.itemMeta = hostMeta
         gui.item(16, host).onClick runnable@{
             if (player.hasPermission("uhc.staff")) {

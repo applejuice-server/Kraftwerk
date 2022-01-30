@@ -62,8 +62,8 @@ class EditConfigCommand : CommandExecutor {
                 }
             }
         } else if (args[0].lowercase() == "rules") {
-            gui = GuiBuilder().rows(2).name(ChatColor.translateAlternateColorCodes('&', "&4Edit UHC Config"))
-            size = 17
+            gui = GuiBuilder().rows(1).name(ChatColor.translateAlternateColorCodes('&', "&4Edit UHC Config"))
+            size = 8
             var iterator = 0
             for (option in ConfigOptionHandler.configOptions) {
                 if (option.category === "rules") {
@@ -138,6 +138,10 @@ class EditConfigCommand : CommandExecutor {
                     )
                     it.currentItem.itemMeta = meta
                 } else if (it.click.isRightClick) {
+                    if (SettingsFeature.instance.data!!.getInt("game.events.final-heal") <= 1) {
+                        Chat.sendMessage(player, "${Chat.prefix} Can't subtract, this timer is already at 1 minute.")
+                        return@runnable
+                    }
                     SettingsFeature.instance.data!!.set("game.events.final-heal", SettingsFeature.instance.data!!.getInt("game.events.final-heal") - 1)
                     SettingsFeature.instance.saveData()
                     val meta = it.currentItem.itemMeta
@@ -165,6 +169,10 @@ class EditConfigCommand : CommandExecutor {
                     )
                     it.currentItem.itemMeta = meta
                 } else if (it.click.isRightClick) {
+                    if (SettingsFeature.instance.data!!.getInt("game.events.pvp") <= 1) {
+                        Chat.sendMessage(player, "${Chat.prefix} Can't subtract, this timer is already at 1 minute.")
+                        return@runnable
+                    }
                     SettingsFeature.instance.data!!.set("game.events.pvp", SettingsFeature.instance.data!!.getInt("game.events.pvp") - 1)
                     SettingsFeature.instance.saveData()
                     val meta = it.currentItem.itemMeta
@@ -192,6 +200,10 @@ class EditConfigCommand : CommandExecutor {
                     )
                     it.currentItem.itemMeta = meta
                 } else if (it.click.isRightClick) {
+                    if (SettingsFeature.instance.data!!.getInt("game.events.meetup") <= 1) {
+                        Chat.sendMessage(player, "${Chat.prefix} Can't subtract, this timer is already at 1 minute.")
+                        return@runnable
+                    }
                     SettingsFeature.instance.data!!.set("game.events.meetup", SettingsFeature.instance.data!!.getInt("game.events.meetup") - 1)
                     SettingsFeature.instance.saveData()
                     val meta = it.currentItem.itemMeta
