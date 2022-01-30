@@ -63,7 +63,6 @@ commands:
       - msg
       - tell
       - whisper
-      - w
     description: Privately message a user.
   reply:
     aliases:
@@ -71,6 +70,10 @@ commands:
     description: Privately reply to a user.
   split:
     description: Split your enchants.
+  world:
+    aliases:
+      - w
+    description: Main command for the world manager.
 depend:
   - ProtocolLib
   - JDA

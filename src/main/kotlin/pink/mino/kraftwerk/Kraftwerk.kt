@@ -50,6 +50,7 @@ class Kraftwerk : JavaPlugin() {
         getCommand("pregen").executor = PregenCommand()
         getCommand("config").executor = ConfigCommand()
         getCommand("editconfig").executor = EditConfigCommand()
+        getCommand("world").executor = WorldCommand()
 
         getCommand("whitelist").executor = WhitelistCommand()
 
