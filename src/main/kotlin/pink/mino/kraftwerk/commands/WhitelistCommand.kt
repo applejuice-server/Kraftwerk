@@ -11,7 +11,7 @@ import pink.mino.kraftwerk.utils.Chat
 class WhitelistCommand : CommandExecutor {
 
     override fun onCommand(sender: CommandSender, cmd: Command, lbl: String, args: Array<String>): Boolean {
-        if (!sender.hasPermission("uhc.command.whitelist")) {
+        if (!sender.hasPermission("uhc.staff.whitelist")) {
             sender.sendMessage(Chat.colored("${Chat.prefix} You do not have permission to use this command."))
             return false
         }

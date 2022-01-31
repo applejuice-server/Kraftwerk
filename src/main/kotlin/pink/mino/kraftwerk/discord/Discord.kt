@@ -1,6 +1,7 @@
 package pink.mino.kraftwerk.discord
 
 import net.dv8tion.jda.api.JDABuilder
+import net.dv8tion.jda.api.entities.Activity
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import net.dv8tion.jda.api.interactions.commands.build.CommandData
 import net.dv8tion.jda.api.requests.GatewayIntent
@@ -23,6 +24,7 @@ class Discord : ListenerAdapter() {
                 .addEventListeners(MemberJoin())
                 .build()
 
+            jda.presence.activity = Activity.playing("applejuice.bar")
             val commands = jda.updateCommands()
 
             commands.addCommands(

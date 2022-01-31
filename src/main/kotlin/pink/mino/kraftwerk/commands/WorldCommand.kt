@@ -16,6 +16,10 @@ class WorldCommand : CommandExecutor {
         args: Array<String>
     ): Boolean {
         val player = sender as Player
+        if (!player.hasPermission("uhc.staff")) {
+            Chat.sendMessage(player, "&cYou don't have permission to execute this command.")
+            return false
+        }
         if (args.isEmpty()) {
             Chat.sendMessage(player, Chat.line)
             Chat.sendCenteredMessage(player, "&c&lWorld Help")

@@ -10,7 +10,7 @@ import pink.mino.kraftwerk.utils.Chat
 class HealCommand : CommandExecutor {
 
     override fun onCommand(sender: CommandSender, cmd: Command, lbl: String, args: Array<String>): Boolean {
-        if (!sender.hasPermission("uhc.command.heal")) {
+        if (!sender.hasPermission("uhc.staff.heal")) {
             Chat.sendMessage(sender as Player, "${Chat.prefix} &cYou do not have permission to use this command.")
             return false
         }

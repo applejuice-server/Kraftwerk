@@ -22,9 +22,9 @@ class ChatListener : Listener {
         val group: String? = vaultChat?.getPrimaryGroup(player)
         val prefix: String = ChatColor.translateAlternateColorCodes('&', vaultChat?.getGroupPrefix(player.world, group))
         if (player.hasPermission("uhc.staff.chat.white")) {
-            e.format = prefix + " %s" + ChatColor.DARK_GRAY + " » " + ChatColor.WHITE + "%s"
+            e.format = prefix + "%s" + ChatColor.DARK_GRAY + " » " + ChatColor.WHITE + "%s"
         } else {
-            e.format = prefix + " %s" + ChatColor.DARK_GRAY + " » " + ChatColor.GRAY + "%s"
+            e.format = prefix + "%s" + ChatColor.DARK_GRAY + " » " + ChatColor.GRAY + "%s"
         }
     }
 

@@ -12,10 +12,10 @@ class PlayerJoinListener : Listener {
     fun onPlayerJoin(e: PlayerJoinEvent) {
         val player = e.player
         if (player.hasPlayedBefore()) {
-            Chat.sendMessage(player, "${Chat.prefix} Welcome back to &4Xestra &cUHC&7, &f${player.displayName}&7!")
+            Chat.sendMessage(player, "${Chat.prefix} Welcome back to &capple&ajuice&7, &f${player.displayName}&7!")
         } else {
             for (p in Bukkit.getOnlinePlayers()) {
-                Chat.sendMessage(p, "${Chat.prefix} Welcome to &4Xestra &cUHC&7, &f${player.displayName}&7! &8(&c${Bukkit.getOfflinePlayers().size}&8)")
+                Chat.sendMessage(p, "${Chat.prefix} Welcome to &capple&ajuice&7, &f${player.displayName}&7! &8(&c${Bukkit.getOfflinePlayers().size}&8)")
             }
         }
         e.joinMessage = ChatColor.translateAlternateColorCodes('&', "&8[&2+&8] &a${player.displayName} &8(&2${Bukkit.getServer().onlinePlayers.size}&8/&2${Bukkit.getServer().maxPlayers}&8)")
