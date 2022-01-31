@@ -173,12 +173,12 @@ class ConfigCommand : CommandExecutor {
         val host = ItemStack(Material.SKULL_ITEM, 1, 3)
         val hostMeta = host.itemMeta as SkullMeta
         hostMeta.displayName = Chat.colored("&4Host")
-        hostMeta.owner = "minota"
+        hostMeta.owner = SettingsFeature.instance.data!!.getString("game.host")
         if (player.hasPermission("uhc.staff")) {
             hostMeta.lore = listOf(
                 Chat.colored(Chat.line),
                 "",
-                Chat.colored("&7The host for this game is "),
+                Chat.colored("&7The host for this game is &c${SettingsFeature.instance.data!!.getString("game.host")}&7."),
                 "",
                 Chat.colored(Chat.line),
                 Chat.colored("&cClick to set yourself as host.")
@@ -187,7 +187,7 @@ class ConfigCommand : CommandExecutor {
             hostMeta.lore = listOf(
                 Chat.colored(Chat.line),
                 "",
-                Chat.colored("&7The host for this game is "),
+                Chat.colored("&7The host for this game is &c${SettingsFeature.instance.data!!.getString("game.host")}&7."),
                 "",
                 Chat.colored(Chat.line)
             )

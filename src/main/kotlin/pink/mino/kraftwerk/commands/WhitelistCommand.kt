@@ -26,8 +26,8 @@ class WhitelistCommand : CommandExecutor {
 
         when {
             args[0] == "add" -> {
-                if (args[1].isEmpty()) {
-                    sender.sendMessage("${ChatColor.RED} Usage: /wl add <player>")
+                if (args.size == 1) {
+                    sender.sendMessage("${ChatColor.RED}Usage: /wl add <player>")
                     return false
                 }
                 val target = Bukkit.getServer().getPlayer(args[1])
@@ -41,8 +41,8 @@ class WhitelistCommand : CommandExecutor {
                 target.isWhitelisted = true
             }
             args[0] == "remove" -> {
-                if (args[1].isEmpty()) {
-                    sender.sendMessage("${ChatColor.RED} Usage: /wl remove <player>")
+                if (args.size == 1) {
+                    sender.sendMessage("${ChatColor.RED}Usage: /wl remove <player>")
                     return false
                 }
                 val target = Bukkit.getServer().getPlayer(args[1])

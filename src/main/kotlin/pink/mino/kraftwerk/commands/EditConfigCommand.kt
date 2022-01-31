@@ -3,6 +3,7 @@ package pink.mino.kraftwerk.commands
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.Material
+import org.bukkit.Sound
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
@@ -216,6 +217,12 @@ class EditConfigCommand : CommandExecutor {
                     it.currentItem.itemMeta = meta
                 }
             }
+        } else if (args[0].lowercase() == "host") {
+            SettingsFeature.instance.data!!.set("game.host", player.name)
+            SettingsFeature.instance.saveData()
+            Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} &e${player.name}&7 has set themself as the host."))
+            player.playSound(player.location, Sound.LEVEL_UP, 10.toFloat(), 1.toFloat())
+            return true
         }
         val back = ItemStack(Material.ARROW)
         val backMeta = back.itemMeta

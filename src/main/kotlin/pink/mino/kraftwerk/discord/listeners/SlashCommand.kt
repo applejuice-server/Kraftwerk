@@ -15,22 +15,22 @@ class SlashCommand : ListenerAdapter() {
         when (event.name) {
             "online" -> {
                 val embed = EmbedBuilder()
-                embed.setColor(Color.getColor("#ff3d3d"))
-                embed.setAuthor("applejuice — Online players", "https://cdn.discordapp.com/attachments/756953696038027425/937807184698429460/beverage-box_1f9c3.png")
+                embed.setColor(Color(255, 61, 61))
+                embed.setAuthor("applejuice — Online players", "https://dsc.gg/apple-juice", event.jda.selfUser.avatarUrl)
                 embed.setDescription("There are currently **${Bukkit.getServer().onlinePlayers.size} players** online.")
                 event.replyEmbeds(embed.build()).setEphemeral(true).queue()
             }
             "ip" -> {
                 val embed = EmbedBuilder()
-                embed.setColor(Color.getColor("#ff3d3d"))
-                embed.setAuthor("applejuice — IP Address", "https://cdn.discordapp.com/attachments/756953696038027425/937807184698429460/beverage-box_1f9c3.png")
+                embed.setColor(Color(255, 61, 61))
+                embed.setAuthor("applejuice — IP Address", "https://dsc.gg/apple-juice", event.jda.selfUser.avatarUrl)
                 embed.setDescription("The IP address to the server is `78.108.218.25:25572` or :beverage_box: `applejuice.bar`.")
                 event.replyEmbeds(embed.build()).setEphemeral(true).queue()
             }
             "togglealerts" -> {
                 val embed = EmbedBuilder()
-                embed.setColor(Color.getColor("#ff3d3d"))
-                embed.setAuthor("applejuice — Toggle alerts", "https://cdn.discordapp.com/attachments/756953696038027425/937807184698429460/beverage-box_1f9c3.png")
+                embed.setColor(Color(255, 61, 61))
+                embed.setAuthor("applejuice — Toggle alerts", "https://dsc.gg/apple-juice", event.jda.selfUser.avatarUrl)
                 if (member!!.roles.contains(event.jda.getRoleById(793406242013839381))) {
                     if (guild != null) {
                         guild.getRoleById(793406242013839381)?.let { guild.removeRoleFromMember(member.id, it) }?.queue()
