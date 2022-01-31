@@ -51,6 +51,7 @@ class Kraftwerk : JavaPlugin() {
         getCommand("config").executor = ConfigCommand()
         getCommand("editconfig").executor = EditConfigCommand()
         getCommand("world").executor = WorldCommand()
+        getCommand("scatter").executor = ScatterCommand()
 
         getCommand("whitelist").executor = WhitelistCommand()
 
