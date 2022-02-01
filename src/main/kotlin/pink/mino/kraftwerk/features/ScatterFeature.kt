@@ -6,8 +6,6 @@ import org.bukkit.Material
 import org.bukkit.World
 import org.bukkit.entity.Player
 import org.bukkit.event.Listener
-import org.bukkit.plugin.java.JavaPlugin
-import pink.mino.kraftwerk.Kraftwerk
 import pink.mino.kraftwerk.utils.Chat
 import kotlin.random.Random
 
@@ -29,18 +27,17 @@ class ScatterFeature : Listener {
                     for ((index, player) in scatteringList.withIndex()) {
                         var finalLocation: Location? = null
                         while (finalLocation == null) {
-                            Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                                val location = Location(world, Random.nextDouble(-radius.toDouble(), radius.toDouble()), 255.0, Random.nextDouble(-radius.toDouble(), radius.toDouble()))
-                                if (world.getHighestBlockAt(location).type != Material.CACTUS &&
-                                    world.getHighestBlockAt(location).type != Material.LAVA &&
-                                    world.getHighestBlockAt(location).type != Material.WATER &&
-                                    world.getHighestBlockAt(location).type != Material.STATIONARY_WATER
-                                ) {
-                                    finalLocation = location
-                                }
-                            }, 1L)
+                            val location = Location(world, Random.nextDouble(-radius.toDouble(), radius.toDouble()), 255.0, Random.nextDouble(-radius.toDouble(), radius.toDouble()))
+                            if (world.getHighestBlockAt(location).type != Material.CACTUS &&
+                                world.getHighestBlockAt(location).type != Material.LAVA &&
+                                world.getHighestBlockAt(location).type != Material.WATER &&
+                                world.getHighestBlockAt(location).type != Material.STATIONARY_WATER &&
+                                world.getHighestBlockAt(location).type != Material.WATER_LILY
+                            ) {
+                                finalLocation = Location(world, location.x, world.getHighestBlockAt(location).location.y + 3, location.z)
+                            }
                         }
-                        Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Scattering &c${player.name}&8 (&c${index}&8/&c${scatteringList.size}&8)"))
+                        Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Scattering &c${player.name}&8 (&c${index + 1}&8/&c${scatteringList.size}&8)"))
                         player.teleport(finalLocation)
                     }
                     Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} &7Successfully scattered all players!"))

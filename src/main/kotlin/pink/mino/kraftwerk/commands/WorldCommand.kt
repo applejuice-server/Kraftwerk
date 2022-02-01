@@ -47,7 +47,7 @@ class WorldCommand : CommandExecutor {
             }
             Chat.sendMessage(player, Chat.line)
         } else if (args[0].lowercase() == "tp") {
-            if (args.size === 1) {
+            if (args.size == 1) {
                 Chat.sendMessage(player, "&cYou need to provide a world.")
                 return false
             }

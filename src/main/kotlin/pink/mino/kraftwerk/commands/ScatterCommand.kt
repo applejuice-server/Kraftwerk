@@ -21,7 +21,7 @@ class ScatterCommand : CommandExecutor {
             return false
         }
         if (args.isEmpty()) {
-            Chat.sendMessage(player, "${Chat.prefix} &7Invalid usage: &f/scatter <world> <radius> <ffa/teams>&7.")
+            Chat.sendMessage(player, "${Chat.prefix} &7No arguments: &f/scatter <world> <radius> <ffa/teams>&7.")
             return false
         }
         if (args.size != 3) {
@@ -29,18 +29,21 @@ class ScatterCommand : CommandExecutor {
             return false
         }
         if (Bukkit.getWorld(args[0]) == null) {
-            Chat.sendMessage(player, "${Chat.prefix} &7Invalid usage: &f/scatter <world> <radius> <ffa/teams>&7.")
+            Chat.sendMessage(player, "${Chat.prefix} &7Invalid world: &f/scatter <world> <radius> <ffa/teams>&7.")
             return false
         }
         if (args[1].toIntOrNull() == null) {
-            Chat.sendMessage(player, "${Chat.prefix} &7Invalid usage: &f/scatter <world> <radius> <ffa/teams>&7.")
+            Chat.sendMessage(player, "${Chat.prefix} &7Invalid border: &f/scatter <world> <radius> <ffa/teams>&7.")
             return false
         }
-        if (args[2] !== "ffa" && args[2] !== "teams") {
-            Chat.sendMessage(player, "${Chat.prefix} &7Invalid usage: &f/scatter <world> <radius> <ffa/teams>&7.")
+        if (args[2] == "ffa") {
+            ScatterFeature.scatter(args[2], Bukkit.getWorld(args[0]), args[1].toInt())
+        } else if (args[2] === "teams") {
+            ScatterFeature.scatter(args[2], Bukkit.getWorld(args[0]), args[1].toInt())
+        } else {
+            Chat.sendMessage(player, "${Chat.prefix} &7Invalid arguments: &f/scatter <world> <radius> <ffa/teams>&7.")
             return false
         }
-        ScatterFeature.scatter(args[2], Bukkit.getWorld(args[0]), args[1].toInt())
         return true
     }
 }
