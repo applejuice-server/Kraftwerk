@@ -1,7 +1,8 @@
 package pink.mino.kraftwerk.commands
 
 import com.wimbli.WorldBorder.Config
-import org.bukkit.*
+import org.bukkit.Bukkit
+import org.bukkit.ChatColor
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
@@ -24,7 +25,7 @@ class PregenCommand : CommandExecutor {
         }
 
         if (args.isEmpty() || args[1].isEmpty()) {
-            Chat.sendMessage(sender as Player, "${Chat.prefix} &7Invalid usage: ${ChatColor.RED}/pregen <world> <border> &8or&c /pregen cancel")
+            Chat.sendMessage(sender as Player, "${Chat.prefix} &7Invalid usage: ${ChatColor.RED}/pregen <world> <border> &7or&c /pregen cancel")
             return false
         }
         if (args[0] === "cancel") {
@@ -39,27 +40,38 @@ class PregenCommand : CommandExecutor {
         }
         Chat.sendMessage(sender as Player, "${Chat.prefix} &7Please standby, this will take a while.")
 
-        val wc = WorldCreator(args[0])
-        wc.environment(World.Environment.NORMAL)
-        wc.type(WorldType.NORMAL)
-        wc.generateStructures(true)
-        val world = Bukkit.createWorld(wc)
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
+                "mvdelete ${args[0]}"
+        )
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
+            "mvconfirm"
+        )
 
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
-            "wb ${world.name} clear"
+            "mvc ${args[0]} normal"
+        )
+
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
+            "wb ${args[0]} clear"
         )
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
             "wb shape rectangular"
         )
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
-            "wb ${world.name} setcorners ${args[1]} ${args[1]} -${args[1]} -${args[1]}"
+            "wb ${args[0]} setcorners ${args[1]} ${args[1]} -${args[1]} -${args[1]}"
         )
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
-            "wb ${world.name} fill 75"
+            "wb ${args[0]} fill 75"
         )
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
             "wb fill confirm"
         )
+
+        Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
+            val border = Bukkit.getWorld(args[0]).worldBorder
+            border.size = args[1].toDouble() * 2
+            border.setCenter(0.0, 0.0)
+        }, 5L)
 
         Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "${Chat.prefix} &7Pregeneration started in &8'&c${args[0]}&8'&7."))
         PregenActionBarFeature().runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 20L)
