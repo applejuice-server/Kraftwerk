@@ -112,7 +112,7 @@ class ScatterFeature : Listener {
                                 Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Scattering solo &c${player.name}&8 (&c${index + 1}&8/&c${Bukkit.getOnlinePlayers().size}&8)"))
                             } else {
                                 player.teleport(teamLocations[team])
-                                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Scattering ${team.name} teammate &c${player.name}&8 (&c${index + 1}&8/&c${Bukkit.getOnlinePlayers().size}&8)"))
+                                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Scattering &c${team.name}&7 teammate &c${player.name}&8 (&c${index + 1}&8/&c${Bukkit.getOnlinePlayers().size}&8)"))
                             }
                         }, 5L)
                     }

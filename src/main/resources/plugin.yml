@@ -80,7 +80,12 @@ commands:
       - sca
       - sctter
       - spread
+      - scat
     description: Randomly scatter players across a world.
+  clearchat:
+    aliases:
+      - cc
+    description: Clears the chat.
 depend:
   - ProtocolLib
   - JDA

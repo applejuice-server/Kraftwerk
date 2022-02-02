@@ -1,6 +1,7 @@
 package pink.mino.kraftwerk.utils
 
 import DefaultFontInfo
+import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.entity.Player
 
@@ -14,6 +15,13 @@ class Chat {
 
         fun colored(message: String): String {
             return (ChatColor.translateAlternateColorCodes('&', message))
+        }
+
+        fun clear() {
+            for (i in 1..1000) {
+                Bukkit.broadcastMessage(" ")
+                Bukkit.broadcastMessage("  ")
+            }
         }
 
         /* Function to get centered MOTDs */
