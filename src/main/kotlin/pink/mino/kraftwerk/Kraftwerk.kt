@@ -2,6 +2,8 @@ package pink.mino.kraftwerk
 
 import com.comphenix.protocol.ProtocolLibrary
 import com.comphenix.protocol.ProtocolManager
+import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource
+import com.mysql.jdbc.jdbc2.optional.MysqlDataSource
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.Material
@@ -18,11 +20,14 @@ import pink.mino.kraftwerk.features.SettingsFeature
 import pink.mino.kraftwerk.features.TeamsFeature
 import pink.mino.kraftwerk.listeners.*
 import pink.mino.kraftwerk.utils.GameState
+import java.sql.SQLException
+import javax.sql.DataSource
 
 
 class Kraftwerk : JavaPlugin() {
 
     private var protocolManager: ProtocolManager? = null
+    private lateinit var dataSource: DataSource
 
     override fun onLoad() {
         protocolManager = ProtocolLibrary.getProtocolManager()
@@ -89,6 +94,8 @@ class Kraftwerk : JavaPlugin() {
         ConfigOptionHandler.setup()
         addRecipes()
 
+        setupDataSource()
+
         if (SettingsFeature.instance.data!!.contains("game.state")) {
             GameState.setState(GameState.valueOf(SettingsFeature.instance.data!!.getString("game.state")))
             Bukkit.getLogger().info("Game state set to ${SettingsFeature.instance.data!!.getString("game.state")}.")
@@ -99,6 +106,35 @@ class Kraftwerk : JavaPlugin() {
 
         Bukkit.getLogger().info("Kraftwerk enabled.")
     }
+
+    fun setupDataSource() {
+        val host = SettingsFeature.instance.data!!.getString("database.host")
+        val port = SettingsFeature.instance.data!!.getInt("database.port")
+        val database = SettingsFeature.instance.data!!.getString("database.database")
+        val user = SettingsFeature.instance.data!!.getString("database.user")
+        val password = SettingsFeature.instance.data!!.getString("database.password")
+
+        val dataSource: MysqlDataSource = MysqlConnectionPoolDataSource()
+
+        dataSource.serverName = host
+        dataSource.port = port
+        dataSource.databaseName = database
+        dataSource.user = user
+        dataSource.setPassword(password)
+
+        testDataSource(dataSource)
+
+        this.dataSource = dataSource
+    }
+
+    @Throws(SQLException::class)
+    private fun testDataSource(dataSource: DataSource) {
+        val conn = dataSource.connection
+        if (!conn.isValid(1)) {
+            throw SQLException("Could not establish database connection.")
+        }
+    }
+
 
     override fun onDisable() {
         Bukkit.getLogger().info("Kraftwerk disabled.")
