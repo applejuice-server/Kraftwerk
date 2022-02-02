@@ -10,17 +10,22 @@ import pink.mino.kraftwerk.utils.Chat
 class ClearPotionEffectsCommand : CommandExecutor {
 
     override fun onCommand(sender: CommandSender, cmd: Command, lbl: String, args: Array<String>): Boolean {
-        if (!sender.hasPermission("uhc.staff.ce")) {
-            Chat.sendMessage(sender as Player, "${Chat.prefix} &cYou do not have permission to use this command.")
-            return false
+        if (sender is Player) {
+            if (!sender.hasPermission("uhc.staff.ce")) {
+                Chat.sendMessage(sender, "${Chat.prefix} &cYou don't have permission to use this command.")
+                return false
+            }
         }
         if (args.isEmpty()) {
-            val player = sender as Player
-            val effects = player.activePotionEffects
-            for (effect in effects) {
-                player.removePotionEffect(effect.type)
+            if (sender is Player) {
+                val effects = sender.activePotionEffects
+                for (effect in effects) {
+                    sender.removePotionEffect(effect.type)
+                }
+                Chat.sendMessage(sender, "${Chat.prefix} Your effects have been cleared.")
+            } else {
+                sender.sendMessage("You can't use this command as you technically aren't a player.")
             }
-            Chat.sendMessage(sender, "${Chat.prefix} Your effects have been cleared.")
             return true
         } else {
             if (args[0] == "*") {

@@ -10,14 +10,19 @@ import pink.mino.kraftwerk.utils.Chat
 class HealCommand : CommandExecutor {
 
     override fun onCommand(sender: CommandSender, cmd: Command, lbl: String, args: Array<String>): Boolean {
-        if (!sender.hasPermission("uhc.staff.heal")) {
-            Chat.sendMessage(sender as Player, "${Chat.prefix} &cYou do not have permission to use this command.")
-            return false
+        if (sender is Player) {
+            if (!sender.hasPermission("uhc.staff.heal")) {
+                Chat.sendMessage(sender, "${Chat.prefix} &cYou don't have permission to use this command.")
+                return false
+            }
         }
         if (args.isEmpty()) {
-            val player = sender as Player
-            player.health = 20.0
-            Chat.sendMessage(player, "${Chat.prefix} &7You have healed yourself.")
+            if (sender !is Player) {
+                sender.sendMessage("You can't use this command as you technically aren't a player.")
+                return false
+            }
+            sender.health = 20.0
+            Chat.sendMessage(sender, "${Chat.prefix} &7You have healed yourself.")
             return true
         } else {
             if (args[0] == "*") {

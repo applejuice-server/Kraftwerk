@@ -12,12 +12,16 @@ import pink.mino.kraftwerk.utils.ReplyTo
 class MessageCommand : CommandExecutor {
 
     override fun onCommand(sender: CommandSender, cmd: Command, lbl: String, args: Array<String>): Boolean {
+        if (sender !is Player) {
+            sender.sendMessage("You can't use this command as you technically aren't a player.")
+            return false
+        }
         if (args.isEmpty()) {
-            Chat.sendMessage(sender as Player, "&cYou need a user to send a message to.")
+            Chat.sendMessage(sender, "&cYou need a user to send a message to.")
             return false
         }
         if (args.size < 2) {
-            Chat.sendMessage(sender as Player, "&cYou need a message to send to the user.")
+            Chat.sendMessage(sender, "&cYou need a message to send to the user.")
             return false
         }
 
@@ -25,14 +29,15 @@ class MessageCommand : CommandExecutor {
         for (i in 1 until args.size) message += args[i] + " "
         val target = Bukkit.getPlayer(args[0])
         if (target == null) {
-            Chat.sendMessage(sender as Player,"&cYou need a valid user to send this to.")
+            Chat.sendMessage(sender,"&cYou need a valid user to send this to.")
             return false
         }
-        val player = sender as Player
+        val player = sender
         Chat.sendMessage(sender, "&7To: &f${target.displayName} &8- &7$message")
         Chat.sendMessage(target, "&7From: &f${player.displayName} &8- &7$message")
 
         ReplyTo.setRepliedTo(player.uniqueId, target.uniqueId)
+        ReplyTo.setRepliedTo(target.uniqueId, player.uniqueId)
 
         player.playSound(player.location, Sound.NOTE_PLING, 10.toFloat(), 0.toFloat())
         target.playSound(player.location, Sound.NOTE_PLING, 10.toFloat(), 0.toFloat())

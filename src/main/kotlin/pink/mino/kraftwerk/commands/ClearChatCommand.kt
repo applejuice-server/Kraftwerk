@@ -13,9 +13,11 @@ class ClearChatCommand : CommandExecutor {
         label: String?,
         args: Array<String>
     ): Boolean {
-        if (!sender.hasPermission("uhc.staff.cc")) {
-            Chat.sendMessage(sender as Player, "${Chat.prefix} &cYou don't have permission to use this command.")
-            return false
+        if (sender is Player) {
+            if (!sender.hasPermission("uhc.staff.cc")) {
+                Chat.sendMessage(sender, "${Chat.prefix} &cYou don't have permission to use this command.")
+                return false
+            }
         }
         Chat.clear()
         return true

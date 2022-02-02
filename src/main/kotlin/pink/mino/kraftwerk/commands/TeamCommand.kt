@@ -23,13 +23,15 @@ class TeamCommand : CommandExecutor {
 
     override fun onCommand(sender: CommandSender, cmd: Command, lbl: String, args: Array<String>): Boolean {
 
-        if (!sender.hasPermission("uhc.staff.team")) {
-            if (SettingsFeature.instance.data!!.getString("game.ffa").toBoolean()) {
-                Chat.sendMessage(sender as Player, "${ChatColor.RED}You can't use this command at the moment. (It's an FFA game or Random teams)")
-                return false
-            } else if (GameState.valueOf(SettingsFeature.instance.data!!.getString("game.state")) != GameState.LOBBY) {
-                Chat.sendMessage(sender as Player, "${ChatColor.RED}You can't use this command at the moment.")
-                return false
+        if (sender is Player) {
+            if (!sender.hasPermission("uhc.staff.team")) {
+                if (SettingsFeature.instance.data!!.getString("game.ffa").toBoolean()) {
+                    Chat.sendMessage(sender, "${ChatColor.RED}You can't use this command at the moment. (It's an FFA game or Random teams)")
+                    return false
+                } else if (GameState.valueOf(SettingsFeature.instance.data!!.getString("game.state")) != GameState.LOBBY) {
+                    Chat.sendMessage(sender, "${ChatColor.RED}You can't use this command at the moment.")
+                    return false
+                }
             }
         }
 
@@ -52,15 +54,15 @@ class TeamCommand : CommandExecutor {
         } else if (args[0] == "create") {
             val player = sender as Player
             if (player.scoreboard.getPlayerTeam(player) != null) {
-                player.sendMessage("${ChatColor.RED}You are already on a team.")
+                Chat.sendMessage(player, "&cYou are already on a team.")
                 return true
             }
             if (SettingsFeature.instance.data!!.getString("game.ffa").toBoolean()) {
-                player.sendMessage("${ChatColor.RED}You can't use this command at the moment.")
+                Chat.sendMessage(player, "&cYou can't use this command at the moment.")
                 return true
             }
             if (GameState.valueOf(SettingsFeature.instance.data!!.getString("game.state")) !== GameState.LOBBY) {
-                player.sendMessage("${ChatColor.RED}You can't use this command at the moment.")
+                Chat.sendMessage(player, "&cYou can't use this command at the moment.")
                 return true
             }
             val oTeams = ArrayList<Team>()
@@ -105,22 +107,24 @@ class TeamCommand : CommandExecutor {
 
             for (players in team.players) {
                 if (players is Player) {
-                    players.sendMessage(Chat.line)
-                    players.sendMessage("${Chat.prefix} ${ChatColor.WHITE}${target.name}${ChatColor.GRAY} was invited to your team.")
-                    players.sendMessage(Chat.line)
+                    Chat.sendMessage(players, Chat.line)
+                    Chat.sendMessage(player, "${Chat.prefix} ${ChatColor.WHITE}${target.name}${ChatColor.GRAY} was invited to your team.")
+                    Chat.sendMessage(players, Chat.line)
                 }
             }
 
             if (!invites.containsKey(player)) invites[player] = ArrayList()
             invites[player]!!.add(target)
-            target.sendMessage(Chat.line)
-            target.sendMessage("${Chat.prefix} You have been invited to ${ChatColor.WHITE}${player.name}${ChatColor.GRAY}'s team.")
-            target.sendMessage("${Chat.prefix} §7To accept, type ${ChatColor.WHITE}/team accept ${player.name}${ChatColor.GRAY}.")
-            target.sendMessage(Chat.line)
+            Chat.sendMessage(target, Chat.line)
+            Chat.sendMessage(target, "${Chat.prefix} You have been invited to ${ChatColor.WHITE}${player.name}${ChatColor.GRAY}'s team.")
+            Chat.sendMessage(target,"${Chat.prefix} §7To accept, type ${ChatColor.WHITE}/team accept ${player.name}${ChatColor.GRAY}.")
+            Chat.sendMessage(target, Chat.line)
         } else if (args[0] == "size") {
-            if (!sender.hasPermission("uhc.staff.team")) {
-                Chat.sendMessage(sender as Player, "${ChatColor.RED}You don't have permission to use this command.")
-                return false
+            if (sender is Player) {
+                if (!sender.hasPermission("uhc.staff.team")) {
+                    Chat.sendMessage(sender, "${ChatColor.RED}You don't have permission to use this command.")
+                    return false
+                }
             }
             if (args.size < 2) {
                 Chat.sendMessage(sender as Player, "${ChatColor.RED}You need to send a valid teamsize.")
@@ -172,11 +176,13 @@ class TeamCommand : CommandExecutor {
                 return false
             }
         } else if (args[0] == "management") {
-            if (!sender.hasPermission("uhc.staff.team")) {
-                Chat.sendMessage(sender as Player, "${ChatColor.RED}You don't have permission to use this command.")
-                return false
+            if (sender is Player) {
+                if (!sender.hasPermission("uhc.staff.team")) {
+                    Chat.sendMessage(sender, "${ChatColor.RED}You don't have permission to use this command.")
+                    return false
+                }
             }
-            if (args.size === 1) {
+            if (args.size == 1) {
                 Chat.sendMessage(sender as Player, "${Chat.prefix} Invalid usage: ${ChatColor.WHITE}/team management on/off")
                 return false
             }
@@ -195,9 +201,11 @@ class TeamCommand : CommandExecutor {
             settings.saveData()
             Chat.sendMessage(sender, Chat.line)
         } else if (args[0] == "reset") {
-            if (!sender.hasPermission("uhc.staff.team")) {
-                Chat.sendMessage(sender as Player, "${ChatColor.RED}You don't have permission to use this command.")
-                return false
+            if (sender is Player) {
+                if (!sender.hasPermission("uhc.staff.team")) {
+                    Chat.sendMessage(sender, "${ChatColor.RED}You don't have permission to use this command.")
+                    return false
+                }
             }
             val player = sender as Player
             for (team in TeamsFeature.manager.getTeams()) {

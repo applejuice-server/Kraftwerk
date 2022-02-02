@@ -16,8 +16,11 @@ class ReplyCommand : CommandExecutor {
         label: String,
         args: Array<String>
     ): Boolean {
-        val player = sender as Player
-        val uuid = ReplyTo.getRepliedTo(player.uniqueId)
+        if (sender !is Player) {
+            sender.sendMessage("You can't use this command as you technically aren't a player.")
+            return false
+        }
+        val uuid = ReplyTo.getRepliedTo(sender.uniqueId)
         if (args.isEmpty()) {
             Chat.sendMessage(sender, "&cYou need to send a message.")
             return false
@@ -27,15 +30,15 @@ class ReplyCommand : CommandExecutor {
         for (i in 0 until args.size) message += args[i] + " "
         val target = Bukkit.getPlayer(uuid)
         if (target == null) {
-            Chat.sendMessage(sender,"&cYou need a valid user to send this to.")
+            Chat.sendMessage(sender, "&cYou need a valid user to send this to.")
             return false
         }
 
-        Chat.sendMessage(player, "&7To: &f${target.displayName} &8- &7$message")
-        Chat.sendMessage(target, "&7From: &f${player.displayName} &8- &7$message")
+        Chat.sendMessage(sender, "&7To: &f${target.displayName} &8- &7$message")
+        Chat.sendMessage(target, "&7From: &f${sender.displayName} &8- &7$message")
 
-        player.playSound(player.location, Sound.NOTE_PLING, 10.toFloat(), 0.toFloat())
-        target.playSound(player.location, Sound.NOTE_PLING, 10.toFloat(), 0.toFloat())
+        sender.playSound(sender.location, Sound.NOTE_PLING, 10.toFloat(), 0.toFloat())
+        target.playSound(sender.location, Sound.NOTE_PLING, 10.toFloat(), 0.toFloat())
         return true
     }
 }

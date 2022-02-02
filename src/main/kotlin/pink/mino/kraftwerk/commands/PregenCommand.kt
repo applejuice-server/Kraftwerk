@@ -19,9 +19,11 @@ class PregenCommand : CommandExecutor {
     private val settings: SettingsFeature = SettingsFeature.instance
 
     override fun onCommand(sender: CommandSender, command: Command, label: String?, args: Array<String>): Boolean {
-        if (!sender.hasPermission("uhc.staff.pregen")) {
-            Chat.sendMessage(sender as Player, "${Chat.prefix} ${ChatColor.RED}You don't have permission to use this command.")
-            return false
+        if (sender is Player) {
+            if (!sender.hasPermission("uhc.staff.pregen")) {
+                Chat.sendMessage(sender, "${Chat.prefix} ${ChatColor.RED}You don't have permission to use this command.")
+                return false
+            }
         }
 
         if (args.isEmpty() || args[1].isEmpty()) {

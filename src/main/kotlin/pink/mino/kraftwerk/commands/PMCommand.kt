@@ -8,16 +8,19 @@ import org.bukkit.entity.Player
 import pink.mino.kraftwerk.utils.Chat
 
 class PMCommand : CommandExecutor {
-    override fun onCommand(sender: CommandSender?, command: Command?, label: String?, args: Array<String>): Boolean {
-        val player = sender as Player
-        if (player.scoreboard.getPlayerTeam(player) == null) {
-            player.sendMessage("${ChatColor.RED}You must be on a team to send a message.")
+    override fun onCommand(sender: CommandSender, command: Command?, label: String?, args: Array<String>): Boolean {
+        if (sender !is Player) {
+            sender.sendMessage("You can't use this command as you technically aren't a player.")
+            return false
+        }
+        if (sender.scoreboard.getPlayerTeam(sender) == null) {
+            sender.sendMessage("${ChatColor.RED}You must be on a team to send a message.")
             return true
         }
-        if (player.scoreboard.getPlayerTeam(player) != null) {
+        if (sender.scoreboard.getPlayerTeam(sender) != null) {
             val message = StringBuilder()
             if (args.isEmpty()) {
-                player.sendMessage("${ChatColor.RED}Usage: /pm <message>")
+                sender.sendMessage("${ChatColor.RED}Usage: /pm <message>")
                 return true
             }
             for (element in args) {
@@ -26,7 +29,7 @@ class PMCommand : CommandExecutor {
 
             val msg = message.toString().trim()
 
-            for (team in player.scoreboard.getPlayerTeam(player).players) {
+            for (team in sender.scoreboard.getPlayerTeam(sender).players) {
                 if (team is Player) {
                     team.sendMessage("§8[§4Team Chat§8] ${ChatColor.WHITE}${sender.name} ${Chat.dash} ${ChatColor.GRAY}${msg}")
                 }

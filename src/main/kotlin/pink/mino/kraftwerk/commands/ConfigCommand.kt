@@ -41,7 +41,11 @@ class ConfigCommand : CommandExecutor {
     }
 
     override fun onCommand(sender: CommandSender, cmd: Command, lbl: String, args: Array<String>): Boolean {
-        val player = sender as Player
+        if (sender !is Player) {
+            sender.sendMessage("You can't use this command as you technically aren't a player.")
+            return false
+        }
+        val player = sender
         val gui = GuiBuilder().rows(3).name(ChatColor.translateAlternateColorCodes('&', "&4UHC Config"))
 
         val options = ItemStack(Material.GOLDEN_APPLE)

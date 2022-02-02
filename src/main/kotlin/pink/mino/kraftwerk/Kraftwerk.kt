@@ -40,6 +40,7 @@ class Kraftwerk : JavaPlugin() {
         Bukkit.getServer().pluginManager.registerEvents(WeatherChangeListener(), this)
         Bukkit.getServer().pluginManager.registerEvents(FoodChangeListener(), this)
         Bukkit.getServer().pluginManager.registerEvents(EntityHealthRegainListener(), this)
+        Bukkit.getServer().pluginManager.registerEvents(PlayerConnectListener(), this)
 
         /* Registering commands */
         getCommand("clear").executor = ClearInventoryCommand()

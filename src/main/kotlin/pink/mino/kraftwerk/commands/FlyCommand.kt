@@ -10,12 +10,18 @@ import pink.mino.kraftwerk.utils.Chat
 class FlyCommand : CommandExecutor {
 
     override fun onCommand(sender: CommandSender, cmd: Command, lbl: String, args: Array<String>): Boolean {
-        if (!sender.hasPermission("uhc.staff.fly")) {
-            Chat.sendMessage(sender as Player, "${Chat.prefix} &cYou do not have permission to use this command.")
-            return false
+        if (sender is Player) {
+            if (!sender.hasPermission("uhc.staff.fly")) {
+                Chat.sendMessage(sender, "${Chat.prefix} &cYou don't have permission to use this command.")
+                return false
+            }
         }
         if (args.isEmpty()) {
-            val player = sender as Player
+            if (sender !is Player) {
+                sender.sendMessage("You can't use this command as you technically aren't a player.")
+                return false
+            }
+            val player = sender
             return if (!player.allowFlight) {
                 player.allowFlight = true
                 player.isFlying = true

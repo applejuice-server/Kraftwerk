@@ -13,44 +13,47 @@ import pink.mino.kraftwerk.utils.Chat
 
 class SplitCommand : CommandExecutor {
     override fun onCommand(
-        sender: CommandSender?,
+        sender: CommandSender,
         command: Command?,
         label: String?,
         args: Array<String>
     ): Boolean {
-        val player = sender as Player
-        if (!ConfigOptionHandler.getOption("splitenchants")!!.enabled) {
-            Chat.sendMessage(player, "&cSplit Enchants is disabled.")
+        if (sender !is Player) {
+            sender.sendMessage("You can't use this command as you technically aren't a player.")
             return false
         }
-        val hand: ItemStack? = player.itemInHand
+        if (!ConfigOptionHandler.getOption("splitenchants")!!.enabled) {
+            Chat.sendMessage(sender, "&cSplit Enchants is disabled.")
+            return false
+        }
+        val hand: ItemStack? = sender.itemInHand
 
         if (hand == null || !hand.type.equals(Material.ENCHANTED_BOOK)) {
-            Chat.sendMessage(player, "&cYou are not holding an enchanted book.")
+            Chat.sendMessage(sender, "&cYou are not holding an enchanted book.")
             return false
         }
-        val handMeta = player.itemInHand.itemMeta as EnchantmentStorageMeta
+        val handMeta = sender.itemInHand.itemMeta as EnchantmentStorageMeta
 
         val storedEnchants: Map<Enchantment, Int> = handMeta.storedEnchants
 
         if (storedEnchants.isEmpty()) {
-            Chat.sendMessage(player, "&cYou are not holding an enchanted book.")
+            Chat.sendMessage(sender, "&cYou are not holding an enchanted book.")
             return false
         }
 
         val size = storedEnchants.size
         if (size == 1) {
-            Chat.sendMessage(player, "&cThat book only has one enchantment.")
+            Chat.sendMessage(sender, "&cThat book only has one enchantment.")
             return false
         }
 
-        if (player.level < size) {
-            Chat.sendMessage(player, "&cYou require $size level(s).")
+        if (sender.level < size) {
+            Chat.sendMessage(sender, "&cYou require $size level(s).")
             return false
         }
 
-        player.level = player.level - size
-        player.itemInHand = null
+        sender.level = sender.level - size
+        sender.itemInHand = null
 
         for (entry in storedEnchants) {
             val book = ItemStack(Material.ENCHANTED_BOOK)
@@ -59,10 +62,10 @@ class SplitCommand : CommandExecutor {
             bookMeta.addStoredEnchant(entry.key, entry.value, true)
             book.itemMeta = bookMeta
 
-            player.inventory.addItem(book)
+            sender.inventory.addItem(book)
         }
 
-        Chat.sendMessage(player, "${Chat.prefix} &7Your enchants have been split.")
+        Chat.sendMessage(sender, "${Chat.prefix} &7Your enchants have been split.")
         return true
     }
 }

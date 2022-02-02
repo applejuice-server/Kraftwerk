@@ -15,11 +15,15 @@ import kotlin.math.floor
 class HealthCommand : CommandExecutor {
     override fun onCommand(sender: CommandSender, cmd: Command, lbl: String, args: Array<String>): Boolean {
         if (args.isEmpty()) {
-            val player = sender as Player
-            val el: EntityLiving = (player as CraftPlayer).handle
-            val health = floor(player.health / 2 * 10 + el.absorptionHearts / 2 * 10)
+            if (sender !is Player) {
+                sender.sendMessage("You can't use this command as you technically aren't a player.")
+                return false
+            }
+            val el: EntityLiving = (sender as CraftPlayer).handle
+            val health = floor(sender.health / 2 * 10 + el.absorptionHearts / 2 * 10)
             val color = HealthChatColorer.returnHealth(health)
-            Chat.sendMessage(sender, "${Chat.prefix} ${ChatColor.WHITE}${player.displayName}${ChatColor.GRAY} is at ${color}${health}%${ChatColor.GRAY}.")
+            Chat.sendMessage(sender,
+                "${Chat.prefix} ${ChatColor.WHITE}${sender.displayName}${ChatColor.GRAY} is at ${color}${health}%${ChatColor.GRAY}.")
             return true
         } else {
             val target = Bukkit.getServer().getPlayer(args[0])

@@ -14,28 +14,34 @@ import pink.mino.kraftwerk.utils.Chat
 class ClearInventoryCommand : CommandExecutor {
 
     override fun onCommand(sender: CommandSender, cmd: Command, lbl: String, args: Array<String>): Boolean {
-        if (!sender.hasPermission("uhc.staff.ci")) {
-            Chat.sendMessage(sender as Player, "${Chat.prefix} &cYou don't have permission to use this command.")
-            return false
+        if (sender is Player) {
+            if (!sender.hasPermission("uhc.staff.ci")) {
+                Chat.sendMessage(sender, "${Chat.prefix} &cYou don't have permission to use this command.")
+                return false
+            }
         }
         if (args.isEmpty()) {
-            val player = sender as Player
-            val inv = player.inventory
+            if (sender is Player) {
+                val player = sender
+                val inv = player.inventory
 
-            // clear main inventory
-            inv.clear()
+                // clear main inventory
+                inv.clear()
 
-            // clear armour slots
-            inv.armorContents = null
+                // clear armour slots
+                inv.armorContents = null
 
-            player.itemOnCursor = ItemStack(Material.AIR)
+                player.itemOnCursor = ItemStack(Material.AIR)
 
-            val openInventory = player.openInventory
-            if (openInventory.type == InventoryType.CRAFTING) {
-                openInventory.topInventory.clear()
+                val openInventory = player.openInventory
+                if (openInventory.type == InventoryType.CRAFTING) {
+                    openInventory.topInventory.clear()
+                }
+
+                Chat.sendMessage(player, "${Chat.prefix} &7You've cleared your own inventory.")
+            } else {
+                sender.sendMessage("You can't use this command as you aren't technically a player.")
             }
-
-            Chat.sendMessage(player, "${Chat.prefix} &7You've cleared your own inventory.")
         } else {
             if (args[0] == "*") {
                 for (online in ArrayList(Bukkit.getServer().onlinePlayers)) {

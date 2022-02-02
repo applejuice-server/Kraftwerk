@@ -23,11 +23,13 @@ class EditConfigCommand : CommandExecutor {
         label: String?,
         args: Array<String>
     ): Boolean {
-        val player = sender as Player
-        if (!player.hasPermission("uhc.staff")) {
-            Chat.sendMessage(player, "&cYou don't have permission to execute this command.")
-            return false
+        if (sender is Player) {
+            if (!sender.hasPermission("uhc.staff")) {
+                Chat.sendMessage(sender, "${Chat.prefix} &cYou don't have permission to use this command.")
+                return false
+            }
         }
+        val player = sender as Player
         if (args.isEmpty()) {
             // TODO("Make a main config editor menu")
             Chat.sendMessage(player, "&cYou need to provide a valid menu to edit.")

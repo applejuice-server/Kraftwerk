@@ -10,12 +10,16 @@ import kotlin.math.roundToInt
 
 class PMCCommand : CommandExecutor {
     override fun onCommand(
-        sender: CommandSender?,
+        sender: CommandSender,
         command: Command?,
         label: String?,
         args: Array<String>
     ): Boolean {
-        val player = sender as Player
+        if (sender !is Player) {
+            sender.sendMessage("You can't use this command as you technically aren't a player.")
+            return false
+        }
+        val player = sender
         if (player.scoreboard.getPlayerTeam(player) == null) {
             player.sendMessage("${ChatColor.RED}You must be on a team to send a message.")
             return true

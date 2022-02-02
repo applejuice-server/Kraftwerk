@@ -15,11 +15,13 @@ class ScatterCommand : CommandExecutor {
         label: String?,
         args: Array<String>
     ): Boolean {
-        val player = sender as Player
-        if (!player.hasPermission("uhc.staff.scatter")) {
-            Chat.sendMessage(player, "&cYou don't have permission to use this command.")
-            return false
+        if (sender is Player) {
+            if (!sender.hasPermission("uhc.staff.scatter")) {
+                Chat.sendMessage(sender, "&cYou don't have permission to use this command.")
+                return false
+            }
         }
+        val player = sender as Player
         if (args.isEmpty()) {
             Chat.sendMessage(player, "${Chat.prefix} &7No arguments: &f/scatter <world> <radius> <ffa/teams>&7.")
             return false

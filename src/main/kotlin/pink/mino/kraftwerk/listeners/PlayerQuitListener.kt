@@ -10,6 +10,6 @@ class PlayerQuitListener : Listener {
     @EventHandler
     fun onPlayerQuit(e: PlayerQuitEvent) {
         val player = e.player
-        e.quitMessage = ChatColor.translateAlternateColorCodes('&', "&8[&4-&8] &c${player.displayName} &8(&4${Bukkit.getServer().onlinePlayers.size}&8/&4${Bukkit.getServer().maxPlayers}&8)")
+        e.quitMessage = ChatColor.translateAlternateColorCodes('&', "&8[&4-&8] &c${player.displayName} &8(&4${Bukkit.getServer().onlinePlayers.size}&8/&4${Bukkit.getServer().maxPlayers - 1}&8)")
     }
 }

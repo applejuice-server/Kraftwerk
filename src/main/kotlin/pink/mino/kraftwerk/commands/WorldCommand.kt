@@ -15,11 +15,13 @@ class WorldCommand : CommandExecutor {
         label: String?,
         args: Array<String>
     ): Boolean {
-        val player = sender as Player
-        if (!player.hasPermission("uhc.staff")) {
-            Chat.sendMessage(player, "&cYou don't have permission to execute this command.")
-            return false
+        if (sender is Player) {
+            if (!sender.hasPermission("uhc.staff.whitelist")) {
+                sender.sendMessage(Chat.colored("${Chat.prefix} You do not have permission to use this command."))
+                return false
+            }
         }
+        val player = sender as Player
         if (args.isEmpty()) {
             Chat.sendMessage(player, Chat.line)
             Chat.sendCenteredMessage(player, "&c&lWorld Help")
