@@ -125,6 +125,25 @@ class ScatterFeature : Listener {
                 }
             }
         }
+
+        fun scatterSolo(player: Player, world: World, radius: Int): Boolean {
+            var finalLocation: Location? = null
+            while (finalLocation == null) {
+                val location = Location(world, Random.nextDouble(-radius.toDouble(), radius.toDouble()), 255.0, Random.nextDouble(-radius.toDouble(), radius.toDouble()))
+                if (world.getHighestBlockAt(location).type != Material.CACTUS &&
+                    world.getHighestBlockAt(location).type != Material.LAVA &&
+                    world.getHighestBlockAt(location).type != Material.WATER &&
+                    world.getHighestBlockAt(location).type != Material.STATIONARY_WATER &&
+                    world.getHighestBlockAt(location).type != Material.WATER_LILY
+                ) {
+                    finalLocation = Location(world, location.x, world.getHighestBlockAt(location).location.y + 3, location.z)
+                }
+            }
+            val chunk = world.getChunkAt(finalLocation)
+            world.loadChunk(chunk)
+            player.teleport(finalLocation)
+            return true
+        }
     }
 
 }
