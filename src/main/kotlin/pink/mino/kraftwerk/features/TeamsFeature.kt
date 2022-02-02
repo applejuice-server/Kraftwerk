@@ -43,7 +43,7 @@ class TeamsFeature private constructor() {
      * @param player the player wanting.
      * @return The team.
      */
-    private fun getTeam(player: Player): Team? {
+    fun getTeam(player: Player): Team? {
         return player.scoreboard.getPlayerTeam(player)
     }
 

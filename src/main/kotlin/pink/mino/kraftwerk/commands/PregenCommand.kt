@@ -78,6 +78,7 @@ class PregenCommand : CommandExecutor {
         settings.data!!.set("pregen.border", args[1].toInt())
         settings.data!!.set("pregen.world", args[0])
         settings.saveData()
+        Chat.sendMessage(sender, "${Chat.prefix} View your world using &c/w tp ${args[0]}&7.")
 
         return true
     }
