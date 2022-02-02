@@ -15,7 +15,7 @@ class CanePopulatorFeature : BlockPopulator() {
     private var faces: Array<BlockFace> = arrayOf(BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST)
 
     init {
-        canePatchChance = 60
+        canePatchChance = 25
         cane = Material.SUGAR_CANE_BLOCK
     }
 

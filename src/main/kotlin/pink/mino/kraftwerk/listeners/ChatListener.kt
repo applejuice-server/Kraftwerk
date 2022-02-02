@@ -30,9 +30,9 @@ class ChatListener : Listener {
             }
         } else {
             if (player.hasPermission("uhc.staff.chat.white")) {
-                e.format = "&8[${TeamsFeature.manager.getTeam(player)!!.name}&8] " + prefix + "%s" + ChatColor.DARK_GRAY + " » " + ChatColor.WHITE + "%s"
+                e.format = ChatColor.translateAlternateColorCodes('&', "&8[${TeamsFeature.manager.getTeam(player)!!.prefix}${TeamsFeature.manager.getTeam(player)!!.name}&8] ") + prefix + "%s" + ChatColor.DARK_GRAY + " » " + ChatColor.WHITE + "%s"
             } else {
-                e.format = "&8[${TeamsFeature.manager.getTeam(player)!!.name}&8] " + prefix + "%s" + ChatColor.DARK_GRAY + " » " + ChatColor.GRAY + "%s"
+                e.format = ChatColor.translateAlternateColorCodes('&',"&8[${TeamsFeature.manager.getTeam(player)!!.prefix}${TeamsFeature.manager.getTeam(player)!!.name}&8] ") + prefix + "%s" + ChatColor.DARK_GRAY + " » " + ChatColor.GRAY + "%s"
             }
         }
     }
