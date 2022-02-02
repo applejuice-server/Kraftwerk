@@ -1,8 +1,9 @@
-package pink.mino.kraftwerk.features.options
+package pink.mino.kraftwerk.config.options
 
 import org.bukkit.Material
 import org.bukkit.event.EventHandler
 import org.bukkit.event.entity.ItemSpawnEvent
+import pink.mino.kraftwerk.config.ConfigOption
 
 class AntiStoneOption : ConfigOption(
     "Anti-Stone",

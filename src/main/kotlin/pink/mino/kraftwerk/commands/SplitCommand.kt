@@ -8,7 +8,7 @@ import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.EnchantmentStorageMeta
-import pink.mino.kraftwerk.features.options.ConfigOptionHandler
+import pink.mino.kraftwerk.config.ConfigOptionHandler
 import pink.mino.kraftwerk.utils.Chat
 
 class SplitCommand : CommandExecutor {

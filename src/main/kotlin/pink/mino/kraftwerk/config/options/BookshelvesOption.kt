@@ -1,8 +1,9 @@
-package pink.mino.kraftwerk.features.options
+package pink.mino.kraftwerk.config.options
 
 import org.bukkit.Material
 import org.bukkit.event.EventHandler
 import org.bukkit.event.block.BlockBreakEvent
+import pink.mino.kraftwerk.config.ConfigOption
 
 class BookshelvesOption : ConfigOption(
     "Bookshelves",

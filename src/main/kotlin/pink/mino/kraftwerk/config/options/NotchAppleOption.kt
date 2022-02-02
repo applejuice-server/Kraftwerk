@@ -1,9 +1,10 @@
-package pink.mino.kraftwerk.features.options
+package pink.mino.kraftwerk.config.options
 
 import org.bukkit.Material
 import org.bukkit.event.EventHandler
 import org.bukkit.event.inventory.CraftItemEvent
 import org.bukkit.inventory.ItemStack
+import pink.mino.kraftwerk.config.ConfigOption
 
 class NotchAppleOption : ConfigOption(
     "Notch Apples",

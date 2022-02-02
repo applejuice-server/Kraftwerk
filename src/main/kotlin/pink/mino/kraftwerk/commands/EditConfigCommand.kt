@@ -10,8 +10,8 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
+import pink.mino.kraftwerk.config.ConfigOptionHandler
 import pink.mino.kraftwerk.features.SettingsFeature
-import pink.mino.kraftwerk.features.options.ConfigOptionHandler
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GuiBuilder
 

@@ -1,4 +1,4 @@
-package pink.mino.kraftwerk.features.options
+package pink.mino.kraftwerk.config.options
 
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -7,6 +7,7 @@ import org.bukkit.event.player.PlayerItemConsumeEvent
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.potion.PotionEffectType
 import pink.mino.kraftwerk.Kraftwerk
+import pink.mino.kraftwerk.config.ConfigOption
 
 
 class AbsorptionOption : ConfigOption(

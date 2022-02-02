@@ -1,7 +1,8 @@
-package pink.mino.kraftwerk.features.options
+package pink.mino.kraftwerk.config.options
 
 import org.bukkit.Material
 import pink.mino.kraftwerk.commands.SplitCommand
+import pink.mino.kraftwerk.config.ConfigOption
 
 class SplitEnchantsOption : ConfigOption(
     "Split Enchants",

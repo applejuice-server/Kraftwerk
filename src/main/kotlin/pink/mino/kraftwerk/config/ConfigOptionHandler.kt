@@ -1,8 +1,9 @@
-package pink.mino.kraftwerk.features.options
+package pink.mino.kraftwerk.config
 
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 import pink.mino.kraftwerk.Kraftwerk
+import pink.mino.kraftwerk.config.options.*
 
 
 class ConfigOptionHandler {

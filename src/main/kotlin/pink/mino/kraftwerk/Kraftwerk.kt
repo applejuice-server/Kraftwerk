@@ -11,11 +11,11 @@ import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.material.MaterialData
 import org.bukkit.plugin.java.JavaPlugin
 import pink.mino.kraftwerk.commands.*
+import pink.mino.kraftwerk.config.ConfigOptionHandler
 import pink.mino.kraftwerk.discord.Discord
 import pink.mino.kraftwerk.features.HardcoreHeartsFeature
 import pink.mino.kraftwerk.features.SettingsFeature
 import pink.mino.kraftwerk.features.TeamsFeature
-import pink.mino.kraftwerk.features.options.ConfigOptionHandler
 import pink.mino.kraftwerk.listeners.*
 import pink.mino.kraftwerk.utils.GameState
 

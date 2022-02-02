@@ -1,6 +1,7 @@
-package pink.mino.kraftwerk.features.options
+package pink.mino.kraftwerk.config.options
 
 import org.bukkit.Material
+import pink.mino.kraftwerk.config.ConfigOption
 
 class CrossteamingOption : ConfigOption(
     "Crossteaming",

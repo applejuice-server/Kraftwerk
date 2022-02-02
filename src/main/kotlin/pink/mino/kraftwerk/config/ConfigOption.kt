@@ -1,4 +1,4 @@
-package pink.mino.kraftwerk.features.options
+package pink.mino.kraftwerk.config
 
 import org.bukkit.Bukkit
 import org.bukkit.Material

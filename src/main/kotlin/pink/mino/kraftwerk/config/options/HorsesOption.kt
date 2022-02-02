@@ -1,4 +1,4 @@
-package pink.mino.kraftwerk.features.options
+package pink.mino.kraftwerk.config.options
 
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -6,6 +6,7 @@ import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.spigotmc.event.entity.EntityMountEvent
+import pink.mino.kraftwerk.config.ConfigOption
 import pink.mino.kraftwerk.utils.Chat
 
 class HorsesOption : ConfigOption(

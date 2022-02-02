@@ -1,4 +1,4 @@
-package pink.mino.kraftwerk.features.options
+package pink.mino.kraftwerk.config.options
 
 import org.bukkit.Material
 import org.bukkit.SkullType
@@ -9,6 +9,7 @@ import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.player.PlayerItemConsumeEvent
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
+import pink.mino.kraftwerk.config.ConfigOption
 import pink.mino.kraftwerk.utils.BlockRotation
 
 class GoldenHeadsOption : ConfigOption(
