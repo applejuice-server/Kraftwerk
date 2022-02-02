@@ -27,20 +27,20 @@ class PregenCommand : CommandExecutor {
         }
 
         if (args.isEmpty() || args[1].isEmpty()) {
-            Chat.sendMessage(sender as Player, "${Chat.prefix} &7Invalid usage: ${ChatColor.RED}/pregen <world> <border> &7or&c /pregen cancel")
+            Chat.sendMessage(sender, "${Chat.prefix} &7Invalid usage: ${ChatColor.RED}/pregen <world> <border> &7or&c /pregen cancel")
             return false
         }
         if (args[0] === "cancel") {
             if (Config.fillTask.valid()) {
-                Chat.sendMessage(sender as Player, "${Chat.prefix} Okay, cancelling the pregeneration task.")
+                Chat.sendMessage(sender, "${Chat.prefix} Okay, cancelling the pregeneration task.")
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
                     "wb fill cancel"
                 )
             } else {
-                Chat.sendMessage(sender as Player, "${Chat.prefix} There is no valid pregeneration task running.")
+                Chat.sendMessage(sender, "${Chat.prefix} There is no valid pregeneration task running.")
             }
         }
-        Chat.sendMessage(sender as Player, "${Chat.prefix} &7Please standby, this will take a while.")
+        Chat.sendMessage(sender, "${Chat.prefix} &7Please standby, this will take a while.")
 
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
                 "mvdelete ${args[0]}"

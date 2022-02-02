@@ -15,6 +15,7 @@ import org.bukkit.plugin.java.JavaPlugin
 import pink.mino.kraftwerk.commands.*
 import pink.mino.kraftwerk.config.ConfigOptionHandler
 import pink.mino.kraftwerk.discord.Discord
+import pink.mino.kraftwerk.features.ArenaFeature
 import pink.mino.kraftwerk.features.HardcoreHeartsFeature
 import pink.mino.kraftwerk.features.SettingsFeature
 import pink.mino.kraftwerk.features.TeamsFeature
@@ -46,6 +47,7 @@ class Kraftwerk : JavaPlugin() {
         Bukkit.getServer().pluginManager.registerEvents(FoodChangeListener(), this)
         Bukkit.getServer().pluginManager.registerEvents(EntityHealthRegainListener(), this)
         Bukkit.getServer().pluginManager.registerEvents(PlayerConnectListener(), this)
+        Bukkit.getServer().pluginManager.registerEvents(ArenaFeature(), this)
 
         /* Registering commands */
         getCommand("clear").executor = ClearInventoryCommand()
@@ -59,8 +61,8 @@ class Kraftwerk : JavaPlugin() {
         getCommand("world").executor = WorldCommand()
         getCommand("scatter").executor = ScatterCommand()
         getCommand("clearchat").executor = ClearChatCommand()
-
         getCommand("whitelist").executor = WhitelistCommand()
+        getCommand("regenarena").executor = RegenArenaCommand()
 
         getCommand("gm").executor = GamemodeCommand()
         getCommand("gamemode").executor = GamemodeCommand()
@@ -75,6 +77,7 @@ class Kraftwerk : JavaPlugin() {
         getCommand("health").executor = HealthCommand()
         getCommand("pm").executor = PMCommand()
         getCommand("pmc").executor = PMCCommand()
+        getCommand("arena").executor = ArenaCommand()
 
         /* ProtocolLib stuff */
         if (Bukkit.getPluginManager().getPlugin("ProtocolLib") == null) {

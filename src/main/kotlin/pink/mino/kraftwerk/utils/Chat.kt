@@ -3,6 +3,7 @@ package pink.mino.kraftwerk.utils
 import DefaultFontInfo
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
+import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
 class Chat {
@@ -113,7 +114,7 @@ class Chat {
         }
 
         /* Simple function to send colored messages to players */
-        fun sendMessage(player: Player, message: String?) {
+        fun sendMessage(player: CommandSender, message: String?) {
             var text = message
             if (text == null || text == "") player.sendMessage("")
             text = ChatColor.translateAlternateColorCodes('&', message)
