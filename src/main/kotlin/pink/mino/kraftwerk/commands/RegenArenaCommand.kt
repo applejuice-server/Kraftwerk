@@ -22,6 +22,10 @@ class RegenArenaCommand : CommandExecutor {
             Bukkit.getConsoleSender(),
             "pregen Arena 100"
         )
+        Bukkit.dispatchCommand(
+            Bukkit.getConsoleSender(),
+            "mvgamerule doMobSpawning false Arena"
+        )
         return true
     }
 

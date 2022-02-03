@@ -47,6 +47,7 @@ class Kraftwerk : JavaPlugin() {
         Bukkit.getServer().pluginManager.registerEvents(FoodChangeListener(), this)
         Bukkit.getServer().pluginManager.registerEvents(EntityHealthRegainListener(), this)
         Bukkit.getServer().pluginManager.registerEvents(PlayerConnectListener(), this)
+        Bukkit.getServer().pluginManager.registerEvents(PlayerConsumeListener(), this)
         Bukkit.getServer().pluginManager.registerEvents(ArenaFeature(), this)
 
         /* Registering commands */

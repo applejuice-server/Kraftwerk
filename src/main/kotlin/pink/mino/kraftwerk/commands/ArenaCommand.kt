@@ -20,6 +20,10 @@ class ArenaCommand : CommandExecutor {
             return false
         }
         if (GameState.currentState == GameState.LOBBY) {
+            if (sender.world.name == "Arena") {
+                Chat.sendMessage(sender, "&cYou can't use this command in the arena.")
+                return false
+            }
             ArenaFeature().send(sender)
         } else {
             Chat.sendMessage(sender, "&cThe arena is disabled at the moment.")

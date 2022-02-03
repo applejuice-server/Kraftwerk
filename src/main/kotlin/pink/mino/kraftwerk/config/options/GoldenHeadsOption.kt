@@ -36,17 +36,18 @@ class GoldenHeadsOption : ConfigOption(
       return
     }
     val player = e.entity
-    player.world.strikeLightningEffect(player.location)
-    player.location.block.type = Material.NETHER_FENCE
-    player.location.add(0.0, 1.0, 0.0).block.type = Material.SKULL
+    if (player.world.name != "Arena") {
+      player.location.block.type = Material.NETHER_FENCE
+      player.location.add(0.0, 1.0, 0.0).block.type = Material.SKULL
 
-    val skull: Skull = player.location.add(0.0, 1.0, 0.0).block.state as Skull
-    skull.skullType = SkullType.PLAYER
-    skull.owner = player.name
-    skull.rotation = BlockRotation.getBlockFaceDirection(player.location)
-    skull.update()
+      val skull: Skull = player.location.add(0.0, 1.0, 0.0).block.state as Skull
+      skull.skullType = SkullType.PLAYER
+      skull.owner = player.name
+      skull.rotation = BlockRotation.getBlockFaceDirection(player.location)
+      skull.update()
 
-    val b: Block = player.location.add(0.0, 1.0, 0.0).block
-    b.setData(0x1.toByte(), true)
+      val b: Block = player.location.add(0.0, 1.0, 0.0).block
+      b.setData(0x1.toByte(), true)
+    }
   }
 }
