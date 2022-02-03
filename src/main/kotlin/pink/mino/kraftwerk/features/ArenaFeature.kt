@@ -74,14 +74,12 @@ class ArenaFeature : Listener {
         val victim = e.entity
         val killer = victim.killer
 
-        val list = e.drops
-        val i = list.iterator()
-        while (i.hasNext()) {
-            i.next()
-            i.remove()
-        }
+        e.drops.clear()
 
-        if (killer != null) {
+        if (killstreaks[victim] == null) {
+            killstreaks[victim] = 0
+        }
+        Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
             if (killstreaks[victim]!! >= 5) {
                 Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} &f${victim.name}&7 lost their killstreak of &f${killstreaks[victim]} kills&7 to &f${killer.name}&7!"))
             }
@@ -93,15 +91,15 @@ class ArenaFeature : Listener {
 
             if (killstreaks[killer]!! > 3) {
                 Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} &f${killer.name}&7 now has a killstreak of &f${killstreaks[killer]} kills&7!"))
-                killer.addPotionEffect(PotionEffect(PotionEffectType.SPEED, 10, 2, true, true))
+                killer.addPotionEffect(PotionEffect(PotionEffectType.SPEED, 10, 2, false, true))
             }
-            killer.addPotionEffect(PotionEffect(PotionEffectType.REGENERATION, 15, 2, true, true))
+            killer.addPotionEffect(PotionEffect(PotionEffectType.REGENERATION, 15, 2, false, true))
             val el: EntityLiving = (killer as CraftPlayer).handle
             val health = floor(killer.health / 2 * 10 + el.absorptionHearts / 2 * 10)
             val color = HealthChatColorer.returnHealth(health)
-            Chat.sendMessage(killer, "${Chat.prefix} &7You killed &f${victim.name}&7!")
-            Chat.sendMessage(victim, "${Chat.prefix} &7You were killed by &f${killer.name} &8(${color}${health}❤&8)")
-        }
+            killer.sendMessage(Chat.colored("${Chat.prefix} &7You killed &f${victim.name}&7!"))
+            victim.sendMessage(Chat.colored("${Chat.prefix} &7You were killed by &f${killer.name} &8(${color}${health}❤&8)"))
+        }, 1L)
     }
 
     @EventHandler
@@ -140,6 +138,18 @@ class ArenaFeature : Listener {
                 e.isCancelled = true
             }
             EntityType.MUSHROOM_COW -> {
+                e.isCancelled = true
+            }
+            EntityType.CREEPER -> {
+                e.isCancelled = true
+            }
+            EntityType.SKELETON -> {
+                e.isCancelled = true
+            }
+            EntityType.ZOMBIE -> {
+                e.isCancelled = true
+            }
+            EntityType.ENDERMAN -> {
                 e.isCancelled = true
             }
             else -> {}
