@@ -12,6 +12,7 @@ import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.FoodLevelChangeEvent
+import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
@@ -48,6 +49,13 @@ class SpawnFeature : Listener {
     fun onRightClick(e: PlayerInteractEvent) {
         if (e.item.itemMeta.displayName == Chat.colored("&cFFA Arena")) {
             ArenaFeature.instance.send(e.player)
+        }
+    }
+
+    @EventHandler
+    fun onInventoryClick(e: InventoryClickEvent) {
+        if (e.whoClicked.world.name == "Spawn") {
+            e.isCancelled = true
         }
     }
 

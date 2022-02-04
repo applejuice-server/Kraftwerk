@@ -16,6 +16,9 @@ class PlayerDeathListener : Listener {
         val old = e.deathMessage
         player.world.strikeLightningEffect(player.location)
         e.deathMessage = ChatColor.translateAlternateColorCodes('&', "&8»&f $old &8«")
+        if (player.world.name == "Arena") {
+            e.deathMessage = null
+        }
         Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
             player.spigot().respawn()
         }, 1L)

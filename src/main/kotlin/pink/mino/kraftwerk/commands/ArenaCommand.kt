@@ -27,6 +27,8 @@ class ArenaCommand : CommandExecutor {
                 return false
             }
             ArenaFeature.instance.send(sender)
+            Chat.sendMessage(sender, "${Chat.prefix} Welcome to the arena, &f${sender.name}&7!")
+            Chat.sendMessage(sender, "&8(&7Cross-teaming in the arena is not allowed!&8)")
         } else {
             Chat.sendMessage(sender, "&cThe arena is disabled at the moment.")
         }

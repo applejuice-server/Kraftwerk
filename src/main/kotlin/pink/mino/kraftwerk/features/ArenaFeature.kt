@@ -72,9 +72,7 @@ class ArenaFeature : Listener {
         p.inventory.boots = ItemStack(Material.DIAMOND_BOOTS)
 
         ScatterFeature.scatterSolo(p, Bukkit.getWorld("Arena"), 100)
-        p.addPotionEffect(PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 10, 100, true, false))
-        Chat.sendMessage(p, "${Chat.prefix} Welcome to the arena, &f${p.name}&7!")
-        Chat.sendMessage(p, "&8(&7Cross-teaming in the arena is not allowed!&8)")
+        p.addPotionEffect(PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 200, 100, true, false))
     }
 
     @EventHandler
@@ -82,6 +80,11 @@ class ArenaFeature : Listener {
         if (e.entity.world.name != "Arena") return
         if (e.entityType === EntityType.PLAYER && e.damager != null && e.damager.type === EntityType.ARROW && (e.damager as Arrow).shooter === e.entity) {
             e.isCancelled = true
+        }
+        if (e.damager.type == EntityType.PLAYER) {
+            if ((e.damager as Player).hasPotionEffect(PotionEffectType.DAMAGE_RESISTANCE)) {
+                (e.damager as Player).removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE)
+            }
         }
     }
 
@@ -124,9 +127,9 @@ class ArenaFeature : Listener {
             }
             if (killerKillstreak > 3) {
                 Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} &f${killer.name}&7 now has a killstreak of &f${killerKillstreak} kills&7!"))
-                killer.addPotionEffect(PotionEffect(PotionEffectType.SPEED, 10, 2, false, true))
+                killer.addPotionEffect(PotionEffect(PotionEffectType.SPEED, 200, 2, false, true))
             }
-            killer.addPotionEffect(PotionEffect(PotionEffectType.REGENERATION, 10, 2, true, true))
+            killer.addPotionEffect(PotionEffect(PotionEffectType.REGENERATION, 200, 2, true, true))
             val el: EntityLiving = (killer as CraftPlayer).handle
             val health = floor(killer.health / 2 * 10 + el.absorptionHearts / 2 * 10)
             val color = HealthChatColorer.returnHealth(health)
