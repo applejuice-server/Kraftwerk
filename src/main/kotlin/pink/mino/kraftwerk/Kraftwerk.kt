@@ -15,10 +15,7 @@ import org.bukkit.plugin.java.JavaPlugin
 import pink.mino.kraftwerk.commands.*
 import pink.mino.kraftwerk.config.ConfigOptionHandler
 import pink.mino.kraftwerk.discord.Discord
-import pink.mino.kraftwerk.features.ArenaFeature
-import pink.mino.kraftwerk.features.HardcoreHeartsFeature
-import pink.mino.kraftwerk.features.SettingsFeature
-import pink.mino.kraftwerk.features.TeamsFeature
+import pink.mino.kraftwerk.features.*
 import pink.mino.kraftwerk.listeners.*
 import pink.mino.kraftwerk.utils.GameState
 import java.sql.SQLException
@@ -49,6 +46,7 @@ class Kraftwerk : JavaPlugin() {
         Bukkit.getServer().pluginManager.registerEvents(PlayerConnectListener(), this)
         Bukkit.getServer().pluginManager.registerEvents(PlayerConsumeListener(), this)
         Bukkit.getServer().pluginManager.registerEvents(ArenaFeature.instance, this)
+        Bukkit.getServer().pluginManager.registerEvents(SpawnFeature.instance, this)
 
         /* Registering commands */
         getCommand("clear").executor = ClearInventoryCommand()
@@ -79,6 +77,7 @@ class Kraftwerk : JavaPlugin() {
         getCommand("pm").executor = PMCommand()
         getCommand("pmc").executor = PMCCommand()
         getCommand("arena").executor = ArenaCommand()
+        getCommand("spawn").executor = SpawnCommand()
 
         /* ProtocolLib stuff */
         if (Bukkit.getPluginManager().getPlugin("ProtocolLib") == null) {

@@ -26,8 +26,6 @@ class WorldCommand : CommandExecutor {
             Chat.sendMessage(player, Chat.line)
             Chat.sendCenteredMessage(player, "&c&lWorld Help")
             Chat.sendMessage(player, "${Chat.prefix} &f/world tp <world> &8- &7Teleport to the provided world.")
-            Chat.sendMessage(player, "${Chat.prefix} &f/world create <name> <env> &8- &7Creates the provided world with the provided arguments.")
-            Chat.sendMessage(player, "${Chat.prefix} &f/world delete <world> &8- &7Deletes the provided world.")
             Chat.sendMessage(player, "${Chat.prefix} &f/world list &8- &7List all worlds.")
             Chat.sendMessage(player, Chat.line)
             return false

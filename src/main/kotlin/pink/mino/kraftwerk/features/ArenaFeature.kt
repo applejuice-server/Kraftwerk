@@ -2,6 +2,7 @@ package pink.mino.kraftwerk.features
 
 import net.minecraft.server.v1_8_R3.EntityLiving
 import org.bukkit.Bukkit
+import org.bukkit.GameMode
 import org.bukkit.Material
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer
 import org.bukkit.entity.Arrow
@@ -48,6 +49,7 @@ class ArenaFeature : Listener {
         }
         p.inventory.clear()
         p.inventory.armorContents = null
+        p.gameMode = GameMode.SURVIVAL
 
         p.inventory.setItem(0, ItemStack(Material.DIAMOND_SWORD))
         p.inventory.setItem(1, ItemStack(Material.FISHING_ROD))
