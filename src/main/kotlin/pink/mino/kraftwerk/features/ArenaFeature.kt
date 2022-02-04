@@ -4,12 +4,14 @@ import net.minecraft.server.v1_8_R3.EntityLiving
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer
+import org.bukkit.entity.Arrow
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockPlaceEvent
+import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.entity.EntitySpawnEvent
 import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.player.PlayerRespawnEvent
@@ -73,7 +75,13 @@ class ArenaFeature : Listener {
         Chat.sendMessage(p, "&8(&7Cross-teaming in the arena is not allowed!&8)")
     }
 
-
+    @EventHandler
+    fun onPlayerDamage(e: EntityDamageByEntityEvent) {
+        if (e.entity.world.name != "Arena") return
+        if (e.entityType === EntityType.PLAYER && e.damager != null && e.damager.type === EntityType.ARROW && (e.damager as Arrow).shooter === e.entity) {
+            e.isCancelled = true
+        }
+    }
 
     @EventHandler
     fun onPlayerDeath(e: PlayerDeathEvent) {
