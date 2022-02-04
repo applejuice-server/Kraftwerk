@@ -25,10 +25,19 @@ import kotlin.math.floor
 
 
 class ArenaFeature : Listener {
-
-    val killstreaks: HashMap<Player, Int> = HashMap()
+    companion object {
+        val instance = ArenaFeature()
+    }
 
     fun send(p: Player) {
+        var statement = "SELECT (killstreaks) from arena WHERE uuid = '${p.uniqueId}'"
+        val result = JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection.createStatement().executeQuery(statement)
+        if (!result.isBeforeFirst) {
+            statement = "INSERT INTO arena (uuid, killstreaks) VALUES ('${p.uniqueId}', 0)"
+            with(JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection) {
+                createStatement().execute(statement)
+            }
+        }
         p.health = 20.0
         p.foodLevel = 20
         val effects = p.activePotionEffects
@@ -76,30 +85,42 @@ class ArenaFeature : Listener {
 
         e.drops.clear()
 
-        if (killstreaks[victim] == null) {
-            killstreaks[victim] = 0
-        }
-        Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-            if (killstreaks[victim]!! >= 5) {
-                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} &f${victim.name}&7 lost their killstreak of &f${killstreaks[victim]} kills&7 to &f${killer.name}&7!"))
-            }
-            killstreaks[victim] = 0
-            if (killstreaks[killer] == null) {
-                killstreaks[killer] = 0
-            }
-            killstreaks[killer]?.plus(1)
+        var statement = "SELECT (killstreaks) from arena WHERE uuid = '${killer.uniqueId}'"
+        var result = JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection.createStatement().executeQuery(statement)
+        result.next()
+        var killerKillstreak = result.getInt("killstreaks")
 
-            if (killstreaks[killer]!! > 3) {
-                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} &f${killer.name}&7 now has a killstreak of &f${killstreaks[killer]} kills&7!"))
-                killer.addPotionEffect(PotionEffect(PotionEffectType.SPEED, 10, 2, false, true))
-            }
-            killer.addPotionEffect(PotionEffect(PotionEffectType.REGENERATION, 15, 2, false, true))
-            val el: EntityLiving = (killer as CraftPlayer).handle
-            val health = floor(killer.health / 2 * 10 + el.absorptionHearts / 2 * 10)
-            val color = HealthChatColorer.returnHealth(health)
-            killer.sendMessage(Chat.colored("${Chat.prefix} &7You killed &f${victim.name}&7!"))
-            victim.sendMessage(Chat.colored("${Chat.prefix} &7You were killed by &f${killer.name} &8(${color}${health}❤&8)"))
-        }, 1L)
+        statement = "SELECT (killstreaks) from arena WHERE uuid = '${victim.uniqueId}'"
+        result = JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection.createStatement().executeQuery(statement)
+        result.next()
+        val victimKillstreak = result.getInt("killstreaks")
+
+        statement = "UPDATE arena SET killstreaks = 0 where uuid = '${victim.uniqueId}'"
+        with(JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection) {
+            createStatement().execute(statement)
+        }
+        statement = "UPDATE arena SET killstreaks = ${killerKillstreak + 1} where uuid = '${killer.uniqueId}'"
+        with(JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection) {
+            createStatement().execute(statement)
+        }
+
+        statement = "SELECT (killstreaks) from arena WHERE uuid = '${killer.uniqueId}'"
+        result = JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection.createStatement().executeQuery(statement)
+        result.next()
+        killerKillstreak = result.getInt("killstreaks")
+        if (victimKillstreak > 5) {
+            Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} &f${victim.name}&7 lost their killstreak of &f${victimKillstreak} kills&7 to &f${killer.name}&7!"))
+        }
+        if (killerKillstreak > 3) {
+            Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} &f${killer.name}&7 now has a killstreak of &f${killerKillstreak} kills&7!"))
+            killer.addPotionEffect(PotionEffect(PotionEffectType.SPEED, 10, 2, false, true))
+        }
+        killer.addPotionEffect(PotionEffect(PotionEffectType.REGENERATION, 10, 2, true, true))
+        val el: EntityLiving = (killer as CraftPlayer).handle
+        val health = floor(killer.health / 2 * 10 + el.absorptionHearts / 2 * 10)
+        val color = HealthChatColorer.returnHealth(health)
+        killer.sendMessage(Chat.colored("${Chat.prefix} &7You killed &f${victim.name}&7!"))
+        victim.sendMessage(Chat.colored("${Chat.prefix} &7You were killed by &f${killer.name} &8(${color}${health}❤&8)"))
     }
 
     @EventHandler

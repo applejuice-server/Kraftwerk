@@ -28,7 +28,7 @@ import javax.sql.DataSource
 class Kraftwerk : JavaPlugin() {
 
     private var protocolManager: ProtocolManager? = null
-    private lateinit var dataSource: DataSource
+    lateinit var dataSource: DataSource
 
     override fun onLoad() {
         protocolManager = ProtocolLibrary.getProtocolManager()
@@ -48,7 +48,7 @@ class Kraftwerk : JavaPlugin() {
         Bukkit.getServer().pluginManager.registerEvents(EntityHealthRegainListener(), this)
         Bukkit.getServer().pluginManager.registerEvents(PlayerConnectListener(), this)
         Bukkit.getServer().pluginManager.registerEvents(PlayerConsumeListener(), this)
-        Bukkit.getServer().pluginManager.registerEvents(ArenaFeature(), this)
+        Bukkit.getServer().pluginManager.registerEvents(ArenaFeature.instance, this)
 
         /* Registering commands */
         getCommand("clear").executor = ClearInventoryCommand()

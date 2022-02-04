@@ -24,7 +24,7 @@ class ArenaCommand : CommandExecutor {
                 Chat.sendMessage(sender, "&cYou can't use this command in the arena.")
                 return false
             }
-            ArenaFeature().send(sender)
+            ArenaFeature.instance.send(sender)
         } else {
             Chat.sendMessage(sender, "&cThe arena is disabled at the moment.")
         }
