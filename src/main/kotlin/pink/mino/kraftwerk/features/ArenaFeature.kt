@@ -93,42 +93,49 @@ class ArenaFeature : Listener {
 
         e.drops.clear()
 
-        var statement = "SELECT (killstreaks) from arena WHERE uuid = '${killer.uniqueId}'"
-        var result = JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection.createStatement().executeQuery(statement)
-        result.next()
-        var killerKillstreak = result.getInt("killstreaks")
+        if (killer != null) {
+            var statement = "SELECT (killstreaks) from arena WHERE uuid = '${killer.uniqueId}'"
+            var result = JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection.createStatement().executeQuery(statement)
+            result.next()
+            var killerKillstreak = result.getInt("killstreaks")
 
-        statement = "SELECT (killstreaks) from arena WHERE uuid = '${victim.uniqueId}'"
-        result = JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection.createStatement().executeQuery(statement)
-        result.next()
-        val victimKillstreak = result.getInt("killstreaks")
+            statement = "SELECT (killstreaks) from arena WHERE uuid = '${victim.uniqueId}'"
+            result = JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection.createStatement().executeQuery(statement)
+            result.next()
+            val victimKillstreak = result.getInt("killstreaks")
 
-        statement = "UPDATE arena SET killstreaks = 0 where uuid = '${victim.uniqueId}'"
-        with(JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection) {
-            createStatement().execute(statement)
-        }
-        statement = "UPDATE arena SET killstreaks = ${killerKillstreak + 1} where uuid = '${killer.uniqueId}'"
-        with(JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection) {
-            createStatement().execute(statement)
-        }
+            statement = "UPDATE arena SET killstreaks = 0 where uuid = '${victim.uniqueId}'"
+            with(JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection) {
+                createStatement().execute(statement)
+            }
+            statement = "UPDATE arena SET killstreaks = ${killerKillstreak + 1} where uuid = '${killer.uniqueId}'"
+            with(JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection) {
+                createStatement().execute(statement)
+            }
 
-        statement = "SELECT (killstreaks) from arena WHERE uuid = '${killer.uniqueId}'"
-        result = JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection.createStatement().executeQuery(statement)
-        result.next()
-        killerKillstreak = result.getInt("killstreaks")
-        if (victimKillstreak > 5) {
-            Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} &f${victim.name}&7 lost their killstreak of &f${victimKillstreak} kills&7 to &f${killer.name}&7!"))
+            statement = "SELECT (killstreaks) from arena WHERE uuid = '${killer.uniqueId}'"
+            result = JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection.createStatement().executeQuery(statement)
+            result.next()
+            killerKillstreak = result.getInt("killstreaks")
+            if (victimKillstreak > 5) {
+                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} &f${victim.name}&7 lost their killstreak of &f${victimKillstreak} kills&7 to &f${killer.name}&7!"))
+            }
+            if (killerKillstreak > 3) {
+                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} &f${killer.name}&7 now has a killstreak of &f${killerKillstreak} kills&7!"))
+                killer.addPotionEffect(PotionEffect(PotionEffectType.SPEED, 10, 2, false, true))
+            }
+            killer.addPotionEffect(PotionEffect(PotionEffectType.REGENERATION, 10, 2, true, true))
+            val el: EntityLiving = (killer as CraftPlayer).handle
+            val health = floor(killer.health / 2 * 10 + el.absorptionHearts / 2 * 10)
+            val color = HealthChatColorer.returnHealth(health)
+            killer.sendMessage(Chat.colored("${Chat.prefix} &7You killed &f${victim.name}&7!"))
+            victim.sendMessage(Chat.colored("${Chat.prefix} &7You were killed by &f${killer.name} &8(${color}${health}❤&8)"))
+        } else {
+            var statement = "UPDATE arena SET killstreaks = 0 where uuid = '${victim.uniqueId}'"
+            with(JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection) {
+                createStatement().execute(statement)
+            }
         }
-        if (killerKillstreak > 3) {
-            Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} &f${killer.name}&7 now has a killstreak of &f${killerKillstreak} kills&7!"))
-            killer.addPotionEffect(PotionEffect(PotionEffectType.SPEED, 10, 2, false, true))
-        }
-        killer.addPotionEffect(PotionEffect(PotionEffectType.REGENERATION, 10, 2, true, true))
-        val el: EntityLiving = (killer as CraftPlayer).handle
-        val health = floor(killer.health / 2 * 10 + el.absorptionHearts / 2 * 10)
-        val color = HealthChatColorer.returnHealth(health)
-        killer.sendMessage(Chat.colored("${Chat.prefix} &7You killed &f${victim.name}&7!"))
-        victim.sendMessage(Chat.colored("${Chat.prefix} &7You were killed by &f${killer.name} &8(${color}${health}❤&8)"))
     }
 
     @EventHandler
