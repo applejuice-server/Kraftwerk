@@ -32,6 +32,14 @@ class ArenaFeature : Listener {
         val instance = ArenaFeature()
     }
 
+    fun unbreakableItem(material: Material): ItemStack {
+        val item = ItemStack(material)
+        val meta = item.itemMeta
+        meta.spigot().isUnbreakable = true
+        item.itemMeta = meta
+        return item
+    }
+
     fun send(p: Player) {
         var statement = "SELECT (killstreaks) from arena WHERE uuid = '${p.uniqueId}'"
         val result = JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection.createStatement().executeQuery(statement)
@@ -51,9 +59,9 @@ class ArenaFeature : Listener {
         p.inventory.armorContents = null
         p.gameMode = GameMode.SURVIVAL
 
-        p.inventory.setItem(0, ItemStack(Material.DIAMOND_SWORD))
-        p.inventory.setItem(1, ItemStack(Material.FISHING_ROD))
-        p.inventory.setItem(2, ItemStack(Material.BOW))
+        p.inventory.setItem(0, unbreakableItem(Material.DIAMOND_SWORD))
+        p.inventory.setItem(1, unbreakableItem(Material.FISHING_ROD))
+        p.inventory.setItem(2, unbreakableItem(Material.BOW))
         p.inventory.setItem(3, ItemStack(Material.COBBLESTONE, 64))
         p.inventory.setItem(4, ItemStack(Material.WATER_BUCKET))
         p.inventory.setItem(5, ItemStack(Material.LAVA_BUCKET))
@@ -66,10 +74,10 @@ class ArenaFeature : Listener {
         p.inventory.setItem(8, goldenHeads)
         p.inventory.setItem(9, ItemStack(Material.ARROW, 64))
 
-        p.inventory.helmet = ItemStack(Material.IRON_HELMET)
-        p.inventory.chestplate = ItemStack(Material.IRON_CHESTPLATE)
-        p.inventory.leggings = ItemStack(Material.IRON_LEGGINGS)
-        p.inventory.boots = ItemStack(Material.DIAMOND_BOOTS)
+        p.inventory.helmet = unbreakableItem(Material.IRON_HELMET)
+        p.inventory.chestplate = unbreakableItem(Material.IRON_CHESTPLATE)
+        p.inventory.leggings = unbreakableItem(Material.IRON_LEGGINGS)
+        p.inventory.boots = unbreakableItem(Material.DIAMOND_BOOTS)
 
         ScatterFeature.scatterSolo(p, Bukkit.getWorld("Arena"), 100)
         p.addPotionEffect(PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 200, 100, true, false))
@@ -130,13 +138,19 @@ class ArenaFeature : Listener {
                 killer.addPotionEffect(PotionEffect(PotionEffectType.SPEED, 200, 2, false, true))
             }
             killer.addPotionEffect(PotionEffect(PotionEffectType.REGENERATION, 200, 2, true, true))
+            val goldenHeads = ItemStack(Material.GOLDEN_APPLE, 1)
+            val meta = goldenHeads.itemMeta
+            meta.displayName = Chat.colored("&6Golden Head")
+            goldenHeads.itemMeta = meta
+            killer.inventory.addItem(goldenHeads)
+            killer.inventory.addItem(ItemStack(Material.ARROW, 8))
             val el: EntityLiving = (killer as CraftPlayer).handle
             val health = floor(killer.health / 2 * 10 + el.absorptionHearts / 2 * 10)
             val color = HealthChatColorer.returnHealth(health)
             killer.sendMessage(Chat.colored("${Chat.prefix} &7You killed &f${victim.name}&7!"))
             victim.sendMessage(Chat.colored("${Chat.prefix} &7You were killed by &f${killer.name} &8(${color}${health}❤&8)"))
         } else {
-            var statement = "UPDATE arena SET killstreaks = 0 where uuid = '${victim.uniqueId}'"
+            val statement = "UPDATE arena SET killstreaks = 0 where uuid = '${victim.uniqueId}'"
             with(JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection) {
                 createStatement().execute(statement)
             }
