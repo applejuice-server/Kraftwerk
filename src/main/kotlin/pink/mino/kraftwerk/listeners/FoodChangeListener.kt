@@ -11,7 +11,7 @@ class FoodChangeListener : Listener {
     @EventHandler
     fun onFoodLevelChange(event: FoodLevelChangeEvent) {
         if (event.foodLevel < (event.entity as Player).foodLevel) {
-            event.isCancelled = Random().nextInt(100) < 66
+            event.isCancelled = Random().nextInt(100) > 66
         }
     }
 }

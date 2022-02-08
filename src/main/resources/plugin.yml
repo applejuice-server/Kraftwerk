@@ -96,6 +96,10 @@ commands:
     aliases:
       - lobby
     description: Joins the spawn.
+  start:
+    aliases:
+      - startuhc
+    description: Starts a UHC game.
 depend:
   - ProtocolLib
   - JDA

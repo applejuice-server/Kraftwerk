@@ -27,7 +27,7 @@ class ScatterFeature : Listener {
                     for (player in Bukkit.getOnlinePlayers()) {
                         scatteringList.add(player)
                     }
-                    Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Preparing to scatter players, please standby, this might take a bit. &8(&7Mode: &cFFA&8 | &7Radius: &c${radius}x${radius}&8)"))
+                    Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Preparing to scatter players, please standby, this might take a bit."))
                     scattering = true
                     for (player in scatteringList) {
                         var finalLocation: Location? = null

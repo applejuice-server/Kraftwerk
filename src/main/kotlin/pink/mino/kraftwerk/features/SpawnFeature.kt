@@ -47,8 +47,10 @@ class SpawnFeature : Listener {
 
     @EventHandler
     fun onRightClick(e: PlayerInteractEvent) {
-        if (e.item.itemMeta.displayName == Chat.colored("&cFFA Arena")) {
-            ArenaFeature.instance.send(e.player)
+        if (e.player.world.name == "Spawn") {
+            if (e.item.itemMeta.displayName == Chat.colored("&cFFA Arena")) {
+                ArenaFeature.instance.send(e.player)
+            }
         }
     }
 

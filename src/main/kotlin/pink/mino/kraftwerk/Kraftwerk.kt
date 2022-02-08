@@ -47,6 +47,7 @@ class Kraftwerk : JavaPlugin() {
         Bukkit.getServer().pluginManager.registerEvents(PlayerConsumeListener(), this)
         Bukkit.getServer().pluginManager.registerEvents(ArenaFeature.instance, this)
         Bukkit.getServer().pluginManager.registerEvents(SpawnFeature.instance, this)
+        Bukkit.getServer().pluginManager.registerEvents(UHCFeature(), this)
 
         /* Registering commands */
         getCommand("clear").executor = ClearInventoryCommand()
@@ -62,6 +63,7 @@ class Kraftwerk : JavaPlugin() {
         getCommand("clearchat").executor = ClearChatCommand()
         getCommand("whitelist").executor = WhitelistCommand()
         getCommand("regenarena").executor = RegenArenaCommand()
+        getCommand("start").executor = StartCommand()
 
         getCommand("gm").executor = GamemodeCommand()
         getCommand("gamemode").executor = GamemodeCommand()
