@@ -66,6 +66,7 @@ class Kraftwerk : JavaPlugin() {
         getCommand("regenarena").executor = RegenArenaCommand()
         getCommand("start").executor = StartCommand()
         getCommand("pvp").executor = PvPCommand()
+        getCommand("border").executor = BorderCommand()
 
         getCommand("gm").executor = GamemodeCommand()
         getCommand("gamemode").executor = GamemodeCommand()

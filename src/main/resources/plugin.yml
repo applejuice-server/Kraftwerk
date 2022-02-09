@@ -102,6 +102,10 @@ commands:
     description: Starts a UHC game.
   pvp:
     description: Enables/disables PvP.
+  border:
+    aliases:
+      - shrink
+    description: Sets the border for the current UHC world.
 depend:
   - ProtocolLib
   - JDA
