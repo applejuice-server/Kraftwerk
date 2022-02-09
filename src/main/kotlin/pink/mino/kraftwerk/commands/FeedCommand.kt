@@ -22,14 +22,15 @@ class FeedCommand : CommandExecutor {
                 sender.sendMessage("You can't use this command as you technically aren't a player.")
                 return false
             }
-            val player = sender
-            player.foodLevel = 20
-            Chat.sendMessage(player, "${Chat.prefix} &7You have fed yourself.")
+            sender.foodLevel = 20
+            sender.saturation = 20F
+            Chat.sendMessage(sender, "${Chat.prefix} &7You have fed yourself.")
             return true
         } else {
             if (args[0] == "*") {
                 for (online in ArrayList(Bukkit.getServer().onlinePlayers)) {
                     online.foodLevel = 20
+                    online.saturation = 20F
                     Chat.sendMessage(online, "${Chat.prefix} You have been fed by &c${sender.name}&7.")
                 }
                 Chat.sendMessage(sender as Player, "${Chat.prefix} &7You've fed all players.")
@@ -41,6 +42,7 @@ class FeedCommand : CommandExecutor {
                     return false
                 }
                 target.foodLevel = 20
+                target.saturation = 20F
                 Chat.sendMessage(target, "${Chat.prefix} You've been fed by &c${sender.name}&7.")
                 Chat.sendMessage(sender as Player, "${Chat.prefix} Fed &c${target.name}&7.")
                 return true

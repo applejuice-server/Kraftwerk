@@ -45,9 +45,9 @@ class ConfigCommand : CommandExecutor {
             sender.sendMessage("You can't use this command as you technically aren't a player.")
             return false
         }
-        val player = sender
         val gui = GuiBuilder().rows(3).name(ChatColor.translateAlternateColorCodes('&', "&4UHC Config"))
 
+        sender.sendMessage(Chat.colored("${Chat.prefix} Opening the UHC configuration..."))
         val options = ItemStack(Material.GOLDEN_APPLE)
         val optionsMeta = options.itemMeta
         optionsMeta.displayName = ChatColor.translateAlternateColorCodes('&', "&4Options")
@@ -66,8 +66,8 @@ class ConfigCommand : CommandExecutor {
         )
         options.itemMeta = optionsMeta
         gui.item(10, options).onClick runnable@{
-            if (player.hasPermission("uhc.staff")) {
-                Bukkit.dispatchCommand(player as CommandSender, "editconfig options")
+            if (sender.hasPermission("uhc.staff")) {
+                Bukkit.dispatchCommand(sender as CommandSender, "editconfig options")
             }
             it.isCancelled = true
         }
@@ -86,8 +86,8 @@ class ConfigCommand : CommandExecutor {
         )
         rules.itemMeta = rulesMeta
         gui.item(11, rules).onClick runnable@{
-            if (player.hasPermission("uhc.staff")) {
-                Bukkit.dispatchCommand(player as CommandSender, "editconfig rules")
+            if (sender.hasPermission("uhc.staff")) {
+                Bukkit.dispatchCommand(sender as CommandSender, "editconfig rules")
             }
             it.isCancelled = true
         }
@@ -105,8 +105,8 @@ class ConfigCommand : CommandExecutor {
         )
         miningRules.itemMeta = miningRulesMeta
         gui.item(12, miningRules).onClick runnable@{
-            if (player.hasPermission("uhc.staff")) {
-                Bukkit.dispatchCommand(player as CommandSender, "editconfig rules")
+            if (sender.hasPermission("uhc.staff")) {
+                Bukkit.dispatchCommand(sender as CommandSender, "editconfig rules")
             }
             it.isCancelled = true
         }
@@ -119,22 +119,22 @@ class ConfigCommand : CommandExecutor {
             Chat.colored(Chat.line),
             "",
             Chat.colored("&7Final Heal ${Chat.dash} &c${getEventTime("final-heal")} min."),
-            Chat.colored("&7PvP ${Chat.dash} &c${getEventTime("pvp")} min."),
-            Chat.colored("&7Meetup ${Chat.dash} &c${getEventTime("meetup")} min."),
+            Chat.colored("&7PvP ${Chat.dash} &c${getEventTime("pvp") + getEventTime("final-heal")} min."),
+            Chat.colored("&7Meetup ${Chat.dash} &c${getEventTime("pvp") + getEventTime("final-heal") + getEventTime("meetup")} min."),
             "",
             Chat.colored(Chat.line)
         )
         events.itemMeta = eventsMeta
         gui.item(13, events).onClick runnable@{
-            if (player.hasPermission("uhc.staff")) {
-                Bukkit.dispatchCommand(player as CommandSender, "editconfig events")
+            if (sender.hasPermission("uhc.staff")) {
+                Bukkit.dispatchCommand(sender as CommandSender, "editconfig events")
             }
             it.isCancelled = true
         }
         val matchpost = ItemStack(Material.PAPER)
         val matchpostMeta = matchpost.itemMeta
         matchpostMeta.displayName = Chat.colored("&4Matchpost")
-        if (player.hasPermission("uhc.staff")) {
+        if (sender.hasPermission("uhc.staff")) {
             matchpostMeta.lore = listOf(
                 Chat.colored(Chat.line),
                 "",
@@ -154,8 +154,8 @@ class ConfigCommand : CommandExecutor {
         }
         matchpost.itemMeta = matchpostMeta
         gui.item(14, matchpost).onClick runnable@{
-            if (player.hasPermission("uhc.staff")) {
-                Bukkit.dispatchCommand(player as CommandSender, "editconfig matchpost")
+            if (sender.hasPermission("uhc.staff")) {
+                Bukkit.dispatchCommand(sender as CommandSender, "editconfig matchpost")
             }
             it.isCancelled = true
         }
@@ -169,8 +169,8 @@ class ConfigCommand : CommandExecutor {
         )
         potions.itemMeta = potionsMeta
         gui.item(15, potions).onClick runnable@{
-            if (player.hasPermission("uhc.staff")) {
-                Bukkit.dispatchCommand(player as CommandSender, "editconfig potions")
+            if (sender.hasPermission("uhc.staff")) {
+                Bukkit.dispatchCommand(sender as CommandSender, "editconfig potions")
             }
             it.isCancelled = true
         }
@@ -178,7 +178,7 @@ class ConfigCommand : CommandExecutor {
         val hostMeta = host.itemMeta as SkullMeta
         hostMeta.displayName = Chat.colored("&4Host")
         hostMeta.owner = SettingsFeature.instance.data!!.getString("game.host")
-        if (player.hasPermission("uhc.staff")) {
+        if (sender.hasPermission("uhc.staff")) {
             hostMeta.lore = listOf(
                 Chat.colored(Chat.line),
                 "",
@@ -198,13 +198,13 @@ class ConfigCommand : CommandExecutor {
         }
         host.itemMeta = hostMeta
         gui.item(16, host).onClick runnable@{
-            if (player.hasPermission("uhc.staff")) {
-                Bukkit.dispatchCommand(player as CommandSender, "editconfig host")
+            if (sender.hasPermission("uhc.staff")) {
+                Bukkit.dispatchCommand(sender as CommandSender, "editconfig host")
             }
             it.isCancelled = true
         }
-        player.playSound(player.location, Sound.LEVEL_UP, 10.toFloat(), 10.toFloat())
-        player.openInventory(gui.make())
+        sender.playSound(sender.location, Sound.LEVEL_UP, 10.toFloat(), 10.toFloat())
+        sender.openInventory(gui.make())
         return true
     }
 

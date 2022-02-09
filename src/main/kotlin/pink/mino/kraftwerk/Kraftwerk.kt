@@ -41,13 +41,14 @@ class Kraftwerk : JavaPlugin() {
         Bukkit.getServer().pluginManager.registerEvents(ChatListener(), this)
         Bukkit.getServer().pluginManager.registerEvents(WorldInitializeListener(), this)
         Bukkit.getServer().pluginManager.registerEvents(WeatherChangeListener(), this)
-        Bukkit.getServer().pluginManager.registerEvents(FoodChangeListener(), this)
+        Bukkit.getServer().pluginManager.registerEvents(SaturationFixer(), this)
         Bukkit.getServer().pluginManager.registerEvents(EntityHealthRegainListener(), this)
         Bukkit.getServer().pluginManager.registerEvents(PlayerConnectListener(), this)
         Bukkit.getServer().pluginManager.registerEvents(PlayerConsumeListener(), this)
         Bukkit.getServer().pluginManager.registerEvents(ArenaFeature.instance, this)
         Bukkit.getServer().pluginManager.registerEvents(SpawnFeature.instance, this)
         Bukkit.getServer().pluginManager.registerEvents(UHCFeature(), this)
+        Bukkit.getServer().pluginManager.registerEvents(PvPListener(), this)
 
         /* Registering commands */
         getCommand("clear").executor = ClearInventoryCommand()
@@ -64,6 +65,7 @@ class Kraftwerk : JavaPlugin() {
         getCommand("whitelist").executor = WhitelistCommand()
         getCommand("regenarena").executor = RegenArenaCommand()
         getCommand("start").executor = StartCommand()
+        getCommand("pvp").executor = PvPCommand()
 
         getCommand("gm").executor = GamemodeCommand()
         getCommand("gamemode").executor = GamemodeCommand()
@@ -94,6 +96,7 @@ class Kraftwerk : JavaPlugin() {
         /* This just enables Hardcore Hearts */
         protocolManager?.addPacketListener(HardcoreHeartsFeature())
 
+        /* Sets up misc features */
         SettingsFeature.instance.setup(this)
         TeamsFeature.manager.setupTeams()
         ConfigOptionHandler.setup()
@@ -101,13 +104,8 @@ class Kraftwerk : JavaPlugin() {
 
         setupDataSource()
 
-        if (SettingsFeature.instance.data!!.contains("game.state")) {
-            GameState.setState(GameState.valueOf(SettingsFeature.instance.data!!.getString("game.state")))
-            Bukkit.getLogger().info("Game state set to ${SettingsFeature.instance.data!!.getString("game.state")}.")
-        } else {
-            GameState.setState(GameState.LOBBY)
-            Bukkit.getLogger().info("Game state set to Lobby.")
-        }
+        GameState.setState(GameState.LOBBY)
+        Bukkit.getLogger().info("Game state set to Lobby.")
 
         Bukkit.getLogger().info("Kraftwerk enabled.")
     }

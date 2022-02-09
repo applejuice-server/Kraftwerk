@@ -100,6 +100,8 @@ commands:
     aliases:
       - startuhc
     description: Starts a UHC game.
+  pvp:
+    description: Enables/disables PvP.
 depend:
   - ProtocolLib
   - JDA

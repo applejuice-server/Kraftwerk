@@ -112,13 +112,13 @@ class EditConfigCommand : CommandExecutor {
                 Chat.colored("&8RMB&7 to subtract &cone&7.")
             )
             pvpMeta.lore = listOf(
-                Chat.colored("&7PvP happens in &c${SettingsFeature.instance.data!!.getInt("game.events.pvp")} minutes&7."),
+                Chat.colored("&7PvP happens in &c${SettingsFeature.instance.data!!.getInt("game.events.pvp") + SettingsFeature.instance.data!!.getInt("game.events.final-heal")} minutes&7."),
                 "",
                 Chat.colored("&8LMB&7 to add &aone&7."),
                 Chat.colored("&8RMB&7 to subtract &cone&7.")
             )
             muMeta.lore = listOf(
-                Chat.colored("&7Meetup happens in &c${SettingsFeature.instance.data!!.getInt("game.events.meetup")} minutes&7."),
+                Chat.colored("&7Meetup happens in &c${SettingsFeature.instance.data!!.getInt("game.events.pvp") + SettingsFeature.instance.data!!.getInt("game.events.final-heal") + SettingsFeature.instance.data!!.getInt("game.events.meetup")} minutes&7."),
                 "",
                 Chat.colored("&8LMB&7 to add &aone&7."),
                 Chat.colored("&8RMB&7 to subtract &cone&7.")
@@ -165,7 +165,7 @@ class EditConfigCommand : CommandExecutor {
                     val meta = it.currentItem.itemMeta
                     meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES)
                     meta.lore = listOf(
-                        Chat.colored(Chat.colored("&7PvP happens in &c${SettingsFeature.instance.data!!.getInt("game.events.pvp")} minutes&7.")),
+                        Chat.colored(Chat.colored("&7PvP happens in &c${SettingsFeature.instance.data!!.getInt("game.events.final-heal") + SettingsFeature.instance.data!!.getInt("game.events.pvp")} minutes&7.")),
                         "",
                         Chat.colored("&8LMB&7 to add &aone&7."),
                         Chat.colored("&8RMB&7 to subtract &cone&7.")
@@ -181,7 +181,7 @@ class EditConfigCommand : CommandExecutor {
                     val meta = it.currentItem.itemMeta
                     meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES)
                     meta.lore = listOf(
-                        Chat.colored(Chat.colored("&7PvP happens in &c${SettingsFeature.instance.data!!.getInt("game.events.pvp")} minutes&7.")),
+                        Chat.colored(Chat.colored("&7PvP happens in &c${SettingsFeature.instance.data!!.getInt("game.events.final-heal") + SettingsFeature.instance.data!!.getInt("game.events.pvp")} minutes&7.")),
                         "",
                         Chat.colored("&8LMB&7 to add &aone&7."),
                         Chat.colored("&8RMB&7 to subtract &cone&7.")
@@ -196,7 +196,7 @@ class EditConfigCommand : CommandExecutor {
                     SettingsFeature.instance.saveData()
                     val meta = it.currentItem.itemMeta
                     meta.lore = listOf(
-                        Chat.colored(Chat.colored("&7Meetup happens in &c${SettingsFeature.instance.data!!.getInt("game.events.meetup")} minutes&7.")),
+                        Chat.colored(Chat.colored("&7Meetup happens in &c${SettingsFeature.instance.data!!.getInt("game.events.pvp") + SettingsFeature.instance.data!!.getInt("game.events.final-heal") + SettingsFeature.instance.data!!.getInt("game.events.meetup")} minutes&7.")),
                         "",
                         Chat.colored("&8LMB&7 to add &aone&7."),
                         Chat.colored("&8RMB&7 to subtract &cone&7.")
@@ -211,7 +211,7 @@ class EditConfigCommand : CommandExecutor {
                     SettingsFeature.instance.saveData()
                     val meta = it.currentItem.itemMeta
                     meta.lore = listOf(
-                        Chat.colored(Chat.colored("&7Meetup happens in &c${SettingsFeature.instance.data!!.getInt("game.events.meetup")} minutes&7.")),
+                        Chat.colored(Chat.colored("&7Meetup happens in &c${SettingsFeature.instance.data!!.getInt("game.events.pvp") + SettingsFeature.instance.data!!.getInt("game.events.final-heal") + SettingsFeature.instance.data!!.getInt("game.events.meetup")} minutes&7.")),
                         "",
                         Chat.colored("&8LMB&7 to add &aone&7."),
                         Chat.colored("&8RMB&7 to subtract &cone&7.")
