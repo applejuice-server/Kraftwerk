@@ -108,20 +108,20 @@ class EditConfigCommand : CommandExecutor {
             fhMeta.lore = listOf(
                 Chat.colored("&7Final Heal happens in &c${SettingsFeature.instance.data!!.getInt("game.events.final-heal")} minutes&7."),
                 "",
-                Chat.colored("&8LMB&7 to add &aone&7."),
-                Chat.colored("&8RMB&7 to subtract &cone&7.")
+                Chat.colored("&8Left Click&7 to add &aone&7."),
+                Chat.colored("&8Right Click&7 to subtract &cone&7.")
             )
             pvpMeta.lore = listOf(
                 Chat.colored("&7PvP happens in &c${SettingsFeature.instance.data!!.getInt("game.events.pvp") + SettingsFeature.instance.data!!.getInt("game.events.final-heal")} minutes&7."),
                 "",
-                Chat.colored("&8LMB&7 to add &aone&7."),
-                Chat.colored("&8RMB&7 to subtract &cone&7.")
+                Chat.colored("&8Left Click&7 to add &aone&7."),
+                Chat.colored("&8Right Click&7 to subtract &cone&7.")
             )
             muMeta.lore = listOf(
                 Chat.colored("&7Meetup happens in &c${SettingsFeature.instance.data!!.getInt("game.events.pvp") + SettingsFeature.instance.data!!.getInt("game.events.final-heal") + SettingsFeature.instance.data!!.getInt("game.events.meetup")} minutes&7."),
                 "",
-                Chat.colored("&8LMB&7 to add &aone&7."),
-                Chat.colored("&8RMB&7 to subtract &cone&7.")
+                Chat.colored("&8Left Click&7 to add &aone&7."),
+                Chat.colored("&8Right Click&7 to subtract &cone&7.")
             )
 
             finalHeal.itemMeta = fhMeta
@@ -136,8 +136,8 @@ class EditConfigCommand : CommandExecutor {
                     meta.lore = listOf(
                         Chat.colored(Chat.colored("&7Final Heal happens in &c${SettingsFeature.instance.data!!.getInt("game.events.final-heal")} minutes&7.")),
                         "",
-                        Chat.colored("&8LMB&7 to add &aone&7."),
-                        Chat.colored("&8RMB&7 to subtract &cone&7.")
+                        Chat.colored("&8Left Click&7 to add &aone&7."),
+                        Chat.colored("&8Right Click&7 to subtract &cone&7.")
                     )
                     it.currentItem.itemMeta = meta
                 } else if (it.click.isRightClick) {
@@ -151,8 +151,8 @@ class EditConfigCommand : CommandExecutor {
                     meta.lore = listOf(
                         Chat.colored(Chat.colored("&7Final Heal happens in &c${SettingsFeature.instance.data!!.getInt("game.events.final-heal")} minutes&7.")),
                         "",
-                        Chat.colored("&8LMB&7 to add &aone&7."),
-                        Chat.colored("&8RMB&7 to subtract &cone&7.")
+                        Chat.colored("&8Left Click&7 to add &aone&7."),
+                        Chat.colored("&8Right Click&7 to subtract &cone&7.")
                     )
                     it.currentItem.itemMeta = meta
                 }
@@ -167,8 +167,8 @@ class EditConfigCommand : CommandExecutor {
                     meta.lore = listOf(
                         Chat.colored(Chat.colored("&7PvP happens in &c${SettingsFeature.instance.data!!.getInt("game.events.final-heal") + SettingsFeature.instance.data!!.getInt("game.events.pvp")} minutes&7.")),
                         "",
-                        Chat.colored("&8LMB&7 to add &aone&7."),
-                        Chat.colored("&8RMB&7 to subtract &cone&7.")
+                        Chat.colored("&8Left Click&7 to add &aone&7."),
+                        Chat.colored("&8Right Click&7 to subtract &cone&7.")
                     )
                     it.currentItem.itemMeta = meta
                 } else if (it.click.isRightClick) {
@@ -183,8 +183,8 @@ class EditConfigCommand : CommandExecutor {
                     meta.lore = listOf(
                         Chat.colored(Chat.colored("&7PvP happens in &c${SettingsFeature.instance.data!!.getInt("game.events.final-heal") + SettingsFeature.instance.data!!.getInt("game.events.pvp")} minutes&7.")),
                         "",
-                        Chat.colored("&8LMB&7 to add &aone&7."),
-                        Chat.colored("&8RMB&7 to subtract &cone&7.")
+                        Chat.colored("&8Left Click&7 to add &aone&7."),
+                        Chat.colored("&8Right Click&7 to subtract &cone&7.")
                     )
                     it.currentItem.itemMeta = meta
                 }
@@ -198,8 +198,8 @@ class EditConfigCommand : CommandExecutor {
                     meta.lore = listOf(
                         Chat.colored(Chat.colored("&7Meetup happens in &c${SettingsFeature.instance.data!!.getInt("game.events.pvp") + SettingsFeature.instance.data!!.getInt("game.events.final-heal") + SettingsFeature.instance.data!!.getInt("game.events.meetup")} minutes&7.")),
                         "",
-                        Chat.colored("&8LMB&7 to add &aone&7."),
-                        Chat.colored("&8RMB&7 to subtract &cone&7.")
+                        Chat.colored("&8Left Click&7 to add &aone&7."),
+                        Chat.colored("&8Right Click&7 to subtract &cone&7.")
                     )
                     it.currentItem.itemMeta = meta
                 } else if (it.click.isRightClick) {
@@ -213,8 +213,8 @@ class EditConfigCommand : CommandExecutor {
                     meta.lore = listOf(
                         Chat.colored(Chat.colored("&7Meetup happens in &c${SettingsFeature.instance.data!!.getInt("game.events.pvp") + SettingsFeature.instance.data!!.getInt("game.events.final-heal") + SettingsFeature.instance.data!!.getInt("game.events.meetup")} minutes&7.")),
                         "",
-                        Chat.colored("&8LMB&7 to add &aone&7."),
-                        Chat.colored("&8RMB&7 to subtract &cone&7.")
+                        Chat.colored("&8Left Click&7 to add &aone&7."),
+                        Chat.colored("&8Right Click&7 to subtract &cone&7.")
                     )
                     it.currentItem.itemMeta = meta
                 }
@@ -225,6 +225,140 @@ class EditConfigCommand : CommandExecutor {
             Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} &e${player.name}&7 has set themself as the host."))
             player.playSound(player.location, Sound.LEVEL_UP, 10.toFloat(), 1.toFloat())
             return true
+        } else if (args[0].lowercase() == "starterfood") {
+            gui = GuiBuilder().rows(1).name(ChatColor.translateAlternateColorCodes('&', "&4Edit UHC Config"))
+            size = 8
+            val starterFood = ItemStack(Material.COOKED_BEEF)
+            val starterFoodMeta = starterFood.itemMeta
+            starterFoodMeta.displayName = Chat.colored("&4Starter Food")
+            starterFoodMeta.lore = listOf(
+                Chat.colored(Chat.colored("&7Starter Food ${Chat.dash} &c${SettingsFeature.instance.data!!.getInt("game.starterfood")}")),
+                "",
+                Chat.colored("&8Left Click&7 to add &aone&7."),
+                Chat.colored("&8Right Click&7 to subtract &cone&7.")
+            )
+            starterFood.itemMeta = starterFoodMeta
+            gui.item(4, starterFood).onClick runnable@ {
+                it.isCancelled = true
+                if (it.click.isLeftClick) {
+                    SettingsFeature.instance.data!!.set("game.starterfood", SettingsFeature.instance.data!!.getInt("game.starterfood") + 1)
+                    SettingsFeature.instance.saveData()
+                    val meta = it.currentItem.itemMeta
+                    meta.lore = listOf(
+                        Chat.colored(Chat.colored("&7Starter Food ${Chat.dash} &c${SettingsFeature.instance.data!!.getInt("game.starterfood")}")),
+                        "",
+                        Chat.colored("&8Left Click&7 to add &aone&7."),
+                        Chat.colored("&8Right Click&7 to subtract &cone&7.")
+                    )
+                    it.currentItem.itemMeta = meta
+                } else if (it.click.isRightClick) {
+                    if (SettingsFeature.instance.data!!.getInt("game.starterfood") <= 1) {
+                        Chat.sendMessage(player, "${Chat.prefix} Can't subtract, this count is already at 1 starter food.")
+                        return@runnable
+                    }
+                    SettingsFeature.instance.data!!.set("game.starterfood", SettingsFeature.instance.data!!.getInt("game.starterfood") - 1)
+                    SettingsFeature.instance.saveData()
+                    val meta = it.currentItem.itemMeta
+                    meta.lore = listOf(
+                        Chat.colored(Chat.colored("&7Starter Food ${Chat.dash} &c${SettingsFeature.instance.data!!.getInt("game.starterfood")}")),
+                        "",
+                        Chat.colored("&8Left Click&7 to add &aone&7."),
+                        Chat.colored("&8Right Click&7 to subtract &cone&7.")
+                    )
+                    it.currentItem.itemMeta = meta
+                }
+            }
+        } else if (args[0].lowercase() == "rates") {
+            gui = GuiBuilder().rows(1).name(ChatColor.translateAlternateColorCodes('&', "&4Edit UHC Config"))
+            size = 8
+            val flintRates = ItemStack(Material.FLINT)
+            val flintRatesMeta = flintRates.itemMeta
+            flintRatesMeta.displayName = Chat.colored("&4Flint Rates")
+            flintRatesMeta.lore = listOf(
+                Chat.colored(Chat.colored("&7Flint Rates ${Chat.dash} &c${SettingsFeature.instance.data!!.getInt("game.rates.flint")}%")),
+                "",
+                Chat.colored("&8Left Click&7 to add &aone&7."),
+                Chat.colored("&8Right Click&7 to subtract &cone&7.")
+            )
+            flintRates.itemMeta = flintRatesMeta
+            gui.item(3, flintRates).onClick runnable@ {
+                it.isCancelled = true
+                if (it.click.isLeftClick) {
+                    if (SettingsFeature.instance.data!!.getInt("game.rates.flint") <= 100) {
+                        Chat.sendMessage(player, "${Chat.prefix} Can't add, this count is already at 100%.")
+                        return@runnable
+                    }
+                    SettingsFeature.instance.data!!.set("game.rates.flint", SettingsFeature.instance.data!!.getInt("game.rates.flint") + 1)
+                    SettingsFeature.instance.saveData()
+                    val meta = it.currentItem.itemMeta
+                    meta.lore = listOf(
+                        Chat.colored(Chat.colored("&7Flint Rates ${Chat.dash} &c${SettingsFeature.instance.data!!.getInt("game.rates.flint")}%")),
+                        "",
+                        Chat.colored("&8Left Click&7 to add &aone&7."),
+                        Chat.colored("&8Right Click&7 to subtract &cone&7.")
+                    )
+                    it.currentItem.itemMeta = meta
+                } else if (it.click.isRightClick) {
+                    if (SettingsFeature.instance.data!!.getInt("game.rates.flint") <= 1) {
+                        Chat.sendMessage(player, "${Chat.prefix} Can't subtract, this count is already at 1%.")
+                        return@runnable
+                    }
+                    SettingsFeature.instance.data!!.set("game.rates.flint", SettingsFeature.instance.data!!.getInt("game.rates.flint") - 1)
+                    SettingsFeature.instance.saveData()
+                    val meta = it.currentItem.itemMeta
+                    meta.lore = listOf(
+                        Chat.colored(Chat.colored("&7Flint Rates ${Chat.dash} &c${SettingsFeature.instance.data!!.getInt("game.rates.flint")}%")),
+                        "",
+                        Chat.colored("&8Left Click&7 to add &aone&7."),
+                        Chat.colored("&8Right Click&7 to subtract &cone&7.")
+                    )
+                    it.currentItem.itemMeta = meta
+                }
+            }
+            val appleRates = ItemStack(Material.APPLE)
+            val appleRatesMeta = appleRates.itemMeta
+            appleRatesMeta.displayName = Chat.colored("&4Apple Rates")
+            appleRatesMeta.lore = listOf(
+                Chat.colored(Chat.colored("&7Apple Rates ${Chat.dash} &c${SettingsFeature.instance.data!!.getInt("game.rates.apple")}%")),
+                "",
+                Chat.colored("&8Left Click&7 to add &aone&7."),
+                Chat.colored("&8Right Click&7 to subtract &cone&7.")
+            )
+            appleRates.itemMeta = appleRatesMeta
+            gui.item(5, appleRates).onClick runnable@ {
+                it.isCancelled = true
+                if (it.click.isLeftClick) {
+                    if (SettingsFeature.instance.data!!.getInt("game.rates.apple") <= 100) {
+                        Chat.sendMessage(player, "${Chat.prefix} Can't subtract, this count is already at 100%.")
+                        return@runnable
+                    }
+                    SettingsFeature.instance.data!!.set("game.rates.apple", SettingsFeature.instance.data!!.getInt("game.rates.apple") + 1)
+                    SettingsFeature.instance.saveData()
+                    val meta = it.currentItem.itemMeta
+                    meta.lore = listOf(
+                        Chat.colored(Chat.colored("&7Apple Rates ${Chat.dash} &c${SettingsFeature.instance.data!!.getInt("game.rates.apple")}%")),
+                        "",
+                        Chat.colored("&8Left Click&7 to add &aone&7."),
+                        Chat.colored("&8Right Click&7 to subtract &cone&7.")
+                    )
+                    it.currentItem.itemMeta = meta
+                } else if (it.click.isRightClick) {
+                    if (SettingsFeature.instance.data!!.getInt("game.rates.apple") <= 1) {
+                        Chat.sendMessage(player, "${Chat.prefix} Can't subtract, this count is already at 1%.")
+                        return@runnable
+                    }
+                    SettingsFeature.instance.data!!.set("game.rates.apple", SettingsFeature.instance.data!!.getInt("game.rates.apple") - 1)
+                    SettingsFeature.instance.saveData()
+                    val meta = it.currentItem.itemMeta
+                    meta.lore = listOf(
+                        Chat.colored(Chat.colored("&7Apple Rates ${Chat.dash} &c${SettingsFeature.instance.data!!.getInt("game.rates.apple")}%")),
+                        "",
+                        Chat.colored("&8Left Click&7 to add &aone&7."),
+                        Chat.colored("&8Right Click&7 to subtract &cone&7.")
+                    )
+                    it.currentItem.itemMeta = meta
+                }
+            }
         }
         val back = ItemStack(Material.ARROW)
         val backMeta = back.itemMeta

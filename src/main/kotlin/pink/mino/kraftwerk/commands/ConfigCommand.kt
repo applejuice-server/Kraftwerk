@@ -45,7 +45,7 @@ class ConfigCommand : CommandExecutor {
             sender.sendMessage("You can't use this command as you technically aren't a player.")
             return false
         }
-        val gui = GuiBuilder().rows(3).name(ChatColor.translateAlternateColorCodes('&', "&4UHC Config"))
+        val gui = GuiBuilder().rows(5).name(ChatColor.translateAlternateColorCodes('&', "&4UHC Config"))
 
         sender.sendMessage(Chat.colored("${Chat.prefix} Opening the UHC configuration..."))
         val options = ItemStack(Material.GOLDEN_APPLE)
@@ -65,7 +65,7 @@ class ConfigCommand : CommandExecutor {
             Chat.colored(Chat.line),
         )
         options.itemMeta = optionsMeta
-        gui.item(10, options).onClick runnable@{
+        gui.item(20, options).onClick runnable@{
             if (sender.hasPermission("uhc.staff")) {
                 Bukkit.dispatchCommand(sender as CommandSender, "editconfig options")
             }
@@ -85,7 +85,7 @@ class ConfigCommand : CommandExecutor {
             Chat.colored(Chat.line),
         )
         rules.itemMeta = rulesMeta
-        gui.item(11, rules).onClick runnable@{
+        gui.item(22, rules).onClick runnable@{
             if (sender.hasPermission("uhc.staff")) {
                 Bukkit.dispatchCommand(sender as CommandSender, "editconfig rules")
             }
@@ -104,13 +104,25 @@ class ConfigCommand : CommandExecutor {
             Chat.colored(Chat.line)
         )
         miningRules.itemMeta = miningRulesMeta
-        gui.item(12, miningRules).onClick runnable@{
+        gui.item(23, miningRules).onClick runnable@{
             if (sender.hasPermission("uhc.staff")) {
                 Bukkit.dispatchCommand(sender as CommandSender, "editconfig rules")
             }
             it.isCancelled = true
         }
-
+        val border = ItemStack(Material.EMERALD)
+        val borderMeta = miningRules.itemMeta
+        borderMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES)
+        borderMeta.displayName = ChatColor.translateAlternateColorCodes('&', "&4Scenarios")
+        borderMeta.lore = listOf(
+            Chat.colored(Chat.line),
+            Chat.colored("&7Border ${Chat.dash} &c${SettingsFeature.instance.data!!.getInt("pregen.border")}x${SettingsFeature.instance.data!!.getInt("pregen.border")}"),
+            Chat.colored(Chat.line)
+        )
+        border.itemMeta = borderMeta
+        gui.item(24, border).onClick runnable@{
+            it.isCancelled = true
+        }
         val events = ItemStack(Material.WATCH)
         val eventsMeta = events.itemMeta
         eventsMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES)
@@ -125,7 +137,7 @@ class ConfigCommand : CommandExecutor {
             Chat.colored(Chat.line)
         )
         events.itemMeta = eventsMeta
-        gui.item(13, events).onClick runnable@{
+        gui.item(30, events).onClick runnable@{
             if (sender.hasPermission("uhc.staff")) {
                 Bukkit.dispatchCommand(sender as CommandSender, "editconfig events")
             }
@@ -153,7 +165,7 @@ class ConfigCommand : CommandExecutor {
             )
         }
         matchpost.itemMeta = matchpostMeta
-        gui.item(14, matchpost).onClick runnable@{
+        gui.item(31, matchpost).onClick runnable@{
             if (sender.hasPermission("uhc.staff")) {
                 Bukkit.dispatchCommand(sender as CommandSender, "editconfig matchpost")
             }
@@ -168,9 +180,55 @@ class ConfigCommand : CommandExecutor {
             Chat.colored(Chat.line)
         )
         potions.itemMeta = potionsMeta
-        gui.item(15, potions).onClick runnable@{
+        gui.item(32, potions).onClick runnable@{
             if (sender.hasPermission("uhc.staff")) {
                 Bukkit.dispatchCommand(sender as CommandSender, "editconfig potions")
+            }
+            it.isCancelled = true
+        }
+        val netherConfig = ItemStack(Material.NETHERRACK)
+        val netherConfigMeta = netherConfig.itemMeta
+        netherConfigMeta.displayName = Chat.colored("&4Nether Config")
+        netherConfigMeta.lore = listOf(
+            Chat.colored(Chat.line),
+            Chat.colored("&7Coming soon."),
+            Chat.colored(Chat.line)
+        )
+        netherConfig.itemMeta = netherConfigMeta
+        gui.item(21, netherConfig).onClick runnable@{
+            if (sender.hasPermission("uhc.staff")) {
+                Bukkit.dispatchCommand(sender as CommandSender, "editconfig nether")
+            }
+            it.isCancelled = true
+        }
+        val starterFood = ItemStack(Material.COOKED_BEEF)
+        val starterFoodMeta = starterFood.itemMeta
+        starterFoodMeta.displayName = Chat.colored("&4Starter Food")
+        starterFoodMeta.lore = listOf(
+            Chat.colored(Chat.line),
+            Chat.colored("&7Starter Food ${Chat.dash} &c${SettingsFeature.instance.data!!.getInt("game.starterfood")}"),
+            Chat.colored(Chat.line)
+        )
+        starterFood.itemMeta = starterFoodMeta
+        gui.item(29, starterFood).onClick runnable@{
+            if (sender.hasPermission("uhc.staff")) {
+                Bukkit.dispatchCommand(sender as CommandSender, "editconfig starterfood")
+            }
+            it.isCancelled = true
+        }
+        val rates = ItemStack(Material.FLINT)
+        val ratesMeta = rates.itemMeta
+        ratesMeta.displayName = Chat.colored("&4Apple/Flint Rates")
+        ratesMeta.lore = listOf(
+            Chat.colored(Chat.line),
+            Chat.colored("&7Apple Rates ${Chat.dash} &c${SettingsFeature.instance.data!!.getInt("game.rates.apple")}%"),
+            Chat.colored("&7Flint Rates ${Chat.dash} &c${SettingsFeature.instance.data!!.getInt("game.rates.flint")}%"),
+            Chat.colored(Chat.line)
+        )
+        rates.itemMeta = ratesMeta
+        gui.item(33, rates).onClick runnable@{
+            if (sender.hasPermission("uhc.staff")) {
+                Bukkit.dispatchCommand(sender as CommandSender, "editconfig rates")
             }
             it.isCancelled = true
         }
@@ -197,7 +255,7 @@ class ConfigCommand : CommandExecutor {
             )
         }
         host.itemMeta = hostMeta
-        gui.item(16, host).onClick runnable@{
+        gui.item(13, host).onClick runnable@{
             if (sender.hasPermission("uhc.staff")) {
                 Bukkit.dispatchCommand(sender as CommandSender, "editconfig host")
             }

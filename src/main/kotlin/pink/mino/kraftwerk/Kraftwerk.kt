@@ -49,6 +49,7 @@ class Kraftwerk : JavaPlugin() {
         Bukkit.getServer().pluginManager.registerEvents(SpawnFeature.instance, this)
         Bukkit.getServer().pluginManager.registerEvents(UHCFeature(), this)
         Bukkit.getServer().pluginManager.registerEvents(PvPListener(), this)
+        Bukkit.getServer().pluginManager.registerEvents(RatesFeature(), this)
 
         /* Registering commands */
         getCommand("clear").executor = ClearInventoryCommand()
