@@ -111,6 +111,8 @@ commands:
     aliases:
       - shrink
     description: Sets the border for the current UHC world.
+  winner:
+    description: Sets the winners for the current UHC game.
 depend:
   - ProtocolLib
   - JDA

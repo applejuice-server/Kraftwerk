@@ -6,6 +6,7 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import pink.mino.kraftwerk.features.UHCFeature
 import pink.mino.kraftwerk.utils.Chat
+import pink.mino.kraftwerk.utils.GameState
 
 class StartCommand : CommandExecutor {
     override fun onCommand(
@@ -22,6 +23,10 @@ class StartCommand : CommandExecutor {
         }
         if (args.isEmpty()) {
             sender.sendMessage(Chat.colored("${Chat.prefix} Invalid usage: &f/start <ffa/teams>"))
+            return false
+        }
+        if (GameState.currentState == GameState.INGAME) {
+            Chat.sendMessage(sender, "&cA game is currently occurring right now.")
             return false
         }
         if (args[0] == "ffa" || args[0] == "teams") {

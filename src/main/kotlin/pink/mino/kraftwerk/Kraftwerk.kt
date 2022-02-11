@@ -26,6 +26,7 @@ class Kraftwerk : JavaPlugin() {
 
     private var protocolManager: ProtocolManager? = null
     lateinit var dataSource: DataSource
+    val instance = this
 
     override fun onLoad() {
         protocolManager = ProtocolLibrary.getProtocolManager()
@@ -68,6 +69,8 @@ class Kraftwerk : JavaPlugin() {
         getCommand("start").executor = StartCommand()
         getCommand("pvp").executor = PvPCommand()
         getCommand("border").executor = BorderCommand()
+        getCommand("end").executor = EndGameCommand()
+        getCommand("winner").executor = WinnerCommand()
 
         getCommand("gm").executor = GamemodeCommand()
         getCommand("gamemode").executor = GamemodeCommand()
@@ -97,6 +100,7 @@ class Kraftwerk : JavaPlugin() {
 
         /* This just enables Hardcore Hearts */
         protocolManager?.addPacketListener(HardcoreHeartsFeature())
+        CustomPayloadFixerFeature(this)
 
         /* Sets up misc features */
         SettingsFeature.instance.setup(this)

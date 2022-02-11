@@ -20,6 +20,7 @@ import org.bukkit.potion.PotionEffectType
 import pink.mino.kraftwerk.Kraftwerk
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GameState
+import pink.mino.kraftwerk.utils.Stats
 
 class UHCFeature : Listener {
     fun start(mode: String) {
@@ -61,6 +62,8 @@ class UHCFeature : Listener {
                     }
                     Bukkit.broadcastMessage(" ")
                     GameState.setState(GameState.INGAME)
+                    var list = SettingsFeature.instance.data!!.getStringList("game.list")
+                    if (list == null) list = ArrayList<String>()
                     for (player in Bukkit.getOnlinePlayers()) {
                         Chat.sendCenteredMessage(player, "&7You may &abegin&7! The host for this game is &c${SettingsFeature.instance.data!!.getString("game.host")}&7!")
                         Chat.sendCenteredMessage(player, "&7Scenarios: &fcoming soon lol&7")
@@ -69,8 +72,13 @@ class UHCFeature : Listener {
                         Chat.sendCenteredMessage(player, "&cPvP&7 is enabled in &c${SettingsFeature.instance.data!!.getInt("game.events.final-heal") + SettingsFeature.instance.data!!.getInt("game.events.pvp")} minutes&7.")
                         Chat.sendCenteredMessage(player, "&7Finally, &cMeetup&7 is enabled in &c${SettingsFeature.instance.data!!.getInt("game.events.final-heal") + SettingsFeature.instance.data!!.getInt("game.events.pvp") + SettingsFeature.instance.data!!.getInt("game.events.meetup")} minutes&7.")
                         player.playSound(player.location, Sound.ENDERDRAGON_GROWL, 10F, 1F)
+                        player.sendTitle(Chat.colored("&a&lGO!"), Chat.colored("&7You may now play the game, do &c/helpop&7 for help!"))
                         player.inventory.setItem(0, ItemStack(Material.COOKED_BEEF, SettingsFeature.instance.data!!.getInt("game.starterfood")))
+                        Stats.addGamesPlayed(player)
+                        player.sendMessage(Chat.colored("&b&lSuccessfully saved your stats..."))
+                        list.add(player.name)
                     }
+                    SettingsFeature.instance.saveData()
                     Bukkit.broadcastMessage(Chat.colored(Chat.line))
                     Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world")).setGameRuleValue("doDaylightCycle", true.toString())
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer cancel")
