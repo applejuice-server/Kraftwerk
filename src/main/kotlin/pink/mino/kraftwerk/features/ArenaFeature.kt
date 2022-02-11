@@ -221,31 +221,32 @@ class ArenaFeature : Listener {
     @EventHandler
     fun onBlockPlace(e: BlockPlaceEvent) {
         if (e.block.world.name != "Arena") return
-        if (e.block.type != Material.COBBLESTONE) return
-        Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-            e.player.inventory.addItem(ItemStack(Material.COBBLESTONE))
-        }, 1L)
-        Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-            BlockAnimation().blockCrackAnimation(e.player, e.block, 1)
+        if (e.block.type == Material.COBBLESTONE) {
             Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                BlockAnimation().blockCrackAnimation(e.player, e.block, 2)
+                e.player.inventory.addItem(ItemStack(Material.COBBLESTONE))
+            }, 1L)
+            Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
+                BlockAnimation().blockCrackAnimation(e.player, e.block, 1)
                 Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                    BlockAnimation().blockCrackAnimation(e.player, e.block, 3)
+                    BlockAnimation().blockCrackAnimation(e.player, e.block, 2)
                     Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                        BlockAnimation().blockCrackAnimation(e.player, e.block, 4)
+                        BlockAnimation().blockCrackAnimation(e.player, e.block, 3)
                         Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                            BlockAnimation().blockCrackAnimation(e.player, e.block, 5)
+                            BlockAnimation().blockCrackAnimation(e.player, e.block, 4)
                             Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                                BlockAnimation().blockCrackAnimation(e.player, e.block, 6)
+                                BlockAnimation().blockCrackAnimation(e.player, e.block, 5)
                                 Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                                    BlockAnimation().blockCrackAnimation(e.player, e.block, 7)
+                                    BlockAnimation().blockCrackAnimation(e.player, e.block, 6)
                                     Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                                        BlockAnimation().blockCrackAnimation(e.player, e.block, 8)
+                                        BlockAnimation().blockCrackAnimation(e.player, e.block, 7)
                                         Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                                            BlockAnimation().blockCrackAnimation(e.player, e.block, 9)
+                                            BlockAnimation().blockCrackAnimation(e.player, e.block, 8)
                                             Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                                                BlockAnimation().blockBreakAnimation(null, e.block)
-                                                e.block.type = Material.AIR
+                                                BlockAnimation().blockCrackAnimation(e.player, e.block, 9)
+                                                Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
+                                                    BlockAnimation().blockBreakAnimation(null, e.block)
+                                                    e.block.type = Material.AIR
+                                                }, 20L)
                                             }, 20L)
                                         }, 20L)
                                     }, 20L)
@@ -255,6 +256,14 @@ class ArenaFeature : Listener {
                     }, 20L)
                 }, 20L)
             }, 20L)
-        }, 20L)
+        } else if (e.block.type == Material.LAVA && e.block.type == Material.STATIONARY_LAVA) {
+            Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
+                e.block.type = Material.AIR
+            }, 200L)
+        } else if (e.block.type == Material.WATER && e.block.type == Material.STATIONARY_WATER) {
+            Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
+                e.block.type = Material.AIR
+            }, 200L)
+        }
     }
 }
