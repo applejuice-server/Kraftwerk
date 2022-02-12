@@ -110,10 +110,10 @@ class ConfigCommand : CommandExecutor {
             }
             it.isCancelled = true
         }
-        val border = ItemStack(Material.EMERALD)
+        val border = ItemStack(Material.BEDROCK)
         val borderMeta = miningRules.itemMeta
         borderMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES)
-        borderMeta.displayName = ChatColor.translateAlternateColorCodes('&', "&4Scenarios")
+        borderMeta.displayName = ChatColor.translateAlternateColorCodes('&', "&4Border")
         borderMeta.lore = listOf(
             Chat.colored(Chat.line),
             Chat.colored("&7Border ${Chat.dash} &c${SettingsFeature.instance.data!!.getInt("pregen.border")}x${SettingsFeature.instance.data!!.getInt("pregen.border")}"),
@@ -147,28 +147,49 @@ class ConfigCommand : CommandExecutor {
         val matchpostMeta = matchpost.itemMeta
         matchpostMeta.displayName = Chat.colored("&4Matchpost")
         if (sender.hasPermission("uhc.staff")) {
-            matchpostMeta.lore = listOf(
-                Chat.colored(Chat.line),
-                "",
-                Chat.colored("&7Coming soon."),
-                "",
-                Chat.colored(Chat.line),
-                Chat.colored("&7Set the matchpost using &c/matchpost <id>")
-            )
+            if (SettingsFeature.instance.data!!.getInt("matchpost.id") == null) {
+                matchpostMeta.lore = listOf(
+                    Chat.colored(Chat.line),
+                    "",
+                    Chat.colored("&7Coming soon."),
+                    "",
+                    Chat.colored(Chat.line),
+                    Chat.colored("&7Set the matchpost using &c/matchpost <id>")
+                )
+            } else {
+                matchpostMeta.lore = listOf(
+                    Chat.colored(Chat.line),
+                    "",
+                    Chat.colored("&7Matchpost ${Chat.dash} &chttps://hosts.uhc.gg/m/${SettingsFeature.instance.data!!.getInt("matchpost.id")}"),
+                    Chat.colored("&7Game ${Chat.dash} &c${SettingsFeature.instance.data!!.getString("matchpost.host")}"),
+                    "",
+                    Chat.colored(Chat.line),
+                    Chat.colored("&7Set the matchpost using &c/matchpost <id>")
+                )
+            }
         } else {
-            matchpostMeta.lore = listOf(
-                Chat.colored(Chat.line),
-                "",
-                Chat.colored("&7Coming soon."),
-                "",
-                Chat.colored(Chat.line)
-            )
+            if (SettingsFeature.instance.data!!.getInt("matchpost.id") == null) {
+                matchpostMeta.lore = listOf(
+                    Chat.colored(Chat.line),
+                    "",
+                    Chat.colored("&7Coming soon."),
+                    "",
+                    Chat.colored(Chat.line)
+                )
+            } else {
+                matchpostMeta.lore = listOf(
+                    Chat.colored(Chat.line),
+                    "",
+                    Chat.colored("&7Matchpost ${Chat.dash} &chttps://hosts.uhc.gg/m/${SettingsFeature.instance.data!!.getInt("matchpost.id")}"),
+                    Chat.colored("&7Game ${Chat.dash} &c${SettingsFeature.instance.data!!.getString("matchpost.host")}"),
+                    "",
+                    Chat.colored(Chat.line)
+                )
+            }
         }
         matchpost.itemMeta = matchpostMeta
         gui.item(31, matchpost).onClick runnable@{
-            if (sender.hasPermission("uhc.staff")) {
-                Bukkit.dispatchCommand(sender as CommandSender, "editconfig matchpost")
-            }
+            Chat.sendMessage(sender, "${Chat.prefix} Matchpost: &chttps://hosts.uhc.gg/m/${SettingsFeature.instance.data!!.getInt("matchpost.id")}")
             it.isCancelled = true
         }
         val potions = ItemStack(Material.GLASS_BOTTLE)

@@ -3,12 +3,14 @@ package pink.mino.kraftwerk.scenarios
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 import pink.mino.kraftwerk.Kraftwerk
+import pink.mino.kraftwerk.scenarios.list.CutCleanScenario
 
 class ScenarioHandler {
     companion object {
         val scenarios = ArrayList<Scenario>()
 
         fun setup() {
+            addScenario(CutCleanScenario())
             scenarios.sortWith(Comparator.comparing(Scenario::name))
         }
 

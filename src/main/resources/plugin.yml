@@ -121,6 +121,10 @@ commands:
     aliases:
       - ls
     description: Latescatters the provided player.
+  matchpost:
+    aliases:
+      - mp
+    description: Set the hosts.uhc.gg matchpost for your game.
 depend:
   - ProtocolLib
   - JDA

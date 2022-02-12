@@ -17,6 +17,7 @@ import pink.mino.kraftwerk.config.ConfigOptionHandler
 import pink.mino.kraftwerk.discord.Discord
 import pink.mino.kraftwerk.features.*
 import pink.mino.kraftwerk.listeners.*
+import pink.mino.kraftwerk.scenarios.ScenarioHandler
 import pink.mino.kraftwerk.utils.GameState
 import java.sql.SQLException
 import javax.sql.DataSource
@@ -72,6 +73,7 @@ class Kraftwerk : JavaPlugin() {
         getCommand("end").executor = EndGameCommand()
         getCommand("winner").executor = WinnerCommand()
         getCommand("latescatter").executor = LatescatterCommand()
+        getCommand("matchpost").executor = MatchpostCommand()
 
         getCommand("gm").executor = GamemodeCommand()
         getCommand("gamemode").executor = GamemodeCommand()
@@ -108,6 +110,7 @@ class Kraftwerk : JavaPlugin() {
         SettingsFeature.instance.setup(this)
         TeamsFeature.manager.setupTeams()
         ConfigOptionHandler.setup()
+        ScenarioHandler.setup()
         addRecipes()
 
         setupDataSource()

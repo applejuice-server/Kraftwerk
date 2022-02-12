@@ -284,7 +284,7 @@ class EditConfigCommand : CommandExecutor {
             gui.item(3, flintRates).onClick runnable@ {
                 it.isCancelled = true
                 if (it.click.isLeftClick) {
-                    if (SettingsFeature.instance.data!!.getInt("game.rates.flint") <= 100) {
+                    if (SettingsFeature.instance.data!!.getInt("game.rates.flint") >= 100) {
                         Chat.sendMessage(player, "${Chat.prefix} Can't add, this count is already at 100%.")
                         return@runnable
                     }
@@ -328,7 +328,7 @@ class EditConfigCommand : CommandExecutor {
             gui.item(5, appleRates).onClick runnable@ {
                 it.isCancelled = true
                 if (it.click.isLeftClick) {
-                    if (SettingsFeature.instance.data!!.getInt("game.rates.apple") <= 100) {
+                    if (SettingsFeature.instance.data!!.getInt("game.rates.apple") >= 100) {
                         Chat.sendMessage(player, "${Chat.prefix} Can't subtract, this count is already at 100%.")
                         return@runnable
                     }
