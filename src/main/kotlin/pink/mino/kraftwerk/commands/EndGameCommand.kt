@@ -71,6 +71,7 @@ class EndGameCommand : CommandExecutor {
             Chat.sendCenteredMessage(player, "&7Congratulations to the winners: &f${winners.joinToString(", ")}&7!")
             Chat.sendCenteredMessage(player, "&7The server will restart in &f45 seconds&7.")
         }
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wl off")
         Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "restart")
         }, 900L)

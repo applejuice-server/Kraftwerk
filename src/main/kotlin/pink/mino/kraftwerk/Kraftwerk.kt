@@ -71,6 +71,7 @@ class Kraftwerk : JavaPlugin() {
         getCommand("border").executor = BorderCommand()
         getCommand("end").executor = EndGameCommand()
         getCommand("winner").executor = WinnerCommand()
+        getCommand("latescatter").executor = LatescatterCommand()
 
         getCommand("gm").executor = GamemodeCommand()
         getCommand("gamemode").executor = GamemodeCommand()

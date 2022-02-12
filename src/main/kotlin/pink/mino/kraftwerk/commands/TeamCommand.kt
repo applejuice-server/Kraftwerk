@@ -61,7 +61,7 @@ class TeamCommand : CommandExecutor {
                 Chat.sendMessage(player, "&cYou can't use this command at the moment.")
                 return true
             }
-            if (GameState.valueOf(SettingsFeature.instance.data!!.getString("game.state")) !== GameState.LOBBY) {
+            if (GameState.valueOf(SettingsFeature.instance.data!!.getString("game.state")) != GameState.LOBBY) {
                 Chat.sendMessage(player, "&cYou can't use this command at the moment.")
                 return true
             }
@@ -242,6 +242,25 @@ class TeamCommand : CommandExecutor {
                     players.sendMessage(Chat.line)
                 }
             }
+        } else if (args[0] == "list") {
+            Chat.sendMessage(sender, Chat.line)
+            Chat.sendCenteredMessage(sender, "&c&lTeams List")
+            Chat.sendMessage(sender, " ")
+            val teamList = ArrayList<Team>()
+            for ((index, team) in TeamsFeature.manager.getTeams().withIndex()) {
+                if (team.players.size != 0) {
+                    teamList.add(team)
+                    val list = ArrayList<String>()
+                    for (player in team.players) {
+                        list.add(player.name)
+                    }
+                    Chat.sendMessage(sender, "${team.prefix}${team.name} &8(&f${list.size}&8) ${Chat.dash} &f${list.joinToString(", ")}")
+                }
+            }
+            if (teamList.isEmpty()) {
+                Chat.sendCenteredMessage(sender, "&7&lThere are no teams right now!")
+            }
+            Chat.sendMessage(sender, Chat.line)
         }
 
         return true

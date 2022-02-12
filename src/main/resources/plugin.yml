@@ -117,6 +117,10 @@ commands:
     aliases:
       - kt
     description: Gets the current top killers in the current UHC game.
+  latescatter:
+    aliases:
+      - ls
+    description: Latescatters the provided player.
 depend:
   - ProtocolLib
   - JDA
