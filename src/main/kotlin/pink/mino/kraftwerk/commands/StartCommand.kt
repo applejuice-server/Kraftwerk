@@ -25,7 +25,7 @@ class StartCommand : CommandExecutor {
             sender.sendMessage(Chat.colored("${Chat.prefix} Invalid usage: &f/start <ffa/teams>"))
             return false
         }
-        if (GameState.currentState == GameState.INGAME) {
+        if (GameState.currentState != GameState.LOBBY) {
             Chat.sendMessage(sender, "&cA game is currently occurring right now.")
             return false
         }

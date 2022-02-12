@@ -18,6 +18,7 @@ import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 import pink.mino.kraftwerk.Kraftwerk
+import pink.mino.kraftwerk.commands.WhitelistCommand
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GameState
 import pink.mino.kraftwerk.utils.Stats
@@ -75,11 +76,14 @@ class UHCFeature : Listener {
                         player.sendTitle(Chat.colored("&a&lGO!"), Chat.colored("&7You may now play the game, do &c/helpop&7 for help!"))
                         player.inventory.setItem(0, ItemStack(Material.COOKED_BEEF, SettingsFeature.instance.data!!.getInt("game.starterfood")))
                         Stats.addGamesPlayed(player)
-                        player.sendMessage(Chat.colored("&b&lSuccessfully saved your stats..."))
+                        WhitelistCommand().addWhitelist(player.name)
                         list.add(player.name)
                     }
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wl on")
+                    SettingsFeature.instance.data!!.set("game.list", list)
                     SettingsFeature.instance.saveData()
                     Bukkit.broadcastMessage(Chat.colored(Chat.line))
+                    Bukkit.broadcastMessage(Chat.colored("&b&oSuccessfully saved your stats..."))
                     Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world")).setGameRuleValue("doDaylightCycle", true.toString())
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer cancel")
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer ${SettingsFeature.instance.data!!.getInt("game.events.final-heal") * 60} &cFinal Heal is in ${Chat.dash}&f")

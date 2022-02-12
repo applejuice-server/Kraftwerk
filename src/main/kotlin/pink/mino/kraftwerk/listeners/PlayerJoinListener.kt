@@ -5,6 +5,8 @@ import org.bukkit.ChatColor
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
+import org.bukkit.plugin.java.JavaPlugin
+import pink.mino.kraftwerk.Kraftwerk
 import pink.mino.kraftwerk.features.SpawnFeature
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GameState
@@ -22,7 +24,9 @@ class PlayerJoinListener : Listener {
         }
         e.joinMessage = ChatColor.translateAlternateColorCodes('&', "&8[&2+&8] &a${player.displayName} &8(&2${Bukkit.getServer().onlinePlayers.size}&8/&2${Bukkit.getServer().maxPlayers}&8)")
         if (GameState.currentState == GameState.LOBBY) {
-            SpawnFeature.instance.send(player)
+            Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
+                SpawnFeature.instance.send(player)
+            }, 1L)
         }
     }
 }

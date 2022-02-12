@@ -8,6 +8,7 @@ import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.plugin.java.JavaPlugin
 import pink.mino.kraftwerk.Kraftwerk
 import pink.mino.kraftwerk.features.SettingsFeature
+import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GameState
 import pink.mino.kraftwerk.utils.Stats
 
@@ -36,11 +37,11 @@ class PlayerDeathListener : Listener {
             SettingsFeature.instance.saveData()
             Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wl remove ${player.name}")
-                player.kickPlayer("&7Thank you for playing!\n\n&7Join our discord for more games: &cdsc.gg/apple-juice")
+                player.kickPlayer(Chat.colored("&7Thank you for playing!\n\n&7Join our discord for more games: &cdsc.gg/apple-juice"))
             }, 200L)
         }
         Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
             player.spigot().respawn()
-        }, 1L)
+        }, 20L)
     }
 }

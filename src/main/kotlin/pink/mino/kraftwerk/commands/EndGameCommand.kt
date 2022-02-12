@@ -50,12 +50,19 @@ class EndGameCommand : CommandExecutor {
         val host = Bukkit.getPlayer(SettingsFeature.instance.data!!.getString("game.host"))
         val embed = EmbedBuilder()
         embed.setColor(Color(255, 61, 61))
-        embed.setImage("https://visage.surgeplay.com/bust/512/${host.uniqueId}")
-        embed.addField("Winners", winners.joinToString(","), false)
+        embed.setTitle("<placeholder host id>")
+        embed.setThumbnail("https://visage.surgeplay.com/bust/512/${host.uniqueId}")
+        embed.addField("Winners", winners.joinToString(",", "", "", -1, "...") {
+            "**$it** [${
+                SettingsFeature.instance.data!!.getInt(
+                    "game.kills.${Bukkit.getPlayer(it)}"
+                )
+            }]"
+        }, false)
         Discord.instance!!.getTextChannelById(937811334106583040)!!.sendMessageEmbeds(embed.build()).queue()
         SettingsFeature.instance.data!!.set("game.winners", ArrayList<String>())
         SettingsFeature.instance.data!!.set("game.list", ArrayList<String>())
-        SettingsFeature.instance.data!!.set("game.kills", ArrayList<String>())
+        SettingsFeature.instance.data!!.set("game.kills", null)
         SettingsFeature.instance.saveData()
         Bukkit.broadcastMessage(Chat.colored(Chat.line))
         for (player in Bukkit.getOnlinePlayers()) {

@@ -87,6 +87,7 @@ class Kraftwerk : JavaPlugin() {
         getCommand("pmc").executor = PMCCommand()
         getCommand("arena").executor = ArenaCommand()
         getCommand("spawn").executor = SpawnCommand()
+        getCommand("killtop").executor = KillTopCommand()
 
         /* ProtocolLib stuff */
         if (Bukkit.getPluginManager().getPlugin("ProtocolLib") == null) {

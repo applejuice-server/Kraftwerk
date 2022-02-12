@@ -4,7 +4,6 @@ import DefaultFontInfo
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.command.CommandSender
-import org.bukkit.entity.Player
 
 class Chat {
     companion object {
@@ -78,7 +77,7 @@ class Chat {
         }
 
         /* Function to send centered messages to players */
-        fun sendCenteredMessage(player: Player, message: String?) {
+        fun sendCenteredMessage(player: CommandSender, message: String?) {
             var text = message
             if (text == null || text == "") player.sendMessage("")
             text = ChatColor.translateAlternateColorCodes('&', message)

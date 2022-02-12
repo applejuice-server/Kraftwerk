@@ -113,6 +113,10 @@ commands:
     description: Sets the border for the current UHC world.
   winner:
     description: Sets the winners for the current UHC game.
+  killtop:
+    aliases:
+      - kt
+    description: Gets the current top killers in the current UHC game.
 depend:
   - ProtocolLib
   - JDA
