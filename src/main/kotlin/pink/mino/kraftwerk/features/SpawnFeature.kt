@@ -33,6 +33,8 @@ class SpawnFeature : Listener {
         p.inventory.clear()
         p.inventory.armorContents = null
         p.gameMode = GameMode.SURVIVAL
+        p.exp = 0F
+        p.level = 0
         val arenaSword = ItemStack(Material.IRON_SWORD)
         val arenaMeta = arenaSword.itemMeta
         arenaMeta.displayName = Chat.colored("&cFFA Arena")
@@ -41,7 +43,7 @@ class SpawnFeature : Listener {
         )
         arenaSword.itemMeta = arenaMeta
         p.inventory.setItem(0, arenaSword)
-        val location = Location(Bukkit.getWorld("Spawn"), 0.5, 5.5, 0.5)
+        val location = Location(Bukkit.getWorld("Spawn"), -221.5, 95.0, -140.5)
         p.teleport(location)
     }
 

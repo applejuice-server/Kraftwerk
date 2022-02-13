@@ -37,6 +37,8 @@ class UHCFeature : Listener {
                     player.health = 20.0
                     player.foodLevel = 20
                     player.saturation = 20F
+                    player.exp = 0F
+                    player.level = 0
                     player.gameMode = GameMode.SURVIVAL
                     player.inventory.clear()
                     player.inventory.armorContents = null
@@ -159,6 +161,8 @@ class UHCFeature : Listener {
                     player.health = 20.0
                     player.foodLevel = 20
                     player.saturation = 20F
+                    player.exp = 0F
+                    player.level = 0
                     player.gameMode = GameMode.SURVIVAL
                     player.inventory.clear()
                     player.inventory.armorContents = null

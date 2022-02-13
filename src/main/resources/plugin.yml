@@ -125,6 +125,14 @@ commands:
     aliases:
       - mp
     description: Set the hosts.uhc.gg matchpost for your game.
+  scenarios:
+    aliases: 
+      - scen
+    description: View all active scenarios.
+  scenariomanager:
+    aliases:
+      - sm
+    description: Manage scenarios.
 depend:
   - ProtocolLib
   - JDA

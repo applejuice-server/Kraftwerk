@@ -52,6 +52,8 @@ class ArenaFeature : Listener {
         p.health = 20.0
         p.foodLevel = 20
         p.saturation = 20F
+        p.exp = 0F
+        p.level = 0
         val effects = p.activePotionEffects
         for (effect in effects) {
             p.removePotionEffect(effect.type)

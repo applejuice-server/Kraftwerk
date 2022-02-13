@@ -4,6 +4,8 @@ import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 import pink.mino.kraftwerk.Kraftwerk
 import pink.mino.kraftwerk.scenarios.list.CutCleanScenario
+import pink.mino.kraftwerk.scenarios.list.HasteyBoysScenario
+import pink.mino.kraftwerk.scenarios.list.TimberScenario
 
 class ScenarioHandler {
     companion object {
@@ -11,12 +13,24 @@ class ScenarioHandler {
 
         fun setup() {
             addScenario(CutCleanScenario())
+            addScenario(TimberScenario())
+            addScenario(HasteyBoysScenario())
             scenarios.sortWith(Comparator.comparing(Scenario::name))
         }
 
         @JvmName("getScenarios1")
         fun getScenarios(): ArrayList<Scenario> {
             return scenarios
+        }
+
+        fun getActiveScenarios(): ArrayList<Scenario> {
+            val active = ArrayList<Scenario>()
+            for (scenario in scenarios) {
+                if (scenario.enabled) {
+                    active.add(scenario)
+                }
+            }
+            return active
         }
 
         fun getScenario(id: String?): Scenario? {

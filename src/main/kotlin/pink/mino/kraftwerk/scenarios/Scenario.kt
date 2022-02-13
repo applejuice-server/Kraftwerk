@@ -53,5 +53,9 @@ abstract class Scenario(
         SettingsFeature.instance.saveData()
     }
 
+    open fun onPvP() {}
+    open fun onStart() {}
+    open fun onMeetup() {}
+
     open fun onToggle(to: Boolean) {}
 }

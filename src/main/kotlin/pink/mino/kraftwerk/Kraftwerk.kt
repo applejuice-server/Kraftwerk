@@ -74,6 +74,7 @@ class Kraftwerk : JavaPlugin() {
         getCommand("winner").executor = WinnerCommand()
         getCommand("latescatter").executor = LatescatterCommand()
         getCommand("matchpost").executor = MatchpostCommand()
+        getCommand("scenariomanager").executor = ScenarioManagerCommand()
 
         getCommand("gm").executor = GamemodeCommand()
         getCommand("gamemode").executor = GamemodeCommand()
@@ -91,6 +92,7 @@ class Kraftwerk : JavaPlugin() {
         getCommand("arena").executor = ArenaCommand()
         getCommand("spawn").executor = SpawnCommand()
         getCommand("killtop").executor = KillTopCommand()
+        getCommand("scenarios").executor = ScenarioCommand()
 
         /* ProtocolLib stuff */
         if (Bukkit.getPluginManager().getPlugin("ProtocolLib") == null) {

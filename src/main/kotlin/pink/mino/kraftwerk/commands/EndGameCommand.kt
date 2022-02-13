@@ -51,7 +51,7 @@ class EndGameCommand : CommandExecutor {
         val host = Bukkit.getPlayer(SettingsFeature.instance.data!!.getString("game.host"))
         val embed = EmbedBuilder()
         embed.setColor(Color(255, 61, 61))
-        embed.setTitle("<placeholder host id>")
+        embed.setTitle(SettingsFeature.instance.data!!.getString("matchpost.host"))
         embed.setThumbnail("https://visage.surgeplay.com/bust/512/${host.uniqueId}")
         embed.addField("Winners", winners.joinToString(",", "", "", -1, "...") {
             "**$it** [${
@@ -73,11 +73,11 @@ class EndGameCommand : CommandExecutor {
             Chat.sendCenteredMessage(player, "&7Congratulations to the winners: &f${winners.joinToString(", ")}&7!")
             Chat.sendCenteredMessage(player, "&7The server will restart in &f45 seconds&7.")
         }
-        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wl off")
         Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "restart")
         }, 900L)
         Bukkit.broadcastMessage(Chat.colored(Chat.line))
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wl off")
         return true
     }
 
