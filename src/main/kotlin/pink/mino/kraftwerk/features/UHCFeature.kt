@@ -1,9 +1,13 @@
 package pink.mino.kraftwerk.features
 
+import net.minecraft.server.v1_8_R3.PacketPlayOutWorldBorder
+import net.minecraft.server.v1_8_R3.WorldBorder
 import org.bukkit.Bukkit
 import org.bukkit.GameMode
 import org.bukkit.Material
 import org.bukkit.Sound
+import org.bukkit.craftbukkit.v1_8_R3.CraftWorld
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer
 import org.bukkit.entity.Arrow
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
@@ -23,6 +27,7 @@ import pink.mino.kraftwerk.scenarios.ScenarioHandler
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GameState
 import pink.mino.kraftwerk.utils.Stats
+
 
 class UHCFeature : Listener {
     fun start(mode: String) {
@@ -53,8 +58,7 @@ class UHCFeature : Listener {
                         player.removePotionEffect(effect.type)
                     }
                 }
-                freeze()
-                ScatterFeature.scatter("ffa", Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world")), SettingsFeature.instance.data!!.getInt("pregen.border"))
+                ScatterFeature.scatter("ffa", Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world")), SettingsFeature.instance.data!!.getInt("pregen.border"), true)
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer cancel")
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer 45 &cStarting in ${Chat.dash}&f")
                 Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
@@ -179,8 +183,7 @@ class UHCFeature : Listener {
                         player.removePotionEffect(effect.type)
                     }
                 }
-                freeze()
-                ScatterFeature.scatter("teams", Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world")), SettingsFeature.instance.data!!.getInt("pregen.border"))
+                ScatterFeature.scatter("teams", Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world")), SettingsFeature.instance.data!!.getInt("pregen.border"), true)
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer cancel")
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer 45 &cStarting in ${Chat.dash}&f")
                 Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
@@ -287,19 +290,23 @@ class UHCFeature : Listener {
 
     fun freeze() {
         for (player in Bukkit.getOnlinePlayers()) {
-            player.addPotionEffect(PotionEffect(PotionEffectType.SLOW, 999999999, 10, true, false))
-            player.addPotionEffect(PotionEffect(PotionEffectType.BLINDNESS, 999999999, 100, true, false))
-            player.addPotionEffect(PotionEffect(PotionEffectType.JUMP, 999999999, -100, true, false))
-            player.addPotionEffect(PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 999999999, 1000, true, false))
+            val border = WorldBorder()
+            border.size = 2.5
+            border.setCenter(player.location.x, player.location.z)
+            border.world = (Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world")) as CraftWorld).handle
+            val packetPlayOutWorldBorder = PacketPlayOutWorldBorder(border, PacketPlayOutWorldBorder.EnumWorldBorderAction.INITIALIZE)
+            (player as CraftPlayer).handle.playerConnection.sendPacket(packetPlayOutWorldBorder)
         }
     }
 
     fun unfreeze() {
         for (player in Bukkit.getOnlinePlayers()) {
-            player.removePotionEffect(PotionEffectType.SLOW)
-            player.removePotionEffect(PotionEffectType.JUMP)
-            player.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE)
-            player.removePotionEffect(PotionEffectType.BLINDNESS)
+            val border = WorldBorder()
+            border.size = 20000000000000000.0
+            border.world = (Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world")) as CraftWorld).handle
+            border.setCenter(player.location.x, player.location.z)
+            val packetPlayOutWorldBorder = PacketPlayOutWorldBorder(border, PacketPlayOutWorldBorder.EnumWorldBorderAction.INITIALIZE)
+            (player as CraftPlayer).handle.playerConnection.sendPacket(packetPlayOutWorldBorder)
         }
     }
 

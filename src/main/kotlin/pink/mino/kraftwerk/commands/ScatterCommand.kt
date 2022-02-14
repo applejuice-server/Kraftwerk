@@ -39,9 +39,9 @@ class ScatterCommand : CommandExecutor {
             return false
         }
         if (args[2] == "ffa") {
-            ScatterFeature.scatter(args[2], Bukkit.getWorld(args[0]), args[1].toInt())
+            ScatterFeature.scatter(args[2], Bukkit.getWorld(args[0]), args[1].toInt(), false)
         } else if (args[2] == "teams") {
-            ScatterFeature.scatter(args[2], Bukkit.getWorld(args[0]), args[1].toInt())
+            ScatterFeature.scatter(args[2], Bukkit.getWorld(args[0]), args[1].toInt(), false)
         } else {
             Chat.sendMessage(player, "${Chat.prefix} &7Invalid arguments: &f/scatter <world> <radius> <ffa/teams>&7.")
             return false

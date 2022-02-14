@@ -35,7 +35,7 @@ class Stats {
             val result = JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection.createStatement().executeQuery(statement)
             result.next()
             val kills = result.getInt("kills")
-            statement = "UPDATE stats SET wins = ${kills + 1} where uuid = '${p.uniqueId}'"
+            statement = "UPDATE stats SET kills = ${kills + 1} where uuid = '${p.uniqueId}'"
             with(JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection) {
                 createStatement().execute(statement)
             }
@@ -47,7 +47,7 @@ class Stats {
             val result = JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection.createStatement().executeQuery(statement)
             result.next()
             val deaths = result.getInt("deaths")
-            statement = "UPDATE stats SET wins = ${deaths + 1} where uuid = '${p.uniqueId}'"
+            statement = "UPDATE stats SET deaths = ${deaths + 1} where uuid = '${p.uniqueId}'"
             with(JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection) {
                 createStatement().execute(statement)
             }
@@ -59,7 +59,7 @@ class Stats {
             val result = JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection.createStatement().executeQuery(statement)
             result.next()
             val gamesPlayed = result.getInt("games_played")
-            statement = "UPDATE stats SET wins = ${gamesPlayed + 1} where uuid = '${p.uniqueId}'"
+            statement = "UPDATE stats SET games_played = ${gamesPlayed + 1} where uuid = '${p.uniqueId}'"
             with(JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection) {
                 createStatement().execute(statement)
             }

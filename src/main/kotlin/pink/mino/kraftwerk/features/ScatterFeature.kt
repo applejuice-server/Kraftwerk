@@ -19,7 +19,7 @@ class ScatterFeature : Listener {
         // Mode: "ffa" or "teams"
         // Radius: Border radius
 
-        fun scatter(mode: String, world: World, radius: Int): Boolean {
+        fun scatter(mode: String, world: World, radius: Int, freezing: Boolean): Boolean {
             return when (mode) {
                 "ffa" -> {
                     val scatteringList: ArrayList<Player> = ArrayList()
@@ -55,6 +55,9 @@ class ScatterFeature : Listener {
                     }
                     scattering = false
                     Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} &7Successfully scattered all players!"))
+                    Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
+                        if (freezing) UHCFeature().freeze()
+                    }, 20L)
                     true
                 }
                 "teams" -> {
@@ -118,6 +121,9 @@ class ScatterFeature : Listener {
                     }
                     scattering = false
                     Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} &7Successfully scattered all players!"))
+                    Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
+                        if (freezing) UHCFeature().freeze()
+                    }, 20L)
                     true
                 }
                 else -> {
