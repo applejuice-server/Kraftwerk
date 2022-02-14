@@ -137,3 +137,4 @@ depend:
   - ProtocolLib
   - JDA
   - Vault
+  - Citizens

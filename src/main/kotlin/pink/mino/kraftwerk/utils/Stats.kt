@@ -31,7 +31,7 @@ class Stats {
 
         fun addKill(p: Player) {
             checkPlayer(p)
-            var statement = "SELECT (kill) from stats WHERE uuid = '${p.uniqueId}'"
+            var statement = "SELECT (kills) from stats WHERE uuid = '${p.uniqueId}'"
             val result = JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection.createStatement().executeQuery(statement)
             result.next()
             val kills = result.getInt("kills")

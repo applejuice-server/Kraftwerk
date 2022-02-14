@@ -52,6 +52,7 @@ class Kraftwerk : JavaPlugin() {
         Bukkit.getServer().pluginManager.registerEvents(UHCFeature(), this)
         Bukkit.getServer().pluginManager.registerEvents(PvPListener(), this)
         Bukkit.getServer().pluginManager.registerEvents(RatesFeature(), this)
+        Bukkit.getServer().pluginManager.registerEvents(CombatLogFeature.instance, this)
 
         /* Registering commands */
         getCommand("clear").executor = ClearInventoryCommand()
@@ -154,6 +155,10 @@ class Kraftwerk : JavaPlugin() {
 
     override fun onDisable() {
         Bukkit.getLogger().info("Kraftwerk disabled.")
+        SettingsFeature.instance.data!!.set("game.winners", ArrayList<String>())
+        SettingsFeature.instance.data!!.set("game.list", ArrayList<String>())
+        SettingsFeature.instance.data!!.set("game.kills", null)
+        SettingsFeature.instance.saveData()
     }
 
     fun addRecipes() {

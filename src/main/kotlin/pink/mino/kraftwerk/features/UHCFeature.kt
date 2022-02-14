@@ -58,6 +58,7 @@ class UHCFeature : Listener {
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer cancel")
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer 45 &cStarting in ${Chat.dash}&f")
                 Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wl on")
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "cc")
                     unfreeze()
                     Bukkit.broadcastMessage(Chat.colored(Chat.line))
@@ -68,15 +69,16 @@ class UHCFeature : Listener {
                     GameState.setState(GameState.INGAME)
                     var list = SettingsFeature.instance.data!!.getStringList("game.list")
                     if (list == null) list = ArrayList<String>()
+                    val scenarios = ArrayList<String>()
+                    for (scenario in ScenarioHandler.getActiveScenarios()) {
+                        scenarios.add(scenario.name)
+                    }
                     for (player in Bukkit.getOnlinePlayers()) {
                         Chat.sendMessage(player, "&7You may &abegin&7! The host for this game is &c${SettingsFeature.instance.data!!.getString("game.host")}&7!")
-                        Chat.sendMessage(player, "&7Scenarios: &f${ScenarioHandler.getActiveScenarios().joinToString(", ")}&7")
+
+                        Chat.sendMessage(player, "&7Scenarios: &f${scenarios.joinToString(", ")}&7")
                         Chat.sendCenteredMessage(player, " ")
-                        Chat.sendCenteredMessage(player, Chat.line)
-                        Chat.sendCenteredMessage(player, " ")
-                        Chat.sendCenteredMessage(player, "&cFinal Heal&7 is in &c${SettingsFeature.instance.data!!.getInt("game.events.final-heal")} minutes&7.")
-                        Chat.sendCenteredMessage(player, "&cPvP&7 is enabled in &c${SettingsFeature.instance.data!!.getInt("game.events.final-heal") + SettingsFeature.instance.data!!.getInt("game.events.pvp")} minutes&7.")
-                        Chat.sendCenteredMessage(player, "&7Finally, &cMeetup&7 is enabled in &c${SettingsFeature.instance.data!!.getInt("game.events.final-heal") + SettingsFeature.instance.data!!.getInt("game.events.pvp") + SettingsFeature.instance.data!!.getInt("game.events.meetup")} minutes&7.")
+                        Chat.sendMessage(player, Chat.line)
                         player.playSound(player.location, Sound.ENDERDRAGON_GROWL, 10F, 1F)
                         player.sendTitle(Chat.colored("&a&lGO!"), Chat.colored("&7You may now play the game, do &c/helpop&7 for help!"))
                         player.inventory.setItem(0, ItemStack(Material.COOKED_BEEF, SettingsFeature.instance.data!!.getInt("game.starterfood")))
@@ -84,10 +86,8 @@ class UHCFeature : Listener {
                         WhitelistCommand().addWhitelist(player.name)
                         list.add(player.name)
                     }
-                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wl on")
                     SettingsFeature.instance.data!!.set("game.list", list)
                     SettingsFeature.instance.saveData()
-                    Bukkit.broadcastMessage(Chat.colored(Chat.line))
                     Bukkit.broadcastMessage(Chat.colored("&b&oSuccessfully saved your stats..."))
                     Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world")).setGameRuleValue("doDaylightCycle", true.toString())
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer cancel")
@@ -158,7 +158,7 @@ class UHCFeature : Listener {
                 Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world")).time = 1000
                 Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world")).setGameRuleValue("doDaylightCycle", false.toString())
                 SettingsFeature.instance.data!!.set("game.pvp", true)
-                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Starting a &cTeam&7 UHC game... now freezing players."))
+                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Starting a &cTeams&7 UHC game... now freezing players."))
                 for (player in Bukkit.getOnlinePlayers()) {
                     player.playSound(player.location, Sound.WOOD_CLICK, 10F, 1F)
                     player.health = 20.0
@@ -184,6 +184,7 @@ class UHCFeature : Listener {
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer cancel")
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer 45 &cStarting in ${Chat.dash}&f")
                 Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wl on")
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "cc")
                     unfreeze()
                     Bukkit.broadcastMessage(Chat.colored(Chat.line))
@@ -192,19 +193,28 @@ class UHCFeature : Listener {
                     }
                     Bukkit.broadcastMessage(" ")
                     GameState.setState(GameState.INGAME)
+                    var list = SettingsFeature.instance.data!!.getStringList("game.list")
+                    if (list == null) list = ArrayList<String>()
+                    val scenarios = ArrayList<String>()
+                    for (scenario in ScenarioHandler.getActiveScenarios()) {
+                        scenarios.add(scenario.name)
+                    }
                     for (player in Bukkit.getOnlinePlayers()) {
                         Chat.sendMessage(player, "&7You may &abegin&7! The host for this game is &c${SettingsFeature.instance.data!!.getString("game.host")}&7!")
-                        Chat.sendMessage(player, "&7Scenarios: &f${ScenarioHandler.getActiveScenarios().joinToString(", ")}&7")
-                        Chat.sendCenteredMessage(player, " ")
-                        Chat.sendCenteredMessage(player, Chat.line)
-                        Chat.sendCenteredMessage(player, " ")
-                        Chat.sendCenteredMessage(player, "&cFinal Heal&7 is in &c${SettingsFeature.instance.data!!.getInt("game.events.final-heal")} minutes&7.")
-                        Chat.sendCenteredMessage(player, "&cPvP&7 is enabled in &c${SettingsFeature.instance.data!!.getInt("game.events.final-heal") + SettingsFeature.instance.data!!.getInt("game.events.pvp")} minutes&7.")
-                        Chat.sendCenteredMessage(player, "&7Finally, &cMeetup&7 is enabled in &c${SettingsFeature.instance.data!!.getInt("game.events.final-heal") + SettingsFeature.instance.data!!.getInt("game.events.pvp") + SettingsFeature.instance.data!!.getInt("game.events.meetup")} minutes&7.")
+                        Chat.sendMessage(player, "&7Use &c/helpop&7 for help from the host. ")
+                        Chat.sendMessage(player, " ")
+                        Chat.sendMessage(player, "&7Scenarios: &f${scenarios.joinToString(", ")}&7")
+                        Chat.sendMessage(player, Chat.line)
                         player.playSound(player.location, Sound.ENDERDRAGON_GROWL, 10F, 1F)
+                        player.sendTitle(Chat.colored("&a&lGO!"), Chat.colored("&7You may now play the game, do &c/helpop&7 for help!"))
                         player.inventory.setItem(0, ItemStack(Material.COOKED_BEEF, SettingsFeature.instance.data!!.getInt("game.starterfood")))
+                        Stats.addGamesPlayed(player)
+                        WhitelistCommand().addWhitelist(player.name)
+                        list.add(player.name)
                     }
-                    Bukkit.broadcastMessage(Chat.colored(Chat.line))
+                    SettingsFeature.instance.data!!.set("game.list", list)
+                    SettingsFeature.instance.saveData()
+                    Bukkit.broadcastMessage(Chat.colored("&b&oSuccessfully saved your stats..."))
                     Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world")).setGameRuleValue("doDaylightCycle", true.toString())
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer cancel")
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer ${SettingsFeature.instance.data!!.getInt("game.events.final-heal") * 60} &cFinal Heal is in ${Chat.dash}&f")

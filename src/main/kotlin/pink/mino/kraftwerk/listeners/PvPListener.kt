@@ -11,7 +11,7 @@ import pink.mino.kraftwerk.utils.Chat
 class PvPListener : Listener {
     @EventHandler
     fun onPlayerDamage(e: EntityDamageByEntityEvent) {
-        if (e.entityType == EntityType.PLAYER) {
+        if (e.entityType == EntityType.PLAYER && e.damager.type == EntityType.PLAYER) {
             if (SettingsFeature.instance.data!!.getBoolean("game.pvp")) {
                 e.isCancelled = true
                 Chat.sendMessage(e.damager as Player, "&cPvP is disabled at the moment.")

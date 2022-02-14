@@ -60,6 +60,7 @@ class EndGameCommand : CommandExecutor {
                 )
             }]"
         }, false)
+        embed.addField("Matchpost", "https://hosts.uhc.gg/m/${SettingsFeature.instance.data!!.getInt("matchpost.id")}", false)
         Discord.instance!!.getTextChannelById(937811334106583040)!!.sendMessageEmbeds(embed.build()).queue()
         Discord.instance!!.presence.activity = Activity.playing("applejuice.bar")
         SettingsFeature.instance.data!!.set("game.winners", ArrayList<String>())
