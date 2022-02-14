@@ -49,6 +49,8 @@ class TeamCommand : CommandExecutor {
                 Chat.sendMessage(sender, "${Chat.prefix} &f/team reset ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Reset all teams.")
                 Chat.sendMessage(sender, "${Chat.prefix} &f/team management <on/off> ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Enable/disable team management.")
                 Chat.sendMessage(sender, "${Chat.prefix} &f/team size <size> ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Set the size of teams.")
+                Chat.sendMessage(sender, "${Chat.prefix} &f/team set <player1> <player2> ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Sets Player 1 to the Player 2's team.")
+                Chat.sendMessage(sender, "${Chat.prefix} &f/team delete <team name> ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Deletes the provided team.")
                 Chat.sendMessage(sender, Chat.line)
             }
         } else if (args[0] == "create") {
@@ -136,9 +138,7 @@ class TeamCommand : CommandExecutor {
             }
             settings.data!!.set("game.teamSize", args[1].toInt())
             settings.saveData()
-            Chat.sendMessage(sender as Player, Chat.line)
             Chat.sendMessage(sender, "${Chat.prefix} ${ChatColor.GRAY}The teamsize has been set to ${ChatColor.WHITE}${args[1]}${ChatColor.GRAY}.")
-            Chat.sendMessage(sender, Chat.line)
         } else if (args[0] == "accept") {
             val player = sender as Player
             val target = Bukkit.getServer().getPlayer(args[1])
@@ -213,9 +213,7 @@ class TeamCommand : CommandExecutor {
                     team.removePlayer(p)
                 }
             }
-            player.sendMessage(Chat.line)
             Chat.sendMessage(player, "${Chat.prefix} You've reset all teams.")
-            player.sendMessage(Chat.line)
         } else if (args[0] == "leave") {
             val player = sender as Player
             val team = player.scoreboard.getPlayerTeam(player)
@@ -261,6 +259,61 @@ class TeamCommand : CommandExecutor {
                 Chat.sendCenteredMessage(sender, "&7&lThere are no teams right now!")
             }
             Chat.sendMessage(sender, Chat.line)
+        } else if (args[0] == "delete") {
+            if (sender is Player) {
+                if (!sender.hasPermission("uhc.staff.team")) {
+                    Chat.sendMessage(sender, "${ChatColor.RED}You don't have permission to use this command.")
+                    return false
+                }
+            }
+            if (args.size == 1) {
+                Chat.sendMessage(sender, "&cYou need to provide a team to delete.")
+                return false
+            }
+            var selectedTeam: Team? = null
+            for (team in TeamsFeature.manager.getTeams()) {
+                if (team.name == args[1]) {
+                    selectedTeam = team
+                }
+            }
+            if (selectedTeam == null) {
+                Chat.sendMessage(sender, "&cYou need to provide a team to delete. (typically a team name has \"UHC\" and then the numerical ID next to it)")
+                return false
+            }
+            for (player in selectedTeam.players) {
+                selectedTeam.removePlayer(player)
+            }
+            Chat.sendMessage(sender, "${Chat.prefix} ${selectedTeam.prefix}${selectedTeam.name}&7 has been deleted & all members kicked.")
+        } else if (args[0] == "set") {
+            if (sender is Player) {
+                if (!sender.hasPermission("uhc.staff.team")) {
+                    Chat.sendMessage(sender, "${ChatColor.RED}You don't have permission to use this command.")
+                    return false
+                }
+            }
+            if (args.size < 3) {
+                Chat.sendMessage(sender, "${Chat.prefix} Invalid usage: &f/team set <Player1> <Player2>&7. &8(&fPlayer 2 has to be the one with the team.&8)")
+                return false
+            }
+            val target = Bukkit.getPlayer(args[1])
+            val target2 = Bukkit.getPlayer(args[2])
+            if (target2 == null || target == null) {
+                Chat.sendMessage(sender, "${Chat.prefix} Invalid players: &f/team set <Player1> <Player2>&7. &8(&fPlayer 2 has to be the one with the team.&8)")
+                return false
+            }
+            val team = TeamsFeature.manager.getTeam(target2)
+            if (team == null) {
+                Chat.sendMessage(sender, "&cThat player is currently not in a team right now.")
+                return false
+            }
+            team.addPlayer(target)
+            Chat.sendMessage(sender, "${Chat.prefix} Successfully added &f${target2.name}&7 to &f${target.name}&7's team")
+            Chat.sendMessage(target, "${Chat.prefix} You've been added to &f${target2.name}&7's team")
+            for (player in team.players) {
+                if (player.isOnline) {
+                    Chat.sendMessage(player as Player, "${Chat.prefix} &f${target.name}&7 has been added to your team.")
+                }
+            }
         }
 
         return true

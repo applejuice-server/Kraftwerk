@@ -19,6 +19,7 @@ import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 import pink.mino.kraftwerk.Kraftwerk
 import pink.mino.kraftwerk.commands.WhitelistCommand
+import pink.mino.kraftwerk.scenarios.ScenarioHandler
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GameState
 import pink.mino.kraftwerk.utils.Stats
@@ -68,8 +69,10 @@ class UHCFeature : Listener {
                     var list = SettingsFeature.instance.data!!.getStringList("game.list")
                     if (list == null) list = ArrayList<String>()
                     for (player in Bukkit.getOnlinePlayers()) {
-                        Chat.sendCenteredMessage(player, "&7You may &abegin&7! The host for this game is &c${SettingsFeature.instance.data!!.getString("game.host")}&7!")
-                        Chat.sendCenteredMessage(player, "&7Scenarios: &fcoming soon lol&7")
+                        Chat.sendMessage(player, "&7You may &abegin&7! The host for this game is &c${SettingsFeature.instance.data!!.getString("game.host")}&7!")
+                        Chat.sendMessage(player, "&7Scenarios: &f${ScenarioHandler.getActiveScenarios().joinToString(", ")}&7")
+                        Chat.sendCenteredMessage(player, " ")
+                        Chat.sendCenteredMessage(player, Chat.line)
                         Chat.sendCenteredMessage(player, " ")
                         Chat.sendCenteredMessage(player, "&cFinal Heal&7 is in &c${SettingsFeature.instance.data!!.getInt("game.events.final-heal")} minutes&7.")
                         Chat.sendCenteredMessage(player, "&cPvP&7 is enabled in &c${SettingsFeature.instance.data!!.getInt("game.events.final-heal") + SettingsFeature.instance.data!!.getInt("game.events.pvp")} minutes&7.")
@@ -190,8 +193,10 @@ class UHCFeature : Listener {
                     Bukkit.broadcastMessage(" ")
                     GameState.setState(GameState.INGAME)
                     for (player in Bukkit.getOnlinePlayers()) {
-                        Chat.sendCenteredMessage(player, "&7You may &abegin&7! The host for this game is &c${SettingsFeature.instance.data!!.getString("game.host")}&7!")
-                        Chat.sendCenteredMessage(player, "&7Scenarios: &fcoming soon lol&7")
+                        Chat.sendMessage(player, "&7You may &abegin&7! The host for this game is &c${SettingsFeature.instance.data!!.getString("game.host")}&7!")
+                        Chat.sendMessage(player, "&7Scenarios: &f${ScenarioHandler.getActiveScenarios().joinToString(", ")}&7")
+                        Chat.sendCenteredMessage(player, " ")
+                        Chat.sendCenteredMessage(player, Chat.line)
                         Chat.sendCenteredMessage(player, " ")
                         Chat.sendCenteredMessage(player, "&cFinal Heal&7 is in &c${SettingsFeature.instance.data!!.getInt("game.events.final-heal")} minutes&7.")
                         Chat.sendCenteredMessage(player, "&cPvP&7 is enabled in &c${SettingsFeature.instance.data!!.getInt("game.events.final-heal") + SettingsFeature.instance.data!!.getInt("game.events.pvp")} minutes&7.")
