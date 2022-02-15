@@ -11,6 +11,7 @@ import org.bukkit.plugin.java.JavaPlugin
 import pink.mino.kraftwerk.Kraftwerk
 import pink.mino.kraftwerk.discord.Discord
 import pink.mino.kraftwerk.features.SettingsFeature
+import pink.mino.kraftwerk.features.SpawnFeature
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GameState
 import pink.mino.kraftwerk.utils.Stats
@@ -69,6 +70,7 @@ class EndGameCommand : CommandExecutor {
         SettingsFeature.instance.saveData()
         Bukkit.broadcastMessage(Chat.colored(Chat.line))
         for (player in Bukkit.getOnlinePlayers()) {
+            SpawnFeature.instance.send(player)
             Chat.sendCenteredMessage(player, "&c&lGAME OVER!")
             Chat.sendMessage(player, " ")
             Chat.sendCenteredMessage(player, "&7Congratulations to the winners: &f${winners.joinToString(", ")}&7!")

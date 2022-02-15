@@ -53,6 +53,7 @@ class ConfigCommand : CommandExecutor {
         optionsMeta.displayName = ChatColor.translateAlternateColorCodes('&', "&4Options")
         optionsMeta.lore = listOf(
             Chat.colored(Chat.line),
+            "",
             Chat.colored("&7Absorption ${Chat.dash} &c${getOption("absorption")}"),
             Chat.colored("&7Notch Apples ${Chat.dash} &c${getOption("notchapples")}"),
             Chat.colored("&7Golden Heads ${Chat.dash} &c${getOption("goldenheads")}"),
@@ -62,6 +63,7 @@ class ConfigCommand : CommandExecutor {
             Chat.colored("&7Bookshelves ${Chat.dash} &c${getOption("bookshelves")}"),
             Chat.colored("&7AntiStone ${Chat.dash} &c${getOption("antistone")}"),
             Chat.colored("&7AntiBurn ${Chat.dash} &c${getOption("antiburn")}"),
+            "",
             Chat.colored(Chat.line),
         )
         options.itemMeta = optionsMeta
@@ -77,11 +79,13 @@ class ConfigCommand : CommandExecutor {
         rulesMeta.displayName = ChatColor.translateAlternateColorCodes('&', "&4Rules")
         rulesMeta.lore = listOf(
             Chat.colored(Chat.line),
+            "",
             Chat.colored("&7Crossteaming ${Chat.dash} &c${getRule("crossteaming")}"),
             Chat.colored("&7Stalking ${Chat.dash} &c${getRule("stalking")}"),
             Chat.colored("&7Stealing ${Chat.dash} &c${getRule("stealing")}"),
             Chat.colored("&7Skybasing ${Chat.dash} &c${getRule("skybasing")}"),
             Chat.colored("&7Running at Meetup ${Chat.dash} &c${getRule("runningatmu")}"),
+            "",
             Chat.colored(Chat.line),
         )
         rules.itemMeta = rulesMeta
@@ -98,9 +102,11 @@ class ConfigCommand : CommandExecutor {
         miningRulesMeta.displayName = ChatColor.translateAlternateColorCodes('&', "&4Mining Rules")
         miningRulesMeta.lore = listOf(
             Chat.colored(Chat.line),
+            "",
             Chat.colored("&7Stripmining ${Chat.dash} &c${getRule("stripmining")}"),
             Chat.colored("&7Rollarcoastering ${Chat.dash} &c${getRule("rollarcoastering")}"),
             Chat.colored("&7Pokeholing ${Chat.dash} &c${getRule("pokeholing")}"),
+            "",
             Chat.colored(Chat.line)
         )
         miningRules.itemMeta = miningRulesMeta
@@ -116,7 +122,9 @@ class ConfigCommand : CommandExecutor {
         borderMeta.displayName = ChatColor.translateAlternateColorCodes('&', "&4Border")
         borderMeta.lore = listOf(
             Chat.colored(Chat.line),
+            "",
             Chat.colored("&7Border ${Chat.dash} &c${SettingsFeature.instance.data!!.getInt("pregen.border")}x${SettingsFeature.instance.data!!.getInt("pregen.border")}"),
+            "",
             Chat.colored(Chat.line)
         )
         border.itemMeta = borderMeta
@@ -151,7 +159,7 @@ class ConfigCommand : CommandExecutor {
                 matchpostMeta.lore = listOf(
                     Chat.colored(Chat.line),
                     "",
-                    Chat.colored("&7Coming soon."),
+                    Chat.colored("&7The matchpost hasn't been set yet."),
                     "",
                     Chat.colored(Chat.line),
                     Chat.colored("&7Set the matchpost using &c/matchpost <id>")
@@ -172,7 +180,7 @@ class ConfigCommand : CommandExecutor {
                 matchpostMeta.lore = listOf(
                     Chat.colored(Chat.line),
                     "",
-                    Chat.colored("&7Coming soon."),
+                    Chat.colored("&7The matchpost hasn't been set yet."),
                     "",
                     Chat.colored(Chat.line)
                 )
@@ -197,7 +205,9 @@ class ConfigCommand : CommandExecutor {
         potionsMeta.displayName = Chat.colored("&4Potions")
         potionsMeta.lore = listOf(
             Chat.colored(Chat.line),
+            "",
             Chat.colored("&7Coming soon."),
+            "",
             Chat.colored(Chat.line)
         )
         potions.itemMeta = potionsMeta
@@ -227,7 +237,9 @@ class ConfigCommand : CommandExecutor {
         starterFoodMeta.displayName = Chat.colored("&4Starter Food")
         starterFoodMeta.lore = listOf(
             Chat.colored(Chat.line),
+            "",
             Chat.colored("&7Starter Food ${Chat.dash} &c${SettingsFeature.instance.data!!.getInt("game.starterfood")}"),
+            "",
             Chat.colored(Chat.line)
         )
         starterFood.itemMeta = starterFoodMeta
@@ -242,8 +254,10 @@ class ConfigCommand : CommandExecutor {
         ratesMeta.displayName = Chat.colored("&4Apple/Flint Rates")
         ratesMeta.lore = listOf(
             Chat.colored(Chat.line),
+            "",
             Chat.colored("&7Apple Rates ${Chat.dash} &c${SettingsFeature.instance.data!!.getInt("game.rates.apple")}%"),
             Chat.colored("&7Flint Rates ${Chat.dash} &c${SettingsFeature.instance.data!!.getInt("game.rates.flint")}%"),
+            "",
             Chat.colored(Chat.line)
         )
         rates.itemMeta = ratesMeta

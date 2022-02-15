@@ -102,7 +102,7 @@ class CombatLogFeature : Listener {
                 npc.spawn(e.player.location)
                 Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
                     if (npc.isSpawned) {
-                        npc.name = Chat.colored("&8(&cLogger&8)&f ${e.player.name}")
+                        npc.name = Chat.colored("&8(&aLogger&8)&f ${e.player.name}")
                         npc.isProtected = false
                         npc.getOrAddTrait(Equipment::class.java)
                             .set(Equipment.EquipmentSlot.HELMET, e.player.inventory.helmet)

@@ -8,14 +8,10 @@ import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.craftbukkit.v1_8_R3.CraftWorld
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer
-import org.bukkit.entity.Arrow
-import org.bukkit.entity.EntityType
-import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockPlaceEvent
-import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.inventory.InventoryType
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.java.JavaPlugin
@@ -365,19 +361,6 @@ class UHCFeature : Listener {
     fun onBlockPlace(e: BlockPlaceEvent) {
         if (GameState.currentState == GameState.WAITING) {
             e.isCancelled = true
-        }
-    }
-
-    @EventHandler
-    fun onPlayerDamage(e: EntityDamageByEntityEvent) {
-        if (e.entity.world.name != "Arena") return
-        if (e.entityType === EntityType.PLAYER && e.damager != null && e.damager.type === EntityType.ARROW && (e.damager as Arrow).shooter === e.entity) {
-            e.isCancelled = true
-        }
-        if (e.damager.type == EntityType.PLAYER) {
-            if ((e.damager as Player).hasPotionEffect(PotionEffectType.DAMAGE_RESISTANCE)) {
-                (e.damager as Player).removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE)
-            }
         }
     }
 }

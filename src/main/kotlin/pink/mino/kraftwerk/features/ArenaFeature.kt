@@ -49,6 +49,7 @@ class ArenaFeature : Listener {
                 createStatement().execute(statement)
             }
         }
+        SpecFeature.instance.unspec(p)
         p.health = 20.0
         p.foodLevel = 20
         p.saturation = 20F

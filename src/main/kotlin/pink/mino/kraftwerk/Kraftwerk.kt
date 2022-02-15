@@ -53,6 +53,7 @@ class Kraftwerk : JavaPlugin() {
         Bukkit.getServer().pluginManager.registerEvents(PvPListener(), this)
         Bukkit.getServer().pluginManager.registerEvents(RatesFeature(), this)
         Bukkit.getServer().pluginManager.registerEvents(CombatLogFeature.instance, this)
+        Bukkit.getServer().pluginManager.registerEvents(SpecFeature.instance, this)
 
         /* Registering commands */
         getCommand("clear").executor = ClearInventoryCommand()
@@ -76,6 +77,7 @@ class Kraftwerk : JavaPlugin() {
         getCommand("latescatter").executor = LatescatterCommand()
         getCommand("matchpost").executor = MatchpostCommand()
         getCommand("scenariomanager").executor = ScenarioManagerCommand()
+        getCommand("spectate").executor = SpectateCommand()
 
         getCommand("gm").executor = GamemodeCommand()
         getCommand("gamemode").executor = GamemodeCommand()

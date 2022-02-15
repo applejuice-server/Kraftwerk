@@ -133,6 +133,10 @@ commands:
     aliases:
       - sm
     description: Manage scenarios.
+  spectate:
+    aliases:
+      - spec
+    description: Spectate the UHC game.
 depend:
   - ProtocolLib
   - JDA
