@@ -41,8 +41,13 @@ class PlayerDeathListener : Listener {
                 SettingsFeature.instance.saveData()
                 CombatLogFeature.instance.removeCombatLog(player.name)
                 if (player.hasPermission("uhc.staff")) {
-                    SpecFeature.instance.spec(player)
-                    Chat.sendMessage(player, "${Chat.prefix} You've been sent into spectator mode as you are a staff member.")
+                    Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
+                        SpecFeature.instance.spec(player)
+                        Chat.sendMessage(
+                            player,
+                            "${Chat.prefix} You've been sent into spectator mode as you are a staff member."
+                        )
+                    }, 20L)
                 }
                 player.gameMode = GameMode.SPECTATOR
                 Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {

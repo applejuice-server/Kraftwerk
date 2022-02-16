@@ -137,6 +137,10 @@ commands:
     aliases:
       - spec
     description: Spectate the UHC game.
+  specchat:
+    aliases:
+      - sc
+    description: Talk in spectate chat.
 depend:
   - ProtocolLib
   - JDA

@@ -78,6 +78,7 @@ class Kraftwerk : JavaPlugin() {
         getCommand("matchpost").executor = MatchpostCommand()
         getCommand("scenariomanager").executor = ScenarioManagerCommand()
         getCommand("spectate").executor = SpectateCommand()
+        getCommand("specchat").executor = SpecChatCommand()
 
         getCommand("gm").executor = GamemodeCommand()
         getCommand("gamemode").executor = GamemodeCommand()
