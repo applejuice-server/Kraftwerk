@@ -200,36 +200,41 @@ class ConfigCommand : CommandExecutor {
             Chat.sendMessage(sender, "${Chat.prefix} Matchpost: &chttps://hosts.uhc.gg/m/${SettingsFeature.instance.data!!.getInt("matchpost.id")}")
             it.isCancelled = true
         }
-        val potions = ItemStack(Material.GLASS_BOTTLE)
-        val potionsMeta = potions.itemMeta
-        potionsMeta.displayName = Chat.colored("&4Potions")
-        potionsMeta.lore = listOf(
-            Chat.colored(Chat.line),
-            "",
-            Chat.colored("&7Coming soon."),
-            "",
-            Chat.colored(Chat.line)
-        )
-        potions.itemMeta = potionsMeta
-        gui.item(32, potions).onClick runnable@{
-            if (sender.hasPermission("uhc.staff")) {
-                Bukkit.dispatchCommand(sender as CommandSender, "editconfig potions")
-            }
-            it.isCancelled = true
-        }
         val netherConfig = ItemStack(Material.NETHERRACK)
         val netherConfigMeta = netherConfig.itemMeta
-        netherConfigMeta.displayName = Chat.colored("&4Nether Config")
+        netherConfigMeta.displayName = Chat.colored("&4Nether Config / Potions")
         netherConfigMeta.lore = listOf(
             Chat.colored(Chat.line),
+            "",
             Chat.colored("&7Coming soon."),
+            "",
             Chat.colored(Chat.line)
         )
         netherConfig.itemMeta = netherConfigMeta
-        gui.item(21, netherConfig).onClick runnable@{
+        gui.item(32, netherConfig).onClick runnable@{
             if (sender.hasPermission("uhc.staff")) {
                 Bukkit.dispatchCommand(sender as CommandSender, "editconfig nether")
             }
+            it.isCancelled = true
+        }
+        val teamConfig = ItemStack(Material.IRON_SWORD, 2)
+        val teamConfigMeta = teamConfig.itemMeta
+        teamConfigMeta.displayName = Chat.colored("&4Team Config")
+        val ffa = if (SettingsFeature.instance.data!!.getBoolean("game.ffa")) {
+            "Enabled"
+        } else {
+            "Disabled"
+        }
+        teamConfigMeta.lore = listOf(
+            Chat.colored(Chat.line),
+            "",
+            Chat.colored("&7Team Size ${Chat.dash} &c${SettingsFeature.instance.data!!.getInt("game.teamSize")}"),
+            Chat.colored("&7FFA ${Chat.dash} &c${ffa}"),
+            "",
+            Chat.colored(Chat.line)
+        )
+        teamConfig.itemMeta = teamConfigMeta
+        gui.item(21, teamConfig).onClick runnable@{
             it.isCancelled = true
         }
         val starterFood = ItemStack(Material.COOKED_BEEF)

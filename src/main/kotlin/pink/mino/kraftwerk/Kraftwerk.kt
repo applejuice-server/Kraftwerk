@@ -79,6 +79,8 @@ class Kraftwerk : JavaPlugin() {
         getCommand("scenariomanager").executor = ScenarioManagerCommand()
         getCommand("spectate").executor = SpectateCommand()
         getCommand("specchat").executor = SpecChatCommand()
+        getCommand("helpop").executor = HelpOpCommand()
+        getCommand("helpopreply").executor = HelpOpReplyCommand()
 
         getCommand("gm").executor = GamemodeCommand()
         getCommand("gamemode").executor = GamemodeCommand()
@@ -110,6 +112,7 @@ class Kraftwerk : JavaPlugin() {
 
         /* This just enables Hardcore Hearts */
         protocolManager?.addPacketListener(HardcoreHeartsFeature())
+        // TODO("Finish this") Events.get().register(LiteBans())
         CustomPayloadFixerFeature(this)
 
         /* Sets up misc features */

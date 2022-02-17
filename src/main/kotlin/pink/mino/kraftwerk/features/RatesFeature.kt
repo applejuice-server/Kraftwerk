@@ -12,7 +12,7 @@ import java.util.*
 class RatesFeature : Listener {
     @EventHandler
     fun onBlockBreak(e: BlockBreakEvent) {
-        if (e.block.location.world.name !== "Spawn") {
+        if (e.block.location.world.name != "Spawn") {
             if (e.block.type == Material.GRAVEL) {
                 if ((Random().nextDouble() * 100) < SettingsFeature.instance.data!!.getInt("game.rates.flint")) {
                     e.block.type = Material.AIR

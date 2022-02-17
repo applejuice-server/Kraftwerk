@@ -1,4 +1,5 @@
 package pink.mino.kraftwerk.listeners
+import net.citizensnpcs.api.CitizensAPI
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.GameMode
@@ -64,7 +65,8 @@ class PlayerDeathListener : Listener {
             e.entity.world.strikeLightningEffect(e.entity.location)
             val player = e.entity
             val killer = e.entity.killer
-            e.deathMessage = ChatColor.translateAlternateColorCodes('&', "&8»&f ${killer.name} has killed ${player.name} &8«")
+            val npc = CitizensAPI.getNPCRegistry().getNPC(e.entity)
+            e.deathMessage = ChatColor.translateAlternateColorCodes('&', "&8»&f ${killer.name} has killed ${npc.name} &8«")
             if (killer != null) {
                 val o = SettingsFeature.instance.data!!.getInt("game.kills.${killer.name}")
                 SettingsFeature.instance.data!!.set("game.kills.${killer.name}", o + 1)

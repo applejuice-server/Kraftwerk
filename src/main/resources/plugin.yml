@@ -141,8 +141,17 @@ commands:
     aliases:
       - sc
     description: Talk in spectate chat.
+  helpop:
+    aliases:
+      - ho
+    description: Ask hosts for help.
+  helpopreply:
+    aliases:
+      - hr
+    description: Reply to helpop requests.
 depend:
   - ProtocolLib
   - JDA
   - Vault
   - Citizens
+  - LiteBans

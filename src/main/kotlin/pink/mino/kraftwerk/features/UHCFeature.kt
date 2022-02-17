@@ -287,7 +287,11 @@ class UHCFeature : Listener {
     fun freeze() {
         for (player in Bukkit.getOnlinePlayers()) {
             val border = WorldBorder()
-            border.size = 2.5
+            if (SettingsFeature.instance.data!!.getInt("game.teamSize") <= 5) {
+                border.size = 3.0
+            } else {
+                border.size = 6.0
+            }
             border.setCenter(player.location.x, player.location.z)
             border.world = (Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world")) as CraftWorld).handle
             val packetPlayOutWorldBorder = PacketPlayOutWorldBorder(border, PacketPlayOutWorldBorder.EnumWorldBorderAction.INITIALIZE)
@@ -298,9 +302,9 @@ class UHCFeature : Listener {
     fun unfreeze() {
         for (player in Bukkit.getOnlinePlayers()) {
             val border = WorldBorder()
-            border.size = 20000000000000000.0
+            border.size = SettingsFeature.instance.data!!.getInt("pregen.border").toDouble()
             border.world = (Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world")) as CraftWorld).handle
-            border.setCenter(player.location.x, player.location.z)
+            border.setCenter(0.0, 0.0)
             val packetPlayOutWorldBorder = PacketPlayOutWorldBorder(border, PacketPlayOutWorldBorder.EnumWorldBorderAction.INITIALIZE)
             (player as CraftPlayer).handle.playerConnection.sendPacket(packetPlayOutWorldBorder)
         }

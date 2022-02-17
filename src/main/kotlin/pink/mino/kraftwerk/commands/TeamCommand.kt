@@ -1,6 +1,8 @@
 package pink.mino.kraftwerk.commands
 
 
+import net.md_5.bungee.api.chat.ClickEvent
+import net.md_5.bungee.api.chat.TextComponent
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.OfflinePlayer
@@ -117,9 +119,14 @@ class TeamCommand : CommandExecutor {
 
             if (!invites.containsKey(player)) invites[player] = ArrayList()
             invites[player]!!.add(target)
+            val text = TextComponent(Chat.colored("${Chat.prefix} §7To accept, type ${ChatColor.WHITE}/team accept ${player.name}${ChatColor.GRAY} or &f&nclick here&7."))
+            text.clickEvent = ClickEvent(
+                ClickEvent.Action.RUN_COMMAND,
+                "/team accept ${player.name}"
+            )
             Chat.sendMessage(target, Chat.line)
             Chat.sendMessage(target, "${Chat.prefix} You have been invited to ${ChatColor.WHITE}${player.name}${ChatColor.GRAY}'s team.")
-            Chat.sendMessage(target,"${Chat.prefix} §7To accept, type ${ChatColor.WHITE}/team accept ${player.name}${ChatColor.GRAY}.")
+            target.spigot().sendMessage(text)
             Chat.sendMessage(target, Chat.line)
         } else if (args[0] == "size") {
             if (sender is Player) {
@@ -141,6 +148,10 @@ class TeamCommand : CommandExecutor {
             Chat.sendMessage(sender, "${Chat.prefix} ${ChatColor.GRAY}The teamsize has been set to ${ChatColor.WHITE}${args[1]}${ChatColor.GRAY}.")
         } else if (args[0] == "accept") {
             val player = sender as Player
+            if (args.size == 1) {
+                player.sendMessage(Chat.colored("&cInvalid usage: /team accept <player>"))
+                return false
+            }
             val target = Bukkit.getServer().getPlayer(args[1])
             val team = target.scoreboard.getPlayerTeam(target)
             if (SettingsFeature.instance.data!!.getString("game.ffa").toBoolean()) {
