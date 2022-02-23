@@ -17,6 +17,42 @@ class Stats {
             }
         }
 
+        fun addDiamondMined(p: Player) {
+            checkPlayer(p)
+            var statement = "SELECT (diamonds_mined) from stats WHERE uuid = '${p.uniqueId}'"
+            val result = JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection.createStatement().executeQuery(statement)
+            result.next()
+            val diamondsMined = result.getInt("diamonds_mined")
+            statement = "UPDATE stats SET diamonds_mined = ${diamondsMined + 1} where uuid = '${p.uniqueId}'"
+            with(JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection) {
+                createStatement().execute(statement)
+            }
+        }
+
+        fun addIronMined(p: Player) {
+            checkPlayer(p)
+            var statement = "SELECT (iron_mined) from stats WHERE uuid = '${p.uniqueId}'"
+            val result = JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection.createStatement().executeQuery(statement)
+            result.next()
+            val ironMined = result.getInt("iron_mined")
+            statement = "UPDATE stats SET iron_mined = ${ironMined + 1} where uuid = '${p.uniqueId}'"
+            with(JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection) {
+                createStatement().execute(statement)
+            }
+        }
+
+        fun addGoldMined(p: Player) {
+            checkPlayer(p)
+            var statement = "SELECT (gold_mined) from stats WHERE uuid = '${p.uniqueId}'"
+            val result = JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection.createStatement().executeQuery(statement)
+            result.next()
+            val goldMined = result.getInt("gold_mined")
+            statement = "UPDATE stats SET gold_mined = ${goldMined + 1} where uuid = '${p.uniqueId}'"
+            with(JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection) {
+                createStatement().execute(statement)
+            }
+        }
+
         fun addWin(p: Player) {
             checkPlayer(p)
             var statement = "SELECT (wins) from stats WHERE uuid = '${p.uniqueId}'"

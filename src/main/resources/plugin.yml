@@ -149,6 +149,14 @@ commands:
     aliases:
       - hr
     description: Reply to helpop requests.
+  tp:
+    aliases:
+      - teleport
+    description: Teleport command.
+  tppos:
+    aliases:
+      - teleportpos
+    description: Teleport to position command.
 depend:
   - ProtocolLib
   - JDA

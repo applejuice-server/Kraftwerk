@@ -7,10 +7,9 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockPlaceEvent
-import org.bukkit.event.player.PlayerInteractEntityEvent
-import org.bukkit.event.player.PlayerInteractEvent
-import org.bukkit.event.player.PlayerJoinEvent
-import org.bukkit.event.player.PlayerPickupItemEvent
+import org.bukkit.event.entity.EntityDamageByEntityEvent
+import org.bukkit.event.entity.EntityDamageEvent
+import org.bukkit.event.player.*
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.SkullMeta
 import pink.mino.kraftwerk.utils.Chat
@@ -38,10 +37,10 @@ class SpecFeature : Listener {
         p.gameMode = GameMode.CREATIVE
 
         var list = SettingsFeature.instance.data!!.getStringList("game.list")
-        list.remove(p.name)
+        if (list.contains(p.name)) list.remove(p.name)
         SettingsFeature.instance.data!!.set("game.list", list)
         list = SettingsFeature.instance.data!!.getStringList("game.specs")
-        list.add(p.name)
+        if (!list.contains(p.name)) list.add(p.name)
         SettingsFeature.instance.data!!.set("game.specs", list)
         SettingsFeature.instance.saveData()
         updateVisibility()
@@ -93,7 +92,7 @@ class SpecFeature : Listener {
 
         SpawnFeature.instance.send(p)
         var list = SettingsFeature.instance.data!!.getStringList("game.list")
-        list.add(p.name)
+        if (!list.contains(p.name)) list.add(p.name)
         SettingsFeature.instance.data!!.set("game.list", list)
         list = SettingsFeature.instance.data!!.getStringList("game.specs")
         list.remove(p.name)
@@ -141,26 +140,28 @@ class SpecFeature : Listener {
     @EventHandler
     fun onPlayerInteract(e: PlayerInteractEvent) {
         if (getSpecs().contains(e.player.name)) {
-            if (e.item.itemMeta.displayName == Chat.colored("&cRandom Teleport")) {
-                val list = ArrayList<Player>()
-                for (player in Bukkit.getOnlinePlayers()) {
-                    if (!getSpecs().contains(player.name)) list.add(player)
-                }
-                if (list.isEmpty()) {
-                    Chat.sendMessage(e.player, "&cNo players to teleport to!")
-                    return
-                }
-                val target = list.random()
-                e.player.teleport(target.location)
-                Chat.sendMessage(e.player, "${Chat.prefix} Teleported to &f${target.name}&7!")
-            } else if (e.item.itemMeta.displayName == Chat.colored("&cTeleport to 0,0")) {
-                if (GameState.currentState == GameState.INGAME) {
-                    val world = Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world"))
-                    val location = Location(world, 0.0, world.getHighestBlockAt(0, 0).location.y + 5.0, 0.0)
-                    e.player.teleport(location)
-                    Chat.sendMessage(e.player, "${Chat.prefix} Teleported to &c0,0&7.")
-                } else {
-                    Chat.sendMessage(e.player, "&cYou can't use this feature yet.")
+            if (e.item !== null) {
+                if (e.item.itemMeta.displayName == Chat.colored("&cRandom Teleport")) {
+                    val list = ArrayList<Player>()
+                    for (player in Bukkit.getOnlinePlayers()) {
+                        if (!getSpecs().contains(player.name)) list.add(player)
+                    }
+                    if (list.isEmpty()) {
+                        Chat.sendMessage(e.player, "&cNo players to teleport to!")
+                        return
+                    }
+                    val target = list.random()
+                    e.player.teleport(target.location)
+                    Chat.sendMessage(e.player, "${Chat.prefix} Teleported to &f${target.name}&7!")
+                } else if (e.item.itemMeta.displayName == Chat.colored("&cTeleport to 0,0")) {
+                    if (GameState.currentState == GameState.INGAME) {
+                        val world = Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world"))
+                        val location = Location(world, 0.0, world.getHighestBlockAt(0, 0).location.y + 5.0, 0.0)
+                        e.player.teleport(location)
+                        Chat.sendMessage(e.player, "${Chat.prefix} Teleported to &c0,0&7.")
+                    } else {
+                        Chat.sendMessage(e.player, "&cYou can't use this feature yet.")
+                    }
                 }
             }
         }
@@ -168,6 +169,7 @@ class SpecFeature : Listener {
 
     @EventHandler
     fun onPlayerInteractWithPlayer(e: PlayerInteractEntityEvent) {
+        if (e.player.itemInHand == null) return
         if (e.player.itemInHand.itemMeta.displayName == Chat.colored("&cInventory View")) {
             if (e.rightClicked.type == EntityType.PLAYER) {
                 val gui = GuiBuilder().rows(5).name(ChatColor.translateAlternateColorCodes('&', "&cInventory Viewer"))
@@ -206,6 +208,22 @@ class SpecFeature : Listener {
     }
 
     @EventHandler
+    fun onItemDrop(e: PlayerDropItemEvent) {
+        if (getSpecs().contains(e.player.name)) {
+            e.isCancelled = true
+        }
+    }
+
+    @EventHandler
+    fun onPlayerDamage(e: EntityDamageByEntityEvent) {
+        if (e.damager is Player) {
+            if (getSpecs().contains(((e.damager) as Player).name)) {
+                e.isCancelled = true
+            }
+        }
+    }
+
+    @EventHandler
     fun onItemPickup(e: PlayerPickupItemEvent) {
         if (getSpecs().contains(e.player.name)) {
             e.isCancelled = true
@@ -225,4 +243,5 @@ class SpecFeature : Listener {
             e.isCancelled = true
         }
     }
+
 }

@@ -14,7 +14,7 @@ class PlayerConnectListener : Listener {
             if (!SettingsFeature.instance.data!!.getList("whitelist.list").contains(player.name.lowercase())) {
                 if (!player.hasPermission("uhc.staff")) {
                     e.kickMessage = Chat.colored("&cYou aren't allowed to join while the whitelist is on.")
-                    e.disallow(e.result, "You are not allowed to join while the whitelist is on!")
+                    e.disallow(e.result, Chat.colored("&cYou are not allowed to join while the whitelist is on!\n\n&7Get pre-whitelisted on the discord @ &cdsc.gg/apple-juice&7!"))
                 } else {
                     e.allow()
                 }

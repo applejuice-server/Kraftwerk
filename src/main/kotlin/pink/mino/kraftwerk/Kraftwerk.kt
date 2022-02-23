@@ -81,6 +81,8 @@ class Kraftwerk : JavaPlugin() {
         getCommand("specchat").executor = SpecChatCommand()
         getCommand("helpop").executor = HelpOpCommand()
         getCommand("helpopreply").executor = HelpOpReplyCommand()
+        getCommand("tppos").executor = TeleportPositionCommand()
+        getCommand("tp").executor = TeleportCommand()
 
         getCommand("gm").executor = GamemodeCommand()
         getCommand("gamemode").executor = GamemodeCommand()

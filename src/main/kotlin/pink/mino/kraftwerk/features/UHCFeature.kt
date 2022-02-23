@@ -12,6 +12,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockPlaceEvent
+import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.inventory.InventoryType
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.java.JavaPlugin
@@ -26,6 +27,8 @@ import pink.mino.kraftwerk.utils.Stats
 
 
 class UHCFeature : Listener {
+    var frozen: Boolean = false
+
     fun start(mode: String) {
         when (mode) {
             "ffa" -> {
@@ -55,11 +58,13 @@ class UHCFeature : Listener {
                     }
                 }
                 ScatterFeature.scatter("ffa", Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world")), SettingsFeature.instance.data!!.getInt("pregen.border"), true)
+                frozen = true
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer cancel")
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer 45 &cStarting in ${Chat.dash}&f")
                 Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wl on")
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "cc")
+                    frozen = false
                     unfreeze()
                     Bukkit.broadcastMessage(Chat.colored(Chat.line))
                     for (player in Bukkit.getOnlinePlayers()) {
@@ -180,11 +185,13 @@ class UHCFeature : Listener {
                     }
                 }
                 ScatterFeature.scatter("teams", Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world")), SettingsFeature.instance.data!!.getInt("pregen.border"), true)
+                frozen = true
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer cancel")
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer 45 &cStarting in ${Chat.dash}&f")
                 Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wl on")
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "cc")
+                    frozen = false
                     unfreeze()
                     Bukkit.broadcastMessage(Chat.colored(Chat.line))
                     for (player in Bukkit.getOnlinePlayers()) {
@@ -200,9 +207,9 @@ class UHCFeature : Listener {
                     }
                     for (player in Bukkit.getOnlinePlayers()) {
                         Chat.sendMessage(player, "&7You may &abegin&7! The host for this game is &c${SettingsFeature.instance.data!!.getString("game.host")}&7!")
-                        Chat.sendMessage(player, "&7Use &c/helpop&7 for help from the host. ")
-                        Chat.sendMessage(player, " ")
+
                         Chat.sendMessage(player, "&7Scenarios: &f${scenarios.joinToString(", ")}&7")
+                        Chat.sendCenteredMessage(player, " ")
                         Chat.sendMessage(player, Chat.line)
                         player.playSound(player.location, Sound.ENDERDRAGON_GROWL, 10F, 1F)
                         player.sendTitle(Chat.colored("&a&lGO!"), Chat.colored("&7You may now play the game, do &c/helpop&7 for help!"))
@@ -286,27 +293,33 @@ class UHCFeature : Listener {
 
     fun freeze() {
         for (player in Bukkit.getOnlinePlayers()) {
-            val border = WorldBorder()
-            if (SettingsFeature.instance.data!!.getInt("game.teamSize") <= 5) {
-                border.size = 3.0
-            } else {
-                border.size = 6.0
+            if (!SpecFeature.instance.getSpecs().contains(player.name)) {
+                if (player.world.name !== "Spawn" || player.world.name !== "Arena") {
+                    val border = WorldBorder()
+                    if (SettingsFeature.instance.data!!.getInt("game.teamSize") <= 5) {
+                        border.size = 3.0
+                    } else {
+                        border.size = 6.0
+                    }
+                    border.setCenter(player.location.x, player.location.z)
+                    border.world = (Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world")) as CraftWorld).handle
+                    val packetPlayOutWorldBorder = PacketPlayOutWorldBorder(border, PacketPlayOutWorldBorder.EnumWorldBorderAction.INITIALIZE)
+                    (player as CraftPlayer).handle.playerConnection.sendPacket(packetPlayOutWorldBorder)
+                }
             }
-            border.setCenter(player.location.x, player.location.z)
-            border.world = (Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world")) as CraftWorld).handle
-            val packetPlayOutWorldBorder = PacketPlayOutWorldBorder(border, PacketPlayOutWorldBorder.EnumWorldBorderAction.INITIALIZE)
-            (player as CraftPlayer).handle.playerConnection.sendPacket(packetPlayOutWorldBorder)
         }
     }
 
     fun unfreeze() {
         for (player in Bukkit.getOnlinePlayers()) {
-            val border = WorldBorder()
-            border.size = SettingsFeature.instance.data!!.getInt("pregen.border").toDouble()
-            border.world = (Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world")) as CraftWorld).handle
-            border.setCenter(0.0, 0.0)
-            val packetPlayOutWorldBorder = PacketPlayOutWorldBorder(border, PacketPlayOutWorldBorder.EnumWorldBorderAction.INITIALIZE)
-            (player as CraftPlayer).handle.playerConnection.sendPacket(packetPlayOutWorldBorder)
+            if (player.world.name !== "Spawn" || player.world.name !== "Arena") {
+                val border = WorldBorder()
+                border.size = SettingsFeature.instance.data!!.getInt("pregen.border").toDouble()
+                border.world = (Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world")) as CraftWorld).handle
+                border.setCenter(0.0, 0.0)
+                val packetPlayOutWorldBorder = PacketPlayOutWorldBorder(border, PacketPlayOutWorldBorder.EnumWorldBorderAction.INITIALIZE)
+                (player as CraftPlayer).handle.playerConnection.sendPacket(packetPlayOutWorldBorder)
+            }
         }
     }
 
@@ -359,10 +372,30 @@ class UHCFeature : Listener {
         if (GameState.currentState == GameState.WAITING) {
             e.isCancelled = true
         }
+        if (GameState.currentState == GameState.INGAME) {
+            when (e.block.type) {
+                Material.DIAMOND_ORE -> {
+                    Stats.addDiamondMined(e.player)
+                }
+                Material.GOLD_ORE -> {
+                    Stats.addGoldMined(e.player)
+                }
+                Material.IRON_ORE -> {
+                    Stats.addIronMined(e.player)
+                }
+            }
+        }
     }
 
     @EventHandler
     fun onBlockPlace(e: BlockPlaceEvent) {
+        if (GameState.currentState == GameState.WAITING) {
+            e.isCancelled = true
+        }
+    }
+
+    @EventHandler
+    fun onPlayerDamage(e: EntityDamageEvent) {
         if (GameState.currentState == GameState.WAITING) {
             e.isCancelled = true
         }

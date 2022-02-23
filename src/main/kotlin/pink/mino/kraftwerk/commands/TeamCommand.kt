@@ -53,6 +53,8 @@ class TeamCommand : CommandExecutor {
                 Chat.sendMessage(sender, "${Chat.prefix} &f/team size <size> ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Set the size of teams.")
                 Chat.sendMessage(sender, "${Chat.prefix} &f/team set <player1> <player2> ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Sets Player 1 to the Player 2's team.")
                 Chat.sendMessage(sender, "${Chat.prefix} &f/team delete <team name> ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Deletes the provided team.")
+                Chat.sendMessage(sender, "${Chat.prefix} &f/team friendlyfire <on/off> ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Toggles friendly fire.")
+                Chat.sendMessage(sender, "${Chat.prefix} &f/team kickunder <number> ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Kicks all solos/teams under a certain threshold..")
                 Chat.sendMessage(sender, Chat.line)
             }
         } else if (args[0] == "create") {
@@ -323,6 +325,58 @@ class TeamCommand : CommandExecutor {
             for (player in team.players) {
                 if (player.isOnline) {
                     Chat.sendMessage(player as Player, "${Chat.prefix} &f${target.name}&7 has been added to your team.")
+                }
+            }
+        } else if (args[0] == "friendlyfire") {
+            if (sender is Player) {
+                if (!sender.hasPermission("uhc.staff.team")) {
+                    Chat.sendMessage(sender, "${ChatColor.RED}You don't have permission to use this command.")
+                    return false
+                }
+            }
+            if (args.size == 1) {
+                Chat.sendMessage(sender, "${Chat.prefix} Invalid usage: &f/team friendlyfire <on/off>&7.")
+                return false
+            }
+            if (args[1] != "on" && args[1] != "off") {
+                Chat.sendMessage(sender, "${Chat.prefix} Invalid arguments: &f/team friendlyfire <on/off>&7.")
+                return false
+            }
+            if (args[1] == "on") {
+                for (team in TeamsFeature.manager.getTeams()) {
+                    team.setAllowFriendlyFire(true)
+                }
+                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Friendly fire has been enabled by &f${sender.name}&7."))
+            }
+            if (args[1] == "off") {
+                for (team in TeamsFeature.manager.getTeams()) {
+                    team.setAllowFriendlyFire(false)
+                }
+                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Friendly fire has been disabled by &f${sender.name}&7."))
+            }
+        } else if (args[0] == "kickunder") {
+            if (sender is Player) {
+                if (!sender.hasPermission("uhc.staff.team")) {
+                    Chat.sendMessage(sender, "${ChatColor.RED}You don't have permission to use this command.")
+                    return false
+                }
+            }
+            if (args.size == 1) {
+                Chat.sendMessage(sender, "${Chat.prefix} Invalid usage: &f/team kickunder <number>&7.")
+                return false
+            }
+            if (args[1].toIntOrNull() == null) {
+                Chat.sendMessage(sender, "${Chat.prefix} Invalid number: &f/team kickunder <number>&7.")
+                return false
+            }
+            for (player in Bukkit.getOnlinePlayers()) {
+                val team = TeamsFeature.manager.getTeam(player)
+                if (team == null) {
+                    player.kickPlayer(Chat.colored("&cYou've been kicked as you are not on a team."))
+                } else {
+                    if (team.players.size < args[1].toInt()) {
+                        player.kickPlayer(Chat.colored("&cYou've been kicked as your team is undersized."))
+                    }
                 }
             }
         }

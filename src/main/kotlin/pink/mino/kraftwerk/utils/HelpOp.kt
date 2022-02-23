@@ -8,13 +8,13 @@ class HelpOp {
         var count: Int = 0
 
         fun addHelpop(player: Player): Int {
-            helpop[count] = player
             count++
+            helpop[count] = player
             return count
         }
 
-        fun getHelpop(int: Int): Player {
-            return helpop[int]!!
+        fun getHelpop(int: Int): Player? {
+            return helpop[int]
         }
     }
 
