@@ -4,6 +4,7 @@ import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.JDABuilder
 import net.dv8tion.jda.api.entities.Activity
 import net.dv8tion.jda.api.hooks.ListenerAdapter
+import net.dv8tion.jda.api.interactions.commands.OptionType
 import net.dv8tion.jda.api.interactions.commands.build.CommandData
 import net.dv8tion.jda.api.requests.GatewayIntent
 import pink.mino.kraftwerk.discord.listeners.MemberJoin
@@ -38,6 +39,14 @@ class Discord : ListenerAdapter() {
             )
             commands.addCommands(
                 CommandData("togglealerts", "Removes/adds the Notify role in the Discord server.")
+            )
+            commands.addCommands(
+                CommandData("stats", "View the stats of a player.")
+                    .addOption(OptionType.STRING, "player", "The player you want to view the stats for.", true)
+            )
+            commands.addCommands(
+                CommandData("spectime", "View the spectating time of a player.")
+                    .addOption(OptionType.STRING, "player", "The player you want to view the spectating time for.", true)
             )
 
             commands.queue()

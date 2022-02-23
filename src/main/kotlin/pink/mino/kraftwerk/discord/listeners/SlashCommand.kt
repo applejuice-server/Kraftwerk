@@ -4,7 +4,10 @@ import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import org.bukkit.Bukkit
+import pink.mino.kraftwerk.features.SpecFeature
+import pink.mino.kraftwerk.utils.Stats
 import java.awt.Color
+import java.util.concurrent.TimeUnit
 
 class SlashCommand : ListenerAdapter() {
     override fun onSlashCommand(event: SlashCommandEvent) {
@@ -43,6 +46,53 @@ class SlashCommand : ListenerAdapter() {
                     embed.setDescription("You will now be notified of when games happen.")
                 }
                 event.replyEmbeds(embed.build()).setEphemeral(true).queue()
+            }
+            "stats" -> {
+                val player = event.getOption("player")!!.asString
+                val target = Bukkit.getOfflinePlayer(player)
+                val embed = EmbedBuilder()
+                embed.setColor(Color(255, 61, 61))
+                embed.setAuthor("applejuice — Stats", "https://dsc.gg/apple-juice", event.jda.selfUser.avatarUrl)
+                if (target == null) {
+                    embed.setDescription("That's an invalid player, please retry with a valid player.")
+                    event.replyEmbeds(embed.build()).setEphemeral(true).queue()
+                    return
+                }
+                val oresList = listOf(
+                    "Diamonds Mined » **${Stats.getDiamondsMined(target)}**",
+                    "Gold Mined » **${Stats.getGoldMined(target)}**",
+                    "Iron Mined » **${Stats.getIronMined(target)}**",
+                )
+                val generalList = listOf(
+                    "Kills » **${Stats.getKills(target)}**",
+                    "Deaths » **${Stats.getDeaths(target)}**",
+                    "Wins » **${Stats.getWins(target)}**",
+                    "Games Played » **${Stats.getGamesPlayed(target)}**"
+                )
+                embed.addField("General", generalList.joinToString("\n"), false)
+                embed.addField("Ores", oresList.joinToString("\n"), false)
+                embed.setThumbnail("https://visage.surgeplay.com/bust/${target.uniqueId}")
+                event.replyEmbeds(embed.build()).queue()
+            }
+            "spectime" -> {
+                val player = event.getOption("player")!!.asString
+                val target = Bukkit.getOfflinePlayer(player)
+                val embed = EmbedBuilder()
+                embed.setColor(Color(255, 61, 61))
+                embed.setAuthor("applejuice — Spectating Time", "https://dsc.gg/apple-juice", event.jda.selfUser.avatarUrl)
+                if (target == null) {
+                    embed.setDescription("That's an invalid player, please retry with a valid player.")
+                    event.replyEmbeds(embed.build()).setEphemeral(true).queue()
+                    return
+                }
+                var seconds = SpecFeature.instance.getSpecTime(target)
+                val hours = TimeUnit.SECONDS.toHours(seconds.toLong())
+                seconds -= TimeUnit.HOURS.toSeconds(hours).toInt()
+                val minutes = TimeUnit.SECONDS.toMinutes(seconds.toLong())
+                seconds -= TimeUnit.MINUTES.toSeconds(minutes).toInt()
+                embed.setDescription("**${target.name}** has spectated for **${hours} hours**, **${minutes} minutes** and **${seconds} seconds**.")
+                embed.setThumbnail("https://visage.surgeplay.com/bust/${target.uniqueId}")
+                event.replyEmbeds(embed.build()).queue()
             }
             else -> event.reply("I can't handle that command right now :(").setEphemeral(true).queue()
         }

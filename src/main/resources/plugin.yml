@@ -157,6 +157,10 @@ commands:
     aliases:
       - teleportpos
     description: Teleport to position command.
+  statistics:
+    aliases:
+      - stats
+    description: View the stats of a player.
 depend:
   - ProtocolLib
   - JDA

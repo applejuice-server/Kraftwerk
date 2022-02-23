@@ -43,6 +43,14 @@ class SpawnFeature : Listener {
         )
         arenaSword.itemMeta = arenaMeta
         p.inventory.setItem(0, arenaSword)
+        val stats = ItemStack(Material.EMERALD)
+        val statsMeta = stats.itemMeta
+        statsMeta.displayName = Chat.colored("&cStats")
+        statsMeta.lore = listOf(
+            Chat.colored("&7Right-click to send yourself into the FFA Arena.")
+        )
+        stats.itemMeta = statsMeta
+        p.inventory.setItem(1, stats)
         val location = Location(Bukkit.getWorld("Spawn"), -221.5, 95.0, -140.5)
         p.teleport(location)
     }
@@ -52,7 +60,9 @@ class SpawnFeature : Listener {
         if (e.player.world.name == "Spawn") {
             if (e.item !== null) {
                 if (e.item.itemMeta.displayName == Chat.colored("&cFFA Arena")) {
-                    ArenaFeature.instance.send(e.player)
+                    Bukkit.dispatchCommand(e.player, "a")
+                } else if (e.item.itemMeta.displayName == Chat.colored("&cStats")) {
+                    Bukkit.dispatchCommand(e.player, "stats")
                 }
             }
         }

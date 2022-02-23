@@ -101,6 +101,7 @@ class Kraftwerk : JavaPlugin() {
         getCommand("spawn").executor = SpawnCommand()
         getCommand("killtop").executor = KillTopCommand()
         getCommand("scenarios").executor = ScenarioCommand()
+        getCommand("statistics").executor = StatsCommand()
 
         /* ProtocolLib stuff */
         if (Bukkit.getPluginManager().getPlugin("ProtocolLib") == null) {

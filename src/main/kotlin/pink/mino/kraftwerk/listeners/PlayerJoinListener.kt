@@ -21,6 +21,9 @@ class PlayerJoinListener : Listener {
             for (p in Bukkit.getOnlinePlayers()) {
                 Chat.sendMessage(p, "${Chat.prefix} Welcome to &capple&ajuice&7, &f${player.displayName}&7! &8(&c#${Bukkit.getOfflinePlayers().size}&8)")
             }
+            Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
+                SpawnFeature.instance.send(player)
+            }, 20L)
         }
         e.joinMessage = ChatColor.translateAlternateColorCodes('&', "&8[&2+&8] &a${player.displayName} &8(&2${Bukkit.getServer().onlinePlayers.size}&8/&2${Bukkit.getServer().maxPlayers}&8)")
         if (GameState.currentState == GameState.LOBBY) {

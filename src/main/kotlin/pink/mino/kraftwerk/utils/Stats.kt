@@ -1,13 +1,14 @@
 package pink.mino.kraftwerk.utils
 
+import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 import pink.mino.kraftwerk.Kraftwerk
 
 class Stats {
     companion object {
-        fun checkPlayer(p: Player) {
-            var statement = "SELECT (uuid) from stats WHERE uuid = '${p.uniqueId}'"
+        fun checkPlayer(p: OfflinePlayer?) {
+            var statement = "SELECT (uuid) from stats WHERE uuid = '${p!!.uniqueId}'"
             val result = JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection.createStatement().executeQuery(statement)
             if (!result.isBeforeFirst) {
                 statement = "INSERT INTO stats (uuid) VALUES ('${p.uniqueId}')"
@@ -15,6 +16,14 @@ class Stats {
                     createStatement().execute(statement)
                 }
             }
+        }
+
+        fun getDiamondsMined(p: OfflinePlayer): Int {
+            checkPlayer(p)
+            val statement = "SELECT (diamonds_mined) from stats WHERE uuid = '${p.uniqueId}'"
+            val result = JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection.createStatement().executeQuery(statement)
+            result.next()
+            return result.getInt("diamonds_mined")
         }
 
         fun addDiamondMined(p: Player) {
@@ -29,6 +38,14 @@ class Stats {
             }
         }
 
+        fun getIronMined(p: OfflinePlayer): Int {
+            checkPlayer(p)
+            val statement = "SELECT (iron_mined) from stats WHERE uuid = '${p.uniqueId}'"
+            val result = JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection.createStatement().executeQuery(statement)
+            result.next()
+            return result.getInt("iron_mined")
+        }
+
         fun addIronMined(p: Player) {
             checkPlayer(p)
             var statement = "SELECT (iron_mined) from stats WHERE uuid = '${p.uniqueId}'"
@@ -39,6 +56,14 @@ class Stats {
             with(JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection) {
                 createStatement().execute(statement)
             }
+        }
+
+        fun getGoldMined(p: OfflinePlayer): Int {
+            checkPlayer(p)
+            val statement = "SELECT (gold_mined) from stats WHERE uuid = '${p.uniqueId}'"
+            val result = JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection.createStatement().executeQuery(statement)
+            result.next()
+            return result.getInt("gold_mined")
         }
 
         fun addGoldMined(p: Player) {
@@ -53,6 +78,14 @@ class Stats {
             }
         }
 
+        fun getWins(p: OfflinePlayer): Int {
+            checkPlayer(p)
+            val statement = "SELECT (wins) from stats WHERE uuid = '${p.uniqueId}'"
+            val result = JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection.createStatement().executeQuery(statement)
+            result.next()
+            return result.getInt("wins")
+        }
+
         fun addWin(p: Player) {
             checkPlayer(p)
             var statement = "SELECT (wins) from stats WHERE uuid = '${p.uniqueId}'"
@@ -63,6 +96,14 @@ class Stats {
             with(JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection) {
                 createStatement().execute(statement)
             }
+        }
+
+        fun getKills(p: OfflinePlayer): Int {
+            checkPlayer(p)
+            val statement = "SELECT (kills) from stats WHERE uuid = '${p.uniqueId}'"
+            val result = JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection.createStatement().executeQuery(statement)
+            result.next()
+            return result.getInt("kills")
         }
 
         fun addKill(p: Player) {
@@ -77,6 +118,14 @@ class Stats {
             }
         }
 
+        fun getDeaths(p: OfflinePlayer): Int {
+            checkPlayer(p)
+            val statement = "SELECT (deaths) from stats WHERE uuid = '${p.uniqueId}'"
+            val result = JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection.createStatement().executeQuery(statement)
+            result.next()
+            return result.getInt("deaths")
+        }
+
         fun addDeath(p: Player) {
             checkPlayer(p)
             var statement = "SELECT (deaths) from stats WHERE uuid = '${p.uniqueId}'"
@@ -87,6 +136,14 @@ class Stats {
             with(JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection) {
                 createStatement().execute(statement)
             }
+        }
+
+        fun getGamesPlayed(p: OfflinePlayer): Int {
+            checkPlayer(p)
+            val statement = "SELECT (games_played) from stats WHERE uuid = '${p.uniqueId}'"
+            val result = JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection.createStatement().executeQuery(statement)
+            result.next()
+            return result.getInt("games_played")
         }
 
         fun addGamesPlayed(p: Player) {

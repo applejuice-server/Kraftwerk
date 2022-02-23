@@ -8,17 +8,69 @@ import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.entity.EntityDamageByEntityEvent
-import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.player.*
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.SkullMeta
+import org.bukkit.plugin.java.JavaPlugin
+import org.bukkit.scheduler.BukkitRunnable
+import pink.mino.kraftwerk.Kraftwerk
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GameState
 import pink.mino.kraftwerk.utils.GuiBuilder
 
+class SpecTimer(val player: Player) : BukkitRunnable() {
+    var seconds = 0
+    override fun run() {
+        if (!player.isOnline) {
+            cancel()
+            Bukkit.getLogger().info("${player.name} has stopped spectating as they are offline.")
+            SpecFeature.instance.addSpecTime(player, seconds)
+        }
+        if (!SpecFeature.instance.getSpecs().contains(player.name)) {
+            cancel()
+            Bukkit.getLogger().info("${player.name} has stopped spectating as they are no longer a spectator.")
+            SpecFeature.instance.addSpecTime(player, seconds)
+        }
+        seconds += 1
+    }
+}
+
+
 class SpecFeature : Listener {
     companion object {
         val instance = SpecFeature()
+    }
+
+    fun checkPlayer(p: OfflinePlayer?) {
+        var statement = "SELECT (uuid) from spectate WHERE uuid = '${p!!.uniqueId}'"
+        val result = JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection.createStatement().executeQuery(statement)
+        if (!result.isBeforeFirst) {
+            statement = "INSERT INTO spectate (uuid) VALUES ('${p.uniqueId}')"
+            with(JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection) {
+                createStatement().execute(statement)
+            }
+        }
+    }
+
+    fun addSpecTime(p: Player, seconds: Int) {
+        checkPlayer(p)
+        var statement = "SELECT (seconds) from spectate WHERE uuid = '${p.uniqueId}'"
+        val result = JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection.createStatement().executeQuery(statement)
+        result.next()
+        val prev = result.getInt("seconds")
+        statement = "UPDATE spectate SET seconds = ${prev + seconds} where uuid = '${p.uniqueId}'"
+        with(JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection) {
+            createStatement().execute(statement)
+        }
+    }
+
+    fun getSpecTime(p: OfflinePlayer?): Int {
+        checkPlayer(p)
+        val statement = "SELECT (seconds) from spectate WHERE uuid = '${p!!.uniqueId}'"
+        val result =
+            JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection.createStatement().executeQuery(statement)
+        result.next()
+        return result.getInt("seconds")
     }
 
     fun spec(p: Player) {
@@ -74,6 +126,7 @@ class SpecFeature : Listener {
         )
         invSee.itemMeta = invSeeMeta
         p.inventory.setItem(1, invSee)
+        SpecTimer(p).runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 20L)
     }
 
     fun unspec(p: Player) {
