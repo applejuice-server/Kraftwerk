@@ -127,6 +127,10 @@ class Kraftwerk : JavaPlugin() {
 
         setupDataSource()
 
+        if (SettingsFeature.instance.data!!.getString("matchpost.opens") != null) {
+            ScheduleOpening(SettingsFeature.instance.data!!.getString("matchpost.opens")).runTaskTimer(this, 0L, 600L)
+        }
+
         GameState.setState(GameState.LOBBY)
         Bukkit.getLogger().info("Game state set to Lobby.")
 

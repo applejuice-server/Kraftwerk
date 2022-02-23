@@ -67,6 +67,7 @@ class EndGameCommand : CommandExecutor {
         SettingsFeature.instance.data!!.set("game.winners", ArrayList<String>())
         SettingsFeature.instance.data!!.set("game.list", ArrayList<String>())
         SettingsFeature.instance.data!!.set("game.kills", null)
+        SettingsFeature.instance.data!!.set("matchpost.opens", null)
         SettingsFeature.instance.saveData()
         Bukkit.broadcastMessage(Chat.colored(Chat.line))
         for (player in Bukkit.getOnlinePlayers()) {
