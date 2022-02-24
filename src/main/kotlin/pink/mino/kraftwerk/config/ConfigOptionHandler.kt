@@ -20,6 +20,7 @@ class ConfigOptionHandler {
             addOption(BookshelvesOption())
             addOption(FireWeaponsOption())
             addOption(AntiBurnOption())
+            addOption(PearlDamageOption())
 
             addOption(CrossteamingOption())
             addOption(StalkingOption())

@@ -39,10 +39,16 @@ class ScheduleOpening(private val opening: String) : BukkitRunnable() {
     }
 
     override fun run() {
+        print("Checking if the time corresponds with the opening...")
+        if (SettingsFeature.instance.data!!.getString("matchpost.opens") == null) {
+            cancel()
+        }
         if (getTime() == opening) {
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wl off")
-            Bukkit.broadcastMessage("${Chat.prefix} The whitelist has been turned off automatically @ &c${opening}&7.")
+            Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} The whitelist has been turned off automatically @ &c${opening}&7."))
             cancel()
+            SettingsFeature.instance.data!!.set("matchpost.opens", null)
+            SettingsFeature.instance.saveData()
         }
     }
 }

@@ -42,6 +42,10 @@ class CutCleanScenario : Scenario(
                 (e.location.world.spawn(e.location, ExperienceOrb::class.java) as ExperienceOrb).experience = 5
                 e.entity.itemStack.type = Material.GRILLED_PORK
             }
+            Material.RABBIT -> {
+                (e.location.world.spawn(e.location, ExperienceOrb::class.java) as ExperienceOrb).experience = 5
+                e.entity.itemStack.type = Material.COOKED_RABBIT
+            }
             else -> {}
         }
     }

@@ -12,8 +12,10 @@ import pink.mino.kraftwerk.Kraftwerk
 import pink.mino.kraftwerk.features.CombatLogFeature
 import pink.mino.kraftwerk.features.SettingsFeature
 import pink.mino.kraftwerk.features.SpecFeature
+import pink.mino.kraftwerk.features.TeamsFeature
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GameState
+import pink.mino.kraftwerk.utils.Scoreboard
 import pink.mino.kraftwerk.utils.Stats
 
 
@@ -34,12 +36,26 @@ class PlayerDeathListener : Listener {
                     val o = SettingsFeature.instance.data!!.getInt("game.kills.${killer.name}")
                     SettingsFeature.instance.data!!.set("game.kills.${killer.name}", o + 1)
                     Stats.addKill(killer)
+                    val color: String = if (TeamsFeature.manager.getTeam(killer) != null) {
+                        TeamsFeature.manager.getTeam(killer)!!.prefix
+                    } else {
+                        "&f"
+                    }
+                    Scoreboard.setScore(Chat.colored("${Chat.dash} ${color}${killer.name}"), o)
                 }
                 val list = SettingsFeature.instance.data!!.getStringList("game.list")
                 list.remove(player.name)
                 Stats.addDeath(player)
                 SettingsFeature.instance.data!!.set("game.list", list)
                 SettingsFeature.instance.saveData()
+                val kills = SettingsFeature.instance.data!!.getInt("game.kills.${player.name}")
+                val color: String = if (TeamsFeature.manager.getTeam(player) != null) {
+                    TeamsFeature.manager.getTeam(player)!!.prefix
+                } else {
+                    "&f"
+                }
+                Scoreboard.deleteScore(Chat.colored("${Chat.dash} ${color}${player.name}"))
+                Scoreboard.setScore(Chat.colored("${Chat.dash} &m${color}${player.name}"), kills)
                 CombatLogFeature.instance.removeCombatLog(player.name)
                 if (player.hasPermission("uhc.staff")) {
                     Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
@@ -71,6 +87,12 @@ class PlayerDeathListener : Listener {
                 val o = SettingsFeature.instance.data!!.getInt("game.kills.${killer.name}")
                 SettingsFeature.instance.data!!.set("game.kills.${killer.name}", o + 1)
                 Stats.addKill(killer)
+                val color: String = if (TeamsFeature.manager.getTeam(killer) != null) {
+                    TeamsFeature.manager.getTeam(killer)!!.prefix
+                } else {
+                    "&f"
+                }
+                Scoreboard.setScore(Chat.colored("${Chat.dash} ${color}${killer.name}"), o)
             }
             val list = SettingsFeature.instance.data!!.getStringList("game.list")
             list.remove(player.name)

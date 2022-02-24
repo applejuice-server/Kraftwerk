@@ -10,7 +10,7 @@ import pink.mino.kraftwerk.utils.GameState
 
 class HasteyBoysScenario : Scenario(
     "HasteyBoys",
-    "All tools are enchanted with efficiency 3 & unbreaking 1./",
+    "All tools are enchanted with efficiency 3 & unbreaking 1.",
     "hasteyboys",
     Material.GOLD_PICKAXE
 ) {

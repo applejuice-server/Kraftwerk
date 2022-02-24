@@ -63,6 +63,7 @@ class ConfigCommand : CommandExecutor {
             Chat.colored("&7Bookshelves ${Chat.dash} &c${getOption("bookshelves")}"),
             Chat.colored("&7AntiStone ${Chat.dash} &c${getOption("antistone")}"),
             Chat.colored("&7AntiBurn ${Chat.dash} &c${getOption("antiburn")}"),
+            Chat.colored("&7Pearl Damage ${Chat.dash} &c${getOption("pearldamage")}"),
             "",
             Chat.colored(Chat.line),
         )

@@ -19,6 +19,7 @@ import pink.mino.kraftwerk.features.*
 import pink.mino.kraftwerk.listeners.*
 import pink.mino.kraftwerk.scenarios.ScenarioHandler
 import pink.mino.kraftwerk.utils.GameState
+import pink.mino.kraftwerk.utils.Scoreboard
 import java.sql.SQLException
 import javax.sql.DataSource
 
@@ -121,6 +122,7 @@ class Kraftwerk : JavaPlugin() {
         /* Sets up misc features */
         SettingsFeature.instance.setup(this)
         TeamsFeature.manager.setupTeams()
+        Scoreboard.setup()
         ConfigOptionHandler.setup()
         ScenarioHandler.setup()
         addRecipes()

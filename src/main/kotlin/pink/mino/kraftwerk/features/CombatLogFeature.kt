@@ -64,6 +64,7 @@ class CombatLogFeature : Listener {
     @EventHandler
     fun onPlayerDamageByPlayer(e: EntityDamageByEntityEvent) {
         if (GameState.currentState == GameState.INGAME) {
+            if (e.isCancelled) return
             if (e.entityType == EntityType.PLAYER && e.damager.type == EntityType.PLAYER) {
 
                 addCombatLog((e.damager as Player).name)

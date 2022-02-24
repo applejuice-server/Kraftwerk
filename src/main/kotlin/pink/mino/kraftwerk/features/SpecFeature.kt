@@ -223,6 +223,7 @@ class SpecFeature : Listener {
     @EventHandler
     fun onPlayerInteractWithPlayer(e: PlayerInteractEntityEvent) {
         if (e.player.itemInHand == null) return
+
         if (e.player.itemInHand.itemMeta.displayName == Chat.colored("&cInventory View")) {
             if (e.rightClicked.type == EntityType.PLAYER) {
                 val gui = GuiBuilder().rows(5).name(ChatColor.translateAlternateColorCodes('&', "&cInventory Viewer"))
