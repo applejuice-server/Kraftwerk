@@ -26,10 +26,6 @@ class PregenCommand : CommandExecutor {
             }
         }
 
-        if (args.isEmpty() || args[1].isEmpty()) {
-            Chat.sendMessage(sender, "${Chat.prefix} &7Invalid usage: ${ChatColor.RED}/pregen <world> <border> &7or&c /pregen cancel")
-            return false
-        }
         if (args[0] === "cancel") {
             if (Config.fillTask.valid()) {
                 Chat.sendMessage(sender, "${Chat.prefix} Okay, cancelling the pregeneration task.")
@@ -39,6 +35,10 @@ class PregenCommand : CommandExecutor {
             } else {
                 Chat.sendMessage(sender, "${Chat.prefix} There is no valid pregeneration task running.")
             }
+        }
+        if (args.isEmpty() || args[1].isEmpty()) {
+            Chat.sendMessage(sender, "${Chat.prefix} &7Invalid usage: ${ChatColor.RED}/pregen <world> <border> &7or&c /pregen cancel")
+            return false
         }
         Chat.sendMessage(sender, "${Chat.prefix} &7Please standby, this will take a while.")
 
@@ -63,7 +63,7 @@ class PregenCommand : CommandExecutor {
             "wb ${args[0]} setcorners ${args[1]} ${args[1]} -${args[1]} -${args[1]}"
         )
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
-            "wb ${args[0]} fill 75"
+            "wb ${args[0]} fill 200"
         )
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
             "wb fill confirm"
