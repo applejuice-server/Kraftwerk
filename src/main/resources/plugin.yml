@@ -161,6 +161,10 @@ commands:
     aliases:
       - stats
     description: View the stats of a player.
+  discord:
+    aliases:
+      - disc
+    description: Get the invite link for the discord server.
 depend:
   - ProtocolLib
   - JDA
