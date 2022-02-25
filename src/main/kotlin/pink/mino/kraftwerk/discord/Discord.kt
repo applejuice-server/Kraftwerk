@@ -9,7 +9,6 @@ import net.dv8tion.jda.api.interactions.commands.build.CommandData
 import net.dv8tion.jda.api.requests.GatewayIntent
 import pink.mino.kraftwerk.discord.listeners.MemberJoin
 import pink.mino.kraftwerk.discord.listeners.SlashCommand
-import java.util.*
 import javax.security.auth.login.LoginException
 
 
@@ -22,7 +21,7 @@ class Discord : ListenerAdapter() {
         fun main() {
             val jda = JDABuilder.createLight(
                 "NzI1MTM0MzcwNzI1MTY3MTg0.XvKUAg.OeFOCpV887CJJbyNUqYBv5uMIeI",
-                EnumSet.noneOf(GatewayIntent::class.java)
+                GatewayIntent.GUILD_MEMBERS
             )
                 .addEventListeners(SlashCommand())
                 .addEventListeners(MemberJoin())
