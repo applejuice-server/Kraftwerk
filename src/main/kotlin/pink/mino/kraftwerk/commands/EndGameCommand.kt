@@ -56,10 +56,10 @@ class EndGameCommand : CommandExecutor {
         embed.setColor(Color(255, 61, 61))
         embed.setTitle(SettingsFeature.instance.data!!.getString("matchpost.host"))
         embed.setThumbnail("https://visage.surgeplay.com/bust/512/${host.uniqueId}")
-        embed.addField("Winners", winners.joinToString(",", "", "", -1, "...") {
+        embed.addField("Winners", winners.joinToString(", ", "", "", -1, "...") {
             "**$it** [${
                 SettingsFeature.instance.data!!.getInt(
-                    "game.kills.${Bukkit.getPlayer(it)}"
+                    "game.kills.${Bukkit.getPlayer(it).name}"
                 )
             }]"
         }, false)
