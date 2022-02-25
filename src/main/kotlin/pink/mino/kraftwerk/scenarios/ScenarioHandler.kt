@@ -3,10 +3,7 @@ package pink.mino.kraftwerk.scenarios
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 import pink.mino.kraftwerk.Kraftwerk
-import pink.mino.kraftwerk.scenarios.list.CutCleanScenario
-import pink.mino.kraftwerk.scenarios.list.FlowerPowerScenario
-import pink.mino.kraftwerk.scenarios.list.HasteyBoysScenario
-import pink.mino.kraftwerk.scenarios.list.TimberScenario
+import pink.mino.kraftwerk.scenarios.list.*
 
 class ScenarioHandler {
     companion object {
@@ -17,6 +14,7 @@ class ScenarioHandler {
             addScenario(TimberScenario())
             addScenario(HasteyBoysScenario())
             addScenario(FlowerPowerScenario())
+            addScenario(SkyHighScenario())
             scenarios.sortWith(Comparator.comparing(Scenario::name))
         }
 

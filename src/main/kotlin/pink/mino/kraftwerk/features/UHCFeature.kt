@@ -92,6 +92,9 @@ class UHCFeature : Listener {
                         player.sendTitle(Chat.colored("&a&lGO!"), Chat.colored("&7You may now play the game, do &c/helpop&7 for help!"))
                         player.inventory.setItem(0, ItemStack(Material.COOKED_BEEF, SettingsFeature.instance.data!!.getInt("game.starterfood")))
                     }
+                    for (scenario in ScenarioHandler.getActiveScenarios()) {
+                        scenario.onStart()
+                    }
                     Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world")).setGameRuleValue("doDaylightCycle", true.toString())
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer cancel")
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer ${SettingsFeature.instance.data!!.getInt("game.events.final-heal") * 60} &cFinal Heal is in ${Chat.dash}&f")
@@ -110,6 +113,9 @@ class UHCFeature : Listener {
                             Chat.sendCenteredMessage(player, "&cPvP&7 is enabled in &c${SettingsFeature.instance.data!!.getString("game.events.pvp")} minutes&7.")
                             Chat.sendMessage(player, Chat.line)
                             player.playSound(player.location, Sound.BURP, 10F, 1F)
+                        }
+                        for (scenario in ScenarioHandler.getActiveScenarios()) {
+                            scenario.onPvP()
                         }
                         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer cancel")
                         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer ${SettingsFeature.instance.data!!.getInt("game.events.pvp") * 60} &cPvP is enabled in ${Chat.dash}&f")
@@ -133,6 +139,9 @@ class UHCFeature : Listener {
                                     Chat.sendMessage(player, " ")
                                     Chat.sendCenteredMessage(player, "&7It's now &cMeetup&7! Head to &a0,0&7!")
                                     Chat.sendCenteredMessage(player, "&7The border will start shrinking until it's at &f25x25&7!")
+                                }
+                                for (scenario in ScenarioHandler.getActiveScenarios()) {
+                                    scenario.onMeetup()
                                 }
                                 Bukkit.broadcastMessage(Chat.colored(Chat.line))
                                 scheduleShrink(500)
