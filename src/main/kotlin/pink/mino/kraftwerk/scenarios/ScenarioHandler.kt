@@ -15,6 +15,7 @@ class ScenarioHandler {
             addScenario(HasteyBoysScenario())
             addScenario(FlowerPowerScenario())
             addScenario(SkyHighScenario())
+            addScenario(GoneFishingScenario())
             scenarios.sortWith(Comparator.comparing(Scenario::name))
         }
 
