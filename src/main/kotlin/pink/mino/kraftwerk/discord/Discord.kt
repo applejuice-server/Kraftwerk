@@ -8,7 +8,6 @@ import net.dv8tion.jda.api.interactions.commands.build.CommandData
 import net.dv8tion.jda.api.requests.GatewayIntent
 import pink.mino.kraftwerk.discord.listeners.MemberJoin
 import pink.mino.kraftwerk.discord.listeners.SlashCommand
-import pink.mino.kraftwerk.features.SettingsFeature
 import javax.security.auth.login.LoginException
 
 
@@ -27,9 +26,7 @@ class Discord : ListenerAdapter() {
                 .addEventListeners(MemberJoin())
                 .build()
 
-            if (SettingsFeature.instance.data!!.getString("matchpost.host") == null) jda.presence.activity = Activity.listening("applejuice.bar")
-            else jda.presence.activity = Activity.playing(SettingsFeature.instance.data!!.getString("matchpost.host"))
-
+            jda.presence.activity = Activity.playing("applejuice.bar")
             val commands = jda.updateCommands()
 
             commands.addCommands(

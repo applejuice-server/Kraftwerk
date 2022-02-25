@@ -4,6 +4,7 @@ import com.comphenix.protocol.ProtocolLibrary
 import com.comphenix.protocol.ProtocolManager
 import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource
+import net.dv8tion.jda.api.entities.Activity
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.Material
@@ -134,6 +135,8 @@ class Kraftwerk : JavaPlugin() {
         if (SettingsFeature.instance.data!!.getString("matchpost.opens") != null) {
             ScheduleOpening(SettingsFeature.instance.data!!.getString("matchpost.opens")).runTaskTimer(this, 0L, 600L)
         }
+        if (SettingsFeature.instance.data!!.getString("matchpost.host") == null) Discord.instance!!.presence.activity = Activity.listening("applejuice.bar")
+        else Discord.instance!!.presence.activity = Activity.playing(SettingsFeature.instance.data!!.getString("matchpost.host"))
 
         GameState.setState(GameState.LOBBY)
         Bukkit.getLogger().info("Game state set to Lobby.")
