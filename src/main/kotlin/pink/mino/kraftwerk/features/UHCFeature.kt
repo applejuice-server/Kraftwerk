@@ -39,6 +39,7 @@ class UHCFeature : Listener {
                         SpawnFeature.instance.send(player)
                         CombatLogFeature.instance.removeCombatLog(player.name)
                         player.playSound(player.location, Sound.WOOD_CLICK, 10F, 1F)
+                        player.enderChest.clear()
                         player.health = 20.0
                         player.foodLevel = 20
                         player.saturation = 20F
