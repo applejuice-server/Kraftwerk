@@ -13,7 +13,6 @@ import pink.mino.kraftwerk.features.SettingsFeature
 import pink.mino.kraftwerk.features.TeamsFeature
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GameState
-import pink.mino.kraftwerk.utils.Stats
 import java.util.*
 
 class LatescatterCommand : CommandExecutor {
@@ -62,7 +61,7 @@ class LatescatterCommand : CommandExecutor {
 
             ScatterFeature.scatterSolo(player, Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world")), SettingsFeature.instance.data!!.getInt("pregen.border"))
             player.inventory.setItem(0, ItemStack(Material.COOKED_BEEF, SettingsFeature.instance.data!!.getInt("game.starterfood")))
-            Stats.addGamesPlayed(player)
+            //Stats.addGamesPlayed(player)
             WhitelistCommand().addWhitelist(player.name)
             list.add(player.name)
             Chat.sendMessage(player, "${Chat.prefix} You've successfully been added to the game.")
@@ -101,7 +100,7 @@ class LatescatterCommand : CommandExecutor {
             }
             player.teleport(teammate.location)
             player.inventory.setItem(0, ItemStack(Material.COOKED_BEEF, SettingsFeature.instance.data!!.getInt("game.starterfood")))
-            Stats.addGamesPlayed(player)
+           // Stats.addGamesPlayed(player)
             WhitelistCommand().addWhitelist(player.name)
             list.add(player.name)
             Chat.sendMessage(player, "${Chat.prefix} You've successfully been added to the game, you've also been teamed with &f${teammate.name}&7")
