@@ -6,6 +6,7 @@ import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.inventory.InventoryType
@@ -114,13 +115,13 @@ class UHCFeature : Listener {
                             Chat.sendMessage(player, Chat.line)
                             player.playSound(player.location, Sound.BURP, 10F, 1F)
                         }
-                        for (scenario in ScenarioHandler.getActiveScenarios()) {
-                            scenario.onPvP()
-                        }
                         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer cancel")
                         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer ${SettingsFeature.instance.data!!.getInt("game.events.pvp") * 60} &cPvP is enabled in ${Chat.dash}&f")
                         Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
                             SettingsFeature.instance.data!!.set("game.pvp", false)
+                            for (scenario in ScenarioHandler.getActiveScenarios()) {
+                                scenario.onPvP()
+                            }
                             for (player in Bukkit.getOnlinePlayers()) {
                                 Chat.sendMessage(player, Chat.line)
                                 Chat.sendCenteredMessage(player, "&c&lUHC")
@@ -178,6 +179,7 @@ class UHCFeature : Listener {
                         SpawnFeature.instance.send(player)
                         CombatLogFeature.instance.removeCombatLog(player.name)
                         player.playSound(player.location, Sound.WOOD_CLICK, 10F, 1F)
+                        player.enderChest.clear()
                         player.health = 20.0
                         player.foodLevel = 20
                         player.saturation = 20F
@@ -232,6 +234,9 @@ class UHCFeature : Listener {
                         player.sendTitle(Chat.colored("&a&lGO!"), Chat.colored("&7You may now play the game, do &c/helpop&7 for help!"))
                         player.inventory.setItem(0, ItemStack(Material.COOKED_BEEF, SettingsFeature.instance.data!!.getInt("game.starterfood")))
                     }
+                    for (scenario in ScenarioHandler.getActiveScenarios()) {
+                        scenario.onStart()
+                    }
                     Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world")).setGameRuleValue("doDaylightCycle", true.toString())
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer cancel")
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer ${SettingsFeature.instance.data!!.getInt("game.events.final-heal") * 60} &cFinal Heal is in ${Chat.dash}&f")
@@ -255,6 +260,9 @@ class UHCFeature : Listener {
                         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer ${SettingsFeature.instance.data!!.getInt("game.events.pvp") * 60} &cPvP is enabled in ${Chat.dash}&f")
                         Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
                             SettingsFeature.instance.data!!.set("game.pvp", false)
+                            for (scenario in ScenarioHandler.getActiveScenarios()) {
+                                scenario.onPvP()
+                            }
                             for (player in Bukkit.getOnlinePlayers()) {
                                 Chat.sendMessage(player, Chat.line)
                                 Chat.sendCenteredMessage(player, "&c&lUHC")
@@ -273,6 +281,9 @@ class UHCFeature : Listener {
                                     Chat.sendMessage(player, " ")
                                     Chat.sendCenteredMessage(player, "&7It's now &cMeetup&7! Head to &a0,0&7!")
                                     Chat.sendCenteredMessage(player, "&7The border will start shrinking until it's at &f25x25&7!")
+                                }
+                                for (scenario in ScenarioHandler.getActiveScenarios()) {
+                                    scenario.onMeetup()
                                 }
                                 Bukkit.broadcastMessage(Chat.colored(Chat.line))
                                 scheduleShrink(500)
@@ -363,12 +374,12 @@ class UHCFeature : Listener {
             }, 20L)
         }, 20L)
     }
-    /*
     @EventHandler
     fun onBlockBreak(e: BlockBreakEvent) {
         if (GameState.currentState == GameState.WAITING) {
             e.isCancelled = true
         }
+        /*
         if (GameState.currentState == GameState.INGAME) {
             when (e.block.type) {
                 Material.DIAMOND_ORE -> {
@@ -381,8 +392,8 @@ class UHCFeature : Listener {
                     Stats.addIronMined(e.player)
                 }
             }
-        }
-    }*/
+        }*/
+    }
 
     @EventHandler
     fun onBlockPlace(e: BlockPlaceEvent) {

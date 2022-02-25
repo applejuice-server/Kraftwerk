@@ -19,7 +19,7 @@ class SkyHighIterator : BukkitRunnable() {
             for (player in Bukkit.getOnlinePlayers()) {
                 if (player.location.y < 100) {
                     if (!SpecFeature.instance.getSpecs().contains(player.name)) {
-                        player.damage(1.0)
+                        player.damage(2.0)
                         Chat.sendMessage(player, "&cYou've been damaged for not being above y-101.")
                     }
                 }
@@ -41,7 +41,7 @@ class SkyHighScenario : Scenario(
 ) {
     override fun onStart() {
         for (player in Bukkit.getOnlinePlayers()) {
-            player.inventory.addItem(ItemStack(Material.STAINED_CLAY, 128), ItemStack(Material.PUMPKIN), ItemStack(Material.SNOW_BLOCK, 2), ItemStack(Material.STRING), ItemStack(Material.DIAMOND_SPADE), ItemStack(Material.FEATHER, 16))
+            player.inventory.addItem(ItemStack(Material.STAINED_CLAY, 128, 14), ItemStack(Material.PUMPKIN), ItemStack(Material.SNOW_BLOCK, 2), ItemStack(Material.STRING, 2), ItemStack(Material.DIAMOND_SPADE), ItemStack(Material.FEATHER, 16))
             Chat.sendMessage(player, "${Chat.prefix} You've been given your SkyHigh items.")
         }
     }
