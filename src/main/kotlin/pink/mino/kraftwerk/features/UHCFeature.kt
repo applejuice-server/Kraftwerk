@@ -15,7 +15,6 @@ import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 import pink.mino.kraftwerk.Kraftwerk
-import pink.mino.kraftwerk.commands.WhitelistCommand
 import pink.mino.kraftwerk.scenarios.ScenarioHandler
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GameState
@@ -29,56 +28,61 @@ class UHCFeature : Listener {
         when (mode) {
             "ffa" -> {
                 GameState.setState(GameState.WAITING)
-                Bukkit.unloadWorld("Spawn", true)
-                Bukkit.unloadWorld("Arena", true)
                 Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world")).time = 1000
                 Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world")).setGameRuleValue("doDaylightCycle", false.toString())
                 SettingsFeature.instance.data!!.set("game.pvp", true)
                 Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Starting a &cFFA&7 UHC game... now freezing players."))
+                var list = SettingsFeature.instance.data!!.getStringList("game.list")
+                if (list == null) list = ArrayList<String>()
                 for (player in Bukkit.getOnlinePlayers()) {
-                    SpawnFeature.instance.send(player)
-                    CombatLogFeature.instance.removeCombatLog(player.name)
-                    player.playSound(player.location, Sound.WOOD_CLICK, 10F, 1F)
-                    player.health = 20.0
-                    player.foodLevel = 20
-                    player.saturation = 20F
-                    player.exp = 0F
-                    player.level = 0
-                    player.gameMode = GameMode.SURVIVAL
-                    player.inventory.clear()
-                    player.inventory.armorContents = null
-                    player.itemOnCursor = ItemStack(Material.AIR)
-                    val openInventory = player.openInventory
-                    if (openInventory.type == InventoryType.CRAFTING) {
-                        openInventory.topInventory.clear()
+                    if (!SpecFeature.instance.getSpecs().contains(player.name)) {
+                        SpawnFeature.instance.send(player)
+                        CombatLogFeature.instance.removeCombatLog(player.name)
+                        player.playSound(player.location, Sound.WOOD_CLICK, 10F, 1F)
+                        player.health = 20.0
+                        player.foodLevel = 20
+                        player.saturation = 20F
+                        player.exp = 0F
+                        player.level = 0
+                        player.gameMode = GameMode.SURVIVAL
+                        player.inventory.clear()
+                        player.inventory.armorContents = null
+                        player.itemOnCursor = ItemStack(Material.AIR)
+                        val openInventory = player.openInventory
+                        if (openInventory.type == InventoryType.CRAFTING) {
+                            openInventory.topInventory.clear()
+                        }
+                        val effects = player.activePotionEffects
+                        for (effect in effects) {
+                            player.removePotionEffect(effect.type)
+                        }
+                        list.add(player.name)
                     }
-                    val effects = player.activePotionEffects
-                    for (effect in effects) {
-                        player.removePotionEffect(effect.type)
-                    }
-                    WhitelistCommand().addWhitelist(player.name)
-                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wl on")
                 }
+                SettingsFeature.instance.data!!.set("game.list", list)
+                SettingsFeature.instance.saveData()
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wl all")
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wl on")
                 ScatterFeature.scatter("ffa", Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world")), SettingsFeature.instance.data!!.getInt("pregen.border"), true)
                 frozen = true
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer cancel")
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer 45 &cStarting in ${Chat.dash}&f")
                 Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
+                    Bukkit.unloadWorld("Spawn", true)
+                    Bukkit.unloadWorld("Arena", true)
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "cc")
                     frozen = false
                     unfreeze()
+                    GameState.setState(GameState.INGAME)
+                    val scenarios = ArrayList<String>()
+                    for (scenario in ScenarioHandler.getActiveScenarios()) {
+                        scenarios.add(scenario.name)
+                    }
                     Bukkit.broadcastMessage(Chat.colored(Chat.line))
                     for (player in Bukkit.getOnlinePlayers()) {
                         Chat.sendCenteredMessage(player, "&c&lUHC")
                     }
                     Bukkit.broadcastMessage(" ")
-                    GameState.setState(GameState.INGAME)
-                    var list = SettingsFeature.instance.data!!.getStringList("game.list")
-                    if (list == null) list = ArrayList<String>()
-                    val scenarios = ArrayList<String>()
-                    for (scenario in ScenarioHandler.getActiveScenarios()) {
-                        scenarios.add(scenario.name)
-                    }
                     for (player in Bukkit.getOnlinePlayers()) {
                         Chat.sendMessage(player, "&7You may &abegin&7! The host for this game is &c${SettingsFeature.instance.data!!.getString("game.host")}&7!")
 
@@ -89,10 +93,7 @@ class UHCFeature : Listener {
                         player.sendTitle(Chat.colored("&a&lGO!"), Chat.colored("&7You may now play the game, do &c/helpop&7 for help!"))
                         player.inventory.setItem(0, ItemStack(Material.COOKED_BEEF, SettingsFeature.instance.data!!.getInt("game.starterfood")))
                         Stats.addGamesPlayed(player)
-                        list.add(player.name)
                     }
-                    SettingsFeature.instance.data!!.set("game.list", list)
-                    SettingsFeature.instance.saveData()
                     Bukkit.broadcastMessage(Chat.colored("&b&oSuccessfully saved your stats..."))
                     Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world")).setGameRuleValue("doDaylightCycle", true.toString())
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer cancel")
@@ -164,47 +165,57 @@ class UHCFeature : Listener {
                 Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world")).setGameRuleValue("doDaylightCycle", false.toString())
                 SettingsFeature.instance.data!!.set("game.pvp", true)
                 Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Starting a &cTeams&7 UHC game... now freezing players."))
+                var list = SettingsFeature.instance.data!!.getStringList("game.list")
+                if (list == null) list = ArrayList<String>()
                 for (player in Bukkit.getOnlinePlayers()) {
-                    player.playSound(player.location, Sound.WOOD_CLICK, 10F, 1F)
-                    player.health = 20.0
-                    player.foodLevel = 20
-                    player.saturation = 20F
-                    player.exp = 0F
-                    player.level = 0
-                    player.gameMode = GameMode.SURVIVAL
-                    player.inventory.clear()
-                    player.inventory.armorContents = null
-                    player.itemOnCursor = ItemStack(Material.AIR)
-                    val openInventory = player.openInventory
-                    if (openInventory.type == InventoryType.CRAFTING) {
-                        openInventory.topInventory.clear()
-                    }
-                    val effects = player.activePotionEffects
-                    for (effect in effects) {
-                        player.removePotionEffect(effect.type)
+                    if (!SpecFeature.instance.getSpecs().contains(player.name)) {
+                        SpawnFeature.instance.send(player)
+                        CombatLogFeature.instance.removeCombatLog(player.name)
+                        player.playSound(player.location, Sound.WOOD_CLICK, 10F, 1F)
+                        player.health = 20.0
+                        player.foodLevel = 20
+                        player.saturation = 20F
+                        player.exp = 0F
+                        player.level = 0
+                        player.gameMode = GameMode.SURVIVAL
+                        player.inventory.clear()
+                        player.inventory.armorContents = null
+                        player.itemOnCursor = ItemStack(Material.AIR)
+                        val openInventory = player.openInventory
+                        if (openInventory.type == InventoryType.CRAFTING) {
+                            openInventory.topInventory.clear()
+                        }
+                        val effects = player.activePotionEffects
+                        for (effect in effects) {
+                            player.removePotionEffect(effect.type)
+                        }
+                        list.add(player.name)
                     }
                 }
+                SettingsFeature.instance.data!!.set("game.list", list)
+                SettingsFeature.instance.saveData()
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wl all")
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wl on")
                 ScatterFeature.scatter("teams", Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world")), SettingsFeature.instance.data!!.getInt("pregen.border"), true)
                 frozen = true
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer cancel")
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer 45 &cStarting in ${Chat.dash}&f")
                 Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wl on")
+                    Bukkit.unloadWorld("Spawn", true)
+                    Bukkit.unloadWorld("Arena", true)
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "cc")
                     frozen = false
                     unfreeze()
+                    GameState.setState(GameState.INGAME)
+                    val scenarios = ArrayList<String>()
+                    for (scenario in ScenarioHandler.getActiveScenarios()) {
+                        scenarios.add(scenario.name)
+                    }
                     Bukkit.broadcastMessage(Chat.colored(Chat.line))
                     for (player in Bukkit.getOnlinePlayers()) {
                         Chat.sendCenteredMessage(player, "&c&lUHC")
                     }
                     Bukkit.broadcastMessage(" ")
-                    GameState.setState(GameState.INGAME)
-                    var list = SettingsFeature.instance.data!!.getStringList("game.list")
-                    if (list == null) list = ArrayList<String>()
-                    val scenarios = ArrayList<String>()
-                    for (scenario in ScenarioHandler.getActiveScenarios()) {
-                        scenarios.add(scenario.name)
-                    }
                     for (player in Bukkit.getOnlinePlayers()) {
                         Chat.sendMessage(player, "&7You may &abegin&7! The host for this game is &c${SettingsFeature.instance.data!!.getString("game.host")}&7!")
 
@@ -215,11 +226,7 @@ class UHCFeature : Listener {
                         player.sendTitle(Chat.colored("&a&lGO!"), Chat.colored("&7You may now play the game, do &c/helpop&7 for help!"))
                         player.inventory.setItem(0, ItemStack(Material.COOKED_BEEF, SettingsFeature.instance.data!!.getInt("game.starterfood")))
                         Stats.addGamesPlayed(player)
-                        WhitelistCommand().addWhitelist(player.name)
-                        list.add(player.name)
                     }
-                    SettingsFeature.instance.data!!.set("game.list", list)
-                    SettingsFeature.instance.saveData()
                     Bukkit.broadcastMessage(Chat.colored("&b&oSuccessfully saved your stats..."))
                     Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world")).setGameRuleValue("doDaylightCycle", true.toString())
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer cancel")
