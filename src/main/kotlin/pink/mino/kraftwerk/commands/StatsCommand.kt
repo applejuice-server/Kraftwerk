@@ -24,6 +24,8 @@ class StatsCommand : CommandExecutor {
             sender.sendMessage("You can't use this command as you technically aren't a player.")
             return false
         }
+        sender.sendMessage(Chat.colored("&cNot available right now."))
+        return false
         val gui = GuiBuilder().rows(3).name(ChatColor.translateAlternateColorCodes('&', "&4Stats"))
 
         if (args.isEmpty()) {

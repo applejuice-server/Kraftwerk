@@ -15,13 +15,13 @@ class PlayerConnectListener : Listener {
                 if (!player.hasPermission("uhc.staff")) {
                     e.player.kickPlayer(Chat.colored("&cYou are not allowed to join while the whitelist is on!\n\n&7Get pre-whitelisted on the discord @ &cdsc.gg/apple-juice&7!"))
                 } else {
-                    e.allow()
+                    return
                 }
             } else {
-                e.allow()
+                return
             }
         } else {
-            e.allow()
+            return
         }
     }
 }

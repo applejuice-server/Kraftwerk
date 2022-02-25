@@ -6,7 +6,6 @@ import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
-import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.inventory.InventoryType
@@ -18,7 +17,6 @@ import pink.mino.kraftwerk.Kraftwerk
 import pink.mino.kraftwerk.scenarios.ScenarioHandler
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GameState
-import pink.mino.kraftwerk.utils.Stats
 
 
 class UHCFeature : Listener {
@@ -93,9 +91,7 @@ class UHCFeature : Listener {
                         player.playSound(player.location, Sound.ENDERDRAGON_GROWL, 10F, 1F)
                         player.sendTitle(Chat.colored("&a&lGO!"), Chat.colored("&7You may now play the game, do &c/helpop&7 for help!"))
                         player.inventory.setItem(0, ItemStack(Material.COOKED_BEEF, SettingsFeature.instance.data!!.getInt("game.starterfood")))
-                        Stats.addGamesPlayed(player)
                     }
-                    Bukkit.broadcastMessage(Chat.colored("&b&oSuccessfully saved your stats..."))
                     Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world")).setGameRuleValue("doDaylightCycle", true.toString())
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer cancel")
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer ${SettingsFeature.instance.data!!.getInt("game.events.final-heal") * 60} &cFinal Heal is in ${Chat.dash}&f")
@@ -226,9 +222,7 @@ class UHCFeature : Listener {
                         player.playSound(player.location, Sound.ENDERDRAGON_GROWL, 10F, 1F)
                         player.sendTitle(Chat.colored("&a&lGO!"), Chat.colored("&7You may now play the game, do &c/helpop&7 for help!"))
                         player.inventory.setItem(0, ItemStack(Material.COOKED_BEEF, SettingsFeature.instance.data!!.getInt("game.starterfood")))
-                        Stats.addGamesPlayed(player)
                     }
-                    Bukkit.broadcastMessage(Chat.colored("&b&oSuccessfully saved your stats..."))
                     Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world")).setGameRuleValue("doDaylightCycle", true.toString())
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer cancel")
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer ${SettingsFeature.instance.data!!.getInt("game.events.final-heal") * 60} &cFinal Heal is in ${Chat.dash}&f")
@@ -360,7 +354,7 @@ class UHCFeature : Listener {
             }, 20L)
         }, 20L)
     }
-
+    /*
     @EventHandler
     fun onBlockBreak(e: BlockBreakEvent) {
         if (GameState.currentState == GameState.WAITING) {
@@ -379,7 +373,7 @@ class UHCFeature : Listener {
                 }
             }
         }
-    }
+    }*/
 
     @EventHandler
     fun onBlockPlace(e: BlockPlaceEvent) {

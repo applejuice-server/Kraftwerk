@@ -16,7 +16,6 @@ import pink.mino.kraftwerk.features.TeamsFeature
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GameState
 import pink.mino.kraftwerk.utils.Scoreboard
-import pink.mino.kraftwerk.utils.Stats
 
 
 class PlayerDeathListener : Listener {
@@ -35,7 +34,7 @@ class PlayerDeathListener : Listener {
                 if (killer != null) {
                     val o = SettingsFeature.instance.data!!.getInt("game.kills.${killer.name}")
                     SettingsFeature.instance.data!!.set("game.kills.${killer.name}", o + 1)
-                    Stats.addKill(killer)
+                    //Stats.addKill(killer)
                     val color: String = if (TeamsFeature.manager.getTeam(killer) != null) {
                         TeamsFeature.manager.getTeam(killer)!!.prefix
                     } else {
@@ -45,7 +44,7 @@ class PlayerDeathListener : Listener {
                 }
                 val list = SettingsFeature.instance.data!!.getStringList("game.list")
                 list.remove(player.name)
-                Stats.addDeath(player)
+                //Stats.addDeath(player)
                 SettingsFeature.instance.data!!.set("game.list", list)
                 SettingsFeature.instance.saveData()
                 val kills = SettingsFeature.instance.data!!.getInt("game.kills.${player.name}")
@@ -86,7 +85,7 @@ class PlayerDeathListener : Listener {
             if (killer != null) {
                 val o = SettingsFeature.instance.data!!.getInt("game.kills.${killer.name}")
                 SettingsFeature.instance.data!!.set("game.kills.${killer.name}", o + 1)
-                Stats.addKill(killer)
+                //Stats.addKill(killer)
                 val color: String = if (TeamsFeature.manager.getTeam(killer) != null) {
                     TeamsFeature.manager.getTeam(killer)!!.prefix
                 } else {
@@ -96,7 +95,7 @@ class PlayerDeathListener : Listener {
             }
             val list = SettingsFeature.instance.data!!.getStringList("game.list")
             list.remove(player.name)
-            Stats.addDeath(player)
+            //Stats.addDeath(player)
             SettingsFeature.instance.data!!.set("game.list", list)
             SettingsFeature.instance.saveData()
         }

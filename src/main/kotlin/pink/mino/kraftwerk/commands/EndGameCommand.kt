@@ -14,7 +14,6 @@ import pink.mino.kraftwerk.features.SettingsFeature
 import pink.mino.kraftwerk.features.SpawnFeature
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GameState
-import pink.mino.kraftwerk.utils.Stats
 import java.awt.Color
 
 class EndGameCommand : CommandExecutor {
@@ -44,7 +43,7 @@ class EndGameCommand : CommandExecutor {
         for (player in Bukkit.getOnlinePlayers()) {
             if (winners.contains(player.name)) {
                 player.sendTitle(Chat.colored("&6&lVICTORY!"), Chat.colored("&7Congratulations, you won the game!"))
-                Stats.addWin(player)
+                //Stats.addWin(player)
                 Chat.sendMessage(player, "&b&oSuccessfully saved your stats...")
 
             } else {
