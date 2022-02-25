@@ -10,6 +10,7 @@ import pink.mino.kraftwerk.features.SpecFeature
 import pink.mino.kraftwerk.scenarios.Scenario
 import pink.mino.kraftwerk.scenarios.ScenarioHandler
 import pink.mino.kraftwerk.utils.Chat
+import pink.mino.kraftwerk.utils.GameState
 
 class SkyHighIterator : BukkitRunnable() {
     var timer = 45
@@ -27,6 +28,9 @@ class SkyHighIterator : BukkitRunnable() {
             timer = 45
         }
         if (!ScenarioHandler.getActiveScenarios().contains(ScenarioHandler.getScenario("skyhigh"))) {
+            cancel()
+        }
+        if (GameState.currentState != GameState.INGAME) {
             cancel()
         }
     }
