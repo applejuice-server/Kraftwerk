@@ -13,9 +13,8 @@ import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.entity.EntityDamageByEntityEvent
+import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.EntitySpawnEvent
-import org.bukkit.event.entity.PlayerDeathEvent
-import org.bukkit.event.player.PlayerRespawnEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.potion.PotionEffect
@@ -24,6 +23,7 @@ import pink.mino.kraftwerk.Kraftwerk
 import pink.mino.kraftwerk.utils.BlockAnimation
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.HealthChatColorer
+import pink.mino.kraftwerk.utils.Killstreak
 import kotlin.math.floor
 
 
@@ -90,7 +90,7 @@ class ArenaFeature : Listener {
     }
 
     @EventHandler
-    fun onPlayerDamage(e: EntityDamageByEntityEvent) {
+    fun onPlayerDamageByPlayer(e: EntityDamageByEntityEvent) {
         if (e.entity.world.name != "Arena") return
         if (e.entityType === EntityType.PLAYER && e.damager != null && e.damager.type === EntityType.ARROW && (e.damager as Arrow).shooter === e.entity) {
             e.isCancelled = true
@@ -100,75 +100,80 @@ class ArenaFeature : Listener {
                 (e.damager as Player).removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE)
             }
         }
-    }
-
-    @EventHandler
-    fun onPlayerDeath(e: PlayerDeathEvent) {
-        if (e.entity.world.name != "Arena") {
-            return
-        }
-        val victim = e.entity
-        val killer = victim.killer
-
-        e.drops.clear()
-
-        if (killer != null) {
-            var statement = "SELECT (killstreaks) from arena WHERE uuid = '${killer.uniqueId}'"
-            var result = JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection.createStatement().executeQuery(statement)
-            result.next()
-            var killerKillstreak = result.getInt("killstreaks")
-
-            statement = "SELECT (killstreaks) from arena WHERE uuid = '${victim.uniqueId}'"
-            result = JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection.createStatement().executeQuery(statement)
-            result.next()
-            val victimKillstreak = result.getInt("killstreaks")
-
-            statement = "UPDATE arena SET killstreaks = 0 where uuid = '${victim.uniqueId}'"
-            with(JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection) {
-                createStatement().execute(statement)
-            }
-            statement = "UPDATE arena SET killstreaks = ${killerKillstreak + 1} where uuid = '${killer.uniqueId}'"
-            with(JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection) {
-                createStatement().execute(statement)
-            }
-
-            statement = "SELECT (killstreaks) from arena WHERE uuid = '${killer.uniqueId}'"
-            result = JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection.createStatement().executeQuery(statement)
-            result.next()
-            killerKillstreak = result.getInt("killstreaks")
-            if (victimKillstreak > 5) {
-                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} &f${victim.name}&7 lost their killstreak of &f${victimKillstreak} kills&7 to &f${killer.name}&7!"))
-            }
-            if (killerKillstreak > 3) {
-                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} &f${killer.name}&7 now has a killstreak of &f${killerKillstreak} kills&7!"))
-                killer.addPotionEffect(PotionEffect(PotionEffectType.SPEED, 200, 2, false, true))
-            }
-            killer.addPotionEffect(PotionEffect(PotionEffectType.REGENERATION, 200, 2, true, true))
-            val goldenHeads = ItemStack(Material.GOLDEN_APPLE, 1)
-            val meta = goldenHeads.itemMeta
-            meta.displayName = Chat.colored("&6Golden Head")
-            goldenHeads.itemMeta = meta
-            killer.inventory.addItem(goldenHeads)
-            killer.inventory.addItem(ItemStack(Material.ARROW, 8))
-            val el: EntityLiving = (killer as CraftPlayer).handle
-            val health = floor(killer.health / 2 * 10 + el.absorptionHearts / 2 * 10)
-            val color = HealthChatColorer.returnHealth(health)
-            killer.sendMessage(Chat.colored("${Chat.prefix} &7You killed &f${victim.name}&7!"))
-            victim.sendMessage(Chat.colored("${Chat.prefix} &7You were killed by &f${killer.name} &8(${color}${health}❤&8)"))
-        } else {
-            val statement = "UPDATE arena SET killstreaks = 0 where uuid = '${victim.uniqueId}'"
-            with(JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection) {
-                createStatement().execute(statement)
+        if (e.entity.type == EntityType.PLAYER) {
+            if (e.finalDamage >= (e.entity as Player).health) {
+                e.damage = 0.0
+                e.isCancelled = true
+                e.entity.world.strikeLightningEffect(e.entity.location)
+                this.send((e.entity as Player))
+                if (e.damager.type == EntityType.PLAYER && e.entity.type == EntityType.PLAYER) {
+                    val killer = e.damager as Player
+                    val victim = e.entity as Player
+                    killer.addPotionEffect(PotionEffect(PotionEffectType.REGENERATION, 200, 2, true, true))
+                    val goldenHeads = ItemStack(Material.GOLDEN_APPLE, 1)
+                    val meta = goldenHeads.itemMeta
+                    meta.displayName = Chat.colored("&6Golden Head")
+                    goldenHeads.itemMeta = meta
+                    killer.inventory.addItem(goldenHeads)
+                    killer.inventory.addItem(ItemStack(Material.ARROW, 8))
+                    val el: EntityLiving = (killer as CraftPlayer).handle
+                    val health = floor(killer.health / 2 * 10 + el.absorptionHearts / 2 * 10)
+                    val color = HealthChatColorer.returnHealth(health)
+                    print(Killstreak.getKillstreak(victim))
+                    print(Killstreak.getKillstreak(killer))
+                    killer.sendMessage(Chat.colored("${Chat.prefix} &7You killed &f${victim.name}&7!"))
+                    victim.sendMessage(Chat.colored("${Chat.prefix} &7You were killed by &f${killer.name} &8(${color}${health}❤&8)"))
+                    Killstreak.addKillstreak(killer)
+                    if (Killstreak.getKillstreak(victim) >= 5) {
+                        sendToPlayers("${Chat.prefix}&f ${victim.name}&7 lost their killstreak of &f${
+                            Killstreak.getKillstreak(
+                                victim
+                            )
+                        } kills&7 to &f${killer.name}&7!")
+                    }
+                    if (Killstreak.getKillstreak(killer) > 3) {
+                        sendToPlayers(Chat.colored("${Chat.prefix} &f${killer.name}&7 now has a killstreak of &f${
+                            Killstreak.getKillstreak(
+                                killer
+                            )
+                        } kills&7!"))
+                        killer.addPotionEffect(PotionEffect(PotionEffectType.SPEED, 200, 2, false, true))
+                    }
+                    Killstreak.resetKillstreak(victim)
+                }
             }
         }
     }
 
     @EventHandler
-    fun onPlayerRespawn(e: PlayerRespawnEvent) {
-        if (e.respawnLocation.world.name != "Arena") return
-        Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-            this.send(e.player)
-        }, 1L)
+    fun onPlayerDamage(e: EntityDamageEvent) {
+        if (e.entity.world.name != "Arena") return
+        if (e.entityType == EntityType.PLAYER) {
+            if (e.finalDamage >= (e.entity as Player).health) {
+                e.damage = 0.0
+                e.isCancelled = true
+                e.entity.world.strikeLightningEffect(e.entity.location)
+                this.send((e.entity as Player))
+                if (Killstreak.getKillstreak((e.entity as Player)) != null) {
+                    if (Killstreak.getKillstreak((e.entity as Player)) >= 5) {
+                        sendToPlayers("${Chat.prefix}&f ${(e.entity as Player).name}&7 lost their killstreak of &f${
+                            Killstreak.getKillstreak(
+                                (e.entity as Player)
+                            )
+                        } kills&7!")
+                    }
+                }
+                Killstreak.resetKillstreak((e.entity as Player))
+            }
+        }
+    }
+
+    fun sendToPlayers(message: String) {
+        for (player in Bukkit.getOnlinePlayers()) {
+            if (player.world.name == "Arena") {
+                Chat.sendMessage(player, message)
+            }
+        }
     }
 
     @EventHandler
@@ -211,6 +216,9 @@ class ArenaFeature : Listener {
                 e.isCancelled = true
             }
             EntityType.ENDERMAN -> {
+                e.isCancelled = true
+            }
+            EntityType.RABBIT -> {
                 e.isCancelled = true
             }
             else -> {}
