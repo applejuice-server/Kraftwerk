@@ -29,7 +29,11 @@ class CombatLog(val player: Player) : BukkitRunnable() {
         if (combatTimer == 0) {
             cancel()
             CombatLogFeature.instance.removeCombatLog(player.name)
-            Bukkit.getLogger().info("${player.name} has been removed from the combat log.")
+            var list = SettingsFeature.instance.data!!.getStringList("game.combatloggers")
+            if (list == null) list = ArrayList<String>()
+            if (list.contains(player.name)) {
+                Bukkit.getLogger().info("${player.name} has been removed from the combat log.")
+            }
         }
     }
 }
