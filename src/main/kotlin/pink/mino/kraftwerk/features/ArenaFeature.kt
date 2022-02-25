@@ -119,11 +119,11 @@ class ArenaFeature : Listener {
                     val el: EntityLiving = (killer as CraftPlayer).handle
                     val health = floor(killer.health / 2 * 10 + el.absorptionHearts / 2 * 10)
                     val color = HealthChatColorer.returnHealth(health)
+                    Killstreak.addKillstreak(killer)
                     print(Killstreak.getKillstreak(victim))
                     print(Killstreak.getKillstreak(killer))
                     killer.sendMessage(Chat.colored("${Chat.prefix} &7You killed &f${victim.name}&7!"))
                     victim.sendMessage(Chat.colored("${Chat.prefix} &7You were killed by &f${killer.name} &8(${color}${health}❤&8)"))
-                    Killstreak.addKillstreak(killer)
                     if (Killstreak.getKillstreak(victim) >= 5) {
                         sendToPlayers("${Chat.prefix}&f ${victim.name}&7 lost their killstreak of &f${
                             Killstreak.getKillstreak(
