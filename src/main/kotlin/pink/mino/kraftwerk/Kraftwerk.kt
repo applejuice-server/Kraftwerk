@@ -103,6 +103,7 @@ class Kraftwerk : JavaPlugin() {
         getCommand("killtop").executor = KillTopCommand()
         getCommand("scenarios").executor = ScenarioCommand()
         getCommand("statistics").executor = StatsCommand()
+        getCommand("discord").executor = DiscordCommand()
 
         /* ProtocolLib stuff */
         if (Bukkit.getPluginManager().getPlugin("ProtocolLib") == null) {
@@ -122,6 +123,7 @@ class Kraftwerk : JavaPlugin() {
         /* Sets up misc features */
         SettingsFeature.instance.setup(this)
         TeamsFeature.manager.setupTeams()
+        Scoreboard.kills!!.unregister()
         Scoreboard.setup()
         ConfigOptionHandler.setup()
         ScenarioHandler.setup()

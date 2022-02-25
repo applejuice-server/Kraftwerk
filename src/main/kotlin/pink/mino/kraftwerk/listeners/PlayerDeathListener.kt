@@ -41,7 +41,7 @@ class PlayerDeathListener : Listener {
                     } else {
                         "&f"
                     }
-                    Scoreboard.setScore(Chat.colored("${Chat.dash} ${color}${killer.name}"), o)
+                    Scoreboard.setScore(Chat.colored("${Chat.dash} ${color}${killer.name}"), o + 1)
                 }
                 val list = SettingsFeature.instance.data!!.getStringList("game.list")
                 list.remove(player.name)
@@ -55,7 +55,7 @@ class PlayerDeathListener : Listener {
                     "&f"
                 }
                 Scoreboard.deleteScore(Chat.colored("${Chat.dash} ${color}${player.name}"))
-                Scoreboard.setScore(Chat.colored("${Chat.dash} &m${color}${player.name}"), kills)
+                if (kills > 0) Scoreboard.setScore(Chat.colored("${Chat.dash} ${color}&m${player.name}"), kills)
                 CombatLogFeature.instance.removeCombatLog(player.name)
                 if (player.hasPermission("uhc.staff")) {
                     Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
@@ -92,7 +92,7 @@ class PlayerDeathListener : Listener {
                 } else {
                     "&f"
                 }
-                Scoreboard.setScore(Chat.colored("${Chat.dash} ${color}${killer.name}"), o)
+                Scoreboard.setScore(Chat.colored("${Chat.dash} ${color}${killer.name}"), o + 1)
             }
             val list = SettingsFeature.instance.data!!.getStringList("game.list")
             list.remove(player.name)
