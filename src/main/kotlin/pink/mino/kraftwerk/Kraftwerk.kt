@@ -18,6 +18,7 @@ import pink.mino.kraftwerk.config.ConfigOptionHandler
 import pink.mino.kraftwerk.discord.Discord
 import pink.mino.kraftwerk.features.*
 import pink.mino.kraftwerk.listeners.*
+import pink.mino.kraftwerk.listeners.lunar.PlayerRegisterListener
 import pink.mino.kraftwerk.scenarios.ScenarioHandler
 import pink.mino.kraftwerk.utils.GameState
 import pink.mino.kraftwerk.utils.Scoreboard
@@ -56,6 +57,8 @@ class Kraftwerk : JavaPlugin() {
         Bukkit.getServer().pluginManager.registerEvents(RatesFeature(), this)
         Bukkit.getServer().pluginManager.registerEvents(CombatLogFeature.instance, this)
         Bukkit.getServer().pluginManager.registerEvents(SpecFeature.instance, this)
+
+        Bukkit.getServer().pluginManager.registerEvents(PlayerRegisterListener(), this)
 
         /* Registering commands */
         getCommand("clear").executor = ClearInventoryCommand()

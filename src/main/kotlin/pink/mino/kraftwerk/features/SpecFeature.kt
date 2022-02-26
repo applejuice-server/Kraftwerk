@@ -1,5 +1,6 @@
 package pink.mino.kraftwerk.features
 
+import com.lunarclient.bukkitapi.LunarClientAPI
 import org.bukkit.*
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
@@ -86,6 +87,9 @@ class SpecFeature : Listener {
         )
         invSee.itemMeta = invSeeMeta
         p.inventory.setItem(1, invSee)
+        if (LunarClientAPI.getInstance().isRunningLunarClient(p)) {
+            LunarClientAPI.getInstance().giveAllStaffModules(p)
+        }
     }
 
     fun unspec(p: Player) {
@@ -111,6 +115,9 @@ class SpecFeature : Listener {
         SettingsFeature.instance.data!!.set("game.specs", list)
         SettingsFeature.instance.saveData()
         updateVisibility()
+        if (LunarClientAPI.getInstance().isRunningLunarClient(p)) {
+            LunarClientAPI.getInstance().disableAllStaffModules(p)
+        }
         specChat("&f${p.name}&7 has left spectator mode.")
         Chat.sendMessage(p, "${Chat.prefix} You are no longer in spectator mode.")
     }

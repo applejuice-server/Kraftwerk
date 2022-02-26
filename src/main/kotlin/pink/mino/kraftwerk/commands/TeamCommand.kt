@@ -1,6 +1,8 @@
 package pink.mino.kraftwerk.commands
 
 
+import com.lunarclient.bukkitapi.LunarClientAPI
+import com.lunarclient.bukkitapi.nethandler.client.LCPacketTeammates
 import net.md_5.bungee.api.chat.ClickEvent
 import net.md_5.bungee.api.chat.TextComponent
 import org.bukkit.Bukkit
@@ -10,17 +12,59 @@ import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
+import org.bukkit.plugin.java.JavaPlugin
+import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.scoreboard.Team
+import pink.mino.kraftwerk.Kraftwerk
 import pink.mino.kraftwerk.features.SettingsFeature
 import pink.mino.kraftwerk.features.TeamsFeature
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GameState
+import java.util.*
+import java.util.concurrent.ConcurrentHashMap
+import java.util.function.Consumer
 
+
+class SendTeamView(val team: Team) : BukkitRunnable() {
+    override fun run() {
+        if (team.size == 0) {
+            cancel()
+        }
+        val list: ArrayList<Player> = arrayListOf()
+        for (player in team.players) {
+            if (player.isOnline) {
+                list.add(player as Player)
+            }
+        }
+        for (player in team.players) {
+            if (player.isOnline) {
+                if (LunarClientAPI.getInstance().isRunningLunarClient(player as Player)) {
+                    TeamCommand().addTeamInfo(player, list)
+                }
+            }
+        }
+    }
+}
 
 class TeamCommand : CommandExecutor {
 
     private var invites = HashMap<Player, ArrayList<Player>>()
     private val settings: SettingsFeature = SettingsFeature.instance
+
+    fun addTeamInfo(player: Player, playersToAdd: List<Player>) {
+        val map: MutableMap<UUID, Map<String, Double>> = ConcurrentHashMap()
+        playersToAdd.forEach(Consumer { members: Player ->
+            val position: MutableMap<String, Double> =
+                HashMap()
+            if (members.player == null) return@Consumer
+            position["x"] = members.player.location.x
+            position["y"] = members.player.location.y
+            position["z"] = members.player.location.z
+            map[members.uniqueId] = position
+        })
+        val teammates = LCPacketTeammates(player.uniqueId, 0L, map)
+        LunarClientAPI.getInstance().sendTeammates(player, teammates)
+    }
 
     override fun onCommand(sender: CommandSender, cmd: Command, lbl: String, args: Array<String>): Boolean {
 
@@ -74,6 +118,7 @@ class TeamCommand : CommandExecutor {
             for (team in TeamsFeature.manager.getTeams()) {
                 if (team.size == 0) {
                     team.addPlayer(player)
+                    SendTeamView(team).runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 20L)
                     Chat.sendMessage(player, "${Chat.prefix} Team created! Use ${ChatColor.WHITE}/team invite <player>${ChatColor.GRAY} to invite a player.")
                     return true
                 }
@@ -242,6 +287,7 @@ class TeamCommand : CommandExecutor {
                 return true
             }
             team.removePlayer(player)
+            LunarClientAPI.getInstance().sendTeammates(player, LCPacketTeammates(player.uniqueId, 100L, HashMap()))
             Chat.sendMessage(player, "${Chat.prefix} You left your team.")
             for (players in team.players) {
                 if (players is Player) {
@@ -292,6 +338,9 @@ class TeamCommand : CommandExecutor {
             }
             for (player in selectedTeam.players) {
                 selectedTeam.removePlayer(player)
+                if (player.isOnline) {
+                    LunarClientAPI.getInstance().sendTeammates(player as Player, LCPacketTeammates(player.uniqueId, 100L, HashMap()))
+                }
             }
             Chat.sendMessage(sender, "${Chat.prefix} ${selectedTeam.prefix}${selectedTeam.name}&7 has been deleted & all members kicked.")
         } else if (args[0] == "set") {

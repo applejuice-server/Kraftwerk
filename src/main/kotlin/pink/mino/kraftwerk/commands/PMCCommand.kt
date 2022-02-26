@@ -1,5 +1,7 @@
 package pink.mino.kraftwerk.commands
 
+import com.lunarclient.bukkitapi.LunarClientAPI
+import com.lunarclient.bukkitapi.`object`.LCWaypoint
 import org.bukkit.ChatColor
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
@@ -30,6 +32,22 @@ class PMCCommand : CommandExecutor {
         if (player.scoreboard.getPlayerTeam(player) != null) {
             for (team in player.scoreboard.getPlayerTeam(player).players) {
                 if (team is Player) {
+                    if (LunarClientAPI.getInstance().isRunningLunarClient(team)) {
+                        if (team != sender) {
+                            LunarClientAPI.getInstance().removeWaypoint(team, LCWaypoint(
+                                "${sender.name}'s Location",
+                                sender.location,
+                                1,
+                                true
+                            ))
+                            LunarClientAPI.getInstance().sendWaypoint(team, LCWaypoint(
+                                "${sender.name}'s Location",
+                                sender.location,
+                                1,
+                                true
+                            ))
+                        }
+                    }
                     Chat.sendMessage(team, "§8[§4Team Chat§8] ${ChatColor.WHITE}${sender.name} ${Chat.dash} &c${player.name}'s&7 location: &c${x}&7, &c${y}&7, &c${z} &8| &7Dimension: &c${player.world.worldType.toString().uppercase()}")
                 }
             }
