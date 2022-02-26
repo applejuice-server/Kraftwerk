@@ -68,8 +68,6 @@ class UHCFeature : Listener {
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer cancel")
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer 45 &cStarting in ${Chat.dash}&f")
                 Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                    Bukkit.unloadWorld("Spawn", true)
-                    Bukkit.unloadWorld("Arena", true)
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "cc")
                     frozen = false
                     unfreeze()
@@ -209,8 +207,6 @@ class UHCFeature : Listener {
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer cancel")
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer 45 &cStarting in ${Chat.dash}&f")
                 Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                    Bukkit.unloadWorld("Spawn", true)
-                    Bukkit.unloadWorld("Arena", true)
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "cc")
                     frozen = false
                     unfreeze()
