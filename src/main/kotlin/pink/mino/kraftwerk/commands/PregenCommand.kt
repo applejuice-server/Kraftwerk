@@ -26,6 +26,10 @@ class PregenCommand : CommandExecutor {
             }
         }
 
+        if (args.isEmpty()) {
+            Chat.sendMessage(sender, "${Chat.prefix} &7Invalid usage: ${ChatColor.RED}/pregen <world> <border> <type> &7or&c /pregen cancel")
+            return false
+        }
         if (args[0] === "cancel") {
             if (Config.fillTask.valid()) {
                 Chat.sendMessage(sender, "${Chat.prefix} Okay, cancelling the pregeneration task.")
@@ -36,8 +40,12 @@ class PregenCommand : CommandExecutor {
                 Chat.sendMessage(sender, "${Chat.prefix} There is no valid pregeneration task running.")
             }
         }
-        if (args.isEmpty() || args[1].isEmpty()) {
-            Chat.sendMessage(sender, "${Chat.prefix} &7Invalid usage: ${ChatColor.RED}/pregen <world> <border> &7or&c /pregen cancel")
+        if (args.size != 3) {
+            Chat.sendMessage(sender, "${Chat.prefix} &7Invalid usage: ${ChatColor.RED}/pregen <world> <border> <type> &7or&c /pregen cancel")
+            return false
+        }
+        if (args[2] != "overworld" && args[2] != "cityworld") {
+            Chat.sendMessage(sender, "${Chat.prefix} Invalid world type, the valid world types are &ccityworld&7, &cnether&7 and &coverworld&7.")
             return false
         }
         Chat.sendMessage(sender, "${Chat.prefix} &7Please standby, this will take a while.")
@@ -49,9 +57,22 @@ class PregenCommand : CommandExecutor {
             "mvconfirm"
         )
 
-        Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
-            "mvc ${args[0]} normal"
-        )
+        if (args[2] == "cityworld") {
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
+                "mvc ${args[0]} normal -g CityWorld"
+            )
+        } else if (args[2] == "overworld") {
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
+                "mvc ${args[0]} normal"
+            )
+        } else if (args[2] == "nether") {
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
+                "mvc ${args[0]} nether"
+            )
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
+                "mvnp link ${settings.data!!.getString("pregen.world")} ${args[0]}"
+            )
+        }
 
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
             "wb ${args[0]} clear"
@@ -77,7 +98,7 @@ class PregenCommand : CommandExecutor {
 
         Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "${Chat.prefix} &7Pregeneration started in &8'&c${args[0]}&8'&7."))
         PregenActionBarFeature().runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 20L)
-        if (args[0] != "Arena") {
+        if (args[0] != "Arena" && args[2] != "nether") {
             settings.data!!.set("pregen.border", args[1].toInt())
             settings.data!!.set("pregen.world", args[0])
             settings.saveData()
