@@ -27,8 +27,8 @@ class CommandListener : Listener {
     @EventHandler
     fun onPlayerCommand(e: PlayerCommandPreprocessEvent) {
         val command = e.message
-        if (blockedCommands.contains(command)) {
-            if (!e.player.hasPermission("uhc.admin.overrideCommands")) {
+        for (cmd in blockedCommands) {
+            if (cmd in command) {
                 e.isCancelled = true
                 Chat.sendMessage(e.player, "&cYou don't have permission to perform that command.")
             }
