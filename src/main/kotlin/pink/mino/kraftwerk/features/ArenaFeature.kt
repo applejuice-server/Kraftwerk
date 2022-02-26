@@ -41,18 +41,11 @@ class ArenaFeature : Listener {
     }
 
     fun send(p: Player) {
-        var statement = "SELECT (killstreaks) from arena WHERE uuid = '${p.uniqueId}'"
-        val result = JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection.createStatement().executeQuery(statement)
-        if (!result.isBeforeFirst) {
-            statement = "INSERT INTO arena (uuid, killstreaks) VALUES ('${p.uniqueId}', 0)"
-            with(JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection) {
-                createStatement().execute(statement)
-            }
-        }
         if (SpecFeature.instance.getSpecs().contains(p.name)) {
             SpecFeature.instance.unspec(p)
         }
         p.health = 20.0
+        p.fireTicks = 0
         p.foodLevel = 20
         p.saturation = 20F
         p.exp = 0F
