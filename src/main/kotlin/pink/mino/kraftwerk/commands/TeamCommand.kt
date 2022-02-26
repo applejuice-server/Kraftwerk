@@ -15,7 +15,6 @@ import pink.mino.kraftwerk.features.SettingsFeature
 import pink.mino.kraftwerk.features.TeamsFeature
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GameState
-import java.util.*
 
 
 class TeamCommand : CommandExecutor {
@@ -71,24 +70,22 @@ class TeamCommand : CommandExecutor {
                 Chat.sendMessage(player, "&cYou can't use this command at the moment.")
                 return true
             }
-            val oTeams = ArrayList<Team>()
 
             for (team in TeamsFeature.manager.getTeams()) {
                 if (team.size == 0) {
-                    oTeams.add(team)
+                    team.addPlayer(player)
+                    Chat.sendMessage(player, "${Chat.prefix} Team created! Use ${ChatColor.WHITE}/team invite <player>${ChatColor.GRAY} to invite a player.")
+                    return true
                 }
             }
-
-            oTeams[Random().nextInt(oTeams.size)].addPlayer(player)
-            Chat.sendMessage(player, "${Chat.prefix} Team created! Use ${ChatColor.WHITE}/team invite <player>${ChatColor.GRAY} to invite a player.")
         } else if (args[0] == "invite") {
             val player = sender as Player
             val oPlayer = player as OfflinePlayer
-            val team = player.scoreboard.getPlayerTeam(oPlayer)
+            var team = player.scoreboard.getPlayerTeam(oPlayer)
 
             if (team == null) {
-                player.sendMessage("${ChatColor.RED}You are not on a team.")
-                return true
+                Bukkit.dispatchCommand(player, "team create")
+                team = player.scoreboard.getPlayerTeam(oPlayer)
             }
             if (team.size >= SettingsFeature.instance.data!!.getString("game.teamSize").toInt()) {
                 player.sendMessage("${ChatColor.RED}Your team has reached the max teamsize.")
