@@ -50,7 +50,7 @@ class ScatterFeature : Listener {
                                     finalLocation = Location(
                                         world,
                                         location.x,
-                                        world.getHighestBlockAt(location).location.y + 3,
+                                        world.getHighestBlockAt(location).location.y + 5,
                                         location.z
                                     )
                                 }
@@ -96,7 +96,7 @@ class ScatterFeature : Listener {
                                         world.getHighestBlockAt(location).type != Material.STATIONARY_WATER &&
                                         world.getHighestBlockAt(location).type != Material.WATER_LILY
                                     ) {
-                                        finalLocation = Location(world, location.x, world.getHighestBlockAt(location).location.y + 3, location.z)
+                                        finalLocation = Location(world, location.x, world.getHighestBlockAt(location).location.y + 5, location.z)
                                     }
                                 }
                                 val chunk = world.getChunkAt(finalLocation)
@@ -113,7 +113,7 @@ class ScatterFeature : Listener {
                                             world.getHighestBlockAt(location).type != Material.STATIONARY_WATER &&
                                             world.getHighestBlockAt(location).type != Material.WATER_LILY
                                         ) {
-                                            finalLocation = Location(world, location.x, world.getHighestBlockAt(location).location.y + 3, location.z)
+                                            finalLocation = Location(world, location.x, world.getHighestBlockAt(location).location.y + 5, location.z)
                                         }
                                     }
                                     val chunk = world.getChunkAt(finalLocation)
@@ -161,7 +161,7 @@ class ScatterFeature : Listener {
                     world.getHighestBlockAt(location).type != Material.STATIONARY_WATER &&
                     world.getHighestBlockAt(location).type != Material.WATER_LILY
                 ) {
-                    finalLocation = Location(world, location.x, world.getHighestBlockAt(location).location.y + 3, location.z)
+                    finalLocation = Location(world, location.x, world.getHighestBlockAt(location).location.y + 5, location.z)
                 }
             }
             val chunk = world.getChunkAt(finalLocation)
