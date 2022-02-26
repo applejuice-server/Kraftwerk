@@ -2,6 +2,7 @@ package pink.mino.kraftwerk.scenarios.list
 
 import org.bukkit.Bukkit
 import org.bukkit.Material
+import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.scheduler.BukkitRunnable
@@ -53,5 +54,10 @@ class SkyHighScenario : Scenario(
     override fun onPvP() {
         SkyHighIterator().runTaskTimerAsynchronously(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 20L)
         Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} The damage tick for SkyHigh has started, the damage tick happen every 45 seconds."))
+    }
+
+    override fun givePlayer(player: Player) {
+        player.inventory.addItem(ItemStack(Material.STAINED_CLAY, 128, 14), ItemStack(Material.PUMPKIN), ItemStack(Material.SNOW_BLOCK, 2), ItemStack(Material.STRING, 2), ItemStack(Material.DIAMOND_SPADE), ItemStack(Material.FEATHER, 16))
+        Chat.sendMessage(player, "${Chat.prefix} You've been given your SkyHigh items.")
     }
 }

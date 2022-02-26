@@ -3,6 +3,7 @@ package pink.mino.kraftwerk.scenarios
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.command.CommandExecutor
+import org.bukkit.entity.Player
 import org.bukkit.event.Listener
 import pink.mino.kraftwerk.features.SettingsFeature
 import pink.mino.kraftwerk.utils.Chat
@@ -56,6 +57,7 @@ abstract class Scenario(
     open fun onPvP() {}
     open fun onStart() {}
     open fun onMeetup() {}
+    open fun givePlayer(player: Player) {}
 
     open fun onToggle(to: Boolean) {}
 }

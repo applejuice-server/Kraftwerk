@@ -11,6 +11,7 @@ import org.bukkit.scoreboard.Team
 import pink.mino.kraftwerk.features.ScatterFeature
 import pink.mino.kraftwerk.features.SettingsFeature
 import pink.mino.kraftwerk.features.TeamsFeature
+import pink.mino.kraftwerk.scenarios.ScenarioHandler
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GameState
 import java.util.*
@@ -58,7 +59,9 @@ class LatescatterCommand : CommandExecutor {
             for (effect in effects) {
                 player.removePotionEffect(effect.type)
             }
-
+            for (scenario in ScenarioHandler.getActiveScenarios()) {
+                scenario.givePlayer(player)
+            }
             ScatterFeature.scatterSolo(player, Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world")), SettingsFeature.instance.data!!.getInt("pregen.border"))
             player.inventory.setItem(0, ItemStack(Material.COOKED_BEEF, SettingsFeature.instance.data!!.getInt("game.starterfood")))
             //Stats.addGamesPlayed(player)
@@ -97,6 +100,9 @@ class LatescatterCommand : CommandExecutor {
             val effects = player.activePotionEffects
             for (effect in effects) {
                 player.removePotionEffect(effect.type)
+            }
+            for (scenario in ScenarioHandler.getActiveScenarios()) {
+                scenario.givePlayer(player)
             }
             player.teleport(teammate.location)
             player.inventory.setItem(0, ItemStack(Material.COOKED_BEEF, SettingsFeature.instance.data!!.getInt("game.starterfood")))
