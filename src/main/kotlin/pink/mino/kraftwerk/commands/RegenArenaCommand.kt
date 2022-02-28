@@ -20,7 +20,7 @@ class RegenArenaCommand : CommandExecutor {
         }
         Bukkit.dispatchCommand(
             Bukkit.getConsoleSender(),
-            "pregen Arena 100"
+            "pregen Arena 100 overworld"
         )
         Bukkit.dispatchCommand(
             Bukkit.getConsoleSender(),
