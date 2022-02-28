@@ -57,6 +57,7 @@ class Kraftwerk : JavaPlugin() {
         Bukkit.getServer().pluginManager.registerEvents(RatesFeature(), this)
         Bukkit.getServer().pluginManager.registerEvents(CombatLogFeature.instance, this)
         Bukkit.getServer().pluginManager.registerEvents(SpecFeature.instance, this)
+        Bukkit.getServer().pluginManager.registerEvents(ShootListener(), this)
 
         Bukkit.getServer().pluginManager.registerEvents(PlayerRegisterListener(), this)
 
