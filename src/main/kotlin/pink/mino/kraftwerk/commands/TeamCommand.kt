@@ -128,6 +128,10 @@ class TeamCommand : CommandExecutor {
             val oPlayer = player as OfflinePlayer
             var team = player.scoreboard.getPlayerTeam(oPlayer)
 
+            if (args.size == 1) {
+                Chat.sendMessage(player, "&cInvalid usage: /team invite <player>")
+                return false
+            }
             if (team == null) {
                 Bukkit.dispatchCommand(player, "team create")
                 team = player.scoreboard.getPlayerTeam(oPlayer)
