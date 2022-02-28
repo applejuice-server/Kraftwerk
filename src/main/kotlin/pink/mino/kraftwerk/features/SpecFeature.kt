@@ -201,10 +201,10 @@ class SpecFeature : Listener {
                             gui.item(index, item)
                         }
                     }
-                    gui.item(38, player.inventory.helmet)
-                    gui.item(39, player.inventory.chestplate)
-                    gui.item(41, player.inventory.leggings)
-                    gui.item(42, player.inventory.boots)
+                    if (player.inventory.helmet != null) gui.item(38, player.inventory.helmet)
+                    if (player.inventory.chestplate != null) gui.item(39, player.inventory.chestplate)
+                    if (player.inventory.leggings != null) gui.item(41, player.inventory.leggings)
+                    if (player.inventory.boots != null) gui.item(42, player.inventory.boots)
                     e.player.openInventory(gui.make())
                 } else {
                     Chat.sendMessage(e.player, "&cYou aren't right clicking anyone.")
