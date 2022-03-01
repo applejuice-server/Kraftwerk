@@ -136,7 +136,11 @@ class Kraftwerk : JavaPlugin() {
 
         setupDataSource()
 
+        SettingsFeature.instance.data!!.set("whitelist.requests", false)
+        SettingsFeature.instance.saveData()
+
         if (SettingsFeature.instance.data!!.getString("matchpost.opens") != null) {
+            ScheduleBroadcast(SettingsFeature.instance.data!!.getString("matchpost.opens")).runTaskTimer(this, 0L, 600L)
             ScheduleOpening(SettingsFeature.instance.data!!.getString("matchpost.opens")).runTaskTimer(this, 0L, 600L)
         }
         if (SettingsFeature.instance.data!!.getString("matchpost.host") == null) Discord.instance!!.presence.activity = Activity.listening("applejuice.bar")

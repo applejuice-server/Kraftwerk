@@ -4,7 +4,7 @@ import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import org.bukkit.Bukkit
-import pink.mino.kraftwerk.utils.Stats
+import pink.mino.kraftwerk.features.SettingsFeature
 import java.awt.Color
 
 class SlashCommand : ListenerAdapter() {
@@ -25,7 +25,7 @@ class SlashCommand : ListenerAdapter() {
                 val embed = EmbedBuilder()
                 embed.setColor(Color(255, 61, 61))
                 embed.setAuthor("applejuice — IP Address", "https://dsc.gg/apple-juice", event.jda.selfUser.avatarUrl)
-                embed.setDescription("The IP address to the server is `78.108.218.25:25572` or :beverage_box: `applejuice.bar`.")
+                embed.setDescription("The IP address to the server is `104.219.232.42:25575` or :beverage_box: `applejuice.bar`.")
                 event.replyEmbeds(embed.build()).setEphemeral(true).queue()
             }
             "togglealerts" -> {
@@ -45,32 +45,16 @@ class SlashCommand : ListenerAdapter() {
                 }
                 event.replyEmbeds(embed.build()).setEphemeral(true).queue()
             }
-            "stats" -> {
+            "wl" -> {
                 val player = event.getOption("player")!!.asString
                 val target = Bukkit.getOfflinePlayer(player)
-                val embed = EmbedBuilder()
-                embed.setColor(Color(255, 61, 61))
-                embed.setAuthor("applejuice — Stats", "https://dsc.gg/apple-juice", event.jda.selfUser.avatarUrl)
-                if (target == null) {
-                    embed.setDescription("That's an invalid player, please retry with a valid player.")
-                    event.replyEmbeds(embed.build()).setEphemeral(true).queue()
-                    return
+                if (target == null) event.reply("Invalid player!").setEphemeral(true).queue()
+                if (SettingsFeature.instance.data!!.getBoolean("whitelist.requests")) {
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wl add ${player}")
+                    event.reply("**${player}** has been whitelisted on the server, connect using `applejuice.bar` or `104.219.232.42:25575`.").queue()
+                } else {
+                    event.reply("Sorry, but whitelists are not available at this time!").setEphemeral(true).queue()
                 }
-                val oresList = listOf(
-                    "Diamonds Mined » **${Stats.getDiamondsMined(target)}**",
-                    "Gold Mined » **${Stats.getGoldMined(target)}**",
-                    "Iron Mined » **${Stats.getIronMined(target)}**",
-                )
-                val generalList = listOf(
-                    "Kills » **${Stats.getKills(target)}**",
-                    "Deaths » **${Stats.getDeaths(target)}**",
-                    "Wins » **${Stats.getWins(target)}**",
-                    "Games Played » **${Stats.getGamesPlayed(target)}**"
-                )
-                embed.addField("General", generalList.joinToString("\n"), false)
-                embed.addField("Ores", oresList.joinToString("\n"), false)
-                embed.setThumbnail("https://visage.surgeplay.com/bust/${target.uniqueId}")
-                event.replyEmbeds(embed.build()).queue()
             }
             else -> event.reply("I can't handle that command right now :(").setEphemeral(true).queue()
         }

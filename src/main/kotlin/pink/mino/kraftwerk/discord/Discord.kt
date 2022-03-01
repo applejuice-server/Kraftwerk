@@ -4,6 +4,7 @@ import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.JDABuilder
 import net.dv8tion.jda.api.entities.Activity
 import net.dv8tion.jda.api.hooks.ListenerAdapter
+import net.dv8tion.jda.api.interactions.commands.OptionType
 import net.dv8tion.jda.api.interactions.commands.build.CommandData
 import net.dv8tion.jda.api.requests.GatewayIntent
 import pink.mino.kraftwerk.discord.listeners.MemberJoin
@@ -37,6 +38,10 @@ class Discord : ListenerAdapter() {
             )
             commands.addCommands(
                 CommandData("togglealerts", "Removes/adds the Notify role in the Discord server.")
+            )
+            commands.addCommands(
+                CommandData("wl", "Attempts to whitelist yourself on the server if the conditions are met.")
+                    .addOption(OptionType.STRING, "ign", "The player you want to be whitelisted.")
             )
 
             commands.queue()
