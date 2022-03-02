@@ -66,6 +66,9 @@ class ScheduleBroadcast(private val opening: String) : BukkitRunnable() {
         if (SettingsFeature.instance.data!!.getString("matchpost.opens") == null) {
             cancel()
         }
+        if (SettingsFeature.instance.data!!.getBoolean("matchpost.cancelled") == true) {
+            cancel()
+        }
         if (removeFifteenMinutes(opening) === getTime()) {
             val host = Bukkit.getPlayer(SettingsFeature.instance.data!!.getString("game.host"))
             var embed = EmbedBuilder()
@@ -77,6 +80,7 @@ class ScheduleBroadcast(private val opening: String) : BukkitRunnable() {
             embed.addField("Opening", "<t:${opening}:t> (<t:${opening}:R>)", true)
             embed.addField("Scenarios", scenarios.joinToString(", "), true)
             embed.addField("Matchpost", "https://hosts.uhc.gg/m/${SettingsFeature.instance.data!!.getInt("matchpost.id")}", true)
+
             Discord.instance!!.getTextChannelById(937811305102999573)!!.sendMessage("<@&793406242013839381> (Use /togglematches to toggle matchpost alerts)").queue()
             Discord.instance!!.getTextChannelById(937811305102999573)!!.sendMessageEmbeds(embed.build()).queue()
             embed = EmbedBuilder()
@@ -114,6 +118,9 @@ class ScheduleOpening(private val opening: String) : BukkitRunnable() {
     override fun run() {
         print("Checking if the time corresponds with the opening...")
         if (SettingsFeature.instance.data!!.getString("matchpost.opens") == null) {
+            cancel()
+        }
+        if (SettingsFeature.instance.data!!.getBoolean("matchpost.cancelled") == true) {
             cancel()
         }
         if (getTime() == opening) {
@@ -185,6 +192,7 @@ class MatchpostCommand : CommandExecutor {
         SettingsFeature.instance.data!!.set("matchpost.scenarios", scenarios)
         SettingsFeature.instance.data!!.set("matchpost.opens", opening)
         ScheduleOpening(opening).runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 300L)
+        ScheduleBroadcast(opening).runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 300L)
         Discord.instance!!.presence.activity = Activity.playing(host)
         Chat.sendMessage(sender, "${Chat.prefix} Set the matchpost to &chttps://hosts.uhc.gg/m/${id.toInt()}")
         SettingsFeature.instance.saveData()
