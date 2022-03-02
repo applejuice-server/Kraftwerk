@@ -165,6 +165,10 @@ commands:
     aliases:
       - disc
     description: Get the invite link for the discord server.
+  cancel:
+    aliases:
+      - cancelmp
+    description: Cancels the awaiting game.
 depend:
   - ProtocolLib
   - JDA

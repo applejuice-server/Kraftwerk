@@ -89,6 +89,7 @@ class Kraftwerk : JavaPlugin() {
         getCommand("helpopreply").executor = HelpOpReplyCommand()
         getCommand("tppos").executor = TeleportPositionCommand()
         getCommand("tp").executor = TeleportCommand()
+        getCommand("cancel").executor = CancelCommand()
 
         getCommand("gm").executor = GamemodeCommand()
         getCommand("gamemode").executor = GamemodeCommand()
@@ -138,13 +139,18 @@ class Kraftwerk : JavaPlugin() {
 
         SettingsFeature.instance.data!!.set("whitelist.requests", false)
         SettingsFeature.instance.saveData()
-
-        if (SettingsFeature.instance.data!!.getString("matchpost.opens") != null) {
-            ScheduleBroadcast(SettingsFeature.instance.data!!.getString("matchpost.opens")).runTaskTimer(this, 0L, 600L)
-            ScheduleOpening(SettingsFeature.instance.data!!.getString("matchpost.opens")).runTaskTimer(this, 0L, 600L)
+        if (!SettingsFeature.instance.data!!.getBoolean("matchpost.cancelled")) {
+            if (SettingsFeature.instance.data!!.getString("matchpost.opens") != null) {
+                ScheduleBroadcast(SettingsFeature.instance.data!!.getString("matchpost.opens")).runTaskTimer(this, 0L, 300L)
+                ScheduleOpening(SettingsFeature.instance.data!!.getString("matchpost.opens")).runTaskTimer(this, 0L, 300L)
+            }
+            if (SettingsFeature.instance.data!!.getString("matchpost.host") == null) Discord.instance!!.presence.activity = Activity.playing("applejuice.bar")
+            else Discord.instance!!.presence.activity = Activity.playing(SettingsFeature.instance.data!!.getString("matchpost.host"))
+        } else {
+            Discord.instance!!.presence.activity = Activity.playing("applejuice.bar")
+            SettingsFeature.instance.data!!.set("matchpost.cancelled", null)
+            SettingsFeature.instance.saveData()
         }
-        if (SettingsFeature.instance.data!!.getString("matchpost.host") == null) Discord.instance!!.presence.activity = Activity.listening("applejuice.bar")
-        else Discord.instance!!.presence.activity = Activity.playing(SettingsFeature.instance.data!!.getString("matchpost.host"))
 
         GameState.setState(GameState.LOBBY)
         Bukkit.getLogger().info("Game state set to Lobby.")
