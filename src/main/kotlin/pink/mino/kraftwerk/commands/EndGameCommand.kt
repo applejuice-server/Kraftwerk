@@ -12,6 +12,7 @@ import pink.mino.kraftwerk.Kraftwerk
 import pink.mino.kraftwerk.discord.Discord
 import pink.mino.kraftwerk.features.SettingsFeature
 import pink.mino.kraftwerk.features.SpawnFeature
+import pink.mino.kraftwerk.features.TeamsFeature
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GameState
 import java.awt.Color
@@ -62,6 +63,11 @@ class EndGameCommand : CommandExecutor {
                 )
             }]"
         }, false)
+        for (team in TeamsFeature.manager.getTeams()) {
+            for (player in team.players) {
+                team.removePlayer(player)
+            }
+        }
         embed.addField("Matchpost", "https://hosts.uhc.gg/m/${SettingsFeature.instance.data!!.getInt("matchpost.id")}", false)
         Discord.instance!!.getTextChannelById(937811334106583040)!!.sendMessageEmbeds(embed.build()).queue()
         Discord.instance!!.presence.activity = Activity.playing("applejuice.bar")
