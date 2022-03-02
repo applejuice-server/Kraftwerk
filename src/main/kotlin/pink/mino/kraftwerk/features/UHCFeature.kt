@@ -89,7 +89,7 @@ class UHCFeature : Listener {
                         Chat.sendMessage(player, Chat.line)
                         player.playSound(player.location, Sound.ENDERDRAGON_GROWL, 10F, 1F)
                         player.sendTitle(Chat.colored("&a&lGO!"), Chat.colored("&7You may now play the game, do &c/helpop&7 for help!"))
-                        player.inventory.setItem(0, ItemStack(Material.COOKED_BEEF, SettingsFeature.instance.data!!.getInt("game.starterfood")))
+                        if (!SpecFeature.instance.getSpecs().contains(player.name)) player.inventory.setItem(0, ItemStack(Material.COOKED_BEEF, SettingsFeature.instance.data!!.getInt("game.starterfood")))
                     }
                     for (scenario in ScenarioHandler.getActiveScenarios()) {
                         scenario.onStart()
@@ -228,7 +228,7 @@ class UHCFeature : Listener {
                         Chat.sendMessage(player, Chat.line)
                         player.playSound(player.location, Sound.ENDERDRAGON_GROWL, 10F, 1F)
                         player.sendTitle(Chat.colored("&a&lGO!"), Chat.colored("&7You may now play the game, do &c/helpop&7 for help!"))
-                        player.inventory.setItem(0, ItemStack(Material.COOKED_BEEF, SettingsFeature.instance.data!!.getInt("game.starterfood")))
+                        if (!SpecFeature.instance.getSpecs().contains(player.name)) player.inventory.setItem(0, ItemStack(Material.COOKED_BEEF, SettingsFeature.instance.data!!.getInt("game.starterfood")))
                     }
                     for (scenario in ScenarioHandler.getActiveScenarios()) {
                         scenario.onStart()
@@ -311,10 +311,12 @@ class UHCFeature : Listener {
 
     fun freeze() {
         for (player in Bukkit.getOnlinePlayers()) {
-            player.addPotionEffect(PotionEffect(PotionEffectType.SLOW, 999999999, 10, true, false))
-            player.addPotionEffect(PotionEffect(PotionEffectType.BLINDNESS, 999999999, 100, true, false))
-            player.addPotionEffect(PotionEffect(PotionEffectType.JUMP, 999999999, -100, true, false))
-            player.addPotionEffect(PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 999999999, 1000, true, false))
+            if (!SpecFeature.instance.getSpecs().contains(player.name)) {
+                player.addPotionEffect(PotionEffect(PotionEffectType.SLOW, 999999999, 10, true, false))
+                player.addPotionEffect(PotionEffect(PotionEffectType.BLINDNESS, 999999999, 100, true, false))
+                player.addPotionEffect(PotionEffect(PotionEffectType.JUMP, 999999999, -100, true, false))
+                player.addPotionEffect(PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 999999999, 1000, true, false))
+            }
         }
     }
 
