@@ -71,7 +71,7 @@ class PlayerDeathListener : Listener {
                         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wl remove ${player.name}")
                         player.kickPlayer(Chat.colored("&7Thank you for playing!\n\n&7Join our discord for more games: &cdsc.gg/apple-juice"))
                     }
-                }, 200L)
+                }, 1200L)
             }
             Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
                 player.spigot().respawn()
