@@ -69,7 +69,7 @@ class ScheduleBroadcast(private val opening: String) : BukkitRunnable() {
         if (SettingsFeature.instance.data!!.getBoolean("matchpost.cancelled") == true) {
             cancel()
         }
-        if (removeFifteenMinutes(opening) === getTime()) {
+        if (getTime() == removeFifteenMinutes(opening)) {
             val host = Bukkit.getPlayer(SettingsFeature.instance.data!!.getString("game.host"))
             var embed = EmbedBuilder()
             embed.setColor(Color(255, 61, 61))
@@ -77,6 +77,7 @@ class ScheduleBroadcast(private val opening: String) : BukkitRunnable() {
             embed.setThumbnail("https://visage.surgeplay.com/bust/512/${host.uniqueId}")
             val scenarios = SettingsFeature.instance.data!!.getStringList("matchpost.scenarios")
             val opening = (System.currentTimeMillis() / 1000L) + 15000L
+            embed.addField("Teams", SettingsFeature.instance.data!!.getString("matchpost.team"), true)
             embed.addField("Opening", "<t:${opening}:t> (<t:${opening}:R>)", true)
             embed.addField("Scenarios", scenarios.joinToString(", "), true)
             embed.addField("Matchpost", "https://hosts.uhc.gg/m/${SettingsFeature.instance.data!!.getInt("matchpost.id")}", true)
@@ -125,8 +126,28 @@ class ScheduleOpening(private val opening: String) : BukkitRunnable() {
         }
         if (getTime() == opening) {
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wl off")
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer cancel")
+            val time: Long
+            if (SettingsFeature.instance.data!!.getBoolean("matchpost.teamsGame")) {
+                time = 12000L
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer 600 &cWhitelist is enabled in ${Chat.dash}&f")
+            } else {
+                time = 6000L
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer 300 &cWhitelist is enabled in ${Chat.dash}&f")
+            }
+            val host = Bukkit.getPlayer(SettingsFeature.instance.data!!.getString("game.host"))
+            val embed = EmbedBuilder()
+            embed.addField("Matchpost", "https://hosts.uhc.gg/m/${SettingsFeature.instance.data!!.getInt("matchpost.id")}", false)
+            embed.setColor(Color(255, 61, 61))
+            embed.setTitle(SettingsFeature.instance.data!!.getString("matchpost.host"))
+            embed.setThumbnail("https://visage.surgeplay.com/bust/512/${host.uniqueId}")
+            embed.addField("Game Open!", "The game is now open @ `104.219.232.42:25575` or or :beverage_box: `applejuice.bar`.", false)
+            Discord.instance!!.getTextChannelById(937811678735765554)!!.sendMessageEmbeds(embed.build()).queue()
             Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} The whitelist has been turned off automatically @ &c${opening}&7."))
             cancel()
+            Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wl on")
+            }, time)
             SettingsFeature.instance.data!!.set("matchpost.opens", null)
             SettingsFeature.instance.saveData()
         }
@@ -147,8 +168,12 @@ class MatchpostCommand : CommandExecutor {
             }
         }
         if (args.isEmpty()) {
-            Chat.sendMessage(sender, "&cYou must provide a valid matchpost ID.")
-            return false
+            if (!sender.hasPermission("uhc.staff.matchpost")) {
+                Chat.sendMessage(sender, "&cYou must provide a valid matchpost ID.")
+                return false
+            } else {
+                Chat.sendMessage(sender, "${Chat.prefix} Matchpost: &chttps://hosts.uhc.gg/m/${SettingsFeature.instance.data!!.getInt("matchpost.id")}")
+            }
         }
         if (args[0].toIntOrNull() == null) {
             Chat.sendMessage(sender, "&cYou must provide a &ovalid&c matchpost ID.")
@@ -158,6 +183,8 @@ class MatchpostCommand : CommandExecutor {
         val id: Double
         val opening: String
         val scenarios: Any
+        var team: String? = null
+        var teamsGame: Boolean = false
         with(URL("https://hosts.uhc.gg/api/matches/${args[0]}").openConnection() as HttpURLConnection) {
             requestMethod = "GET"
             setRequestProperty("User-Agent", "Mozilla/5.0")
@@ -182,11 +209,26 @@ class MatchpostCommand : CommandExecutor {
                 } else {
                     "${map["author"]}'s #${(map["count"] as Double).toInt()}"
                 }
+                if (map["teams"] as String == "ffa") {
+                    teamsGame = false
+                    team = "FFA"
+                } else if (map["teams"] as String == "chosen") {
+                    teamsGame = true
+                    team = "Chosen To${map["size"]}"
+                } else if (map["teams"] as String == "rvb") {
+                    teamsGame = true
+                    team = "Red vs. Blue"
+                } else if (map["teams"] as String == "random") {
+                    teamsGame = true
+                    team = "Random To${map["size"]}"
+                }
                 id = map["id"] as Double
                 scenarios = map["scenarios"] as Any
                 opening = "${(map["opens"] as String)[11]}${(map["opens"] as String)[12]}:${(map["opens"] as String)[14]}${(map["opens"] as String)[15]}"
             }
         }
+        SettingsFeature.instance.data!!.set("matchpost.team", team)
+        SettingsFeature.instance.data!!.set("matchpost.teamsGame", teamsGame)
         SettingsFeature.instance.data!!.set("matchpost.host", host)
         SettingsFeature.instance.data!!.set("matchpost.id", id.toInt())
         SettingsFeature.instance.data!!.set("matchpost.scenarios", scenarios)
