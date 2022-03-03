@@ -67,6 +67,7 @@ class LatescatterCommand : CommandExecutor {
             //Stats.addGamesPlayed(player)
             WhitelistCommand().addWhitelist(player.name)
             list.add(player.name)
+            Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} &f${player.name}&7 has been late-scattered&7."))
             Chat.sendMessage(player, "${Chat.prefix} You've successfully been added to the game.")
         } else if (args.size == 2) {
             player = Bukkit.getPlayer(args[0])
@@ -109,6 +110,7 @@ class LatescatterCommand : CommandExecutor {
            // Stats.addGamesPlayed(player)
             WhitelistCommand().addWhitelist(player.name)
             list.add(player.name)
+            Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} &f${player.name}&7 has been late-scattered to their teammate &f${teammate.name}&7."))
             Chat.sendMessage(player, "${Chat.prefix} You've successfully been added to the game, you've also been teamed with &f${teammate.name}&7")
         }
         SettingsFeature.instance.data!!.set("game.list", list)
