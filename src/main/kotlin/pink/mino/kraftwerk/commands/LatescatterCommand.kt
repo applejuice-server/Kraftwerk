@@ -7,6 +7,8 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryType
 import org.bukkit.inventory.ItemStack
+import org.bukkit.potion.PotionEffect
+import org.bukkit.potion.PotionEffectType
 import org.bukkit.scoreboard.Team
 import pink.mino.kraftwerk.features.ScatterFeature
 import pink.mino.kraftwerk.features.SettingsFeature
@@ -62,6 +64,7 @@ class LatescatterCommand : CommandExecutor {
             for (scenario in ScenarioHandler.getActiveScenarios()) {
                 scenario.givePlayer(player)
             }
+            player.addPotionEffect(PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 300, 1000, true, false))
             ScatterFeature.scatterSolo(player, Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world")), SettingsFeature.instance.data!!.getInt("pregen.border"))
             player.inventory.setItem(0, ItemStack(Material.COOKED_BEEF, SettingsFeature.instance.data!!.getInt("game.starterfood")))
             //Stats.addGamesPlayed(player)
@@ -105,11 +108,13 @@ class LatescatterCommand : CommandExecutor {
             for (scenario in ScenarioHandler.getActiveScenarios()) {
                 scenario.givePlayer(player)
             }
+            player.addPotionEffect(PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 300, 1000, true, false))
             player.teleport(teammate.location)
             player.inventory.setItem(0, ItemStack(Material.COOKED_BEEF, SettingsFeature.instance.data!!.getInt("game.starterfood")))
            // Stats.addGamesPlayed(player)
             WhitelistCommand().addWhitelist(player.name)
             list.add(player.name)
+
             Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} &f${player.name}&7 has been late-scattered to their teammate &f${teammate.name}&7."))
             Chat.sendMessage(player, "${Chat.prefix} You've successfully been added to the game, you've also been teamed with &f${teammate.name}&7")
         }
