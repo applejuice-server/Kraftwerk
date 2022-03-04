@@ -52,7 +52,7 @@ class ConfigCommand : CommandExecutor {
         val optionsMeta = options.itemMeta
         optionsMeta.displayName = ChatColor.translateAlternateColorCodes('&', "&4Options")
         optionsMeta.lore = listOf(
-            Chat.colored(Chat.line),
+            Chat.colored(Chat.guiLine),
             "",
             Chat.colored("&7Absorption ${Chat.dash} &c${getOption("absorption")}"),
             Chat.colored("&7Notch Apples ${Chat.dash} &c${getOption("notchapples")}"),
@@ -65,7 +65,7 @@ class ConfigCommand : CommandExecutor {
             Chat.colored("&7AntiBurn ${Chat.dash} &c${getOption("antiburn")}"),
             Chat.colored("&7Pearl Damage ${Chat.dash} &c${getOption("pearldamage")}"),
             "",
-            Chat.colored(Chat.line),
+            Chat.colored(Chat.guiLine),
         )
         options.itemMeta = optionsMeta
         gui.item(20, options).onClick runnable@{
@@ -79,7 +79,7 @@ class ConfigCommand : CommandExecutor {
         val rulesMeta = rules.itemMeta
         rulesMeta.displayName = ChatColor.translateAlternateColorCodes('&', "&4Rules")
         rulesMeta.lore = listOf(
-            Chat.colored(Chat.line),
+            Chat.colored(Chat.guiLine),
             "",
             Chat.colored("&7Crossteaming ${Chat.dash} &c${getRule("crossteaming")}"),
             Chat.colored("&7Stalking ${Chat.dash} &c${getRule("stalking")}"),
@@ -87,7 +87,7 @@ class ConfigCommand : CommandExecutor {
             Chat.colored("&7Skybasing ${Chat.dash} &c${getRule("skybasing")}"),
             Chat.colored("&7Running at Meetup ${Chat.dash} &c${getRule("runningatmu")}"),
             "",
-            Chat.colored(Chat.line),
+            Chat.colored(Chat.guiLine),
         )
         rules.itemMeta = rulesMeta
         gui.item(22, rules).onClick runnable@{
@@ -102,13 +102,13 @@ class ConfigCommand : CommandExecutor {
         miningRulesMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES)
         miningRulesMeta.displayName = ChatColor.translateAlternateColorCodes('&', "&4Mining Rules")
         miningRulesMeta.lore = listOf(
-            Chat.colored(Chat.line),
+            Chat.colored(Chat.guiLine),
             "",
             Chat.colored("&7Stripmining ${Chat.dash} &c${getRule("stripmining")}"),
             Chat.colored("&7Rollarcoastering ${Chat.dash} &c${getRule("rollarcoastering")}"),
             Chat.colored("&7Pokeholing ${Chat.dash} &c${getRule("pokeholing")}"),
             "",
-            Chat.colored(Chat.line)
+            Chat.colored(Chat.guiLine)
         )
         miningRules.itemMeta = miningRulesMeta
         gui.item(23, miningRules).onClick runnable@{
@@ -122,11 +122,11 @@ class ConfigCommand : CommandExecutor {
         borderMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES)
         borderMeta.displayName = ChatColor.translateAlternateColorCodes('&', "&4Border")
         borderMeta.lore = listOf(
-            Chat.colored(Chat.line),
+            Chat.colored(Chat.guiLine),
             "",
             Chat.colored("&7Border ${Chat.dash} &c${SettingsFeature.instance.data!!.getInt("pregen.border")}x${SettingsFeature.instance.data!!.getInt("pregen.border")}"),
             "",
-            Chat.colored(Chat.line)
+            Chat.colored(Chat.guiLine)
         )
         border.itemMeta = borderMeta
         gui.item(24, border).onClick runnable@{
@@ -137,13 +137,13 @@ class ConfigCommand : CommandExecutor {
         eventsMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES)
         eventsMeta.displayName = Chat.colored("&4Events")
         eventsMeta.lore = listOf(
-            Chat.colored(Chat.line),
+            Chat.colored(Chat.guiLine),
             "",
             Chat.colored("&7Final Heal ${Chat.dash} &c${getEventTime("final-heal")} min."),
             Chat.colored("&7PvP ${Chat.dash} &c${getEventTime("pvp") + getEventTime("final-heal")} min."),
             Chat.colored("&7Meetup ${Chat.dash} &c${getEventTime("pvp") + getEventTime("final-heal") + getEventTime("meetup")} min."),
             "",
-            Chat.colored(Chat.line)
+            Chat.colored(Chat.guiLine)
         )
         events.itemMeta = eventsMeta
         gui.item(30, events).onClick runnable@{
@@ -158,41 +158,41 @@ class ConfigCommand : CommandExecutor {
         if (sender.hasPermission("uhc.staff")) {
             if (SettingsFeature.instance.data!!.getInt("matchpost.id") == null) {
                 matchpostMeta.lore = listOf(
-                    Chat.colored(Chat.line),
+                    Chat.colored(Chat.guiLine),
                     "",
                     Chat.colored("&7The matchpost hasn't been set yet."),
                     "",
-                    Chat.colored(Chat.line),
+                    Chat.colored(Chat.guiLine),
                     Chat.colored("&7Set the matchpost using &c/matchpost <id>")
                 )
             } else {
                 matchpostMeta.lore = listOf(
-                    Chat.colored(Chat.line),
+                    Chat.colored(Chat.guiLine),
                     "",
                     Chat.colored("&7Matchpost ${Chat.dash} &chttps://hosts.uhc.gg/m/${SettingsFeature.instance.data!!.getInt("matchpost.id")}"),
                     Chat.colored("&7Game ${Chat.dash} &c${SettingsFeature.instance.data!!.getString("matchpost.host")}"),
                     "",
-                    Chat.colored(Chat.line),
+                    Chat.colored(Chat.guiLine),
                     Chat.colored("&7Set the matchpost using &c/matchpost <id>")
                 )
             }
         } else {
             if (SettingsFeature.instance.data!!.getInt("matchpost.id") == null) {
                 matchpostMeta.lore = listOf(
-                    Chat.colored(Chat.line),
+                    Chat.colored(Chat.guiLine),
                     "",
                     Chat.colored("&7The matchpost hasn't been set yet."),
                     "",
-                    Chat.colored(Chat.line)
+                    Chat.colored(Chat.guiLine)
                 )
             } else {
                 matchpostMeta.lore = listOf(
-                    Chat.colored(Chat.line),
+                    Chat.colored(Chat.guiLine),
                     "",
                     Chat.colored("&7Matchpost ${Chat.dash} &chttps://hosts.uhc.gg/m/${SettingsFeature.instance.data!!.getInt("matchpost.id")}"),
                     Chat.colored("&7Game ${Chat.dash} &c${SettingsFeature.instance.data!!.getString("matchpost.host")}"),
                     "",
-                    Chat.colored(Chat.line)
+                    Chat.colored(Chat.guiLine)
                 )
             }
         }
@@ -205,11 +205,11 @@ class ConfigCommand : CommandExecutor {
         val netherConfigMeta = netherConfig.itemMeta
         netherConfigMeta.displayName = Chat.colored("&4Nether Config / Potions")
         netherConfigMeta.lore = listOf(
-            Chat.colored(Chat.line),
+            Chat.colored(Chat.guiLine),
             "",
             Chat.colored("&7Coming soon."),
             "",
-            Chat.colored(Chat.line)
+            Chat.colored(Chat.guiLine)
         )
         netherConfig.itemMeta = netherConfigMeta
         gui.item(32, netherConfig).onClick runnable@{
@@ -227,12 +227,12 @@ class ConfigCommand : CommandExecutor {
             "Disabled"
         }
         teamConfigMeta.lore = listOf(
-            Chat.colored(Chat.line),
+            Chat.colored(Chat.guiLine),
             "",
             Chat.colored("&7Team Size ${Chat.dash} &c${SettingsFeature.instance.data!!.getInt("game.teamSize")}"),
             Chat.colored("&7FFA ${Chat.dash} &c${ffa}"),
             "",
-            Chat.colored(Chat.line)
+            Chat.colored(Chat.guiLine)
         )
         teamConfig.itemMeta = teamConfigMeta
         gui.item(21, teamConfig).onClick runnable@{
@@ -242,11 +242,11 @@ class ConfigCommand : CommandExecutor {
         val starterFoodMeta = starterFood.itemMeta
         starterFoodMeta.displayName = Chat.colored("&4Starter Food")
         starterFoodMeta.lore = listOf(
-            Chat.colored(Chat.line),
+            Chat.colored(Chat.guiLine),
             "",
             Chat.colored("&7Starter Food ${Chat.dash} &c${SettingsFeature.instance.data!!.getInt("game.starterfood")}"),
             "",
-            Chat.colored(Chat.line)
+            Chat.colored(Chat.guiLine)
         )
         starterFood.itemMeta = starterFoodMeta
         gui.item(29, starterFood).onClick runnable@{
@@ -259,12 +259,12 @@ class ConfigCommand : CommandExecutor {
         val ratesMeta = rates.itemMeta
         ratesMeta.displayName = Chat.colored("&4Apple/Flint Rates")
         ratesMeta.lore = listOf(
-            Chat.colored(Chat.line),
+            Chat.colored(Chat.guiLine),
             "",
             Chat.colored("&7Apple Rates ${Chat.dash} &c${SettingsFeature.instance.data!!.getInt("game.rates.apple")}%"),
             Chat.colored("&7Flint Rates ${Chat.dash} &c${SettingsFeature.instance.data!!.getInt("game.rates.flint")}%"),
             "",
-            Chat.colored(Chat.line)
+            Chat.colored(Chat.guiLine)
         )
         rates.itemMeta = ratesMeta
         gui.item(33, rates).onClick runnable@{
@@ -279,20 +279,20 @@ class ConfigCommand : CommandExecutor {
         hostMeta.owner = SettingsFeature.instance.data!!.getString("game.host")
         if (sender.hasPermission("uhc.staff")) {
             hostMeta.lore = listOf(
-                Chat.colored(Chat.line),
+                Chat.colored(Chat.guiLine),
                 "",
                 Chat.colored("&7The host for this game is &c${SettingsFeature.instance.data!!.getString("game.host")}&7."),
                 "",
-                Chat.colored(Chat.line),
+                Chat.colored(Chat.guiLine),
                 Chat.colored("&cClick to set yourself as host.")
             )
         } else {
             hostMeta.lore = listOf(
-                Chat.colored(Chat.line),
+                Chat.colored(Chat.guiLine),
                 "",
                 Chat.colored("&7The host for this game is &c${SettingsFeature.instance.data!!.getString("game.host")}&7."),
                 "",
-                Chat.colored(Chat.line)
+                Chat.colored(Chat.guiLine)
             )
         }
         host.itemMeta = hostMeta

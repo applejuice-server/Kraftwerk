@@ -12,6 +12,7 @@ class Chat {
         const val prefix = "&8[&4UHC&8]&7"
         const val dash = "§8»"
         const val line = "§8§m-----------------------------------------------------"
+        const val guiLine = "§8§m-------------------------------"
 
         fun colored(message: String): String {
             return (ChatColor.translateAlternateColorCodes('&', message))
