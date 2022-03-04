@@ -42,7 +42,7 @@ class SpawnFeature : Listener {
             Chat.colored("&7Right-click to send yourself into the FFA Arena.")
         )
         arenaSword.itemMeta = arenaMeta
-        p.inventory.setItem(0, arenaSword)
+        p.inventory.setItem(4, arenaSword)
         val stats = ItemStack(Material.EMERALD)
         val statsMeta = stats.itemMeta
         statsMeta.displayName = Chat.colored("&cStats")
@@ -50,7 +50,15 @@ class SpawnFeature : Listener {
             Chat.colored("&7Right-click to send yourself into the FFA Arena.")
         )
         stats.itemMeta = statsMeta
-        p.inventory.setItem(1, stats)
+        p.inventory.setItem(5, stats)
+        val config = ItemStack(Material.ENCHANTED_BOOK)
+        val configMeta = config.itemMeta
+        configMeta.displayName = Chat.colored("&cUHC Configuration")
+        configMeta.lore = listOf(
+            Chat.colored("&7Right-click to view the UHC config.")
+        )
+        config.itemMeta = configMeta
+        p.inventory.setItem(3, config)
         val location = Location(Bukkit.getWorld("Spawn"), -221.5, 95.0, -140.5)
         p.teleport(location)
     }
@@ -59,10 +67,16 @@ class SpawnFeature : Listener {
     fun onRightClick(e: PlayerInteractEvent) {
         if (e.player.world.name == "Spawn") {
             if (e.item !== null) {
-                if (e.item.itemMeta.displayName == Chat.colored("&cFFA Arena")) {
-                    Bukkit.dispatchCommand(e.player, "a")
-                } else if (e.item.itemMeta.displayName == Chat.colored("&cStats")) {
-                    Bukkit.dispatchCommand(e.player, "stats")
+                when (e.item.itemMeta.displayName) {
+                    Chat.colored("&cFFA Arena") -> {
+                        Bukkit.dispatchCommand(e.player, "a")
+                    }
+                    Chat.colored("&cStats") -> {
+                        Bukkit.dispatchCommand(e.player, "stats")
+                    }
+                    Chat.colored("&cUHC Configuration") -> {
+                        Bukkit.dispatchCommand(e.player, "uhc")
+                    }
                 }
             }
         }
