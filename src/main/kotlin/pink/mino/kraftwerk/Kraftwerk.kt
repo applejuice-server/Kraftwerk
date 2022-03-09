@@ -136,7 +136,7 @@ class Kraftwerk : JavaPlugin() {
 
         setupDataSource()
 
-        SettingsFeature.instance.data!!.set("whitelist.requests", false)
+        if (!SettingsFeature.instance.data!!.getBoolean("matchpost.posted")) SettingsFeature.instance.data!!.set("whitelist.requests", false)
         SettingsFeature.instance.saveData()
         if (!SettingsFeature.instance.data!!.getBoolean("matchpost.cancelled")) {
             if (SettingsFeature.instance.data!!.getString("matchpost.opens") != null) {

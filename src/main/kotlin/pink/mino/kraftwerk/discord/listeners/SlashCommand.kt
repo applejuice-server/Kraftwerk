@@ -46,7 +46,7 @@ class SlashCommand : ListenerAdapter() {
                 event.replyEmbeds(embed.build()).setEphemeral(true).queue()
             }
             "wl" -> {
-                val player = event.getOption("player")!!.asString
+                val player = event.getOption("ign")!!.asString
                 val target = Bukkit.getOfflinePlayer(player)
                 if (target == null) event.reply("Invalid player!").setEphemeral(true).queue()
                 if (SettingsFeature.instance.data!!.getBoolean("whitelist.requests")) {

@@ -77,6 +77,7 @@ class EndGameCommand : CommandExecutor {
         SettingsFeature.instance.data!!.set("whitelist.requests", false)
         SettingsFeature.instance.data!!.set("matchpost.opens", null)
         SettingsFeature.instance.data!!.set("matchpost.host", null)
+        SettingsFeature.instance.data!!.set("matchpost.posted", null)
         SettingsFeature.instance.saveData()
         Bukkit.broadcastMessage(Chat.colored(Chat.line))
         for (player in Bukkit.getOnlinePlayers()) {

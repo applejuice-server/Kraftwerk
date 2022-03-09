@@ -42,7 +42,7 @@ class ScheduleBroadcast(private val opening: String) : BukkitRunnable() {
 
     private fun removeFifteenMinutes(time: String): String {
         val makeSureIsValid: List<String> = time.split(":")
-        var hours = makeSureIsValid[0].toInt()
+        var hours: Any = makeSureIsValid[0].toInt()
         val minutes: Int
         if (makeSureIsValid[1] == "15") {
             minutes = 0
@@ -58,11 +58,14 @@ class ScheduleBroadcast(private val opening: String) : BukkitRunnable() {
                 makeSureIsValid[0].toInt() - 1
             }
         }
+        if (hours.toString().length == 1) {
+            hours = "0${hours}"
+        }
         return "${hours}:${minutes}"
     }
 
     override fun run() {
-        print("Checking if the time corresponds with the broadcast time...")
+        print("Checking if the time corresponds with the broadcast time... ${removeFifteenMinutes(opening)} & ${getTime()}")
         if (SettingsFeature.instance.data!!.getString("matchpost.opens") == null) {
             cancel()
         }
@@ -76,7 +79,7 @@ class ScheduleBroadcast(private val opening: String) : BukkitRunnable() {
             embed.setTitle(SettingsFeature.instance.data!!.getString("matchpost.host"))
             embed.setThumbnail("https://visage.surgeplay.com/bust/512/${host.uniqueId}")
             val scenarios = SettingsFeature.instance.data!!.getStringList("matchpost.scenarios")
-            val opening = (System.currentTimeMillis() / 1000L) + 15000L
+            val opening = (System.currentTimeMillis() / 1000L) + (900000L) / 1000L
             embed.addField("Teams", SettingsFeature.instance.data!!.getString("matchpost.team"), true)
             embed.addField("Opening", "<t:${opening}:t> (<t:${opening}:R>)", true)
             embed.addField("Scenarios", scenarios.joinToString(", "), true)
@@ -91,6 +94,7 @@ class ScheduleBroadcast(private val opening: String) : BukkitRunnable() {
             embed.addField("Pre-whitelists are on!", "You are now allowed to use the command `/wl` to request to pre-whitelist yourself in the server!", false)
             Discord.instance!!.getTextChannelById(937812061948346398)!!.sendMessageEmbeds(embed.build()).queue()
             SettingsFeature.instance.data!!.set("whitelist.requests", true)
+            SettingsFeature.instance.data!!.set("matchpost.posted", true)
             SettingsFeature.instance.saveData()
             cancel()
         }
@@ -168,11 +172,12 @@ class MatchpostCommand : CommandExecutor {
             }
         }
         if (args.isEmpty()) {
-            if (!sender.hasPermission("uhc.staff.matchpost")) {
+            if (sender.hasPermission("uhc.staff.matchpost")) {
                 Chat.sendMessage(sender, "&cYou must provide a valid matchpost ID.")
                 return false
             } else {
                 Chat.sendMessage(sender, "${Chat.prefix} Matchpost: &chttps://hosts.uhc.gg/m/${SettingsFeature.instance.data!!.getInt("matchpost.id")}")
+                return false
             }
         }
         if (args[0].toIntOrNull() == null) {
@@ -214,13 +219,13 @@ class MatchpostCommand : CommandExecutor {
                     team = "FFA"
                 } else if (map["teams"] as String == "chosen") {
                     teamsGame = true
-                    team = "Chosen To${map["size"]}"
+                    team = "Chosen To${(map["size"] as Double).toInt()}"
                 } else if (map["teams"] as String == "rvb") {
                     teamsGame = true
                     team = "Red vs. Blue"
                 } else if (map["teams"] as String == "random") {
                     teamsGame = true
-                    team = "Random To${map["size"]}"
+                    team = "Random To${(map["size"] as Double).toInt()}"
                 }
                 id = map["id"] as Double
                 scenarios = map["scenarios"] as Any
