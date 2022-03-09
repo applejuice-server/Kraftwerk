@@ -32,7 +32,7 @@ class UHCFeature : Listener {
                 for (world in Bukkit.getWorlds()) {
                     world.pvp = false
                 }
-                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Starting a &cTeams&7 UHC game... now freezing players."))
+                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Starting a &cFFA&7 UHC game... now freezing players."))
                 var list = SettingsFeature.instance.data!!.getStringList("game.list")
                 if (list == null) list = ArrayList<String>()
                 for (player in Bukkit.getOnlinePlayers()) {
@@ -65,7 +65,7 @@ class UHCFeature : Listener {
                 SettingsFeature.instance.saveData()
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wl all")
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wl on")
-                ScatterFeature.scatter("teams", Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world")), SettingsFeature.instance.data!!.getInt("pregen.border"), true)
+                ScatterFeature.scatter("ffa", Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world")), SettingsFeature.instance.data!!.getInt("pregen.border"), true)
                 frozen = true
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer cancel")
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer 45 &cStarting in ${Chat.dash}&f")
