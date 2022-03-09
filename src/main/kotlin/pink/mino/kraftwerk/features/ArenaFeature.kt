@@ -16,6 +16,7 @@ import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.EntitySpawnEvent
+import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.potion.PotionEffect
@@ -210,6 +211,12 @@ class ArenaFeature : Listener {
     @EventHandler
     fun onBlockBreak(e: BlockBreakEvent) {
         if (e.block.world.name != "Arena") return
+        e.isCancelled = true
+    }
+
+    @EventHandler
+    fun onPlayerDrop(e: PlayerDropItemEvent) {
+        if (e.player.world.name != "Arena") return
         e.isCancelled = true
     }
 
