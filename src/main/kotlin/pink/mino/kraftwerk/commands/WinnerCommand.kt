@@ -38,7 +38,7 @@ class WinnerCommand : CommandExecutor {
                 Chat.sendMessage(sender, "${Chat.prefix} Winners: &f${winners.joinToString(", ")}")
             }
         }
-        val player = Bukkit.getPlayer(args[0])
+        val player = Bukkit.getOfflinePlayer(args[0])
         if (player == null) {
             Chat.sendMessage(sender, "&cInvalid player, please provide a valid player.")
             return false
