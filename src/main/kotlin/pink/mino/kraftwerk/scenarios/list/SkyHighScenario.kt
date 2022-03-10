@@ -2,6 +2,7 @@ package pink.mino.kraftwerk.scenarios.list
 
 import org.bukkit.Bukkit
 import org.bukkit.Material
+import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.java.JavaPlugin
@@ -45,8 +46,13 @@ class SkyHighScenario : Scenario(
     Material.FEATHER
 ) {
     override fun onStart() {
+        val shovel = ItemStack(Material.DIAMOND_SPADE)
+        val meta = shovel.itemMeta
+        meta.spigot().isUnbreakable = true
+        meta.addEnchant(Enchantment.DIG_SPEED, 10, true)
+        shovel.itemMeta = meta
         for (player in Bukkit.getOnlinePlayers()) {
-            player.inventory.addItem(ItemStack(Material.STAINED_CLAY, 128, 14), ItemStack(Material.PUMPKIN), ItemStack(Material.SNOW_BLOCK, 2), ItemStack(Material.STRING, 2), ItemStack(Material.DIAMOND_SPADE), ItemStack(Material.FEATHER, 16))
+            player.inventory.addItem(ItemStack(Material.STAINED_CLAY, 128, 14), ItemStack(Material.PUMPKIN, 2), ItemStack(Material.SNOW_BLOCK, 4), ItemStack(Material.STRING, 2), shovel, ItemStack(Material.FEATHER, 16))
             Chat.sendMessage(player, "${Chat.prefix} You've been given your SkyHigh items.")
         }
     }
@@ -57,7 +63,12 @@ class SkyHighScenario : Scenario(
     }
 
     override fun givePlayer(player: Player) {
-        player.inventory.addItem(ItemStack(Material.STAINED_CLAY, 128, 14), ItemStack(Material.PUMPKIN), ItemStack(Material.SNOW_BLOCK, 2), ItemStack(Material.STRING, 2), ItemStack(Material.DIAMOND_SPADE), ItemStack(Material.FEATHER, 16))
+        val shovel = ItemStack(Material.DIAMOND_SPADE)
+        val meta = shovel.itemMeta
+        meta.spigot().isUnbreakable = true
+        meta.addEnchant(Enchantment.DIG_SPEED, 10, true)
+        shovel.itemMeta = meta
+        player.inventory.addItem(ItemStack(Material.STAINED_CLAY, 128, 14), ItemStack(Material.PUMPKIN, 2), ItemStack(Material.SNOW_BLOCK, 4), ItemStack(Material.STRING, 2), shovel, ItemStack(Material.FEATHER, 16))
         Chat.sendMessage(player, "${Chat.prefix} You've been given your SkyHigh items.")
     }
 }
