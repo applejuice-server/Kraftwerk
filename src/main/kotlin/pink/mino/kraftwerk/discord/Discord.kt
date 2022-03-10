@@ -41,7 +41,7 @@ class Discord : ListenerAdapter() {
             )
             commands.addCommands(
                 CommandData("wl", "Attempts to whitelist yourself on the server if the conditions are met.")
-                    .addOption(OptionType.STRING, "ign", "The player you want to be whitelisted.")
+                    .addOption(OptionType.STRING, "ign", "The player you want to be whitelisted.", true)
             )
 
             commands.queue()
