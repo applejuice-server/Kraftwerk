@@ -12,6 +12,7 @@ import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.SkullMeta
 import pink.mino.kraftwerk.features.SettingsFeature
+import pink.mino.kraftwerk.scenarios.ScenarioHandler
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GuiBuilder
 
@@ -45,7 +46,7 @@ class ConfigCommand : CommandExecutor {
             sender.sendMessage("You can't use this command as you technically aren't a player.")
             return false
         }
-        val gui = GuiBuilder().rows(5).name(ChatColor.translateAlternateColorCodes('&', "&4UHC Config"))
+        val gui = GuiBuilder().rows(6).name(ChatColor.translateAlternateColorCodes('&', "&4UHC Config"))
 
         sender.sendMessage(Chat.colored("${Chat.prefix} Opening the UHC configuration..."))
         val options = ItemStack(Material.GOLDEN_APPLE)
@@ -220,17 +221,18 @@ class ConfigCommand : CommandExecutor {
         }
         val teamConfig = ItemStack(Material.IRON_SWORD, 2)
         val teamConfigMeta = teamConfig.itemMeta
+        teamConfigMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES)
         teamConfigMeta.displayName = Chat.colored("&4Team Config")
         val ffa = if (SettingsFeature.instance.data!!.getBoolean("game.ffa")) {
-            "Enabled"
-        } else {
             "Disabled"
+        } else {
+            "Enabled"
         }
         teamConfigMeta.lore = listOf(
             Chat.colored(Chat.guiLine),
             "",
             Chat.colored("&7Team Size ${Chat.dash} &c${SettingsFeature.instance.data!!.getInt("game.teamSize")}"),
-            Chat.colored("&7FFA ${Chat.dash} &c${ffa}"),
+            Chat.colored("&7Management ${Chat.dash} &c${ffa}"),
             "",
             Chat.colored(Chat.guiLine)
         )
@@ -270,6 +272,28 @@ class ConfigCommand : CommandExecutor {
         gui.item(33, rates).onClick runnable@{
             if (sender.hasPermission("uhc.staff")) {
                 Bukkit.dispatchCommand(sender as CommandSender, "editconfig rates")
+            }
+            it.isCancelled = true
+        }
+
+        val scenarios = ItemStack(Material.EMERALD)
+        val scenariosMeta = rates.itemMeta
+        val scenarioList = ArrayList<String>()
+        for (scenario in ScenarioHandler.getActiveScenarios()) {
+            scenarioList.add(scenario.name)
+        }
+        scenariosMeta.displayName = Chat.colored("&4Scenarios")
+        scenariosMeta.lore = listOf(
+            Chat.colored(Chat.guiLine),
+            "",
+            Chat.colored("&7Scenarios (${scenarioList.size}) ${Chat.dash} &c${scenarioList.joinToString(", ")}"),
+            "",
+            Chat.colored(Chat.guiLine)
+        )
+        scenarios.itemMeta = scenariosMeta
+        gui.item(40, scenarios).onClick runnable@{
+            if (sender.hasPermission("uhc.staff")) {
+                Bukkit.dispatchCommand(sender as CommandSender, "sm")
             }
             it.isCancelled = true
         }
