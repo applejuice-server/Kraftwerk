@@ -36,12 +36,12 @@ class SlashCommand : ListenerAdapter() {
                     if (guild != null) {
                         guild.getRoleById(793406242013839381)?.let { guild.removeRoleFromMember(member.id, it) }?.queue()
                     }
-                    embed.setDescription("You will now not be notified of when games happen.")
+                    embed.setDescription("You have disabled matchpost notifications.")
                 } else {
                     if (guild != null) {
                         guild.getRoleById(793406242013839381)?.let { guild.addRoleToMember(member.id, it) }?.queue()
                     }
-                    embed.setDescription("You will now be notified of when games happen.")
+                    embed.setDescription("You have enabled matchpost notifications.")
                 }
                 event.replyEmbeds(embed.build()).setEphemeral(true).queue()
             }
