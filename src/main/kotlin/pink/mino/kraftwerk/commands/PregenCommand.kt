@@ -30,7 +30,7 @@ class PregenCommand : CommandExecutor {
             Chat.sendMessage(sender, "${Chat.prefix} &7Invalid usage: ${ChatColor.RED}/pregen <world> <border> <type> &7or&c /pregen cancel")
             return false
         }
-        if (args[0] === "cancel") {
+        if (args[0] == "cancel") {
             if (Config.fillTask.valid()) {
                 Chat.sendMessage(sender, "${Chat.prefix} Okay, cancelling the pregeneration task.")
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
@@ -39,6 +39,7 @@ class PregenCommand : CommandExecutor {
             } else {
                 Chat.sendMessage(sender, "${Chat.prefix} There is no valid pregeneration task running.")
             }
+            return true
         }
         if (args.size != 3) {
             Chat.sendMessage(sender, "${Chat.prefix} &7Invalid usage: ${ChatColor.RED}/pregen <world> <border> <type> &7or&c /pregen cancel")
