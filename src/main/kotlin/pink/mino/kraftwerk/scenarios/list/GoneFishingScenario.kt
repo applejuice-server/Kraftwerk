@@ -11,7 +11,7 @@ import pink.mino.kraftwerk.scenarios.Scenario
 import pink.mino.kraftwerk.utils.Chat
 
 class GoneFishingScenario : Scenario(
-    "GoneFishing",
+    "Gone Fishin'",
     "Enchanting is disabled, so you must fish to get enchantments!",
     "gonefishing",
     Material.FISHING_ROD

@@ -64,11 +64,12 @@ class PlayerDeathListener : Listener {
                             "${Chat.prefix} You've been sent into spectator mode as you are a staff member."
                         )
                     }, 20L)
+                } else {
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wl remove ${player.name}")
                 }
                 player.gameMode = GameMode.SPECTATOR
                 Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
                     if (!player.hasPermission("uhc.staff")) {
-                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wl remove ${player.name}")
                         player.kickPlayer(Chat.colored("&7Thank you for playing!\n\n&7Join our discord for more games: &cdsc.gg/apple-juice"))
                     }
                 }, 1200L)

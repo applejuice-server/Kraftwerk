@@ -18,6 +18,15 @@ class ScenarioHandler {
             addScenario(GoneFishingScenario())
             addScenario(BleedingSweetsScenario())
             addScenario(SiphonScenario())
+            addScenario(FastGetawayScenario())
+            addScenario(DoubleOresScenario())
+            addScenario(LootCratesScenario())
+            addScenario(GigaDrillScenario())
+            addScenario(BareBonesScenario())
+            addScenario(DiamondlessScenario())
+            addScenario(SwitcherooScenario())
+            addScenario(BetaZombiesScenario())
+            addScenario(MonstersIncScenario())
             scenarios.sortWith(Comparator.comparing(Scenario::name))
         }
 
