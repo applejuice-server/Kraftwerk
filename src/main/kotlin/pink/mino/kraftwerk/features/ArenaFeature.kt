@@ -59,26 +59,27 @@ class ArenaFeature : Listener {
         p.inventory.clear()
         p.inventory.armorContents = null
         p.gameMode = GameMode.SURVIVAL
+        Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
+            p.inventory.setItem(0, unbreakableItem(Material.DIAMOND_SWORD))
+            p.inventory.setItem(1, unbreakableItem(Material.FISHING_ROD))
+            p.inventory.setItem(2, unbreakableItem(Material.BOW))
+            p.inventory.setItem(3, ItemStack(Material.COBBLESTONE, 64))
+            p.inventory.setItem(4, ItemStack(Material.WATER_BUCKET))
+            p.inventory.setItem(5, ItemStack(Material.LAVA_BUCKET))
+            p.inventory.setItem(6, ItemStack(Material.GOLDEN_CARROT, 16))
+            p.inventory.setItem(7, ItemStack(Material.GOLDEN_APPLE, 5))
+            val goldenHeads = ItemStack(Material.GOLDEN_APPLE, 3)
+            val meta = goldenHeads.itemMeta
+            meta.displayName = Chat.colored("&6Golden Head")
+            goldenHeads.itemMeta = meta
+            p.inventory.setItem(8, goldenHeads)
+            p.inventory.setItem(9, ItemStack(Material.ARROW, 64))
 
-        p.inventory.setItem(0, unbreakableItem(Material.DIAMOND_SWORD))
-        p.inventory.setItem(1, unbreakableItem(Material.FISHING_ROD))
-        p.inventory.setItem(2, unbreakableItem(Material.BOW))
-        p.inventory.setItem(3, ItemStack(Material.COBBLESTONE, 64))
-        p.inventory.setItem(4, ItemStack(Material.WATER_BUCKET))
-        p.inventory.setItem(5, ItemStack(Material.LAVA_BUCKET))
-        p.inventory.setItem(6, ItemStack(Material.GOLDEN_CARROT, 16))
-        p.inventory.setItem(7, ItemStack(Material.GOLDEN_APPLE, 5))
-        val goldenHeads = ItemStack(Material.GOLDEN_APPLE, 3)
-        val meta = goldenHeads.itemMeta
-        meta.displayName = Chat.colored("&6Golden Head")
-        goldenHeads.itemMeta = meta
-        p.inventory.setItem(8, goldenHeads)
-        p.inventory.setItem(9, ItemStack(Material.ARROW, 64))
-
-        p.inventory.helmet = unbreakableItem(Material.IRON_HELMET)
-        p.inventory.chestplate = unbreakableItem(Material.IRON_CHESTPLATE)
-        p.inventory.leggings = unbreakableItem(Material.IRON_LEGGINGS)
-        p.inventory.boots = unbreakableItem(Material.DIAMOND_BOOTS)
+            p.inventory.helmet = unbreakableItem(Material.IRON_HELMET)
+            p.inventory.chestplate = unbreakableItem(Material.IRON_CHESTPLATE)
+            p.inventory.leggings = unbreakableItem(Material.IRON_LEGGINGS)
+            p.inventory.boots = unbreakableItem(Material.DIAMOND_BOOTS)
+        }, 1L)
 
         ScatterFeature.scatterSolo(p, Bukkit.getWorld("Arena"), 100)
         p.addPotionEffect(PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 200, 100, true, false))
