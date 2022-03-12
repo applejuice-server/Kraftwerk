@@ -43,7 +43,7 @@ class ScheduleBroadcast(private val opening: String) : BukkitRunnable() {
     private fun removeFifteenMinutes(time: String): String {
         val makeSureIsValid: List<String> = time.split(":")
         var hours: Any = makeSureIsValid[0].toInt()
-        val minutes: Int
+        var minutes: Any
         if (makeSureIsValid[1] == "15") {
             minutes = 0
         } else if (makeSureIsValid[1] == "30") {
@@ -61,6 +61,9 @@ class ScheduleBroadcast(private val opening: String) : BukkitRunnable() {
         if (hours.toString().length == 1) {
             hours = "0${hours}"
         }
+        if (minutes.toString().length == 1) {
+            minutes = "00"
+        }
         return "${hours}:${minutes}"
     }
 
@@ -73,7 +76,7 @@ class ScheduleBroadcast(private val opening: String) : BukkitRunnable() {
             cancel()
         }
         if (getTime() == removeFifteenMinutes(opening)) {
-            val host = Bukkit.getPlayer(SettingsFeature.instance.data!!.getString("game.host"))
+            val host = Bukkit.getOfflinePlayer(SettingsFeature.instance.data!!.getString("game.host"))
             var embed = EmbedBuilder()
             embed.setColor(Color(255, 61, 61))
             embed.setTitle(SettingsFeature.instance.data!!.getString("matchpost.host"))
