@@ -31,6 +31,7 @@ class GiveLootCrates : BukkitRunnable() {
             cancel()
         }
         if (timer == 0) {
+            timer = 600
             val tier1Chest = ItemStack(Material.CHEST)
             var meta = tier1Chest.itemMeta
             meta.displayName = Chat.colored("&cTier I Loot Crate")
