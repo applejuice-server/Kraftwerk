@@ -36,7 +36,7 @@ class GigaDrillScenario : Scenario(
     @EventHandler
     fun onCraft(e: PrepareItemCraftEvent) {
         if (!enabled) return
-        if (GameState.currentState !== GameState.INGAME) return
+        if (GameState.currentState != GameState.INGAME) return
         if (types.contains(e.recipe.result.type)) {
             val item = e.recipe.result
             item.addEnchantment(Enchantment.DIG_SPEED, 10)
