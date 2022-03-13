@@ -47,6 +47,9 @@ class LatescatterCommand : CommandExecutor {
             player = Bukkit.getPlayer(args[0])
             player.playSound(player.location, Sound.WOOD_CLICK, 10F, 1F)
             player.health = 20.0
+            player.maxHealth = 20.0
+            player.isFlying = false
+            player.allowFlight = false
             player.foodLevel = 20
             player.saturation = 20F
             player.gameMode = GameMode.SURVIVAL
@@ -91,6 +94,9 @@ class LatescatterCommand : CommandExecutor {
             }
             player.playSound(player.location, Sound.WOOD_CLICK, 10F, 1F)
             player.health = 20.0
+            player.maxHealth = 20.0
+            player.isFlying = false
+            player.allowFlight = false
             player.foodLevel = 20
             player.saturation = 20F
             player.gameMode = GameMode.SURVIVAL
