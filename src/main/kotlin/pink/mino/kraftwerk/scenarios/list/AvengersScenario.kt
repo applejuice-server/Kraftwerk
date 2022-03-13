@@ -1,17 +1,30 @@
 package pink.mino.kraftwerk.scenarios.list
 
 import org.bukkit.Bukkit
+import org.bukkit.Location
 import org.bukkit.Material
+import org.bukkit.block.Block
 import org.bukkit.enchantments.Enchantment
+import org.bukkit.entity.EntityType
+import org.bukkit.entity.Fireball
 import org.bukkit.entity.Player
+import org.bukkit.event.EventHandler
+import org.bukkit.event.block.Action
+import org.bukkit.event.entity.PlayerDeathEvent
+import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
+import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
+import pink.mino.kraftwerk.Kraftwerk
 import pink.mino.kraftwerk.features.SpecFeature
 import pink.mino.kraftwerk.features.TeamsFeature
 import pink.mino.kraftwerk.scenarios.Scenario
+import pink.mino.kraftwerk.utils.BlockUtil
 import pink.mino.kraftwerk.utils.Chat
+import kotlin.math.floor
 import kotlin.random.Random
+
 
 class AvengersScenario : Scenario(
     "Avengers",
@@ -20,7 +33,7 @@ class AvengersScenario : Scenario(
     Material.DIAMOND_SWORD
 ) {
     val superheroes: HashMap<Player, String> = hashMapOf()
-    val prefix = "&8[&cAvengers&8]&7 "
+    val prefix = "&8[&cAvengers&8]&7"
     var cooldowns = HashMap<String, Long>()
 
     /*
@@ -54,7 +67,7 @@ class AvengersScenario : Scenario(
                         val hero = pool[Random.nextInt(pool.size)]
                         superheroes[player as Player] = hero
                         pool.remove(hero)
-                        Chat.colored("$prefix Your assigned Avenger is: &f${hero}&7.")
+                        Chat.sendMessage(player, "$prefix Your assigned Avenger is: &f${hero}&7.")
                     }
                 }
             }
@@ -62,6 +75,7 @@ class AvengersScenario : Scenario(
     }
 
     override fun onStart() {
+        if (!enabled) return
         assignAvengers()
         applyAvengers()
     }
@@ -71,15 +85,54 @@ class AvengersScenario : Scenario(
             if (!SpecFeature.instance.getSpecs().contains(player.name)) {
                 when (superheroes[player]) {
                     "Captain America" -> {
-
+                        player.addPotionEffect(PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 99999999, 0, false, false))
+                        player.addPotionEffect(PotionEffect(PotionEffectType.SPEED, 99999999, 0, false, false))
+                        val shield = ItemStack(Material.IRON_CHESTPLATE)
+                        val shieldMeta = shield.itemMeta
+                        shieldMeta.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 5, true)
+                        shieldMeta.addEnchant(Enchantment.THORNS, 2, true)
+                        shieldMeta.spigot().isUnbreakable = true
+                        shieldMeta.displayName = Chat.colored("&cShield")
+                        shield.itemMeta = shieldMeta
+                        val superSoldier = ItemStack(Material.BLAZE_POWDER)
+                        val superSoldierMeta = superSoldier.itemMeta
+                        superSoldierMeta.displayName = Chat.colored("&cSuper Soldier Serum")
+                        superSoldierMeta.lore = listOf(
+                            Chat.colored("&7Right-click: Gives all your teammates strength for 10s."),
+                            Chat.colored("&7Cooldown: 40 seconds")
+                        )
+                        superSoldier.itemMeta = superSoldierMeta
+                        player.inventory.addItem(superSoldier)
+                        player.inventory.addItem(shield)
                     }
                     "Spiderman" -> {
-
+                        player.addPotionEffect(PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 99999999, 0, false, false))
+                        player.addPotionEffect(PotionEffect(PotionEffectType.SPEED, 99999999, 0, false, false))
+                        player.addPotionEffect(PotionEffect(PotionEffectType.SATURATION, 99999999, 0, false, false))
+                        player.addPotionEffect(PotionEffect(PotionEffectType.JUMP, 99999999, 2, false, false))
+                        val spideySense = ItemStack(Material.EYE_OF_ENDER)
+                        val spideySenseMeta = spideySense.itemMeta
+                        spideySenseMeta.displayName = Chat.colored("&cSpidey Sense")
+                        spideySenseMeta.lore = listOf(
+                            Chat.colored("&7Right-click: View all players within a 150 block radius."),
+                            Chat.colored("&7Cooldown: 20 seconds")
+                        )
+                        spideySense.itemMeta = spideySenseMeta
+                        val webShooter = ItemStack(Material.WEB)
+                        val webShooterMeta = webShooter.itemMeta
+                        webShooterMeta.displayName = Chat.colored("&cWeb Shooter")
+                        webShooterMeta.lore = listOf(
+                            Chat.colored("&7Right-click: Gives slowness to nearby enemies."),
+                            Chat.colored("&7Passive: Makes a webcage whenever you kill someone.")
+                        )
+                        webShooter.itemMeta = webShooterMeta
+                        player.inventory.addItem(webShooter)
+                        player.inventory.addItem(spideySense)
                     }
                     "Quicksilver" -> {
                         player.maxHealth = 14.0
-                        player.addPotionEffect(PotionEffect(PotionEffectType.SPEED, 99999999, 3, false, false))
-                        player.addPotionEffect(PotionEffect(PotionEffectType.FAST_DIGGING, 99999999, 1, false, false))
+                        player.addPotionEffect(PotionEffect(PotionEffectType.SPEED, 99999999, 2, false, false))
+                        player.addPotionEffect(PotionEffect(PotionEffectType.FAST_DIGGING, 99999999, 0, false, false))
                         val combatBoots = ItemStack(Material.IRON_BOOTS)
                         val combatBootsMeta = combatBoots.itemMeta
                         combatBootsMeta.displayName = Chat.colored("&cCombat Boots")
@@ -99,29 +152,30 @@ class AvengersScenario : Scenario(
                     }
                     "Hulk" -> {
                         player.maxHealth = 22.0
-                        player.addPotionEffect(PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 99999999, 1, false, false))
-                        player.addPotionEffect(PotionEffect(PotionEffectType.SPEED, 99999999, 2, false, false))
-                        player.addPotionEffect(PotionEffect(PotionEffectType.JUMP, 99999999, 2, false, false))
+                        player.addPotionEffect(PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 99999999, 0, false, false))
+                        player.addPotionEffect(PotionEffect(PotionEffectType.SPEED, 99999999, 1, false, false))
+                        player.addPotionEffect(PotionEffect(PotionEffectType.JUMP, 99999999, 1, false, false))
                     }
                     "Thor" -> {
                         player.maxHealth = 28.0
-                        player.addPotionEffect(PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 99999999, 1, false, false))
+                        player.addPotionEffect(PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 99999999, 0, false, false))
                         val stormbreaker = ItemStack(Material.IRON_AXE)
                         val stormbreakerMeta = stormbreaker.itemMeta
+                        stormbreakerMeta.displayName = Chat.colored("&cStormbreaker")
                         stormbreakerMeta.spigot().isUnbreakable = true
                         stormbreakerMeta.lore = listOf(
-                            "&7Right-click: Smite everyone within a 7 block radius.",
-                            "&7Cooldown: 50 seconds"
+                            Chat.colored("&7Right-click: Smite everyone within a 7 block radius."),
+                            Chat.colored("&7Cooldown: 50 seconds")
                         )
                         stormbreaker.itemMeta = stormbreakerMeta
                         player.inventory.addItem(stormbreaker)
                     }
                     "Iron Man" -> {
                         player.maxHealth = 16.0
-                        player.addPotionEffect(PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 99999999, 2, false, false))
-                        player.addPotionEffect(PotionEffect(PotionEffectType.FIRE_RESISTANCE, 99999999, 1, false, false))
-                        player.addPotionEffect(PotionEffect(PotionEffectType.FAST_DIGGING, 99999999, 1, false, false))
-                        player.addPotionEffect(PotionEffect(PotionEffectType.SPEED, 99999999, 1, false, false))
+                        player.addPotionEffect(PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 99999999, 1, false, false))
+                        player.addPotionEffect(PotionEffect(PotionEffectType.FIRE_RESISTANCE, 99999999, 0, false, false))
+                        player.addPotionEffect(PotionEffect(PotionEffectType.FAST_DIGGING, 99999999, 0, false, false))
+                        player.addPotionEffect(PotionEffect(PotionEffectType.SPEED, 99999999, 0, false, false))
                         val repulsorTech = ItemStack(Material.MAGMA_CREAM)
                         val repulsorTechMeta = repulsorTech.itemMeta
                         repulsorTechMeta.displayName = Chat.colored("&cRepulsor Tech Mark LXXXV")
@@ -138,14 +192,16 @@ class AvengersScenario : Scenario(
                         bowMeta.spigot().isUnbreakable = true
                         bowMeta.addEnchant(Enchantment.ARROW_INFINITE, 1, false)
                         bowMeta.addEnchant(Enchantment.ARROW_DAMAGE, 2, false)
-                        bowMeta.displayName = Chat.colored("&dHoyt Gamemaster 2")
+                        bowMeta.displayName = Chat.colored("&cHoyt Gamemaster 2")
                         bowMeta.lore = listOf(
-                            Chat.colored("&7Left-click: Has a 50% chance to fire &8cTNT&7 or a &cFireball&7."),
-                            Chat.colored("&7Passive: Heals &c2% of your health upon shooting someone with an arrow.")
+                            Chat.colored("&7Left-click: Has a 50% chance to fire &cFireball&7."),
+                            Chat.colored("&7Passive: Heals &c2%&7 of your health upon shooting someone with an arrow.")
                         )
                         val chestplate = ItemStack(Material.IRON_CHESTPLATE)
                         val chestplateMeta = chestplate.itemMeta
                         chestplateMeta.spigot().isUnbreakable = true
+                        chestplateMeta.addEnchant(Enchantment.PROTECTION_PROJECTILE, 4, true)
+                        chestplateMeta.addEnchant(Enchantment.PROTECTION_EXPLOSIONS, 1, true)
                         chestplateMeta.displayName = Chat.colored("&fHawkeye's Chestplate")
                         chestplate.itemMeta = chestplateMeta
                         bow.itemMeta = bowMeta
@@ -154,6 +210,193 @@ class AvengersScenario : Scenario(
                     }
                 }
                 player.health = player.maxHealth
+            }
+        }
+    }
+
+    //                     "Captain America",
+    //                    "Spiderman",
+    //                    "Quicksilver",
+    //                    "Hulk",
+    //                    "Thor",
+    //                    "Iron Man",
+    //                    "Hawkeye"
+
+    @EventHandler
+    fun onPlayerDeath(e: PlayerDeathEvent) {
+        if (!enabled) return
+        Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
+            (e.entity as Player).maxHealth = 20.0
+        }, 20L)
+        if (e.entity.killer == null) return
+        if (superheroes[e.entity.killer] == "Spiderman") {
+            val location: Location = e.entity.location
+            val blocks: ArrayList<Block>? = BlockUtil().getBlocks(location.block, 10)
+            blocks!!.stream().filter { block: Block ->
+                floor(
+                    block.location.distance(location)
+                ) == 4.0
+            }.filter { block: Block -> block.type === Material.AIR }.forEach { block: Block ->
+                block.type = Material.WEB
+            }
+        }
+    }
+
+    @EventHandler
+    fun onPlayerInteract(e: PlayerInteractEvent) {
+        if (!enabled) return
+        when (superheroes[e.player]) {
+            "Captain America" -> {
+                if (e.item != null && e.item.itemMeta.displayName == Chat.colored("&cSuper Soldier Serum")) {
+                    e.isCancelled = true
+                    val cooldownTime = 40
+                    if (cooldowns.containsKey(e.player.name)) {
+                        val secondsLeft: Long = cooldowns[e.player.name]!! / 1000 + cooldownTime - System.currentTimeMillis() / 1000
+                        if (secondsLeft > 0) {
+                            e.player.sendMessage(Chat.colored("&cYou can't use this ability for another $secondsLeft second(s)!"))
+                            return
+                        }
+                    }
+                    cooldowns[e.player.name] = System.currentTimeMillis()
+                    for (teammate in TeamsFeature.manager.getTeam(e.player)!!.players) {
+                        if (teammate.isOnline) {
+                            Chat.sendMessage((teammate as Player), "$prefix Your teammate &f${e.player.name}&7 has given your &cStrength I&7 for 10 seconds.")
+                            teammate.addPotionEffect(PotionEffect(PotionEffectType.INCREASE_DAMAGE, 200, 0, true, true))
+                        }
+                    }
+                }
+            }
+            "Spiderman" -> {
+                if (e.item != null) {
+                    if (e.item.itemMeta.displayName == Chat.colored("&cSpidey Sense")) {
+                        e.isCancelled = true
+                        val cooldownTime = 25
+                        if (cooldowns.containsKey(e.player.name)) {
+                            val secondsLeft: Long = cooldowns[e.player.name]!! / 1000 + cooldownTime - System.currentTimeMillis() / 1000
+                            if (secondsLeft > 0) {
+                                e.player.sendMessage(Chat.colored("&cYou can't use this ability for another $secondsLeft second(s)!"))
+                                return
+                            }
+                        }
+                        cooldowns[e.player.name] = System.currentTimeMillis()
+                        val nearby = e.player.getNearbyEntities(75.0, 75.0, 75.0)
+                        val nearbyPlayers: ArrayList<Player> = arrayListOf()
+                        for (entity in nearby) {
+                            if (entity.type == EntityType.PLAYER) {
+                                nearbyPlayers.add(entity as Player)
+                            }
+                        }
+                        Chat.sendMessage(e.player, "$prefix There are &f${nearbyPlayers.size} players&7 near you.")
+                    }
+                    if (e.item.itemMeta.displayName == Chat.colored("&cWeb Shooter")) {
+                        e.isCancelled = true
+                        val cooldownTime = 25
+                        if (cooldowns.containsKey(e.player.name)) {
+                            val secondsLeft: Long = cooldowns[e.player.name]!! / 1000 + cooldownTime - System.currentTimeMillis() / 1000
+                            if (secondsLeft > 0) {
+                                e.player.sendMessage(Chat.colored("&cYou can't use this ability for another $secondsLeft second(s)!"))
+                                return
+                            }
+                        }
+                        cooldowns[e.player.name] = System.currentTimeMillis()
+                        val nearby = e.player.getNearbyEntities(8.0, 8.0, 8.0)
+                        val nearbyPlayers: ArrayList<Player> = arrayListOf()
+                        for (entity in nearby) {
+                            if (entity.type == EntityType.PLAYER) {
+                                nearbyPlayers.add(entity as Player)
+                            }
+                        }
+                        for (player in nearbyPlayers) {
+                            if (player != e.player) {
+                                player.addPotionEffect(PotionEffect(PotionEffectType.SLOW, 160, 0, true, false))
+                                Chat.sendMessage(player, "$prefix You've been slowed from &f${e.player.name}&7's Web Shooter.")
+                            }
+                        }
+                    }
+                }
+            }
+            "Thor" -> {
+                if (e.item != null) {
+                    if (e.item.itemMeta.displayName == Chat.colored("&cStormbreaker") && e.action == Action.RIGHT_CLICK_AIR) {
+                        val cooldownTime = 10
+                        if (cooldowns.containsKey(e.player.name)) {
+                            val secondsLeft: Long = cooldowns[e.player.name]!! / 1000 + cooldownTime - System.currentTimeMillis() / 1000
+                            if (secondsLeft > 0) {
+                                e.player.sendMessage(Chat.colored("&cYou can't use this ability for another $secondsLeft second(s)!"))
+                                return
+                            }
+                        }
+                        cooldowns[e.player.name] = System.currentTimeMillis()
+                        val near = e.player.getNearbyEntities(5.0, 5.0, 5.0)
+                        val nearby: ArrayList<Player> = arrayListOf()
+                        for (entity in near) {
+                            if (entity.type == EntityType.PLAYER) nearby.add(entity as Player)
+                        }
+                        for (player in nearby) {
+                            if (player == e.player) continue
+                            e.player.world.strikeLightning(player.location)
+                            Chat.sendMessage(player, "$prefix You've been smited by &f${e.player.name}&7's Stormbreaker.")
+                        }
+                    }
+                }
+            }
+            "Quicksilver" -> {
+                if (e.item != null) {
+                    if (e.item.itemMeta.displayName == Chat.colored("&cBlood Rush")) {
+                        e.isCancelled = true
+                        val cooldownTime = 50
+                        if (cooldowns.containsKey(e.player.name)) {
+                            val secondsLeft: Long = cooldowns[e.player.name]!! / 1000 + cooldownTime - System.currentTimeMillis() / 1000
+                            if (secondsLeft > 0) {
+                                e.player.sendMessage(Chat.colored("&cYou can't use this ability for another $secondsLeft second(s)!"))
+                                return
+                            }
+                        }
+                        cooldowns[e.player.name] = System.currentTimeMillis()
+                        Chat.sendMessage(e.player, "$prefix You're feeling a bit lighter... perhaps you can go a bit faster...")
+                        e.player.addPotionEffect(PotionEffect(PotionEffectType.SPEED, 240, 3, true, false))
+                        e.player.addPotionEffect(PotionEffect(PotionEffectType.JUMP, 240, 1, true, false))
+                        Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
+                            e.player.addPotionEffect(PotionEffect(PotionEffectType.SPEED, 999999999, 2, true, false))
+                            e.player.addPotionEffect(PotionEffect(PotionEffectType.JUMP, 999999999, 0, true, false))
+                        }, 400L)
+                    }
+                }
+            }
+            "Iron Man" -> {
+                if (e.item != null) {
+                    if (e.item.itemMeta.displayName == Chat.colored("&cRepulsor Tech Mark LXXXV")) {
+                        e.isCancelled = true
+                        val cooldownTime = 60
+                        if (cooldowns.containsKey(e.player.name)) {
+                            val secondsLeft: Long = cooldowns[e.player.name]!! / 1000 + cooldownTime - System.currentTimeMillis() / 1000
+                            if (secondsLeft > 0) {
+                                e.player.sendMessage(Chat.colored("&cYou can't use this ability for another $secondsLeft second(s)!"))
+                                return
+                            }
+                        }
+                        cooldowns[e.player.name] = System.currentTimeMillis()
+                        e.player.isFlying = true
+                        e.player.allowFlight = true
+                        Chat.sendMessage(e.player, "$prefix You've been given &c5 seconds&7 of flight.")
+                        for (player in Bukkit.getOnlinePlayers()) {
+                            if (player == e.player) continue
+                            Chat.sendMessage(player, "$prefix You've been given &c20 seconds&7 of Fire Resistance by &f${e.player.name}&7.")
+                            player.addPotionEffect(PotionEffect(PotionEffectType.FIRE_RESISTANCE, 400, 0, true, false))
+                        }
+                        Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
+                            e.player.isFlying = false
+                            e.player.allowFlight = false
+                        }, 100L)
+                    }
+                }
+            }
+            "Hawkeye" -> {
+                if (e.item != null) {
+                    if (e.item.itemMeta.displayName == Chat.colored("&cHoyt Gamemaster 2") && e.action == Action.LEFT_CLICK_AIR) {
+                        if (Random.nextBoolean()) e.player.launchProjectile(Fireball::class.java)
+                    }
+                }
             }
         }
     }

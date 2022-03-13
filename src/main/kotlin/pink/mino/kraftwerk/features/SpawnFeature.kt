@@ -24,8 +24,8 @@ class SpawnFeature : Listener {
     }
 
     fun send(p: Player) {
-        p.health = 20.0
         p.maxHealth = 20.0
+        p.health = 20.0
         p.allowFlight = false
         p.isFlying = false
         p.foodLevel = 20

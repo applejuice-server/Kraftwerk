@@ -153,7 +153,9 @@ class Kraftwerk : JavaPlugin() {
 
         GameState.setState(GameState.LOBBY)
         Bukkit.getLogger().info("Game state set to Lobby.")
-
+        for (world in Bukkit.getWorlds()) {
+            world.pvp = true
+        }
         Bukkit.getLogger().info("Kraftwerk enabled.")
     }
 
