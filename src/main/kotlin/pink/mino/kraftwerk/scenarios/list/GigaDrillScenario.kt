@@ -39,8 +39,10 @@ class GigaDrillScenario : Scenario(
         if (GameState.currentState != GameState.INGAME) return
         if (types.contains(e.recipe.result.type)) {
             val item = e.recipe.result
-            item.addEnchantment(Enchantment.DIG_SPEED, 10)
-            item.addEnchantment(Enchantment.DURABILITY, 5)
+            val itemMeta = item.itemMeta
+            itemMeta.addEnchant(Enchantment.DIG_SPEED, 10, true)
+            itemMeta.addEnchant(Enchantment.DURABILITY, 5, true)
+            item.itemMeta = itemMeta
             e.inventory.result = item
         }
     }
