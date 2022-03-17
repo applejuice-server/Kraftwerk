@@ -5,6 +5,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.inventory.ItemStack
 import pink.mino.kraftwerk.scenarios.Scenario
+import pink.mino.kraftwerk.utils.GameState
 
 class BleedingSweetsScenario : Scenario(
     "Bleeding Sweets",
@@ -14,6 +15,8 @@ class BleedingSweetsScenario : Scenario(
 ) {
     @EventHandler
     fun onPlayerDeath(e: PlayerDeathEvent) {
+        if (!enabled) return
+        if (GameState.currentState != GameState.INGAME) return
         val diamond = ItemStack(Material.DIAMOND, 1)
         val gold = ItemStack(Material.GOLD_INGOT, 5)
         val arrows = ItemStack(Material.ARROW, 16)
