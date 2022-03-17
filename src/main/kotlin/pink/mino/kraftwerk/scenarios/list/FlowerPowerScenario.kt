@@ -1,6 +1,5 @@
 package pink.mino.kraftwerk.scenarios.list
 
-import com.google.common.collect.ImmutableList
 import org.bukkit.Material
 import org.bukkit.block.Block
 import org.bukkit.entity.Item
@@ -19,14 +18,14 @@ class FlowerPowerScenario : Scenario(
     "flowerpower",
     Material.YELLOW_FLOWER
 ) {
-    val flowerTypes = ImmutableList.of(
+    val flowerTypes = listOf(
         Material.YELLOW_FLOWER,
         Material.DOUBLE_PLANT,
         Material.RED_ROSE,
         Material.BROWN_MUSHROOM,
         Material.RED_MUSHROOM
     )
-    val blacklistedMaterials = ImmutableList.of(
+    val blacklistedMaterials = listOf(
         Material.MONSTER_EGG,
         Material.MONSTER_EGGS,
         Material.GRASS,
@@ -72,7 +71,7 @@ class FlowerPowerScenario : Scenario(
 
     private fun generateRandomItem(): ItemStack {
         var item = ItemStack(Material.AIR)
-        while (item.type === Material.AIR || blacklistedMaterials.contains(item.type) || item.typeId === 60) {
+        while (item.type === Material.AIR || blacklistedMaterials.contains(item.type)) {
             item = ItemStack(Material.values()[Random().nextInt(Material.values().size)])
         }
         if (item.maxStackSize > 2) {

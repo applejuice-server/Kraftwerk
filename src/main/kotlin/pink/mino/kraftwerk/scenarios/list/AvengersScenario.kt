@@ -10,6 +10,7 @@ import org.bukkit.entity.Fireball
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.block.Action
+import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
@@ -35,19 +36,6 @@ class AvengersScenario : Scenario(
     val superheroes: HashMap<Player, String> = hashMapOf()
     val prefix = "&8[&cAvengers&8]&7"
     var cooldowns = HashMap<String, Long>()
-
-    /*
-            val cooldownTime = 60 // Get number of seconds from wherever you want
-            if (cooldowns.containsKey(sender.name)) {
-                val secondsLeft: Long = cooldowns[sender.name]!! / 1000 + cooldownTime - System.currentTimeMillis() / 1000
-                if (secondsLeft > 0) {
-                    sender.sendMessage(Chat.colored("&cYou can't use this command for another $secondsLeft second(s)!"))
-                    return false
-                }
-            }
-     */
-
-    // cooldowns[sender.name] = System.currentTimeMillis()
 
     fun assignAvengers() {
         for (team in TeamsFeature.manager.getTeams()) {
@@ -143,7 +131,7 @@ class AvengersScenario : Scenario(
                         val bloodRushMeta = bloodRush.itemMeta
                         bloodRushMeta.displayName = Chat.colored("&cBlood Rush")
                         bloodRushMeta.lore = listOf(
-                            Chat.colored("&Right-click: Receive &c12 seconds&7 of Speed IV & Jump Boost II&7."),
+                            Chat.colored("&7Right-click: Receive &c12 seconds&7 of Speed IV & Jump Boost II&7."),
                             Chat.colored("&7Cooldown: 50 seconds")
                         )
                         bloodRush.itemMeta = bloodRushMeta
@@ -243,6 +231,15 @@ class AvengersScenario : Scenario(
     }
 
     @EventHandler
+    fun onPlayerDamage(e: EntityDamageEvent) {
+        if (!enabled) return
+        if (e.entity.type == EntityType.PLAYER) {
+            if (superheroes[(e.entity as Player)] != "Thor") return
+            if (e.cause == EntityDamageEvent.DamageCause.LIGHTNING) e.isCancelled = true
+        }
+    }
+
+    @EventHandler
     fun onPlayerInteract(e: PlayerInteractEvent) {
         if (!enabled) return
         when (superheroes[e.player]) {
@@ -333,9 +330,10 @@ class AvengersScenario : Scenario(
                             if (entity.type == EntityType.PLAYER) nearby.add(entity as Player)
                         }
                         for (player in nearby) {
-                            if (player == e.player) continue
-                            e.player.world.strikeLightning(player.location)
-                            Chat.sendMessage(player, "$prefix You've been smited by &f${e.player.name}&7's Stormbreaker.")
+                            if (player != e.player) {
+                                e.player.world.strikeLightning(player.location)
+                                Chat.sendMessage(player, "$prefix You've been smited by &f${e.player.name}&7's Stormbreaker.")
+                            }
                         }
                     }
                 }
@@ -354,6 +352,8 @@ class AvengersScenario : Scenario(
                         }
                         cooldowns[e.player.name] = System.currentTimeMillis()
                         Chat.sendMessage(e.player, "$prefix You're feeling a bit lighter... perhaps you can go a bit faster...")
+                        e.player.removePotionEffect(PotionEffectType.JUMP)
+                        e.player.removePotionEffect(PotionEffectType.SPEED)
                         e.player.addPotionEffect(PotionEffect(PotionEffectType.SPEED, 240, 3, true, false))
                         e.player.addPotionEffect(PotionEffect(PotionEffectType.JUMP, 240, 1, true, false))
                         Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
@@ -376,8 +376,8 @@ class AvengersScenario : Scenario(
                             }
                         }
                         cooldowns[e.player.name] = System.currentTimeMillis()
+                        e.player.allowFlight = false
                         e.player.isFlying = true
-                        e.player.allowFlight = true
                         Chat.sendMessage(e.player, "$prefix You've been given &c5 seconds&7 of flight.")
                         for (player in Bukkit.getOnlinePlayers()) {
                             if (player == e.player) continue
@@ -385,8 +385,8 @@ class AvengersScenario : Scenario(
                             player.addPotionEffect(PotionEffect(PotionEffectType.FIRE_RESISTANCE, 400, 0, true, false))
                         }
                         Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                            e.player.isFlying = false
                             e.player.allowFlight = false
+                            e.player.isFlying = false
                         }, 100L)
                     }
                 }

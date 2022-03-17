@@ -30,7 +30,10 @@ class Kraftwerk : JavaPlugin() {
 
     private var protocolManager: ProtocolManager? = null
     lateinit var dataSource: DataSource
-    val instance = this
+
+    companion object {
+        val instance = this
+    }
 
     override fun onLoad() {
         protocolManager = ProtocolLibrary.getProtocolManager()
@@ -58,8 +61,8 @@ class Kraftwerk : JavaPlugin() {
         Bukkit.getServer().pluginManager.registerEvents(SpecFeature.instance, this)
         Bukkit.getServer().pluginManager.registerEvents(ShootListener(), this)
         Bukkit.getServer().pluginManager.registerEvents(PlayerInteractListener(), this)
-
         Bukkit.getServer().pluginManager.registerEvents(PlayerRegisterListener(), this)
+        Bukkit.getServer().pluginManager.registerEvents(TabFeature(), this)
 
         /* Registering commands */
         getCommand("clear").executor = ClearInventoryCommand()
@@ -109,6 +112,7 @@ class Kraftwerk : JavaPlugin() {
         getCommand("scenarios").executor = ScenarioCommand()
         getCommand("statistics").executor = StatsCommand()
         getCommand("discord").executor = DiscordCommand()
+        getCommand("apply").executor = ApplyCommand()
 
         /* ProtocolLib stuff */
         if (Bukkit.getPluginManager().getPlugin("ProtocolLib") == null) {
@@ -156,6 +160,7 @@ class Kraftwerk : JavaPlugin() {
         for (world in Bukkit.getWorlds()) {
             world.pvp = true
         }
+        InfoFeature().runTaskTimerAsynchronously(this, 0L, 6000L)
         Bukkit.getLogger().info("Kraftwerk enabled.")
     }
 
