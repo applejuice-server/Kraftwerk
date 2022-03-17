@@ -2,37 +2,32 @@ package pink.mino.kraftwerk.features
 
 import com.lunarclient.bukkitapi.LunarClientAPI
 import org.bukkit.*
+import org.bukkit.block.Block
+import org.bukkit.entity.Arrow
 import org.bukkit.entity.EntityType
+import org.bukkit.entity.Monster
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
+import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.entity.EntityDamageByEntityEvent
+import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.player.*
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.SkullMeta
 import org.bukkit.plugin.java.JavaPlugin
 import pink.mino.kraftwerk.Kraftwerk
-import pink.mino.kraftwerk.utils.Chat
-import pink.mino.kraftwerk.utils.GameState
-import pink.mino.kraftwerk.utils.GuiBuilder
+import pink.mino.kraftwerk.utils.*
+import java.util.*
+
 
 class SpecFeature : Listener {
     companion object {
         val instance = SpecFeature()
     }
-
-    fun checkPlayer(p: OfflinePlayer?) {
-        var statement = "SELECT (uuid) from spectate WHERE uuid = '${p!!.uniqueId}'"
-        val result = JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection.createStatement().executeQuery(statement)
-        if (!result.isBeforeFirst) {
-            statement = "INSERT INTO spectate (uuid) VALUES ('${p.uniqueId}')"
-            with(JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection) {
-                createStatement().execute(statement)
-            }
-        }
-    }
+    val prefix = "&8[&4Spec&8]&7"
 
     fun spec(p: Player) {
         SpawnFeature.instance.send(p)
@@ -274,6 +269,187 @@ class SpecFeature : Listener {
     fun onBlockPlace(e: BlockPlaceEvent) {
         if (getSpecs().contains(e.player.name)) {
             e.isCancelled = true
+        }
+    }
+
+    var brokenBlocks: HashMap<UUID, HashSet<Block>> = HashMap<UUID, HashSet<Block>>()
+    val diamondsMined: HashMap<UUID, Int> = HashMap()
+    val goldMined: HashMap<UUID, Int> = HashMap()
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    fun onBreak(e: BlockBreakEvent) {
+        if (GameState.currentState != GameState.INGAME) return
+        val p = e.player
+        if (brokenBlocks.containsKey(p.uniqueId)) {
+            if (brokenBlocks[p.uniqueId]!!.contains(e.block)) return
+        }
+        if (e.block.type == Material.DIAMOND_ORE) {
+            var diamonds = 0
+            for (x in -2..1) {
+                for (y in -2..1) {
+                    for (z in -2..1) {
+                        val block: Block = e.block.location.add(x.toDouble(), y.toDouble(), z.toDouble()).block
+                        if (block.type === Material.DIAMOND_ORE) {
+                            diamonds++
+                            if (diamondsMined[p.uniqueId] == null) diamondsMined[p.uniqueId] = 0
+                            diamondsMined[p.uniqueId]!!.plus(1)
+                            if (brokenBlocks.containsKey(p.uniqueId)) {
+                                val blocks: HashSet<Block> = brokenBlocks[p.uniqueId]!!
+                                blocks.add(block)
+                                brokenBlocks[p.uniqueId] = blocks
+                            } else {
+                                val blocks: HashSet<Block> = HashSet<Block>()
+                                blocks.add(block)
+                                brokenBlocks[p.uniqueId] = blocks
+                            }
+                        }
+                    }
+                }
+            }
+            for (player in Bukkit.getOnlinePlayers()) {
+                if (getSpecs().contains(player.name)) {
+                    Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
+                        Chat.sendMessage(
+                            player,
+                            "$prefix ${PlayerUtils.getPrefix(p)}${p.name}&7 has mined &bDiamond Ore&7. &8(&7T: &b${diamondsMined[p.uniqueId]} &8| &7V: &b${diamonds}&8)"
+                        )
+                    }, 1L)
+                }
+            }
+        } else if (e.block.type == Material.GOLD_ORE) {
+            var gold = 0
+            for (x in -2..1) {
+                for (y in -2..1) {
+                    for (z in -2..1) {
+                        val block: Block = e.block.location.add(x.toDouble(), y.toDouble(), z.toDouble()).block
+                        if (block.type === Material.GOLD_ORE) {
+                            gold++
+                            if (goldMined[p.uniqueId] == null) goldMined[p.uniqueId] = 0
+                            goldMined[p.uniqueId]!!.plus(1)
+                            if (brokenBlocks.containsKey(p.uniqueId)) {
+                                val blocks: HashSet<Block> = brokenBlocks[p.uniqueId]!!
+                                blocks.add(block)
+                                brokenBlocks[p.uniqueId] = blocks
+                            } else {
+                                val blocks: HashSet<Block> = HashSet<Block>()
+                                blocks.add(block)
+                                brokenBlocks[p.uniqueId] = blocks
+                            }
+                        }
+                    }
+                }
+            }
+            for (player in Bukkit.getOnlinePlayers()) {
+                if (getSpecs().contains(player.name)) {
+                    Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
+                        Chat.sendMessage(
+                            player,
+                            "$prefix ${PlayerUtils.getPrefix(p)}${p.name}&7 has mined &6Gold Ore&7. &8(&7T: &6${goldMined[p.uniqueId]} &8| &7V: &6${gold}&8)"
+                        )
+                    }, 1L)
+                }
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    fun onPlayerDamage(e: EntityDamageEvent) {
+        if (GameState.currentState != GameState.INGAME) return
+        if (e.entity !is Player) return
+        val p = e.entity as Player
+        if (e.finalDamage == 0.0 || e.damage == 0.0 || e.isCancelled) return
+        if (p.health - e.finalDamage <= 0) return
+        val percentage = (e.damage / 2) * 10
+        when (e.cause) {
+            EntityDamageEvent.DamageCause.FALL -> {
+                for (player in Bukkit.getOnlinePlayers()) {
+                    if (getSpecs().contains(player.name)) {
+                        Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
+                            Chat.sendMessage(
+                                player,
+                                "$prefix ${PlayerUtils.getPrefix(p)}${p.name} &8(${PlayerUtils.getHealth(p)}&8)&7 took ${HealthChatColorer.returnHealth(percentage)}${percentage.toInt()}%&7 due to &fFall&7. "
+                            )
+                        }, 1L)
+                    }
+                }
+            }
+            EntityDamageEvent.DamageCause.FIRE, EntityDamageEvent.DamageCause.FIRE_TICK, EntityDamageEvent.DamageCause.LAVA, EntityDamageEvent.DamageCause.MELTING -> {
+                for (player in Bukkit.getOnlinePlayers()) {
+                    if (getSpecs().contains(player.name)) {
+                        Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
+                            Chat.sendMessage(
+                                player,
+                                "$prefix ${PlayerUtils.getPrefix(p)}${p.name} &8(${PlayerUtils.getHealth(p)}&8)&7 took ${HealthChatColorer.returnHealth(percentage)}${percentage.toInt()}%&7 due to &fBurning&7. "
+                            )
+                        }, 1L)
+                    }
+                }
+            }
+            EntityDamageEvent.DamageCause.ENTITY_ATTACK, EntityDamageEvent.DamageCause.PROJECTILE -> {
+                return
+            }
+            else -> {
+                for (player in Bukkit.getOnlinePlayers()) {
+                    if (getSpecs().contains(player.name)) {
+                        Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
+                            Chat.sendMessage(
+                                player,
+                                "$prefix ${PlayerUtils.getPrefix(p)}${p.name} &8(${PlayerUtils.getHealth(p)}&8)&7 took ${HealthChatColorer.returnHealth(percentage)}${percentage.toInt()}%&7 due to &fUnknown&7. "
+                            )
+                        }, 1L)
+                    }
+                }
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    fun onPlayerDamageByPlayer(e: EntityDamageByEntityEvent) {
+        if (GameState.currentState != GameState.INGAME) return
+        if (e.entity !is Player) return
+        val p = e.entity as Player
+        if (e.finalDamage == 0.0 || e.damage == 0.0 || e.isCancelled) return
+        if (p.health - e.finalDamage <= 0) return
+        val percentage = (e.damage / 2) * 10
+        if (e.entity is Monster) {
+            for (player in Bukkit.getOnlinePlayers()) {
+                if (getSpecs().contains(player.name)) {
+                    Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
+                        Chat.sendMessage(
+                            player,
+                            "$prefix ${PlayerUtils.getPrefix(p)}${p.name} &8(${PlayerUtils.getHealth(p)}&8)&7 took ${HealthChatColorer.returnHealth(percentage)}${percentage.toInt()}%&7 due to &fPvE&7. "
+                        )
+                    }, 1L)
+                }
+            }
+        }
+        if (e.damager is Player) {
+            val damager = e.damager as Player
+            for (player in Bukkit.getOnlinePlayers()) {
+                if (getSpecs().contains(player.name)) {
+                    Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
+                        Chat.sendMessage(
+                            player,
+                            "$prefix ${PlayerUtils.getPrefix(p)}${p.name} &8(${PlayerUtils.getHealth(p)}&8)&7 took ${HealthChatColorer.returnHealth(percentage)}${percentage.toInt()}%&7 due to ${PlayerUtils.getPrefix(damager)}${damager.name} &8(${PlayerUtils.getHealth(damager)}&8)&7. &8(&fPvP&8)"
+                        )
+                    }, 1L)
+                }
+            }
+        } else if (e.damager is Arrow) {
+            val a = e.damager as Arrow
+            if (a.shooter is Player) {
+                val damager = a.shooter as Player
+                for (player in Bukkit.getOnlinePlayers()) {
+                    if (getSpecs().contains(player.name)) {
+                        Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
+                            Chat.sendMessage(
+                                player,
+                                "$prefix ${PlayerUtils.getPrefix(p)}${p.name} &8(${PlayerUtils.getHealth(p)}&8)&7 took ${HealthChatColorer.returnHealth(percentage)}${percentage.toInt()}%&7 due to ${PlayerUtils.getPrefix(damager)}${damager.name} &8(${PlayerUtils.getHealth(damager)}&8)&7. &8(&fBow&8)"
+                            )
+                        }, 1L)
+                    }
+                }
+            }
         }
     }
 
