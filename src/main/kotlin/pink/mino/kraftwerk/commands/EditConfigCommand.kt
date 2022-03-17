@@ -64,6 +64,33 @@ class EditConfigCommand : CommandExecutor {
                     iterator++
                 }
             }
+        } else if (args[0].lowercase() == "nether") {
+            gui = GuiBuilder().rows(1).name(ChatColor.translateAlternateColorCodes('&', "&4Edit UHC Config"))
+            size = 8
+            var iterator = 0
+            for (option in ConfigOptionHandler.configOptions) {
+                if (option.category === "nether") {
+                    val item = ItemStack(option.material)
+                    val itemMeta = item.itemMeta
+                    var color: String = if (option.enabled) "&a"
+                    else "&c"
+                    itemMeta.displayName = Chat.colored("${color}${option.name}")
+                    itemMeta.lore = listOf(
+                        Chat.colored("&7${option.description}")
+                    )
+                    item.itemMeta = itemMeta
+                    gui.item(iterator, item).onClick runnable@ {
+                        it.isCancelled = true
+                        ConfigOptionHandler.getOption(option.id)?.toggle()
+                        color = if (option.enabled) "&a"
+                        else "&c"
+                        val meta = it.currentItem.itemMeta
+                        meta.displayName = Chat.colored("${color}${option.name}")
+                        it.currentItem.itemMeta = meta
+                    }
+                    iterator++
+                }
+            }
         } else if (args[0].lowercase() == "rules") {
             gui = GuiBuilder().rows(1).name(ChatColor.translateAlternateColorCodes('&', "&4Edit UHC Config"))
             size = 8

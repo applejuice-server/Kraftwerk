@@ -74,6 +74,8 @@ class EndGameCommand : CommandExecutor {
         SettingsFeature.instance.data!!.set("game.winners", ArrayList<String>())
         SettingsFeature.instance.data!!.set("game.list", ArrayList<String>())
         SettingsFeature.instance.data!!.set("game.kills", null)
+        SettingsFeature.instance.data!!.set("pregen.world", null)
+        SettingsFeature.instance.data!!.set("game.nether", false)
         SettingsFeature.instance.data!!.set("whitelist.requests", false)
         SettingsFeature.instance.data!!.set("matchpost.opens", null)
         SettingsFeature.instance.data!!.set("matchpost.host", null)

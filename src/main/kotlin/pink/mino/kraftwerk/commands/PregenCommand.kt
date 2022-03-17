@@ -27,7 +27,7 @@ class PregenCommand : CommandExecutor {
         }
 
         if (args.isEmpty()) {
-            Chat.sendMessage(sender, "${Chat.prefix} &7Invalid usage: ${ChatColor.RED}/pregen <world> <border> <type> &7or&c /pregen cancel")
+            Chat.sendMessage(sender, "${Chat.prefix} &7Invalid usage: ${ChatColor.RED}/pregen <world> <border> <type>\n${Chat.dash}&7 /pregen cancel")
             return false
         }
         if (args[0] == "cancel") {
@@ -42,10 +42,10 @@ class PregenCommand : CommandExecutor {
             return true
         }
         if (args.size != 3) {
-            Chat.sendMessage(sender, "${Chat.prefix} &7Invalid usage: ${ChatColor.RED}/pregen <world> <border> <type> &7or&c /pregen cancel")
+            Chat.sendMessage(sender, "${Chat.prefix} &7Invalid usage: ${ChatColor.RED}/pregen <world> <border> <type>\n&7or&c /pregen cancel")
             return false
         }
-        if (args[2] != "overworld" && args[2] != "cityworld") {
+        if (args[2] != "overworld" && args[2] != "cityworld" && args[2] != "nether") {
             Chat.sendMessage(sender, "${Chat.prefix} Invalid world type, the valid world types are &ccityworld&7, &cnether&7 and &coverworld&7.")
             return false
         }
@@ -67,12 +67,16 @@ class PregenCommand : CommandExecutor {
                 "mvc ${args[0]} normal"
             )
         } else if (args[2] == "nether") {
+            if (settings.data!!.getString("pregen.world") == null) {
+                Chat.sendMessage(sender, "${Chat.prefix} There's no overworld world currently set, generate one using &c/pregen&7.")
+                return false
+            }
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
                 "mvc ${args[0]} nether"
             )
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
-                "mvnp link ${settings.data!!.getString("pregen.world")} ${args[0]}"
-            )
+            settings.data!!.set("pregen.netherBorder", args[0])
+            settings.data!!.set("game.nether", true)
+            settings.saveData()
         }
 
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
@@ -97,7 +101,7 @@ class PregenCommand : CommandExecutor {
             border.setCenter(0.0, 0.0)
         }, 5L)
 
-        Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "${Chat.prefix} &7Pregeneration started in &8'&c${args[0]}&8'&7."))
+        Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "${Chat.prefix} &7Pregeneration started in &8'&f${args[0]}&8'&7."))
         PregenActionBarFeature().runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 20L)
         if (args[0] != "Arena" && args[2] != "nether") {
             settings.data!!.set("pregen.border", args[1].toInt())

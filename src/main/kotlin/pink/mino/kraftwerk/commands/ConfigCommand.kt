@@ -208,7 +208,11 @@ class ConfigCommand : CommandExecutor {
         netherConfigMeta.lore = listOf(
             Chat.colored(Chat.guiLine),
             "",
-            Chat.colored("&7Coming soon."),
+            Chat.colored("&7Nether ${Chat.dash} &c${getOption("nether")}"),
+            Chat.colored("&7Nerfed Quartz ${Chat.dash} &c${getOption("nerfedQuartz")}"),
+            Chat.colored("&7Tier II Potions ${Chat.dash} &c${getOption("tierII")}"),
+            Chat.colored("&7Strength Potions ${Chat.dash} &c${getOption("strengthPotions")}"),
+            Chat.colored("&7Splash Potions ${Chat.dash} &c${getOption("splashPotions")}"),
             "",
             Chat.colored(Chat.guiLine)
         )
