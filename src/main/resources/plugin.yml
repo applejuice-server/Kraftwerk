@@ -165,6 +165,10 @@ commands:
     aliases:
       - disc
     description: Get the invite link for the discord server.
+  apply:
+    aliases:
+      - staffapply
+    description: Get the staff application link.
   cancel:
     aliases:
       - cancelmp
