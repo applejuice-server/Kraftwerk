@@ -31,6 +31,11 @@ class ConfigOptionHandler {
             addOption(RollarcoasteringOption())
             addOption(StripminingOption())
             addOption(PokeholingOption())
+
+            addOption(NerfedQuartzOption())
+            addOption(TierIIOption())
+            addOption(StrengthPotionOption())
+            addOption(SplashPotionsOption())
             configOptions.sortWith(Comparator.comparing(ConfigOption::name))
         }
 
