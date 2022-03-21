@@ -59,7 +59,7 @@ class EndGameCommand : CommandExecutor {
         embed.addField("Winners", winners.joinToString(", ", "", "", -1, "...") {
             "**$it** [${
                 SettingsFeature.instance.data!!.getInt(
-                    "game.kills.${Bukkit.getPlayer(it).name}"
+                    "game.kills.${Bukkit.getOfflinePlayer(it).name}"
                 )
             }]"
         }, false)
