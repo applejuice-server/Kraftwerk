@@ -129,7 +129,7 @@ class LootCratesScenario : Scenario(
                     Chat.sendMessage(p, "${Chat.prefix} &7You can only open one lootcrate at a time!")
                     return
                 }
-                val stack = tier2[Random.nextInt(tier1.size)]
+                val stack = tier2[Random.nextInt(tier2.size)]
                 p.inventory.itemInHand = null
                 p.inventory.addItem(stack)
                 Chat.sendMessage(p, "${Chat.prefix} You have received &c${stack.amount} ${stack.type.name}&7 from your lootcrate!")
