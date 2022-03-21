@@ -10,6 +10,7 @@ import org.bukkit.event.player.PlayerItemConsumeEvent
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 import pink.mino.kraftwerk.config.ConfigOption
+import pink.mino.kraftwerk.scenarios.ScenarioHandler
 import pink.mino.kraftwerk.utils.BlockRotation
 
 class GoldenHeadsOption : ConfigOption(
@@ -37,6 +38,7 @@ class GoldenHeadsOption : ConfigOption(
     }
     val player = e.entity
     if (player.world.name != "Arena") {
+      if (ScenarioHandler.getScenario("goldenretriever")!!.enabled || ScenarioHandler.getScenario("barebones")!!.enabled) return
       player.location.block.type = Material.NETHER_FENCE
       player.location.add(0.0, 1.0, 0.0).block.type = Material.SKULL
 

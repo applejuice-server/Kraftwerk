@@ -29,6 +29,8 @@ class ScenarioHandler {
             addScenario(MonstersIncScenario())
             addScenario(AvengersScenario())
             addScenario(TeamInventoryScenario.instance)
+            addScenario(GoldenRetrieverScenario())
+            addScenario(OPLootCratesScenario())
             scenarios.sortWith(Comparator.comparing(Scenario::name))
         }
 
