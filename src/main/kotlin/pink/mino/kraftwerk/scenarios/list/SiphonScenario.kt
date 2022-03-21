@@ -7,7 +7,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.inventory.ItemStack
-import org.bukkit.inventory.meta.BookMeta
+import org.bukkit.inventory.meta.EnchantmentStorageMeta
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 import pink.mino.kraftwerk.scenarios.Scenario
@@ -38,8 +38,9 @@ class SiphonScenario : Scenario(
         val killer: Player = event.entity.killer ?: return
         killer.addPotionEffect(PotionEffect(PotionEffectType.REGENERATION, 100, 1, true, true))
         val item = ItemStack(Material.ENCHANTED_BOOK)
-        val meta = item.itemMeta as BookMeta
-        meta.addEnchant(enchants[Random().nextInt(enchants.size)], Random().nextInt(2), true)
+        val meta = item.itemMeta as EnchantmentStorageMeta
+        meta.addStoredEnchant(enchants[Random().nextInt(enchants.size)], Random().nextInt(2), true)
+        item.itemMeta = meta
         killer.inventory.addItem(item)
         killer.level = killer.level + 2
     }
