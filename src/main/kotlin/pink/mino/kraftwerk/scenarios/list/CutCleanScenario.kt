@@ -19,31 +19,31 @@ class CutCleanScenario : Scenario(
         if (!enabled) return
         when (e.entity.itemStack.type) {
             Material.IRON_ORE -> {
-                (e.location.world.spawn(e.location, ExperienceOrb::class.java) as ExperienceOrb).experience = 5
+                (e.location.world.spawn(e.location, ExperienceOrb::class.java) as ExperienceOrb).experience = 1
                 e.entity.itemStack.type = Material.IRON_INGOT
             }
             Material.GOLD_ORE -> {
-                (e.location.world.spawn(e.location, ExperienceOrb::class.java) as ExperienceOrb).experience = 5
+                (e.location.world.spawn(e.location, ExperienceOrb::class.java) as ExperienceOrb).experience = 1
                 e.entity.itemStack.type = Material.GOLD_INGOT
             }
             Material.RAW_CHICKEN -> {
-                (e.location.world.spawn(e.location, ExperienceOrb::class.java) as ExperienceOrb).experience = 5
+                (e.location.world.spawn(e.location, ExperienceOrb::class.java) as ExperienceOrb).experience = 1
                 e.entity.itemStack.type = Material.COOKED_CHICKEN
             }
             Material.RAW_BEEF -> {
-                (e.location.world.spawn(e.location, ExperienceOrb::class.java) as ExperienceOrb).experience = 5
+                (e.location.world.spawn(e.location, ExperienceOrb::class.java) as ExperienceOrb).experience = 1
                 e.entity.itemStack.type = Material.COOKED_BEEF
             }
             Material.MUTTON -> {
-                (e.location.world.spawn(e.location, ExperienceOrb::class.java) as ExperienceOrb).experience = 5
+                (e.location.world.spawn(e.location, ExperienceOrb::class.java) as ExperienceOrb).experience = 1
                 e.entity.itemStack.type = Material.COOKED_MUTTON
             }
             Material.PORK -> {
-                (e.location.world.spawn(e.location, ExperienceOrb::class.java) as ExperienceOrb).experience = 5
+                (e.location.world.spawn(e.location, ExperienceOrb::class.java) as ExperienceOrb).experience = 1
                 e.entity.itemStack.type = Material.GRILLED_PORK
             }
             Material.RABBIT -> {
-                (e.location.world.spawn(e.location, ExperienceOrb::class.java) as ExperienceOrb).experience = 5
+                (e.location.world.spawn(e.location, ExperienceOrb::class.java) as ExperienceOrb).experience = 1
                 e.entity.itemStack.type = Material.COOKED_RABBIT
             }
             else -> {}
