@@ -82,7 +82,8 @@ class ArenaFeature : Listener {
         }, 1L)
 
         ScatterFeature.scatterSolo(p, Bukkit.getWorld("Arena"), 100)
-        p.addPotionEffect(PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 200, 100, true, false))
+        p.addPotionEffect(PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 60, 100, true, false))
+        p.addPotionEffect(PotionEffect(PotionEffectType.WEAKNESS, 60, 100, true, false))
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
