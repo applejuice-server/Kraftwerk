@@ -28,6 +28,7 @@ class ScenarioHandler {
             addScenario(BetaZombiesScenario())
             addScenario(MonstersIncScenario())
             addScenario(AvengersScenario())
+            addScenario(TeamInventoryScenario.instance)
             scenarios.sortWith(Comparator.comparing(Scenario::name))
         }
 

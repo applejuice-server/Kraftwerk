@@ -114,6 +114,7 @@ class Kraftwerk : JavaPlugin() {
         getCommand("statistics").executor = StatsCommand()
         getCommand("discord").executor = DiscordCommand()
         getCommand("apply").executor = ApplyCommand()
+        getCommand("teaminventory").executor = TeamInventoryCommand()
 
         /* ProtocolLib stuff */
         if (Bukkit.getPluginManager().getPlugin("ProtocolLib") == null) {

@@ -54,6 +54,7 @@ commands:
     description: Opens the configuration for UHC.
     aliases:
       - uhc
+      - conf
   editconfig:
     description: Edits the configuration for UHC.
     aliases:
@@ -91,10 +92,14 @@ commands:
   arena:
     aliases:
       - a
+      - practice
+      - ffaarena
+      - prac
     description: Joins the FFA arena.
   spawn:
     aliases:
       - lobby
+      - hub
     description: Joins the spawn.
   start:
     aliases:
@@ -173,6 +178,12 @@ commands:
     aliases:
       - cancelmp
     description: Cancels the awaiting game.
+  teaminventory:
+    aliases:
+      - teaminv
+      - ti
+      - teami
+    description: View your team inventory.
 depend:
   - ProtocolLib
   - JDA
