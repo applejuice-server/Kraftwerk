@@ -260,11 +260,11 @@ class ArenaFeature : Listener {
                     }, 20L)
                 }, 20L)
             }, 20L)
-        } else if (e.block.type == Material.LAVA && e.block.type == Material.STATIONARY_LAVA) {
+        } else if (e.block.type == Material.LAVA || e.block.type == Material.STATIONARY_LAVA) {
             Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
                 e.block.type = Material.AIR
             }, 200L)
-        } else if (e.block.type == Material.WATER && e.block.type == Material.STATIONARY_WATER) {
+        } else if (e.block.type == Material.WATER || e.block.type == Material.STATIONARY_WATER) {
             Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
                 e.block.type = Material.AIR
             }, 200L)
