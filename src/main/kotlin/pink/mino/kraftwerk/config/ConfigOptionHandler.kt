@@ -21,6 +21,7 @@ class ConfigOptionHandler {
             addOption(FireWeaponsOption())
             addOption(AntiBurnOption())
             addOption(PearlDamageOption())
+            addOption(EnderPearlCooldownOption())
 
             addOption(CrossteamingOption())
             addOption(StalkingOption())
@@ -36,6 +37,7 @@ class ConfigOptionHandler {
             addOption(TierIIOption())
             addOption(StrengthPotionOption())
             addOption(SplashPotionsOption())
+
             configOptions.sortWith(Comparator.comparing(ConfigOption::name))
         }
 
