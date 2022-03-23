@@ -17,6 +17,7 @@ import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.scoreboard.Team
 import pink.mino.kraftwerk.Kraftwerk
 import pink.mino.kraftwerk.features.SettingsFeature
+import pink.mino.kraftwerk.features.SpecFeature
 import pink.mino.kraftwerk.features.TeamsFeature
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GameState
@@ -50,6 +51,20 @@ class TeamCommand : CommandExecutor {
 
     private var invites = HashMap<Player, ArrayList<Player>>()
     private val settings: SettingsFeature = SettingsFeature.instance
+
+    private fun <T> splitList(list: List<T>, size: Int): List<List<T>>? {
+        val iterator = list.iterator()
+        val returnList: MutableList<List<T>> = ArrayList()
+        while (iterator.hasNext()) {
+            val tempList: MutableList<T> = ArrayList()
+            for (i in 0 until size) {
+                if (!iterator.hasNext()) break
+                tempList.add(iterator.next())
+            }
+            returnList.add(tempList)
+        }
+        return returnList
+    }
 
     fun addTeamInfo(player: Player, playersToAdd: List<Player>) {
         val map: MutableMap<UUID, Map<String, Double>> = ConcurrentHashMap()
@@ -97,7 +112,8 @@ class TeamCommand : CommandExecutor {
                 Chat.sendMessage(sender, "${Chat.prefix} &f/team set <player1> <player2> ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Sets Player 1 to the Player 2's team.")
                 Chat.sendMessage(sender, "${Chat.prefix} &f/team delete <team name> ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Deletes the provided team.")
                 Chat.sendMessage(sender, "${Chat.prefix} &f/team friendlyfire <on/off> ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Toggles friendly fire.")
-                Chat.sendMessage(sender, "${Chat.prefix} &f/team kickunder <number> ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Kicks all solos/teams under a certain threshold..")
+                Chat.sendMessage(sender, "${Chat.prefix} &f/team kickunder <number> ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Kicks all solos/teams under a certain threshold.")
+                Chat.sendMessage(sender, "${Chat.prefix} &f/team randomize ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Randomizes all players that aren't Spectators into a team.")
                 Chat.sendMessage(sender, Chat.line)
             }
         } else if (args[0] == "create") {
@@ -249,13 +265,13 @@ class TeamCommand : CommandExecutor {
                 Chat.sendMessage(sender as Player, "${Chat.prefix} Invalid usage: ${ChatColor.WHITE}/team management on/off")
                 return false
             }
-            Chat.sendMessage(sender as Player, Chat.line)
+            Chat.sendMessage(sender, Chat.line)
             if (args[1] == "on") {
                 settings.data!!.set("game.ffa", false)
-                Chat.sendMessage(sender, "${Chat.prefix} ${ChatColor.GRAY}Team management has been set to ${ChatColor.WHITE}on${ChatColor.GRAY}.")
+                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} ${ChatColor.GRAY}Team management has been &aenabled&7."))
             } else if (args[1] == "off") {
                 settings.data!!.set("game.ffa", true)
-                Chat.sendMessage(sender, "${Chat.prefix} ${ChatColor.GRAY}Team management has been set to ${ChatColor.WHITE}off${ChatColor.GRAY}.")
+                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} ${ChatColor.GRAY}Team management has been &cdisabled&7."))
             }
             settings.saveData()
             Chat.sendMessage(sender, Chat.line)
@@ -426,6 +442,38 @@ class TeamCommand : CommandExecutor {
                 } else {
                     if (team.players.size < args[1].toInt()) {
                         player.kickPlayer(Chat.colored("&cYou've been kicked as your team is undersized."))
+                    }
+                }
+            }
+        } else if (args[0] == "randomize") {
+            if (sender is Player) {
+                if (!sender.hasPermission("uhc.staff.team")) {
+                    Chat.sendMessage(sender, "${ChatColor.RED}You don't have permission to use this command.")
+                    return false
+                }
+            }
+            for (team in TeamsFeature.manager.getTeams()) {
+                for (p in team.players) {
+                    team.removePlayer(p)
+                }
+            }
+            Bukkit.broadcastMessage("${Chat.prefix} Randomizing all players into teams of &c${SettingsFeature.instance.data!!.getInt("game.teamSize")}&7.")
+            val valid: MutableList<Player> = ArrayList()
+            for (player in Bukkit.getOnlinePlayers()) {
+                if (!SpecFeature.instance.getSpecs().contains(player.name)) {
+                    valid.add(player)
+                }
+            }
+            valid.shuffle()
+            val teams: List<List<Player>> = splitList(valid, SettingsFeature.instance.data!!.getInt("game.teamSize"))!!
+            for (team in teams) {
+                for (t in TeamsFeature.manager.getTeams()) {
+                    if (t.size == 0) {
+                        for (player in team) {
+                            t.addPlayer(player)
+                            Chat.sendMessage(player, "${Chat.prefix} You've been added to ${t.prefix}${t.name}&7, check &f/team list&7 for the members of your team.")
+                        }
+                        continue
                     }
                 }
             }

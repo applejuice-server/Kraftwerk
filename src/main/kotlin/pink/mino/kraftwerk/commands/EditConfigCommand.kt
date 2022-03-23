@@ -295,6 +295,133 @@ class EditConfigCommand : CommandExecutor {
                     it.currentItem.itemMeta = meta
                 }
             }
+        } else if (args[0].lowercase() == "teams") {
+            gui = GuiBuilder().rows(3).name(ChatColor.translateAlternateColorCodes('&', "&4Edit UHC Config"))
+            size = 26
+            val teamSize = ItemStack(Material.IRON_SWORD, SettingsFeature.instance.data!!.getInt("game.teamSize"))
+            val teamSizeMeta = teamSize.itemMeta
+            teamSizeMeta.displayName = Chat.colored("&cTeam Size")
+            teamSizeMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES)
+            teamSizeMeta.lore = listOf(
+                Chat.colored("&7Team Size ${Chat.dash} &c${SettingsFeature.instance.data!!.getInt("game.teamSize")}"),
+                "",
+                Chat.colored("&8Left Click&7 to add &aone&7."),
+                Chat.colored("&8Right Click&7 to subtract &cone&7.")
+            )
+            teamSize.itemMeta = teamSizeMeta
+            gui.item(10, teamSize).onClick runnable@ {
+                it.isCancelled = true
+                if (it.click.isLeftClick) {
+                    if (SettingsFeature.instance.data!!.getInt("game.teamSize") >= 64) {
+                        Chat.sendMessage(player, "${Chat.prefix} Can't add, this count is already at 64.")
+                        return@runnable
+                    }
+                    SettingsFeature.instance.data!!.set("game.teamSize", SettingsFeature.instance.data!!.getInt("game.teamSize") + 1)
+                    SettingsFeature.instance.saveData()
+                    val meta = it.currentItem.itemMeta
+                    val item = ItemStack(it.currentItem.type, SettingsFeature.instance.data!!.getInt("game.teamSize"))
+                    meta.displayName = Chat.colored("&cTeam Size")
+                    meta.lore = listOf(
+                        Chat.colored("&7Team Size ${Chat.dash} &c${SettingsFeature.instance.data!!.getInt("game.teamSize")}"),
+                        "",
+                        Chat.colored("&8Left Click&7 to add &aone&7."),
+                        Chat.colored("&8Right Click&7 to subtract &cone&7.")
+                    )
+                    it.currentItem = item
+                    it.currentItem.itemMeta = meta
+                } else if (it.click.isRightClick) {
+                    if (SettingsFeature.instance.data!!.getInt("game.teamSize") <= 1) {
+                        Chat.sendMessage(player, "${Chat.prefix} Can't add, this count is already at 1.")
+                        return@runnable
+                    }
+                    SettingsFeature.instance.data!!.set("game.teamSize", SettingsFeature.instance.data!!.getInt("game.teamSize") - 1)
+                    SettingsFeature.instance.saveData()
+                    val meta = it.currentItem.itemMeta
+                    val item = ItemStack(it.currentItem.type, SettingsFeature.instance.data!!.getInt("game.teamSize"))
+                    meta.displayName = Chat.colored("&cTeam Size")
+                    meta.lore = listOf(
+                        Chat.colored("&7Team Size ${Chat.dash} &c${SettingsFeature.instance.data!!.getInt("game.teamSize")}"),
+                        "",
+                        Chat.colored("&8Left Click&7 to add &aone&7."),
+                        Chat.colored("&8Right Click&7 to subtract &cone&7.")
+                    )
+                    it.currentItem = item
+                    it.currentItem.itemMeta = meta
+                }
+            }
+            val teamManagement: ItemStack = if (SettingsFeature.instance.data!!.getBoolean("game.ffa")) {
+                ItemStack(Material.WOOL, 1, 14)
+            } else {
+                ItemStack(Material.WOOL, 1, 5)
+            }
+            val teamManagementMeta = teamManagement.itemMeta
+            teamManagementMeta.displayName = Chat.colored("&cTeam Management")
+            var status = if (SettingsFeature.instance.data!!.getBoolean("game.ffa")) {
+                "&cDisabled"
+            } else {
+                "&aEnabled"
+            }
+            teamManagementMeta.lore = listOf(
+                Chat.colored("&7Status: $status"),
+                "",
+                Chat.colored("&8Left Click&7 to toggle.")
+            )
+            teamManagement.itemMeta = teamManagementMeta
+            gui.item(12, teamManagement).onClick runnable@ {
+                it.isCancelled = true
+                status = if (SettingsFeature.instance.data!!.getBoolean("game.ffa")) {
+                    "&aEnabled"
+                } else {
+                    "&cDisabled"
+                }
+                if (SettingsFeature.instance.data!!.getBoolean("game.ffa")) {
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "team management on")
+                } else {
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "team management off")
+                }
+                val wool: ItemStack = if (SettingsFeature.instance.data!!.getBoolean("game.ffa")) {
+                    ItemStack(Material.WOOL, 1, 14)
+                } else {
+                    ItemStack(Material.WOOL, 1, 5)
+                }
+                it.currentItem = wool
+                val meta = it.currentItem.itemMeta
+                meta.lore = listOf(
+                    Chat.colored("&7Status: $status"),
+                    "",
+                    Chat.colored("&8Left Click&7 to toggle.")
+                )
+                meta.displayName = Chat.colored("&cTeam Management")
+                it.currentItem.itemMeta = meta
+            }
+            val randomizeTeams = ItemStack(Material.EYE_OF_ENDER)
+            val randomizeTeamsMeta = randomizeTeams.itemMeta
+            randomizeTeamsMeta.displayName = Chat.colored("&cRandomize Teams")
+            randomizeTeamsMeta.lore = listOf(
+                Chat.colored("&7Click to randomize all players into teams of &c${SettingsFeature.instance.data!!.getInt("game.teamSize")}&7."),
+                "",
+                Chat.colored("&4&lWARNING&7 All players that are not"),
+                Chat.colored("&7going to play must be in Spectator mode.")
+            )
+            randomizeTeams.itemMeta = randomizeTeamsMeta
+            gui.item(14, randomizeTeams).onClick runnable@ {
+                it.isCancelled = true
+                Bukkit.dispatchCommand(player, "team randomize")
+            }
+
+            val resetTeams = ItemStack(Material.BARRIER)
+            val resetTeamsMeta = randomizeTeams.itemMeta
+            resetTeamsMeta.displayName = Chat.colored("&cReset Teams")
+            resetTeamsMeta.lore = listOf(
+                Chat.colored("&7Click to reset all teams."),
+                "",
+                Chat.colored("&4&lWARNING&7 This is probably a bad idea!")
+            )
+            resetTeams.itemMeta = resetTeamsMeta
+            gui.item(16, resetTeams).onClick runnable@ {
+                it.isCancelled = true
+                Bukkit.dispatchCommand(player, "team randomize")
+            }
         } else if (args[0].lowercase() == "rates") {
             gui = GuiBuilder().rows(1).name(ChatColor.translateAlternateColorCodes('&', "&4Edit UHC Config"))
             size = 8

@@ -65,6 +65,7 @@ class ConfigCommand : CommandExecutor {
             Chat.colored("&7AntiStone ${Chat.dash} &c${getOption("antistone")}"),
             Chat.colored("&7AntiBurn ${Chat.dash} &c${getOption("antiburn")}"),
             Chat.colored("&7Pearl Damage ${Chat.dash} &c${getOption("pearldamage")}"),
+            Chat.colored("&7Pearl Cooldown ${Chat.dash} &c${getOption("pearlcooldown")}"),
             "",
             Chat.colored(Chat.guiLine),
         )
@@ -242,6 +243,9 @@ class ConfigCommand : CommandExecutor {
         )
         teamConfig.itemMeta = teamConfigMeta
         gui.item(21, teamConfig).onClick runnable@{
+            if (sender.hasPermission("uhc.staff")) {
+                Bukkit.dispatchCommand(sender as CommandSender, "editconfig teams")
+            }
             it.isCancelled = true
         }
         val starterFood = ItemStack(Material.COOKED_BEEF)
