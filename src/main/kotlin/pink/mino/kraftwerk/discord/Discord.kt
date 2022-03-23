@@ -27,7 +27,7 @@ class Discord : ListenerAdapter() {
                 .addEventListeners(MemberJoin())
                 .build()
 
-            jda.presence.activity = Activity.playing("applejuice.bar")
+            jda.presence.activity = Activity.playing("na.applejuice.bar")
             val commands = jda.updateCommands()
 
             commands.addCommands(
@@ -38,6 +38,9 @@ class Discord : ListenerAdapter() {
             )
             commands.addCommands(
                 CommandData("togglealerts", "Removes/adds the Notify role in the Discord server.")
+            )
+            commands.addCommands(
+                CommandData("scenarios", "Sends a list of scenarios available on the server.")
             )
             commands.addCommands(
                 CommandData("wl", "Attempts to whitelist yourself on the server if the conditions are met.")

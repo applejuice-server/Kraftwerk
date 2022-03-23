@@ -3,8 +3,10 @@ package pink.mino.kraftwerk.discord.listeners
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
+import net.dv8tion.jda.api.utils.MarkdownSanitizer
 import org.bukkit.Bukkit
 import pink.mino.kraftwerk.features.SettingsFeature
+import pink.mino.kraftwerk.scenarios.ScenarioHandler
 import java.awt.Color
 
 class SlashCommand : ListenerAdapter() {
@@ -19,14 +21,14 @@ class SlashCommand : ListenerAdapter() {
                 embed.setColor(Color(255, 61, 61))
                 embed.setAuthor("applejuice — Online players", "https://dsc.gg/apple-juice", event.jda.selfUser.avatarUrl)
                 embed.setDescription("There are currently **${Bukkit.getServer().onlinePlayers.size} players** online.")
-                event.replyEmbeds(embed.build()).setEphemeral(true).queue()
+                event.replyEmbeds(embed.build()).setEphemeral(false).queue()
             }
             "ip" -> {
                 val embed = EmbedBuilder()
                 embed.setColor(Color(255, 61, 61))
                 embed.setAuthor("applejuice — IP Address", "https://dsc.gg/apple-juice", event.jda.selfUser.avatarUrl)
-                embed.setDescription("The IP address to the server is `104.219.232.42:25575` or :beverage_box: `applejuice.bar`.")
-                event.replyEmbeds(embed.build()).setEphemeral(true).queue()
+                embed.setDescription("The IP address to the server is :beverage_box: `na.applejuice.bar`.")
+                event.replyEmbeds(embed.build()).setEphemeral(false).queue()
             }
             "togglealerts" -> {
                 val embed = EmbedBuilder()
@@ -51,10 +53,21 @@ class SlashCommand : ListenerAdapter() {
                 if (target == null) event.reply("Invalid player!").setEphemeral(true).queue()
                 if (SettingsFeature.instance.data!!.getBoolean("whitelist.requests")) {
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wl add ${player}")
-                    event.reply("**${player}** has been whitelisted on the server, connect using `applejuice.bar` or `104.219.232.42:25575`.").queue()
+                    event.reply("**${MarkdownSanitizer.escape(player)}** has been whitelisted on the server, connect using `na.applejuice.bar`.").queue()
                 } else {
                     event.reply("Sorry, but whitelists are not available at this time!").setEphemeral(true).queue()
                 }
+            }
+            "scenarios" -> {
+                val list = ArrayList<String>()
+                for (scenario in ScenarioHandler.scenarios) {
+                    list.add(scenario.name)
+                }
+                val embed = EmbedBuilder()
+                embed.setColor(Color(255, 61, 61))
+                embed.setAuthor("applejuice — Scenario List", "https://dsc.gg/apple-juice", event.jda.selfUser.avatarUrl)
+                embed.setDescription("Scenarios: `${list.joinToString(", ")}`")
+                event.replyEmbeds(embed.build()).setEphemeral(false).queue()
             }
             else -> event.reply("I can't handle that command right now :(").setEphemeral(true).queue()
         }

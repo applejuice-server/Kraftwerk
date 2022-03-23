@@ -148,7 +148,7 @@ class ScheduleOpening(private val opening: String) : BukkitRunnable() {
             embed.setColor(Color(255, 61, 61))
             embed.setTitle(SettingsFeature.instance.data!!.getString("matchpost.host"))
             embed.setThumbnail("https://visage.surgeplay.com/bust/512/${host.uniqueId}")
-            embed.addField("Game Open!", "The game is now open @ `104.219.232.42:25575` or :beverage_box: `applejuice.bar`.", false)
+            embed.addField("Game Open!", "The game is now open @ :beverage_box: `na.applejuice.bar`.", false)
             Discord.instance!!.getTextChannelById(937811678735765554)!!.sendMessageEmbeds(embed.build()).queue()
             Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} The whitelist has been turned off automatically @ &c${opening}&7."))
             cancel()
