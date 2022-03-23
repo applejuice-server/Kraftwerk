@@ -16,6 +16,7 @@ import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.EntitySpawnEvent
+import org.bukkit.event.player.PlayerBucketEmptyEvent
 import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.java.JavaPlugin
@@ -223,33 +224,50 @@ class ArenaFeature : Listener {
     }
 
     @EventHandler
+    fun onBucketEmpty(e: PlayerBucketEmptyEvent) {
+        if (e.player.world.name != "Arena") return
+        if (e.bucket == Material.LAVA || e.bucket == Material.LAVA_BUCKET || e.bucket == Material.STATIONARY_LAVA) {
+            Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
+                e.blockClicked.getRelative(e.blockFace).type = Material.AIR
+            }, 100L)
+        }
+        if (e.bucket == Material.WATER || e.bucket == Material.WATER_BUCKET || e.bucket == Material.STATIONARY_WATER) {
+            Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
+                e.blockClicked.getRelative(e.blockFace).type = Material.AIR
+            }, 100L)
+        }
+    }
+
+    @EventHandler
     fun onBlockPlace(e: BlockPlaceEvent) {
         if (e.block.world.name != "Arena") return
-        if (e.block.type == Material.COBBLESTONE) {
-            Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                e.player.inventory.addItem(ItemStack(Material.COBBLESTONE))
-            }, 1L)
-            Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                BlockAnimation().blockCrackAnimation(e.player, e.block, 1)
+        when (e.block.type) {
+            Material.COBBLESTONE -> {
                 Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                    BlockAnimation().blockCrackAnimation(e.player, e.block, 2)
+                    e.player.inventory.addItem(ItemStack(Material.COBBLESTONE))
+                }, 1L)
+                Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
+                    BlockAnimation().blockCrackAnimation(e.player, e.block, 1)
                     Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                        BlockAnimation().blockCrackAnimation(e.player, e.block, 3)
+                        BlockAnimation().blockCrackAnimation(e.player, e.block, 2)
                         Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                            BlockAnimation().blockCrackAnimation(e.player, e.block, 4)
+                            BlockAnimation().blockCrackAnimation(e.player, e.block, 3)
                             Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                                BlockAnimation().blockCrackAnimation(e.player, e.block, 5)
+                                BlockAnimation().blockCrackAnimation(e.player, e.block, 4)
                                 Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                                    BlockAnimation().blockCrackAnimation(e.player, e.block, 6)
+                                    BlockAnimation().blockCrackAnimation(e.player, e.block, 5)
                                     Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                                        BlockAnimation().blockCrackAnimation(e.player, e.block, 7)
+                                        BlockAnimation().blockCrackAnimation(e.player, e.block, 6)
                                         Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                                            BlockAnimation().blockCrackAnimation(e.player, e.block, 8)
+                                            BlockAnimation().blockCrackAnimation(e.player, e.block, 7)
                                             Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                                                BlockAnimation().blockCrackAnimation(e.player, e.block, 9)
+                                                BlockAnimation().blockCrackAnimation(e.player, e.block, 8)
                                                 Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                                                    BlockAnimation().blockBreakAnimation(null, e.block)
-                                                    e.block.type = Material.AIR
+                                                    BlockAnimation().blockCrackAnimation(e.player, e.block, 9)
+                                                    Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
+                                                        BlockAnimation().blockBreakAnimation(null, e.block)
+                                                        e.block.type = Material.AIR
+                                                    }, 20L)
                                                 }, 20L)
                                             }, 20L)
                                         }, 20L)
@@ -259,15 +277,17 @@ class ArenaFeature : Listener {
                         }, 20L)
                     }, 20L)
                 }, 20L)
-            }, 20L)
-        } else if (e.block.type == Material.LAVA || e.block.type == Material.STATIONARY_LAVA) {
-            Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                e.block.type = Material.AIR
-            }, 200L)
-        } else if (e.block.type == Material.WATER || e.block.type == Material.STATIONARY_WATER) {
-            Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                e.block.type = Material.AIR
-            }, 200L)
+            }
+            Material.LAVA, Material.STATIONARY_LAVA -> {
+                Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
+                    e.block.type = Material.AIR
+                }, 100L)
+            }
+            Material.WATER, Material.STATIONARY_WATER -> {
+                Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
+                    e.block.type = Material.AIR
+                }, 100L)
+            }
         }
     }
 }
