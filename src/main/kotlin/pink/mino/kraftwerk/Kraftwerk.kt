@@ -25,6 +25,10 @@ import pink.mino.kraftwerk.utils.Scoreboard
 import java.sql.SQLException
 import javax.sql.DataSource
 
+/*
+Dear weird person:
+Only I and God know how this plugin works.
+ */
 
 class Kraftwerk : JavaPlugin() {
 
