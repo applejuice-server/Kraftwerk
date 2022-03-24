@@ -52,18 +52,27 @@ class TeamCommand : CommandExecutor {
     private var invites = HashMap<Player, ArrayList<Player>>()
     private val settings: SettingsFeature = SettingsFeature.instance
 
-    private fun <T> splitList(list: List<T>, size: Int): List<List<T>>? {
+    private fun <T> splitList(list: ArrayList<T>, size: Int): MutableList<ArrayList<T>> {
         val iterator = list.iterator()
-        val returnList: MutableList<List<T>> = ArrayList()
+        val returnList: MutableList<ArrayList<T>> = ArrayList()
         while (iterator.hasNext()) {
             val tempList: MutableList<T> = ArrayList()
             for (i in 0 until size) {
                 if (!iterator.hasNext()) break
                 tempList.add(iterator.next())
             }
-            returnList.add(tempList)
+            returnList.add(tempList as ArrayList<T>)
         }
         return returnList
+    }
+
+    fun getEmptyTeam(): Team? {
+        for (team in TeamsFeature.manager.getTeams()) {
+            if (team.size == 0) {
+                return team
+            }
+        }
+        return null
     }
 
     fun addTeamInfo(player: Player, playersToAdd: List<Player>) {
@@ -457,24 +466,25 @@ class TeamCommand : CommandExecutor {
                     team.removePlayer(p)
                 }
             }
-            Bukkit.broadcastMessage("${Chat.prefix} Randomizing all players into teams of &c${SettingsFeature.instance.data!!.getInt("game.teamSize")}&7.")
-            val valid: MutableList<Player> = ArrayList()
+            Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Randomizing all players into teams of &c${SettingsFeature.instance.data!!.getInt("game.teamSize")}&7."))
+            val valid: ArrayList<Player> = ArrayList()
             for (player in Bukkit.getOnlinePlayers()) {
                 if (!SpecFeature.instance.getSpecs().contains(player.name)) {
                     valid.add(player)
                 }
             }
             valid.shuffle()
-            val teams: List<List<Player>> = splitList(valid, SettingsFeature.instance.data!!.getInt("game.teamSize"))!!
-            for (team in teams) {
-                for (t in TeamsFeature.manager.getTeams()) {
-                    if (t.size == 0) {
-                        for (player in team) {
-                            t.addPlayer(player)
-                            Chat.sendMessage(player, "${Chat.prefix} You've been added to ${t.prefix}${t.name}&7, check &f/team list&7 for the members of your team.")
-                        }
-                        continue
-                    }
+            val teams = splitList(valid, SettingsFeature.instance.data!!.getInt("game.teamSize"))
+            var templist: ArrayList<Player>
+            for (list in teams) {
+                templist = ArrayList()
+                for (player in list) {
+                    templist.add(player)
+                }
+                val team: Team? = getEmptyTeam()
+                for (player in templist) {
+                    Chat.sendMessage(player, "${Chat.prefix} You've been added to ${team!!.prefix}${team.name}&7, check &f/team list&7 for the members of your team.")
+                    team.addPlayer(player)
                 }
             }
         }
