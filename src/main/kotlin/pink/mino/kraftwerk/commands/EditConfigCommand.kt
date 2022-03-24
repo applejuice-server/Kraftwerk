@@ -420,7 +420,7 @@ class EditConfigCommand : CommandExecutor {
             resetTeams.itemMeta = resetTeamsMeta
             gui.item(16, resetTeams).onClick runnable@ {
                 it.isCancelled = true
-                Bukkit.dispatchCommand(player, "team randomize")
+                Bukkit.dispatchCommand(player, "team reset")
             }
         } else if (args[0].lowercase() == "rates") {
             gui = GuiBuilder().rows(1).name(ChatColor.translateAlternateColorCodes('&', "&4Edit UHC Config"))
