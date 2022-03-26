@@ -15,6 +15,10 @@ class MolesScenario : Scenario(
     "moles",
     Material.STONE_SPADE
 ) {
+    companion object {
+        val instance = MolesScenario()
+    }
+
     val moles: HashMap<UUID, Boolean> = HashMap()
     fun assignMoles() {
         for (team in TeamsFeature.manager.getTeams()) {

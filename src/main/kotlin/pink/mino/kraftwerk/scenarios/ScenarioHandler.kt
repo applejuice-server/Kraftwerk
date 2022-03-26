@@ -31,6 +31,7 @@ class ScenarioHandler {
             addScenario(TeamInventoryScenario.instance)
             addScenario(GoldenRetrieverScenario())
             addScenario(OPLootCratesScenario())
+            addScenario(MolesScenario.instance)
             scenarios.sortWith(Comparator.comparing(Scenario::name))
         }
 
