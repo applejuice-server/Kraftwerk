@@ -34,6 +34,7 @@ class ArenaFeature : Listener {
     companion object {
         val instance = ArenaFeature()
     }
+    val prefix = "&8[&4Arena&8]&7"
 
     fun unbreakableItem(material: Material): ItemStack {
         val item = ItemStack(material)
@@ -118,19 +119,19 @@ class ArenaFeature : Listener {
                         val el: EntityLiving = (killer as CraftPlayer).handle
                         val health = floor(killer.health / 2 * 10 + el.absorptionHearts / 2 * 10)
                         val color = HealthChatColorer.returnHealth(health)
-                        killer.sendMessage(Chat.colored("${Chat.prefix} &7You killed &f${victim.name}&7!"))
-                        victim.sendMessage(Chat.colored("${Chat.prefix} &7You were killed by &f${killer.name} &8(${color}${health}❤&8)"))
+                        killer.sendMessage(Chat.colored("$prefix &7You killed &f${victim.name}&7!"))
+                        victim.sendMessage(Chat.colored("$prefix &7You were killed by &f${killer.name} &8(${color}${health}❤&8)"))
                         Killstreak.addKillstreak(killer)
                         print("${killer.name} now has a killstreak of ${Killstreak.getKillstreak(killer)}.")
                         if (Killstreak.getKillstreak(victim) >= 5) {
-                            sendToPlayers("${Chat.prefix}&f ${victim.name}&7 lost their killstreak of &f${
+                            sendToPlayers("${prefix}&f ${victim.name}&7 lost their killstreak of &f${
                                 Killstreak.getKillstreak(
                                     victim
                                 )
                             } kills&7 to &f${killer.name}&7!")
                         }
                         if (Killstreak.getKillstreak(killer) > 3) {
-                            sendToPlayers(Chat.colored("${Chat.prefix} &f${killer.name}&7 now has a killstreak of &f${
+                            sendToPlayers(Chat.colored("$prefix &f${killer.name}&7 now has a killstreak of &f${
                                 Killstreak.getKillstreak(
                                     killer
                                 )
@@ -140,9 +141,9 @@ class ArenaFeature : Listener {
                         Killstreak.resetKillstreak(victim)
                     }
                 } else {
-                    Chat.sendMessage((e.entity as Player), "${Chat.prefix} You died!")
+                    Chat.sendMessage((e.entity as Player), "$prefix You died!")
                     if (Killstreak.getKillstreak((e.entity as Player)) >= 5) {
-                        sendToPlayers("${Chat.prefix}&f ${(e.entity as Player).name}&7 lost their killstreak of &f${
+                        sendToPlayers("${prefix}&f ${(e.entity as Player).name}&7 lost their killstreak of &f${
                             Killstreak.getKillstreak(
                                 (e.entity as Player)
                             )
@@ -288,6 +289,7 @@ class ArenaFeature : Listener {
                     e.block.type = Material.AIR
                 }, 100L)
             }
+            else -> {}
         }
     }
 }

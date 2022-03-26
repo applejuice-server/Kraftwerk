@@ -23,11 +23,11 @@ class ArenaCommand : CommandExecutor {
         if (GameState.currentState == GameState.LOBBY) {
             if (sender.world.name == "Arena") {
                 SpawnFeature.instance.send(sender)
-                sender.sendMessage(Chat.colored("${Chat.prefix} &7You left the arena."))
+                sender.sendMessage(Chat.colored("&8[&4Arena&8]&7 &7You left the arena."))
                 return false
             }
             ArenaFeature.instance.send(sender)
-            Chat.sendMessage(sender, "${Chat.prefix} Welcome to the arena, &f${sender.name}&7!")
+            Chat.sendMessage(sender, "&8[&4Arena&8]&7 Welcome to the arena, &f${sender.name}&7!")
             Chat.sendMessage(sender, "&8(&7Cross-teaming in the arena is not allowed!&8)")
         } else {
             Chat.sendMessage(sender, "&cThe arena is disabled at the moment.")
