@@ -66,8 +66,9 @@ class TeamCommand : CommandExecutor {
         return returnList
     }
 
-    fun getEmptyTeam(): Team? {
-        for (team in TeamsFeature.manager.getTeams()) {
+    private fun getEmptyTeam(): Team? {
+        val teams = TeamsFeature.manager.getTeams()
+        for (team in teams) {
             if (team.size == 0) {
                 return team
             }
@@ -123,6 +124,7 @@ class TeamCommand : CommandExecutor {
                 Chat.sendMessage(sender, "${Chat.prefix} &f/team friendlyfire <on/off> ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Toggles friendly fire.")
                 Chat.sendMessage(sender, "${Chat.prefix} &f/team kickunder <number> ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Kicks all solos/teams under a certain threshold.")
                 Chat.sendMessage(sender, "${Chat.prefix} &f/team randomize ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Randomizes all players that aren't Spectators into a team.")
+                Chat.sendMessage(sender, "${Chat.prefix} &f/team rvb ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Randomizes all players that aren't Spectators into a two teams together.")
                 Chat.sendMessage(sender, Chat.line)
             }
         } else if (args[0] == "create") {
@@ -485,6 +487,37 @@ class TeamCommand : CommandExecutor {
                 for (player in templist) {
                     Chat.sendMessage(player, "${Chat.prefix} You've been added to ${team!!.prefix}${team.name}&7, check &f/team list&7 for the members of your team.")
                     team.addPlayer(player)
+                }
+            }
+        } else if (args[0] == "rvb") {
+            if (sender is Player) {
+                if (!sender.hasPermission("uhc.staff.team")) {
+                    Chat.sendMessage(sender, "${ChatColor.RED}You don't have permission to use this command.")
+                    return false
+                }
+            }
+            for (team in TeamsFeature.manager.getTeams()) {
+                for (p in team.players) {
+                    team.removePlayer(p)
+                }
+            }
+            Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Randomizing all players into &cRed&7 vs &9Blue&7."))
+            val valid: ArrayList<Player> = ArrayList()
+            for (player in Bukkit.getOnlinePlayers()) {
+                if (!SpecFeature.instance.getSpecs().contains(player.name)) {
+                    valid.add(player)
+                }
+            }
+            valid.shuffle()
+            val red = TeamsFeature.manager.getTeams()[0]
+            val blue = TeamsFeature.manager.getTeams()[1]
+            red.prefix = "${ChatColor.RED}"
+            blue.prefix = "${ChatColor.BLUE}"
+            for ((index, player) in valid.withIndex()) {
+                if (index % 2 == 0) {
+                    red.addPlayer(player)
+                } else {
+                    blue.addPlayer(player)
                 }
             }
         }
