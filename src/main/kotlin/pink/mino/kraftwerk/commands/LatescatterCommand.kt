@@ -64,13 +64,13 @@ class LatescatterCommand : CommandExecutor {
             for (effect in effects) {
                 player.removePotionEffect(effect.type)
             }
-            for (scenario in ScenarioHandler.getActiveScenarios()) {
-                scenario.givePlayer(player)
-            }
             player.addPotionEffect(PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 300, 1000, true, false))
             ScatterFeature.scatterSolo(player, Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world")), SettingsFeature.instance.data!!.getInt("pregen.border"))
             player.inventory.setItem(0, ItemStack(Material.COOKED_BEEF, SettingsFeature.instance.data!!.getInt("game.starterfood")))
             //Stats.addGamesPlayed(player)
+            for (scenario in ScenarioHandler.getActiveScenarios()) {
+                scenario.givePlayer(player)
+            }
             WhitelistCommand().addWhitelist(player.name)
             list.add(player.name)
             Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} &f${player.name}&7 has been late-scattered&7."))
@@ -111,13 +111,13 @@ class LatescatterCommand : CommandExecutor {
             for (effect in effects) {
                 player.removePotionEffect(effect.type)
             }
-            for (scenario in ScenarioHandler.getActiveScenarios()) {
-                scenario.givePlayer(player)
-            }
             player.addPotionEffect(PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 300, 1000, true, false))
             player.teleport(teammate.location)
             player.inventory.setItem(0, ItemStack(Material.COOKED_BEEF, SettingsFeature.instance.data!!.getInt("game.starterfood")))
            // Stats.addGamesPlayed(player)
+            for (scenario in ScenarioHandler.getActiveScenarios()) {
+                scenario.givePlayer(player)
+            }
             WhitelistCommand().addWhitelist(player.name)
             list.add(player.name)
 

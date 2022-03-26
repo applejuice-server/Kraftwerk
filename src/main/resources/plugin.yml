@@ -184,6 +184,10 @@ commands:
       - ti
       - teami
     description: View your team inventory.
+  moles:
+    aliases:
+      - mole
+    description: Base command for mole commands.
 depend:
   - ProtocolLib
   - JDA
