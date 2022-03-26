@@ -8,15 +8,14 @@ group 'pink.mino.Kraftwerk'
 version '1.0-SNAPSHOT'
 
 repositories {
+    mavenCentral()
     maven { url = 'https://papermc.io/repo/repository/maven-public/' }
     maven { url = 'https://repo.dmulloy2.net/nexus/repository/public/' }
     maven { url = 'https://oss.sonatype.org/content/repositories/snapshots' }
     maven { url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
     maven { url = 'https://maven.elmakers.com/repository/' }
-    maven { url = 'https://jitpack.io' }
     maven { url = 'https://repo.citizensnpcs.co/' }
-
-    mavenCentral()
+    maven { url = 'https://jitpack.io/' }
     mavenLocal()
 }
 
@@ -36,6 +35,7 @@ dependencies {
     compileOnly files('lib/LunarClient.jar')
     compileOnly files('lib/LunarClient-NetHandler.jar')
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+    implementation('io.github.redouane59.twitter:twittered:2.15')
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
 }
 

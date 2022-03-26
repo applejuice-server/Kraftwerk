@@ -99,6 +99,14 @@ class ScheduleBroadcast(private val opening: String) : BukkitRunnable() {
             SettingsFeature.instance.data!!.set("whitelist.requests", true)
             SettingsFeature.instance.data!!.set("matchpost.posted", true)
             SettingsFeature.instance.saveData()
+            JavaPlugin.getPlugin(Kraftwerk::class.java).twitter.postTweet("Upcoming \uD83E\uDDC3 applejuice game in 15m!\n" +
+                    "\n" +
+                    "${SettingsFeature.instance.data!!.getString("matchpost.host")} - ${SettingsFeature.instance.data!!.getString("matchpost.team")}\n" +
+                    "\n" +
+                    "Opens at: $opening\n" +
+                    "Scenarios: ${scenarios.joinToString(", ")}\n" +
+                    "\n" +
+                    "Matchpost: https://hosts.uhc.gg/m/${SettingsFeature.instance.data!!.getInt("matchpost.id")}")
             cancel()
         }
     }

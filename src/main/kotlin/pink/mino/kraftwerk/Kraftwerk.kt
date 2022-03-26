@@ -4,6 +4,8 @@ import com.comphenix.protocol.ProtocolLibrary
 import com.comphenix.protocol.ProtocolManager
 import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource
+import io.github.redouane59.twitter.TwitterClient
+import io.github.redouane59.twitter.signature.TwitterCredentials
 import net.dv8tion.jda.api.entities.Activity
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
@@ -34,6 +36,7 @@ class Kraftwerk : JavaPlugin() {
 
     private var protocolManager: ProtocolManager? = null
     lateinit var dataSource: DataSource
+    lateinit var twitter: TwitterClient
 
     companion object {
         val instance = this
@@ -145,6 +148,7 @@ class Kraftwerk : JavaPlugin() {
         addRecipes()
 
         setupDataSource()
+        setupTwitter()
 
         if (!SettingsFeature.instance.data!!.getBoolean("matchpost.posted")) SettingsFeature.instance.data!!.set("whitelist.requests", false)
         SettingsFeature.instance.saveData()
@@ -168,6 +172,18 @@ class Kraftwerk : JavaPlugin() {
         }
         InfoFeature().runTaskTimerAsynchronously(this, 0L, 6000L)
         Bukkit.getLogger().info("Kraftwerk enabled.")
+    }
+
+    fun setupTwitter() {
+        this.twitter = TwitterClient(
+            TwitterCredentials.builder()
+                .accessToken("1498385359121657864-1XakjbM7vLnG1SyxwStjlpeU808J2G")
+                .accessTokenSecret("0LUyt7QLbSatpg9k3vstmKGjz5gVY1seSGhhPC4czLB4V")
+                .bearerToken("AAAAAAAAAAAAAAAAAAAAAFTvZgEAAAAApo%2FWeMkCpDMI02DGzAgOXcUMFtE%3DxgGxqb1KFt5dL5W6ldFSUsHRqFPenrjUxe2XWQ1blbIPpdEpyk")
+                .apiKey("whVinVhenIyJSqfFB1qmTbHJM")
+                .apiSecretKey("8qqFxVJWMCXYwqrTbO3P1Atw3rUAiIQ8cVEsbuXBN0tkGl93kU")
+                .build()
+        )
     }
 
     fun setupDataSource() {
