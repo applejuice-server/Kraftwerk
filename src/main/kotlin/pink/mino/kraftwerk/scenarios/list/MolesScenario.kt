@@ -47,16 +47,15 @@ class MolesScenario : Scenario(
     fun assignMoles() {
         for (team in TeamsFeature.manager.getTeams()) {
             if (team.size != 0) {
-                val teammateIndex = Random.nextInt(team.players.size)
-                for ((index, teammate) in team.players.withIndex()) {
+                val list = ArrayList<Player>()
+                for (teammate in team.players) {
+                    if (teammate.isOnline) list.add(teammate as Player)
+                }
+                val teammateIndex = Random.nextInt(list.size)
+                for ((index, teammate) in list.withIndex()) {
                     if (index == teammateIndex) {
-                        if (teammate.isOnline) {
-                            moles[teammate.uniqueId] = false
-                            Chat.sendMessage(teammate as Player, "$prefix You are the &fmole&7! Use &f/mole help&7 to see mole commands.")
-                        } else {
-                            index.minus(1)
-                            continue
-                        }
+                        moles[teammate.uniqueId] = false
+                        Chat.sendMessage(teammate, "$prefix You are the &fmole&7! Use &f/mole help&7 to see mole commands.")
                     }
                 }
             }
