@@ -35,7 +35,6 @@ class UHCFeature : Listener {
         } else if (mode == "teams") {
             Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Starting a &cTeams&7 UHC game... now freezing players."))
         }
-        Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Starting a &cTeams&7 UHC game... now freezing players."))
         var list = SettingsFeature.instance.data!!.getStringList("game.list")
         if (list == null) list = ArrayList<String>()
         for (player in Bukkit.getOnlinePlayers()) {
