@@ -162,10 +162,10 @@ class Kraftwerk : JavaPlugin() {
                 ScheduleBroadcast(SettingsFeature.instance.data!!.getString("matchpost.opens")).runTaskTimer(this, 0L, 300L)
                 ScheduleOpening(SettingsFeature.instance.data!!.getString("matchpost.opens")).runTaskTimer(this, 0L, 300L)
             }
-            if (SettingsFeature.instance.data!!.getString("matchpost.host") == null) Discord.instance!!.presence.activity = Activity.playing("applejuice.bar")
+            if (SettingsFeature.instance.data!!.getString("matchpost.host") == null) Discord.instance!!.presence.activity = Activity.playing("na.applejuice.bar")
             else Discord.instance!!.presence.activity = Activity.playing(SettingsFeature.instance.data!!.getString("matchpost.host"))
         } else {
-            Discord.instance!!.presence.activity = Activity.playing("applejuice.bar")
+            Discord.instance!!.presence.activity = Activity.playing("na.applejuice.bar")
             SettingsFeature.instance.data!!.set("matchpost.cancelled", null)
             SettingsFeature.instance.saveData()
         }

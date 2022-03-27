@@ -164,13 +164,12 @@ class MoleKitCommand : CommandExecutor {
                 Chat.sendMessage(sender, "${MolesScenario.instance.prefix} You've been given your &fProjectile&7 kit.")
             }
             args[0].lowercase() == "healer" -> {
-                val healingPotion = ItemBuilder(Material.POTION)
-                    .toPotion()
-                    .setMainEffect(PotionEffectType.HEAL)
-                    .make()
+                val healingPotion = Potion(PotionType.INSTANT_HEAL, 2)
+                healingPotion.isSplash = true
+                healingPotion.level = 2
                 val bulk: ArrayList<ItemStack> = arrayListOf(
                     ItemStack(Material.GOLDEN_APPLE, 2),
-                    healingPotion
+                    healingPotion.toItemStack(1)
                 )
                 PlayerUtils.bulkItems(sender, bulk)
                 MolesScenario.instance.moles[sender.uniqueId] = true
