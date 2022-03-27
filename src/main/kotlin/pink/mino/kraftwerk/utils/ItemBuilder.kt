@@ -10,6 +10,7 @@ import org.bukkit.inventory.meta.PotionMeta
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 
+
 class ItemBuilder(material: Material) {
     val item: ItemStack = ItemStack(material)
     var meta: ItemMeta = item.itemMeta
@@ -20,7 +21,10 @@ class ItemBuilder(material: Material) {
         return this
     }
     fun addLore(line: String): ItemBuilder {
-        meta.lore.add(line)
+        var lores = meta.lore
+        if (lores == null) lores = ArrayList()
+        lores.add(Chat.colored(line))
+        meta.lore = lores
         item.itemMeta = meta
         return this
     }
