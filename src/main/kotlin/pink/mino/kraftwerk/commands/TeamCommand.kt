@@ -154,7 +154,10 @@ class TeamCommand : CommandExecutor {
             val player = sender as Player
             val oPlayer = player as OfflinePlayer
             var team = player.scoreboard.getPlayerTeam(oPlayer)
-
+            if (SettingsFeature.instance.data!!.getString("game.ffa").toBoolean()) {
+                Chat.sendMessage(player, "&cYou can't use this command at the moment.")
+                return true
+            }
             if (args.size == 1) {
                 Chat.sendMessage(player, "&cInvalid usage: /team invite <player>")
                 return false
