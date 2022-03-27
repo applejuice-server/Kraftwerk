@@ -122,6 +122,11 @@ class Kraftwerk : JavaPlugin() {
         getCommand("discord").executor = DiscordCommand()
         getCommand("apply").executor = ApplyCommand()
         getCommand("teaminventory").executor = TeamInventoryCommand()
+        getCommand("moles").executor = MolesCommand()
+        getCommand("molekit").executor = MoleKitCommand()
+        getCommand("molechat").executor = MoleChatCommand()
+        getCommand("moleloc").executor = MoleLocationCommand()
+        getCommand("molelist").executor = MolesListCommand()
 
         /* ProtocolLib stuff */
         if (Bukkit.getPluginManager().getPlugin("ProtocolLib") == null) {

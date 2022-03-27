@@ -8,8 +8,10 @@ import pink.mino.kraftwerk.scenarios.ScenarioHandler
 import pink.mino.kraftwerk.scenarios.list.MolesScenario
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GameState
+import pink.mino.kraftwerk.utils.PlayerUtils
+import kotlin.math.roundToInt
 
-class MolesCommand : CommandExecutor {
+class MoleLocationCommand : CommandExecutor {
     override fun onCommand(
         sender: CommandSender,
         command: Command?,
@@ -32,13 +34,10 @@ class MolesCommand : CommandExecutor {
             Chat.sendMessage(sender, "${Chat.prefix} &7You aren't a mole!")
             return false
         }
-        Chat.sendMessage(sender, Chat.line)
-        Chat.sendCenteredMessage(sender, "&c&lMoles Help")
-        Chat.sendMessage(sender, "${Chat.prefix} &f/molekit [kit] &8-&7 Chooses a mole kit.")
-        Chat.sendMessage(sender, "${Chat.prefix} &f/mcl &8-&7 Sends your location out to other moles.")
-        Chat.sendMessage(sender, "${Chat.prefix} &f/mcc <message> &8-&7 Message other moles.")
-        Chat.sendMessage(sender, "${Chat.prefix} &f/mcp &8-&7 View the list of other moles.")
-        Chat.sendMessage(sender, Chat.line)
+        val x = (sender.location.x * 100.0).roundToInt() / 100.0
+        val y = (sender.location.y * 100.0).roundToInt() / 100.0
+        val z = (sender.location.z * 100.0).roundToInt() / 100.0
+        MolesScenario.instance.sendMoles("&8[&cMole Chat&8]&f ${PlayerUtils.getPrefix(sender)}${sender.name}&7's location: &f${x}, ${y}, ${z}&7. &8| &7Dimension: &c${sender.location.world.worldType}&7.")
         return true
     }
 }

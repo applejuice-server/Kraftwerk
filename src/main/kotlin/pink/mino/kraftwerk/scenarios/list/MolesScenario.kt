@@ -19,7 +19,31 @@ class MolesScenario : Scenario(
         val instance = MolesScenario()
     }
 
+    val prefix = "&8[&4Moles&8]&7"
     val moles: HashMap<UUID, Boolean> = HashMap()
+
+    fun sendMoles(message: String) {
+        for (mole in moles) {
+            val player = Bukkit.getOfflinePlayer(mole.key)
+            if (player.isOnline) {
+                Chat.sendMessage(player as Player, "$prefix $message")
+            }
+        }
+    }
+
+    fun getMoles(): ArrayList<String> {
+        val list: ArrayList<String> = ArrayList<String>()
+        for (mole in moles) {
+            val player = Bukkit.getOfflinePlayer(mole.key)
+            if (player.isOnline) {
+                list.add(Chat.colored("&a${player.name}&7"))
+            } else {
+                list.add(Chat.colored("&c${player.name}&7"))
+            }
+        }
+        return list
+    }
+
     fun assignMoles() {
         for (team in TeamsFeature.manager.getTeams()) {
             if (team.size != 0) {
@@ -28,8 +52,9 @@ class MolesScenario : Scenario(
                     if (index == teammateIndex) {
                         if (teammate.isOnline) {
                             moles[teammate.uniqueId] = false
-                            Chat.sendMessage(teammate as Player, "${Chat.prefix} You are the &fmole&7! Use &f/mole help&7 to see mole commands.")
+                            Chat.sendMessage(teammate as Player, "$prefix You are the &fmole&7! Use &f/mole help&7 to see mole commands.")
                         } else {
+                            index.minus(1)
                             continue
                         }
                     }
@@ -40,6 +65,6 @@ class MolesScenario : Scenario(
 
     override fun onPvP() {
         assignMoles()
-        Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Moles have been assigned!"))
+        Bukkit.broadcastMessage(Chat.colored("$prefix Moles have been assigned!"))
     }
 }

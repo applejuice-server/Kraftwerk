@@ -1,5 +1,6 @@
 package pink.mino.kraftwerk.commands
 
+import org.bukkit.ChatColor
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
@@ -8,8 +9,9 @@ import pink.mino.kraftwerk.scenarios.ScenarioHandler
 import pink.mino.kraftwerk.scenarios.list.MolesScenario
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GameState
+import pink.mino.kraftwerk.utils.PlayerUtils
 
-class MolesCommand : CommandExecutor {
+class MoleChatCommand : CommandExecutor {
     override fun onCommand(
         sender: CommandSender,
         command: Command?,
@@ -32,13 +34,16 @@ class MolesCommand : CommandExecutor {
             Chat.sendMessage(sender, "${Chat.prefix} &7You aren't a mole!")
             return false
         }
-        Chat.sendMessage(sender, Chat.line)
-        Chat.sendCenteredMessage(sender, "&c&lMoles Help")
-        Chat.sendMessage(sender, "${Chat.prefix} &f/molekit [kit] &8-&7 Chooses a mole kit.")
-        Chat.sendMessage(sender, "${Chat.prefix} &f/mcl &8-&7 Sends your location out to other moles.")
-        Chat.sendMessage(sender, "${Chat.prefix} &f/mcc <message> &8-&7 Message other moles.")
-        Chat.sendMessage(sender, "${Chat.prefix} &f/mcp &8-&7 View the list of other moles.")
-        Chat.sendMessage(sender, Chat.line)
+        val message = StringBuilder()
+        if (args.isEmpty()) {
+            sender.sendMessage("${ChatColor.RED}Usage: /pm <message>")
+            return true
+        }
+        for (element in args) {
+            message.append(element).append(" ")
+        }
+        val msg = message.toString().trim()
+        MolesScenario.instance.sendMoles("&8[&cMole Chat&8]&f ${PlayerUtils.getPrefix(sender)}${sender.name} &8- &f${msg}")
         return true
     }
 }

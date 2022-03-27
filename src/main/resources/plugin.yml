@@ -33,6 +33,9 @@ commands:
   pm:
     description: Sends a message to your team.
   pmc:
+    aliases:
+      - sendcoords
+      - coords
     description: Sends your coordinates to your team.
   team:
     description: General team commands.
@@ -188,6 +191,22 @@ commands:
     aliases:
       - mole
     description: Base command for mole commands.
+  molechat:
+    aliases:
+      - mcc
+    description: Communicate with other moles.
+  molekit:
+    aliases:
+      - mk
+    description: Receives your mole kit.
+  moleloc:
+    aliases:
+      - mcl
+    description: Send your location to other moles.
+  molelist:
+    aliases:
+      - mcp
+    description: View the list of other moles.
 depend:
   - ProtocolLib
   - JDA
