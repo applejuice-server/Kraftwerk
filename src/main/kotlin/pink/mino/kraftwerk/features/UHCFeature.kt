@@ -15,6 +15,7 @@ import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 import pink.mino.kraftwerk.Kraftwerk
+import pink.mino.kraftwerk.commands.SendTeamView
 import pink.mino.kraftwerk.scenarios.ScenarioHandler
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GameState
@@ -34,6 +35,18 @@ class UHCFeature : Listener {
             Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Starting a &cFFA&7 UHC game... now freezing players."))
         } else if (mode == "teams") {
             Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Starting a &cTeams&7 UHC game... now freezing players."))
+            for (player in Bukkit.getOnlinePlayers()) {
+                if (!SpecFeature.instance.getSpecs().contains(player.name)) {
+                    if (TeamsFeature.manager.getTeam(player) == null) {
+                        for (team in TeamsFeature.manager.getTeams()) {
+                            if (team.size == 0) {
+                                team.addPlayer(player)
+                                SendTeamView(team).runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 20L)
+                            }
+                        }
+                    }
+                }
+            }
         }
         var list = SettingsFeature.instance.data!!.getStringList("game.list")
         if (list == null) list = ArrayList<String>()
