@@ -32,6 +32,7 @@ class ScenarioHandler {
             addScenario(GoldenRetrieverScenario())
             addScenario(OPLootCratesScenario())
             addScenario(MolesScenario.instance)
+            addScenario(WebCageScenario())
             scenarios.sortWith(Comparator.comparing(Scenario::name))
         }
 
