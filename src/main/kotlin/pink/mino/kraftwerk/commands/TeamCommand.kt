@@ -19,6 +19,7 @@ import pink.mino.kraftwerk.Kraftwerk
 import pink.mino.kraftwerk.features.SettingsFeature
 import pink.mino.kraftwerk.features.SpecFeature
 import pink.mino.kraftwerk.features.TeamsFeature
+import pink.mino.kraftwerk.scenarios.ScenarioHandler
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GameState
 import java.util.*
@@ -29,6 +30,9 @@ import java.util.function.Consumer
 class SendTeamView(val team: Team) : BukkitRunnable() {
     override fun run() {
         if (team.size == 0) {
+            cancel()
+        }
+        if (ScenarioHandler.getActiveScenarios().contains(ScenarioHandler.getScenario("moles"))) {
             cancel()
         }
         val list: ArrayList<Player> = arrayListOf()
