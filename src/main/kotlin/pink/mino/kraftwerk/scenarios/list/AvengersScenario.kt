@@ -296,7 +296,6 @@ class AvengersScenario : Scenario(
                                 return
                             }
                         }
-                        cooldowns[e.player.name] = System.currentTimeMillis()
                         val nearby = e.player.getNearbyEntities(75.0, 75.0, 75.0)
                         val nearbyPlayers: ArrayList<Player> = arrayListOf()
                         for (entity in nearby) {
@@ -305,6 +304,11 @@ class AvengersScenario : Scenario(
                             }
                         }
                         Chat.sendMessage(e.player, "$prefix There are &f${nearbyPlayers.size} players&7 near you.")
+                        if (nearbyPlayers.size == 0) {
+                            Chat.sendMessage(e.player, "$prefix No players found nearby...")
+                            return
+                        }
+                        cooldowns[e.player.name] = System.currentTimeMillis()
                     }
                     if (e.item.itemMeta.displayName == Chat.colored("&cWeb Shooter")) {
                         e.isCancelled = true
@@ -316,7 +320,6 @@ class AvengersScenario : Scenario(
                                 return
                             }
                         }
-                        cooldowns[e.player.name] = System.currentTimeMillis()
                         val nearby = e.player.getNearbyEntities(8.0, 8.0, 8.0)
                         val nearbyPlayers: ArrayList<Player> = arrayListOf()
                         for (entity in nearby) {
@@ -324,12 +327,18 @@ class AvengersScenario : Scenario(
                                 nearbyPlayers.add(entity as Player)
                             }
                         }
+                        if (nearbyPlayers.size == 0) {
+                            Chat.sendMessage(e.player, "$prefix No players found nearby...")
+                            return
+                        }
                         for (player in nearbyPlayers) {
                             if (player != e.player) {
                                 player.addPotionEffect(PotionEffect(PotionEffectType.SLOW, 160, 0, true, false))
                                 Chat.sendMessage(player, "$prefix You've been slowed from &f${e.player.name}&7's Web Shooter.")
                             }
                         }
+                        Chat.sendMessage(e.player, "$prefix Slowed down &f${nearbyPlayers.size} players&7.")
+                        cooldowns[e.player.name] = System.currentTimeMillis()
                     }
                 }
             }
@@ -344,11 +353,14 @@ class AvengersScenario : Scenario(
                                 return
                             }
                         }
-                        cooldowns[e.player.name] = System.currentTimeMillis()
                         val near = e.player.getNearbyEntities(5.0, 5.0, 5.0)
                         val nearby: ArrayList<Player> = arrayListOf()
                         for (entity in near) {
                             if (entity.type == EntityType.PLAYER) nearby.add(entity as Player)
+                        }
+                        if (nearby.size == 0) {
+                            Chat.sendMessage(e.player, "$prefix No players found nearby...")
+                            return
                         }
                         for (player in nearby) {
                             if (TeamsFeature.manager.getTeam(player) != TeamsFeature.manager.getTeam(e.player) && player != e.player) {
@@ -356,6 +368,7 @@ class AvengersScenario : Scenario(
                                 Chat.sendMessage(player, "$prefix You've been smited by &f${e.player.name}&7's Stormbreaker.")
                             }
                         }
+                        cooldowns[e.player.name] = System.currentTimeMillis()
                     }
                 }
             }
