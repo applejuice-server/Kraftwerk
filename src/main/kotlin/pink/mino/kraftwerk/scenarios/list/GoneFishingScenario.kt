@@ -7,6 +7,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.enchantment.EnchantItemEvent
 import org.bukkit.inventory.ItemStack
+import pink.mino.kraftwerk.features.SpecFeature
 import pink.mino.kraftwerk.scenarios.Scenario
 import pink.mino.kraftwerk.utils.Chat
 
@@ -25,9 +26,11 @@ class GoneFishingScenario : Scenario(
         meta.displayName = Chat.colored("&cGone Fishin'!")
         fishingRod.itemMeta = meta
         for (player in Bukkit.getOnlinePlayers()) {
-            player.level = 25000
-            player.inventory.addItem(fishingRod)
-            player.inventory.addItem(ItemStack(Material.ANVIL, 64))
+            if (!SpecFeature.instance.getSpecs().contains(player.name)) {
+                player.level = 25000
+                player.inventory.addItem(fishingRod)
+                player.inventory.addItem(ItemStack(Material.ANVIL, 64))
+            }
         }
     }
 

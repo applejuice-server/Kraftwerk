@@ -52,8 +52,10 @@ class SkyHighScenario : Scenario(
         meta.addEnchant(Enchantment.DIG_SPEED, 10, true)
         shovel.itemMeta = meta
         for (player in Bukkit.getOnlinePlayers()) {
-            player.inventory.addItem(ItemStack(Material.STAINED_CLAY, 128, 14), ItemStack(Material.PUMPKIN, 2), ItemStack(Material.SNOW_BLOCK, 4), ItemStack(Material.STRING, 2), shovel, ItemStack(Material.FEATHER, 16))
-            Chat.sendMessage(player, "${Chat.prefix} You've been given your SkyHigh items.")
+            if (!SpecFeature.instance.getSpecs().contains(player.name)) {
+                player.inventory.addItem(ItemStack(Material.STAINED_CLAY, 128, 14), ItemStack(Material.PUMPKIN, 2), ItemStack(Material.SNOW_BLOCK, 4), ItemStack(Material.STRING, 2), shovel, ItemStack(Material.FEATHER, 16))
+                Chat.sendMessage(player, "${Chat.prefix} You've been given your SkyHigh items.")
+            }
         }
     }
 
