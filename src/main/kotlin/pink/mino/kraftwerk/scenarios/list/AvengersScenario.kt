@@ -254,7 +254,7 @@ class AvengersScenario : Scenario(
     fun onPlayerDamage(e: EntityDamageEvent) {
         if (!enabled) return
         if (e.entity.type == EntityType.PLAYER) {
-            if (superheroes[(e.entity as Player)] != "Thor") {
+            if (superheroes[(e.entity as Player)] == "Thor") {
                 if (e.cause == EntityDamageEvent.DamageCause.LIGHTNING) e.isCancelled = true
             }
         }
@@ -351,7 +351,7 @@ class AvengersScenario : Scenario(
                             if (entity.type == EntityType.PLAYER) nearby.add(entity as Player)
                         }
                         for (player in nearby) {
-                            if (TeamsFeature.manager.getTeam(player) == TeamsFeature.manager.getTeam(e.player) && player != e.player) {
+                            if (TeamsFeature.manager.getTeam(player) != TeamsFeature.manager.getTeam(e.player) && player != e.player) {
                                 e.player.world.strikeLightning(player.location)
                                 Chat.sendMessage(player, "$prefix You've been smited by &f${e.player.name}&7's Stormbreaker.")
                             }
