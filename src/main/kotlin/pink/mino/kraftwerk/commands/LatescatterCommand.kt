@@ -7,9 +7,11 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryType
 import org.bukkit.inventory.ItemStack
+import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 import org.bukkit.scoreboard.Team
+import pink.mino.kraftwerk.Kraftwerk
 import pink.mino.kraftwerk.features.ScatterFeature
 import pink.mino.kraftwerk.features.SettingsFeature
 import pink.mino.kraftwerk.features.TeamsFeature
@@ -86,6 +88,7 @@ class LatescatterCommand : CommandExecutor {
                     }
                 }
                 val det = Random().nextInt(oTeams.size)
+                SendTeamView(oTeams[det]).runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 20L)
                 oTeams[det].addPlayer(teammate)
                 oTeams[det].addPlayer(player)
             } else {
@@ -125,6 +128,7 @@ class LatescatterCommand : CommandExecutor {
             Chat.sendMessage(player, "${Chat.prefix} You've successfully been added to the game, you've also been teamed with &f${teammate.name}&7")
         }
         SettingsFeature.instance.data!!.set("game.list", list)
+        SettingsFeature.instance.saveData()
         return true
     }
 
