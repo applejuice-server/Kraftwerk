@@ -52,6 +52,10 @@ class AvengersScenario : Scenario(
             "Iron Man",
             "Hawkeye"
         )
+        if (TeamsFeature.manager.getTeam(player) == null) {
+            SpecFeature.instance.specChat("&f${player.name}&7 hasn't been late-scattered to a teammate, not giving them any powers.")
+            return
+        }
         for (teammate in TeamsFeature.manager.getTeam(player)!!.players) {
             pool.remove(superheroes[teammate])
         }
