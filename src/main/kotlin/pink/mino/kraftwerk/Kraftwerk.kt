@@ -71,6 +71,8 @@ class Kraftwerk : JavaPlugin() {
         Bukkit.getServer().pluginManager.registerEvents(PlayerRegisterListener(), this)
         Bukkit.getServer().pluginManager.registerEvents(TabFeature(), this)
         Bukkit.getServer().pluginManager.registerEvents(PortalListener(), this)
+        //Bukkit.getServer().pluginManager.registerEvents(LiteBans(), this)
+        Bukkit.getServer().pluginManager.registerEvents(WorldSwitchListener(), this)
 
         /* Registering commands */
         getCommand("clear").executor = ClearInventoryCommand()
