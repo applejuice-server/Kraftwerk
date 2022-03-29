@@ -357,6 +357,10 @@ class AvengersScenario : Scenario(
                                 return
                             }
                         }
+                        if (!pvpEnabled) {
+                            Chat.sendMessage(e.player, "&cYou can't use this ability before PvP.")
+                            return
+                        }
                         val near = e.player.getNearbyEntities(5.0, 5.0, 5.0)
                         val nearby: ArrayList<Player> = arrayListOf()
                         for (entity in near) {
