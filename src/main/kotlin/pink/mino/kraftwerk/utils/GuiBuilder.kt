@@ -63,6 +63,12 @@ class GuiBuilder : Listener {
         }
     }
 
+    fun close() {
+        try {
+            HandlerList.unregisterAll(this)
+        } catch (e: Error) { print(e) }
+    }
+
     @EventHandler
     fun onPlayerClose(event: InventoryCloseEvent) {
         if (ChatColor.stripColor(event.inventory.name)

@@ -72,6 +72,7 @@ class ConfigCommand : CommandExecutor {
         options.itemMeta = optionsMeta
         gui.item(20, options).onClick runnable@{
             if (sender.hasPermission("uhc.staff")) {
+                gui.close()
                 Bukkit.dispatchCommand(sender as CommandSender, "editconfig options")
             }
             it.isCancelled = true
@@ -94,6 +95,7 @@ class ConfigCommand : CommandExecutor {
         rules.itemMeta = rulesMeta
         gui.item(22, rules).onClick runnable@{
             if (sender.hasPermission("uhc.staff")) {
+                gui.close()
                 Bukkit.dispatchCommand(sender as CommandSender, "editconfig rules")
             }
             it.isCancelled = true
@@ -115,6 +117,7 @@ class ConfigCommand : CommandExecutor {
         miningRules.itemMeta = miningRulesMeta
         gui.item(23, miningRules).onClick runnable@{
             if (sender.hasPermission("uhc.staff")) {
+                gui.close()
                 Bukkit.dispatchCommand(sender as CommandSender, "editconfig rules")
             }
             it.isCancelled = true
@@ -150,6 +153,7 @@ class ConfigCommand : CommandExecutor {
         events.itemMeta = eventsMeta
         gui.item(30, events).onClick runnable@{
             if (sender.hasPermission("uhc.staff")) {
+                gui.close()
                 Bukkit.dispatchCommand(sender as CommandSender, "editconfig events")
             }
             it.isCancelled = true
@@ -220,6 +224,7 @@ class ConfigCommand : CommandExecutor {
         netherConfig.itemMeta = netherConfigMeta
         gui.item(32, netherConfig).onClick runnable@{
             if (sender.hasPermission("uhc.staff")) {
+                gui.close()
                 Bukkit.dispatchCommand(sender as CommandSender, "editconfig nether")
             }
             it.isCancelled = true
@@ -244,6 +249,7 @@ class ConfigCommand : CommandExecutor {
         teamConfig.itemMeta = teamConfigMeta
         gui.item(21, teamConfig).onClick runnable@{
             if (sender.hasPermission("uhc.staff")) {
+                gui.close()
                 Bukkit.dispatchCommand(sender as CommandSender, "editconfig teams")
             }
             it.isCancelled = true
@@ -261,6 +267,7 @@ class ConfigCommand : CommandExecutor {
         starterFood.itemMeta = starterFoodMeta
         gui.item(29, starterFood).onClick runnable@{
             if (sender.hasPermission("uhc.staff")) {
+                gui.close()
                 Bukkit.dispatchCommand(sender as CommandSender, "editconfig starterfood")
             }
             it.isCancelled = true
@@ -279,6 +286,7 @@ class ConfigCommand : CommandExecutor {
         rates.itemMeta = ratesMeta
         gui.item(33, rates).onClick runnable@{
             if (sender.hasPermission("uhc.staff")) {
+                gui.close()
                 Bukkit.dispatchCommand(sender as CommandSender, "editconfig rates")
             }
             it.isCancelled = true
@@ -301,6 +309,7 @@ class ConfigCommand : CommandExecutor {
         scenarios.itemMeta = scenariosMeta
         gui.item(40, scenarios).onClick runnable@{
             if (sender.hasPermission("uhc.staff")) {
+                gui.close()
                 Bukkit.dispatchCommand(sender as CommandSender, "sm")
             }
             it.isCancelled = true
