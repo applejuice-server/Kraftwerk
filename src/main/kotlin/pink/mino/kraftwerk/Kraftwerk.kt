@@ -2,8 +2,8 @@ package pink.mino.kraftwerk
 
 import com.comphenix.protocol.ProtocolLibrary
 import com.comphenix.protocol.ProtocolManager
-import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource
-import com.mysql.jdbc.jdbc2.optional.MysqlDataSource
+import com.zaxxer.hikari.HikariConfig
+import com.zaxxer.hikari.HikariDataSource
 import io.github.redouane59.twitter.TwitterClient
 import io.github.redouane59.twitter.signature.TwitterCredentials
 import net.dv8tion.jda.api.entities.Activity
@@ -25,6 +25,7 @@ import pink.mino.kraftwerk.scenarios.ScenarioHandler
 import pink.mino.kraftwerk.utils.GameState
 import pink.mino.kraftwerk.utils.Scoreboard
 import java.sql.SQLException
+import java.util.*
 import javax.sql.DataSource
 
 /*
@@ -184,11 +185,11 @@ class Kraftwerk : JavaPlugin() {
     fun setupTwitter() {
         this.twitter = TwitterClient(
             TwitterCredentials.builder()
-                .accessToken("1498385359121657864-1XakjbM7vLnG1SyxwStjlpeU808J2G")
-                .accessTokenSecret("0LUyt7QLbSatpg9k3vstmKGjz5gVY1seSGhhPC4czLB4V")
-                .bearerToken("AAAAAAAAAAAAAAAAAAAAAFTvZgEAAAAApo%2FWeMkCpDMI02DGzAgOXcUMFtE%3DxgGxqb1KFt5dL5W6ldFSUsHRqFPenrjUxe2XWQ1blbIPpdEpyk")
-                .apiKey("whVinVhenIyJSqfFB1qmTbHJM")
-                .apiSecretKey("8qqFxVJWMCXYwqrTbO3P1Atw3rUAiIQ8cVEsbuXBN0tkGl93kU")
+                .accessToken("1498385359121657864-vL64dNrkXfoF9jCOAQfVfSCBzhI5cf")
+                .accessTokenSecret("9S8KMk5SiSWD71BlklxQ1pCpnKhSV2p98PTjvfnPXeLW8")
+                .bearerToken("AAAAAAAAAAAAAAAAAAAAAFTvZgEAAAAAx%2FlXSH6jVLANz9JfjDspD94jdDA%3DP1VqgNG9N38xOPDyz9Kd1mjSPNwxsTgJjB2XRaBSp8J3TXeqKO")
+                .apiKey("0FrHNXc5kgVMBILgwwpZW3k7r")
+                .apiSecretKey("O40NzNFgVmcVuHxIlx8MgI0yO5qlnyncS9D2q0PkxGHIyYYpPS")
                 .build()
         )
     }
@@ -200,17 +201,19 @@ class Kraftwerk : JavaPlugin() {
         val user = SettingsFeature.instance.data!!.getString("database.user")
         val password = SettingsFeature.instance.data!!.getString("database.password")
 
-        val dataSource: MysqlDataSource = MysqlConnectionPoolDataSource()
+        val props = Properties()
+        props.setProperty("dataSourceClassName", "org.mariadb.jdbc.MariaDbDataSource")
+        props.setProperty("dataSource.serverName", host)
+        props.setProperty("dataSource.portNumber", port.toString())
+        props.setProperty("dataSource.user", user)
+        props.setProperty("dataSource.password", password)
+        props.setProperty("dataSource.databaseName", database)
 
-        dataSource.serverName = host
-        dataSource.port = port
-        dataSource.databaseName = database
-        dataSource.user = user
-        dataSource.setPassword(password)
-
+        val config = HikariConfig(props)
+        config.maximumPoolSize = 10
         testDataSource(dataSource)
 
-        this.dataSource = dataSource
+        this.dataSource = HikariDataSource(config)
     }
 
     @Throws(SQLException::class)
