@@ -9,6 +9,7 @@ import net.dv8tion.jda.api.interactions.commands.build.CommandData
 import net.dv8tion.jda.api.requests.GatewayIntent
 import pink.mino.kraftwerk.discord.listeners.MemberJoin
 import pink.mino.kraftwerk.discord.listeners.SlashCommand
+import pink.mino.kraftwerk.features.SettingsFeature
 import javax.security.auth.login.LoginException
 
 
@@ -20,14 +21,18 @@ class Discord : ListenerAdapter() {
         @JvmStatic
         fun main() {
             val jda = JDABuilder.createLight(
-                "NzI1MTM0MzcwNzI1MTY3MTg0.XvKUAg.OeFOCpV887CJJbyNUqYBv5uMIeI",
+                SettingsFeature.instance.data!!.getString("discord.token"),
                 GatewayIntent.GUILD_MEMBERS
             )
                 .addEventListeners(SlashCommand())
                 .addEventListeners(MemberJoin())
                 .build()
 
-            jda.presence.activity = Activity.playing("na.applejuice.bar")
+            if (SettingsFeature.instance.data!!.getString("server.region") == "NA") {
+                jda.presence.activity = Activity.playing("na.applejuice.bar")
+            } else {
+                jda.presence.activity = Activity.playing("eu.applejuice.bar")
+            }
             val commands = jda.updateCommands()
 
             commands.addCommands(
