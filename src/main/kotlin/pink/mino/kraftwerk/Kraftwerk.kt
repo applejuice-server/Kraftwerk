@@ -72,7 +72,6 @@ class Kraftwerk : ExtendedJavaPlugin() {
         Bukkit.getServer().pluginManager.registerEvents(PlayerRegisterListener(), this)
         Bukkit.getServer().pluginManager.registerEvents(TabFeature(), this)
         Bukkit.getServer().pluginManager.registerEvents(PortalListener(), this)
-        //Bukkit.getServer().pluginManager.registerEvents(LiteBans(), this)
         Bukkit.getServer().pluginManager.registerEvents(WorldSwitchListener(), this)
 
         /* Registering commands */
@@ -129,6 +128,8 @@ class Kraftwerk : ExtendedJavaPlugin() {
         getCommand("molechat").executor = MoleChatCommand()
         getCommand("moleloc").executor = MoleLocationCommand()
         getCommand("molelist").executor = MolesListCommand()
+        getCommand("store").executor = StoreCommand()
+        getCommand("rules").executor = RulesCommand()
 
         /* ProtocolLib stuff */
         if (Bukkit.getPluginManager().getPlugin("ProtocolLib") == null) {

@@ -207,6 +207,14 @@ commands:
     aliases:
       - mcp
     description: View the list of other moles.
+  rules:
+    aliases:
+      - rul
+    description: View the server rules.
+  store:
+    aliases:
+      - donate
+    description: View the server donation store.
 depend:
   - ProtocolLib
   - JDA
