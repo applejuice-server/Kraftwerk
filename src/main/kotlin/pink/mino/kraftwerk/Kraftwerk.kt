@@ -2,10 +2,11 @@ package pink.mino.kraftwerk
 
 import com.comphenix.protocol.ProtocolLibrary
 import com.comphenix.protocol.ProtocolManager
-import com.zaxxer.hikari.HikariConfig
-import com.zaxxer.hikari.HikariDataSource
 import io.github.redouane59.twitter.TwitterClient
 import io.github.redouane59.twitter.signature.TwitterCredentials
+import me.lucko.helper.plugin.ExtendedJavaPlugin
+import me.lucko.helper.sql.external.hikari.HikariConfig
+import me.lucko.helper.sql.external.hikari.HikariDataSource
 import net.dv8tion.jda.api.entities.Activity
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
@@ -14,7 +15,6 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.ShapedRecipe
 import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.material.MaterialData
-import org.bukkit.plugin.java.JavaPlugin
 import pink.mino.kraftwerk.commands.*
 import pink.mino.kraftwerk.config.ConfigOptionHandler
 import pink.mino.kraftwerk.discord.Discord
@@ -26,28 +26,28 @@ import pink.mino.kraftwerk.utils.GameState
 import pink.mino.kraftwerk.utils.Scoreboard
 import java.sql.SQLException
 import java.util.*
-import javax.sql.DataSource
+
 
 /*
 Dear weird person:
 Only I and God know how this plugin works.
  */
 
-class Kraftwerk : JavaPlugin() {
+class Kraftwerk : ExtendedJavaPlugin() {
 
     private var protocolManager: ProtocolManager? = null
-    lateinit var dataSource: DataSource
+    lateinit var dataSource: HikariDataSource
     lateinit var twitter: TwitterClient
 
     companion object {
         val instance = this
     }
 
-    override fun onLoad() {
+    override fun load() {
         protocolManager = ProtocolLibrary.getProtocolManager()
     }
 
-    override fun onEnable() {
+    override fun enable() {
         /* Registering listeners */
         Bukkit.getServer().pluginManager.registerEvents(ServerListPingListener(), this)
         Bukkit.getServer().pluginManager.registerEvents(PlayerJoinListener(), this)
@@ -121,7 +121,6 @@ class Kraftwerk : JavaPlugin() {
         getCommand("spawn").executor = SpawnCommand()
         getCommand("killtop").executor = KillTopCommand()
         getCommand("scenarios").executor = ScenarioCommand()
-        getCommand("statistics").executor = StatsCommand()
         getCommand("discord").executor = DiscordCommand()
         getCommand("apply").executor = ApplyCommand()
         getCommand("teaminventory").executor = TeamInventoryCommand()
@@ -137,9 +136,6 @@ class Kraftwerk : JavaPlugin() {
             Bukkit.getPluginManager().disablePlugin(this)
             return
         }
-
-        /* Discord */
-        Discord.main()
 
         /* This just enables Hardcore Hearts */
         protocolManager?.addPacketListener(HardcoreHeartsFeature())
@@ -158,6 +154,9 @@ class Kraftwerk : JavaPlugin() {
         setupDataSource()
         setupTwitter()
 
+        /* Discord */
+        Discord.main()
+
         if (!SettingsFeature.instance.data!!.getBoolean("matchpost.posted")) SettingsFeature.instance.data!!.set("whitelist.requests", false)
         SettingsFeature.instance.saveData()
         if (!SettingsFeature.instance.data!!.getBoolean("matchpost.cancelled")) {
@@ -165,10 +164,20 @@ class Kraftwerk : JavaPlugin() {
                 ScheduleBroadcast(SettingsFeature.instance.data!!.getString("matchpost.opens")).runTaskTimer(this, 0L, 300L)
                 ScheduleOpening(SettingsFeature.instance.data!!.getString("matchpost.opens")).runTaskTimer(this, 0L, 300L)
             }
-            if (SettingsFeature.instance.data!!.getString("matchpost.host") == null) Discord.instance!!.presence.activity = Activity.playing("na.applejuice.bar")
+            if (SettingsFeature.instance.data!!.getString("matchpost.host") == null) {
+                if (SettingsFeature.instance.data!!.getString("server.region") == "NA") {
+                    Discord.instance!!.presence.activity = Activity.playing("na.applejuice.bar")
+                } else {
+                    Discord.instance!!.presence.activity = Activity.playing("eu.applejuice.bar")
+                }
+            }
             else Discord.instance!!.presence.activity = Activity.playing(SettingsFeature.instance.data!!.getString("matchpost.host"))
         } else {
-            Discord.instance!!.presence.activity = Activity.playing("na.applejuice.bar")
+            if (SettingsFeature.instance.data!!.getString("server.region") == "NA") {
+                Discord.instance!!.presence.activity = Activity.playing("na.applejuice.bar")
+            } else {
+                Discord.instance!!.presence.activity = Activity.playing("eu.applejuice.bar")
+            }
             SettingsFeature.instance.data!!.set("matchpost.cancelled", null)
             SettingsFeature.instance.saveData()
         }
@@ -202,7 +211,7 @@ class Kraftwerk : JavaPlugin() {
         val password = SettingsFeature.instance.data!!.getString("database.password")
 
         val props = Properties()
-        props.setProperty("dataSourceClassName", "org.mariadb.jdbc.MariaDbDataSource")
+        props.setProperty("dataSourceClassName", "com.mysql.jdbc.jdbc2.optional.MysqlDataSource")
         props.setProperty("dataSource.serverName", host)
         props.setProperty("dataSource.portNumber", port.toString())
         props.setProperty("dataSource.user", user)
@@ -211,26 +220,31 @@ class Kraftwerk : JavaPlugin() {
 
         val config = HikariConfig(props)
         config.maximumPoolSize = 10
-        testDataSource(dataSource)
-
+        config.leakDetectionThreshold = 500000
+        config.connectionTimeout = 16000
+        config.idleTimeout = 16000
         this.dataSource = HikariDataSource(config)
+        testDataSource(this.dataSource)
     }
 
     @Throws(SQLException::class)
-    private fun testDataSource(dataSource: DataSource) {
+    private fun testDataSource(dataSource: HikariDataSource) {
         val conn = dataSource.connection
         if (!conn.isValid(1)) {
             throw SQLException("Could not establish database connection.")
+        } else {
+            print("Established database connection.")
         }
     }
 
 
-    override fun onDisable() {
-        Bukkit.getLogger().info("Kraftwerk disabled.")
+    override fun disable() {
         SettingsFeature.instance.data!!.set("game.winners", ArrayList<String>())
         SettingsFeature.instance.data!!.set("game.list", ArrayList<String>())
         SettingsFeature.instance.data!!.set("game.kills", null)
         SettingsFeature.instance.saveData()
+        this.dataSource.close()
+        Bukkit.getLogger().info("Kraftwerk disabled.")
     }
 
     fun addRecipes() {

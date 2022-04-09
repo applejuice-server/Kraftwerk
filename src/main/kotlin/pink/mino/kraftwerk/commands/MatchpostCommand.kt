@@ -86,6 +86,13 @@ class ScheduleBroadcast(private val opening: String) : BukkitRunnable() {
             embed.addField("Teams", SettingsFeature.instance.data!!.getString("matchpost.team"), true)
             embed.addField("Opening", "<t:${opening}:t> (<t:${opening}:R>)", true)
             embed.addField("Scenarios", scenarios.joinToString(", "), true)
+            var flag = ":checkered_flag:"
+            if (SettingsFeature.instance.data!!.getString("server.region") == "EU") {
+                flag = ":flag_de:"
+            } else if (SettingsFeature.instance.data!!.getString("server.region") == "NA") {
+                flag = ":flag_ca:"
+            }
+            embed.addField("IP", "$flag - `${SettingsFeature.instance.data!!.getString("server.region").lowercase()}.applejuice.bar`", true)
             embed.addField("Matchpost", "https://hosts.uhc.gg/m/${SettingsFeature.instance.data!!.getInt("matchpost.id")}", true)
 
             Discord.instance!!.getTextChannelById(937811305102999573)!!.sendMessage("<@&793406242013839381> (Use /togglematches to toggle matchpost alerts)").queue()
