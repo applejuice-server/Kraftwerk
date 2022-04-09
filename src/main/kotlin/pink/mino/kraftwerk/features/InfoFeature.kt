@@ -14,12 +14,13 @@ class InfoFeature : BukkitRunnable() {
         Chat.colored("$prefix This server was custom coded by &fminota&7."),
         Chat.colored("$prefix Want more games hosted? Apply for staff @ &c/apply&7!"),
         Chat.colored("$prefix Wanna know when games are hosted & more? Join our discord @ &c/discord&7."),
-        Chat.colored("$prefix Follow us on twitter &b@applejuiceuhc&7!")
+        Chat.colored("$prefix Follow us on twitter &b@applejuiceuhc&7!"),
+        Chat.colored("$prefix View the store using &c/store&7!"),
+        Chat.colored("$prefix View the server rules using &c/rules&7.")
     )
     override fun run() {
         if (Bukkit.getOnlinePlayers().isNotEmpty()) {
-            val chosen = announcements[Random.nextInt(announcements.size)]
-            Bukkit.broadcastMessage(chosen)
+            Bukkit.broadcastMessage(announcements[Random.nextInt(announcements.size)])
         }
     }
 }
