@@ -7,6 +7,9 @@ import org.bukkit.command.CommandSender
 import pink.mino.kraftwerk.features.SpecFeature
 import pink.mino.kraftwerk.utils.Chat
 
+
+//internal class SpecMessage(var uuid: UUID, var username: String, var message: String)
+
 class SpecChatCommand : CommandExecutor {
     override fun onCommand(
         sender: CommandSender,
