@@ -80,10 +80,12 @@ class AvengersScenario : Scenario(
                 for (player in team.players) {
                     if (pool.size == 0) continue
                     if (player.isOnline) {
-                        val hero = pool[Random.nextInt(pool.size)]
-                        superheroes[player as Player] = hero
-                        pool.remove(hero)
-                        Chat.sendMessage(player, "$prefix Your assigned Avenger is: &f${hero}&7.")
+                        try {
+                            val hero = pool[Random.nextInt(pool.size)]
+                            superheroes[player as Player] = hero
+                            pool.remove(hero)
+                            Chat.sendMessage(player, "$prefix Your assigned Avenger is: &f${hero}&7.")
+                        } catch(_: Error) {}
                     }
                 }
             }
