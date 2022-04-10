@@ -3,6 +3,7 @@ package pink.mino.kraftwerk.commands
 import com.wimbli.WorldBorder.Config
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
+import org.bukkit.Material
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
@@ -11,6 +12,7 @@ import org.bukkit.plugin.java.JavaPlugin
 import pink.mino.kraftwerk.Kraftwerk
 import pink.mino.kraftwerk.features.PregenActionBarFeature
 import pink.mino.kraftwerk.features.SettingsFeature
+import pink.mino.kraftwerk.utils.BlockUtil
 import pink.mino.kraftwerk.utils.Chat
 
 
@@ -107,6 +109,16 @@ class PregenCommand : CommandExecutor {
             settings.data!!.set("pregen.border", args[1].toInt())
             settings.data!!.set("pregen.world", args[0])
             settings.saveData()
+        }
+        if (args[2] != "cityworld") {
+            val blocks = BlockUtil().getBlocks(Bukkit.getWorld(args[0]).spawnLocation.block, 100)
+            if (blocks != null) {
+                for (block in blocks) {
+                    if (block.type == Material.LEAVES || block.type == Material.LEAVES_2 || block.type == Material.LOG || block.type == Material.LOG_2) {
+                        block.type = Material.AIR
+                    }
+                }
+            }
         }
         Chat.sendMessage(sender, "${Chat.prefix} View your world using &c/w tp ${args[0]}&7.")
 
