@@ -1,5 +1,6 @@
 package pink.mino.kraftwerk.discord.listeners
 
+import me.lucko.helper.Schedulers
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
@@ -27,7 +28,11 @@ class SlashCommand : ListenerAdapter() {
                 val embed = EmbedBuilder()
                 embed.setColor(Color(255, 61, 61))
                 embed.setAuthor("applejuice — IP Address", "https://dsc.gg/apple-juice", event.jda.selfUser.avatarUrl)
-                embed.setDescription("The IP address to the server is :beverage_box: `na.applejuice.bar`.")
+                if (SettingsFeature.instance.data!!.getString("server.region") == "EU") {
+                    embed.setDescription("The IP address to the server is :beverage_box: `eu.applejuice.bar`.")
+                } else if (SettingsFeature.instance.data!!.getString("server.region") == "NA") {
+                    embed.setDescription("The IP address to the server is :beverage_box: `na.applejuice.bar`.")
+                }
                 event.replyEmbeds(embed.build()).setEphemeral(false).queue()
             }
             "togglealerts" -> {
@@ -52,8 +57,14 @@ class SlashCommand : ListenerAdapter() {
                 val target = Bukkit.getOfflinePlayer(player)
                 if (target == null) event.reply("Invalid player!").setEphemeral(true).queue()
                 if (SettingsFeature.instance.data!!.getBoolean("whitelist.requests")) {
-                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wl add ${player}")
-                    event.reply("**${MarkdownSanitizer.escape(player)}** has been whitelisted on the server, connect using `na.applejuice.bar`.").queue()
+                    Schedulers.async().run runnable@ {
+                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wl add $player")
+                    }
+                    if (SettingsFeature.instance.data!!.getString("server.region") == "EU") {
+                        event.reply("**${MarkdownSanitizer.escape(player)}** has been whitelisted on the server, connect using `eu.applejuice.bar`.").queue()
+                    } else if (SettingsFeature.instance.data!!.getString("server.region") == "NA") {
+                        event.reply("**${MarkdownSanitizer.escape(player)}** has been whitelisted on the server, connect using `na.applejuice.bar`.").queue()
+                    }
                 } else {
                     event.reply("Sorry, but whitelists are not available at this time!").setEphemeral(true).queue()
                 }
