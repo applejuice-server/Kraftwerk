@@ -139,6 +139,39 @@ class ArenaFeature : Listener {
                             killer.addPotionEffect(PotionEffect(PotionEffectType.SPEED, 200, 2, false, true))
                         }
                         Killstreak.resetKillstreak(victim)
+                    } else if (e.damager.type === EntityType.ARROW && (e.damager as Arrow).shooter as Player != e.entity as Player) {
+                        val killer = (e.damager as Arrow).shooter as Player
+                        val victim = e.entity as Player
+                        killer.addPotionEffect(PotionEffect(PotionEffectType.REGENERATION, 200, 2, true, true))
+                        val goldenHeads = ItemStack(Material.GOLDEN_APPLE, 1)
+                        val meta = goldenHeads.itemMeta
+                        meta.displayName = Chat.colored("&6Golden Head")
+                        goldenHeads.itemMeta = meta
+                        killer.inventory.addItem(goldenHeads)
+                        killer.inventory.addItem(ItemStack(Material.ARROW, 8))
+                        val el: EntityLiving = (killer as CraftPlayer).handle
+                        val health = floor(killer.health / 2 * 10 + el.absorptionHearts / 2 * 10)
+                        val color = HealthChatColorer.returnHealth(health)
+                        killer.sendMessage(Chat.colored("$prefix &7You killed &f${victim.name}&7!"))
+                        victim.sendMessage(Chat.colored("$prefix &7You were killed by &f${killer.name} &8(${color}${health}❤&8)"))
+                        Killstreak.addKillstreak(killer)
+                        print("${killer.name} now has a killstreak of ${Killstreak.getKillstreak(killer)}.")
+                        if (Killstreak.getKillstreak(victim) >= 5) {
+                            sendToPlayers("${prefix}&f ${victim.name}&7 lost their killstreak of &f${
+                                Killstreak.getKillstreak(
+                                    victim
+                                )
+                            } kills&7 to &f${killer.name}&7!")
+                        }
+                        if (Killstreak.getKillstreak(killer) > 3) {
+                            sendToPlayers(Chat.colored("$prefix &f${killer.name}&7 now has a killstreak of &f${
+                                Killstreak.getKillstreak(
+                                    killer
+                                )
+                            } kills&7!"))
+                            killer.addPotionEffect(PotionEffect(PotionEffectType.SPEED, 200, 2, false, true))
+                        }
+                        Killstreak.resetKillstreak(victim)
                     }
                 } else {
                     Chat.sendMessage((e.entity as Player), "$prefix You died!")
@@ -215,7 +248,7 @@ class ArenaFeature : Listener {
     @EventHandler
     fun onBlockBreak(e: BlockBreakEvent) {
         if (e.block.world.name != "Arena") return
-        e.isCancelled = true
+        e.isCancelled = e.block.type != Material.LONG_GRASS && e.block.type != Material.LEAVES && e.block.type != Material.LEAVES_2
     }
 
     @EventHandler
@@ -242,6 +275,10 @@ class ArenaFeature : Listener {
     @EventHandler
     fun onBlockPlace(e: BlockPlaceEvent) {
         if (e.block.world.name != "Arena") return
+        if (e.block.location.y > 100.0) {
+            Chat.sendMessage(e.player, "$prefix You can't place blocks above &cy-100&7.")
+            e.isCancelled = true
+        }
         when (e.block.type) {
             Material.COBBLESTONE -> {
                 Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
