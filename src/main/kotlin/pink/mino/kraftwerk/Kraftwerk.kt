@@ -2,11 +2,11 @@ package pink.mino.kraftwerk
 
 import com.comphenix.protocol.ProtocolLibrary
 import com.comphenix.protocol.ProtocolManager
+import com.zaxxer.hikari.HikariConfig
+import com.zaxxer.hikari.HikariDataSource
 import io.github.redouane59.twitter.TwitterClient
 import io.github.redouane59.twitter.signature.TwitterCredentials
 import me.lucko.helper.plugin.ExtendedJavaPlugin
-import me.lucko.helper.sql.external.hikari.HikariConfig
-import me.lucko.helper.sql.external.hikari.HikariDataSource
 import net.dv8tion.jda.api.entities.Activity
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
@@ -102,6 +102,7 @@ class Kraftwerk : ExtendedJavaPlugin() {
         getCommand("tppos").executor = TeleportPositionCommand()
         getCommand("tp").executor = TeleportCommand()
         getCommand("cancel").executor = CancelCommand()
+        getCommand("near").executor = NearbyCommand()
 
         getCommand("gm").executor = GamemodeCommand()
         getCommand("gamemode").executor = GamemodeCommand()
@@ -220,10 +221,11 @@ class Kraftwerk : ExtendedJavaPlugin() {
         props.setProperty("dataSource.databaseName", database)
 
         val config = HikariConfig(props)
-        config.maximumPoolSize = 10
+        config.maximumPoolSize = 20
         config.leakDetectionThreshold = 500000
-        config.connectionTimeout = 16000
-        config.idleTimeout = 16000
+        config.connectionTimeout = 320000
+        config.maxLifetime = 320000
+        config.idleTimeout = 160000
         this.dataSource = HikariDataSource(config)
         testDataSource(this.dataSource)
     }
