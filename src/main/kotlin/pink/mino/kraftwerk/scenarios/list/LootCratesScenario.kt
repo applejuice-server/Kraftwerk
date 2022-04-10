@@ -17,6 +17,7 @@ import pink.mino.kraftwerk.scenarios.Scenario
 import pink.mino.kraftwerk.scenarios.ScenarioHandler
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GameState
+import pink.mino.kraftwerk.utils.PlayerUtils
 import kotlin.random.Random
 
 
@@ -52,10 +53,10 @@ class GiveLootCrates : BukkitRunnable() {
                 } else {
                     val chance = Random.nextInt(2)
                     if (chance == 1) {
-                        player.inventory.addItem(tier1Chest)
+                        PlayerUtils.bulkItems(player, arrayListOf(tier1Chest))
                         Chat.sendMessage(player, "${Chat.prefix} You've been given a &cTier I&7 Loot Crate.")
                     } else {
-                        player.inventory.addItem(tier2Chest)
+                        PlayerUtils.bulkItems(player, arrayListOf(tier2Chest))
                         Chat.sendMessage(player, "${Chat.prefix} You've been given a &cTier II&7 Loot Crate.")
                     }
                 }
