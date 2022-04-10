@@ -215,6 +215,11 @@ commands:
     aliases:
       - donate
     description: View the server donation store.
+  near:
+    aliases:
+      - nearby
+      - nearbyplayers
+    description: View nearby players within a 200 player radius.
 depend:
   - ProtocolLib
   - JDA
