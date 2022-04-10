@@ -126,7 +126,7 @@ class AvengersScenario : Scenario(
                 player.addPotionEffect(PotionEffect(PotionEffectType.SPEED, 99999999, 0, false, false))
                 player.addPotionEffect(PotionEffect(PotionEffectType.SATURATION, 99999999, 0, false, false))
                 player.addPotionEffect(PotionEffect(PotionEffectType.JUMP, 99999999, 2, false, false))
-                val spideySense = ItemStack(Material.EYE_OF_ENDER)
+                val spideySense = ItemStack(Material.WATCH)
                 val spideySenseMeta = spideySense.itemMeta
                 spideySenseMeta.displayName = Chat.colored("&cSpidey Sense")
                 spideySenseMeta.lore = listOf(
@@ -425,8 +425,10 @@ class AvengersScenario : Scenario(
                         Chat.sendMessage(e.player, "$prefix You've been given &c5 seconds&7 of flight.")
                         for (player in Bukkit.getOnlinePlayers()) {
                             if (player == e.player) continue
-                            Chat.sendMessage(player, "$prefix You've been given &c20 seconds&7 of Fire Resistance by &f${e.player.name}&7.")
-                            player.addPotionEffect(PotionEffect(PotionEffectType.FIRE_RESISTANCE, 400, 0, true, false))
+                            if (TeamsFeature.manager.getTeam(player) != null && TeamsFeature.manager.getTeam(player) == TeamsFeature.manager.getTeam(e.player)) {
+                                Chat.sendMessage(player, "$prefix You've been given &c20 seconds&7 of Fire Resistance by &f${e.player.name}&7.")
+                                player.addPotionEffect(PotionEffect(PotionEffectType.FIRE_RESISTANCE, 400, 0, true, false))
+                            }
                         }
                         Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
                             e.player.allowFlight = false
