@@ -2,8 +2,8 @@ package pink.mino.kraftwerk
 
 import com.comphenix.protocol.ProtocolLibrary
 import com.comphenix.protocol.ProtocolManager
-import com.zaxxer.hikari.HikariConfig
-import com.zaxxer.hikari.HikariDataSource
+import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource
+import com.mysql.jdbc.jdbc2.optional.MysqlDataSource
 import io.github.redouane59.twitter.TwitterClient
 import io.github.redouane59.twitter.signature.TwitterCredentials
 import me.lucko.helper.plugin.ExtendedJavaPlugin
@@ -25,7 +25,7 @@ import pink.mino.kraftwerk.scenarios.ScenarioHandler
 import pink.mino.kraftwerk.utils.GameState
 import pink.mino.kraftwerk.utils.Scoreboard
 import java.sql.SQLException
-import java.util.*
+import javax.sql.DataSource
 
 
 /*
@@ -36,7 +36,7 @@ Only I and God know how this plugin works.
 class Kraftwerk : ExtendedJavaPlugin() {
 
     private var protocolManager: ProtocolManager? = null
-    lateinit var dataSource: HikariDataSource
+    lateinit var dataSource: DataSource
     lateinit var twitter: TwitterClient
 
     companion object {
@@ -73,6 +73,7 @@ class Kraftwerk : ExtendedJavaPlugin() {
         Bukkit.getServer().pluginManager.registerEvents(TabFeature(), this)
         Bukkit.getServer().pluginManager.registerEvents(PortalListener(), this)
         Bukkit.getServer().pluginManager.registerEvents(WorldSwitchListener(), this)
+        Bukkit.getServer().pluginManager.registerEvents(StatsFeature(), this)
 
         /* Registering commands */
         getCommand("clear").executor = ClearInventoryCommand()
@@ -212,26 +213,24 @@ class Kraftwerk : ExtendedJavaPlugin() {
         val user = SettingsFeature.instance.data!!.getString("database.user")
         val password = SettingsFeature.instance.data!!.getString("database.password")
 
-        val props = Properties()
-        props.setProperty("dataSourceClassName", "com.mysql.jdbc.jdbc2.optional.MysqlDataSource")
-        props.setProperty("dataSource.serverName", host)
-        props.setProperty("dataSource.portNumber", port.toString())
-        props.setProperty("dataSource.user", user)
-        props.setProperty("dataSource.password", password)
-        props.setProperty("dataSource.databaseName", database)
+        val dataSource: MysqlDataSource = MysqlConnectionPoolDataSource()
 
-        val config = HikariConfig(props)
-        this.dataSource = HikariDataSource(config)
-        testDataSource(this.dataSource)
+        dataSource.serverName = host
+        dataSource.port = port
+        dataSource.databaseName = database
+        dataSource.user = user
+        dataSource.setPassword(password)
+
+        testDataSource(dataSource)
+
+        this.dataSource = dataSource
     }
 
     @Throws(SQLException::class)
-    private fun testDataSource(dataSource: HikariDataSource) {
+    private fun testDataSource(dataSource: DataSource) {
         val conn = dataSource.connection
         if (!conn.isValid(1)) {
             throw SQLException("Could not establish database connection.")
-        } else {
-            print("Established database connection.")
         }
     }
 
@@ -241,7 +240,6 @@ class Kraftwerk : ExtendedJavaPlugin() {
         SettingsFeature.instance.data!!.set("game.list", ArrayList<String>())
         SettingsFeature.instance.data!!.set("game.kills", null)
         SettingsFeature.instance.saveData()
-        this.dataSource.close()
         Bukkit.getLogger().info("Kraftwerk disabled.")
     }
 

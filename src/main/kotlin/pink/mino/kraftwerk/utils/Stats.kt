@@ -1,6 +1,7 @@
 package pink.mino.kraftwerk.utils
 
 import me.lucko.helper.Schedulers
+import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 import org.bukkit.event.Listener
 import org.bukkit.plugin.java.JavaPlugin
@@ -8,62 +9,63 @@ import pink.mino.kraftwerk.Kraftwerk
 import java.sql.SQLException
 import java.util.*
 
-val SELECT: String = "SELECT ? from stats where uuid = ?"
-val INSERT: String = "INSERT INTO stats (uuid, ?) VALUES (?, ?)"
-val SAVE: String = "UPDATE stats SET ?=? WHERE uuid=?"
+val INSERT: String = "INSERT INTO stats VALUES(?, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0) ON DUPLICATE KEY UPDATE uuid=?"
 
-class StatsPlayer(val player: Player) : Listener {
-    var diamondsMined: Int = 0
-    var ironMined: Int = 0
-    var goldMined: Int = 0
+class StatsPlayer(val player: OfflinePlayer) : Listener {
+    var diamondsMined = 0
+    var ironMined = 0
+    var goldMined = 0
 
-    var gamesPlayed: Int = 0
-    var kills: Int = 0
-    var wins: Int = 0
-    var deaths: Int = 0
+    var gamesPlayed = 0
+    var kills = 0
+    var wins = 0
+    var deaths = 0
 
-    var gapplesEaten: Int = 0
-    var timesCrafted: Int = 0
-    var timesEnchanted: Int = 0
+    var gapplesEaten = 0
+    var timesCrafted = 0
+    var timesEnchanted = 0
 
     fun load(value: String) = try {
         Schedulers.async().run runnable@ {
-            JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.use { hikari ->
-                val select = hikari.connection.prepareStatement(SELECT)
-                select.setString(1, value)
-                select.setString(2, player.uniqueId.toString())
+            with (JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection) {
+                val select = this@with.prepareStatement("SELECT $value from stats where uuid = ?")
+                select.setString(1, player.uniqueId.toString())
+                val insert = this@with.prepareStatement(INSERT)
+                insert.setString(1, player.uniqueId.toString())
+                insert.setString(2, player.uniqueId.toString())
+                insert.execute()
                 val result = select.executeQuery()
                 if (result.next()) {
                     when (value) {
                         "kills" -> {
-                            this.kills = result.getInt(1)
+                            this@StatsPlayer.kills = result.getInt(value)
                         }
                         "wins" -> {
-                            this.wins = result.getInt(1)
+                            this@StatsPlayer.wins = result.getInt(value)
                         }
                         "deaths" -> {
-                            this.deaths = result.getInt(1)
+                            this@StatsPlayer.deaths = result.getInt(value)
                         }
                         "games_played" -> {
-                            this.gamesPlayed = result.getInt(1)
+                            this@StatsPlayer.gamesPlayed = result.getInt(value)
                         }
                         "diamonds_mined" -> {
-                            this.diamondsMined = result.getInt(1)
+                            this@StatsPlayer.diamondsMined = result.getInt(value)
                         }
                         "gold_mined" -> {
-                            this.goldMined = result.getInt(1)
+                            this@StatsPlayer.goldMined = result.getInt(value)
                         }
                         "iron_mined" -> {
-                            this.ironMined = result.getInt(1)
+                            this@StatsPlayer.ironMined = result.getInt(value)
                         }
                         "gapples_eaten" -> {
-                            this.gapplesEaten = result.getInt(1)
+                            this@StatsPlayer.gapplesEaten = result.getInt(value)
                         }
                         "times_crafted" -> {
-                            this.timesCrafted = result.getInt(1)
+                            this@StatsPlayer.timesCrafted = result.getInt(value)
                         }
                         "times_enchanted" -> {
-                            this.timesEnchanted = result.getInt(1)
+                            this@StatsPlayer.timesEnchanted = result.getInt(value)
                         }
                     }
                 }
@@ -91,44 +93,43 @@ class StatsPlayer(val player: Player) : Listener {
 
     fun save(obj: String) = try {
         Schedulers.async().run runnable@ {
-            JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.use { hikari ->
-                val save = hikari.connection.prepareStatement(SAVE)
+            with (JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection) {
+                val save = this@with.prepareStatement("UPDATE stats SET $obj=? WHERE uuid=?")
                 var value = 0
                 when (obj) {
                     "kills" -> {
-                        value = this.kills
+                        value = this@StatsPlayer.kills
                     }
                     "wins" -> {
-                        value = this.wins
+                        value = this@StatsPlayer.wins
                     }
                     "deaths" -> {
-                        value = this.deaths
+                        value = this@StatsPlayer.deaths
                     }
                     "games_played" -> {
-                        value = this.gamesPlayed
+                        value = this@StatsPlayer.gamesPlayed
                     }
                     "diamonds_mined" -> {
-                        value = this.diamondsMined
+                        value = this@StatsPlayer.diamondsMined
                     }
                     "gold_mined" -> {
-                        value = this.goldMined
+                        value = this@StatsPlayer.goldMined
                     }
                     "iron_mined" -> {
-                        value = this.ironMined
+                        value = this@StatsPlayer.ironMined
                     }
                     "gapples_eaten" -> {
-                        value = this.gapplesEaten
+                        value = this@StatsPlayer.gapplesEaten
                     }
                     "times_crafted" -> {
-                        value = this.timesCrafted
+                        value = this@StatsPlayer.timesCrafted
                     }
                     "times_enchanted" -> {
-                        value = this.timesEnchanted
+                        value = this@StatsPlayer.timesEnchanted
                     }
                 }
-                save.setString(1, obj)
-                save.setString(2, value.toString())
-                save.setString(3, player.uniqueId.toString())
+                save.setInt(1, value)
+                save.setString(2, player.uniqueId.toString())
                 save.execute()
                 print("Set $obj for ${player.name} to $value")
             }
@@ -191,6 +192,23 @@ class StatsHandler : Listener {
                 statsPlayers[player.uniqueId]!!.load("times_enchanted")
                 print("Loaded stats for ${player.name}.")
             }
+        }
+        fun getStatsPlayer(player: OfflinePlayer) : StatsPlayer {
+            if (statsPlayers[player.uniqueId] == null) {
+                statsPlayers[player.uniqueId] = StatsPlayer(player)
+                statsPlayers[player.uniqueId]!!.load("kills")
+                statsPlayers[player.uniqueId]!!.load("wins")
+                statsPlayers[player.uniqueId]!!.load("deaths")
+                statsPlayers[player.uniqueId]!!.load("games_played")
+                statsPlayers[player.uniqueId]!!.load("diamonds_mined")
+                statsPlayers[player.uniqueId]!!.load("gold_mined")
+                statsPlayers[player.uniqueId]!!.load("iron_mined")
+                statsPlayers[player.uniqueId]!!.load("gapples_eaten")
+                statsPlayers[player.uniqueId]!!.load("times_crafted")
+                statsPlayers[player.uniqueId]!!.load("times_enchanted")
+                print("Loaded stats for ${player.name}")
+            }
+            return statsPlayers[player.uniqueId]!!
         }
     }
 }

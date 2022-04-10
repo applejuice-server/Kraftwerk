@@ -19,6 +19,7 @@ import pink.mino.kraftwerk.commands.SendTeamView
 import pink.mino.kraftwerk.scenarios.ScenarioHandler
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GameState
+import pink.mino.kraftwerk.utils.StatsHandler
 
 
 class UHCFeature : Listener {
@@ -74,7 +75,6 @@ class UHCFeature : Listener {
                 for (effect in effects) {
                     player.removePotionEffect(effect.type)
                 }
-                list.add(player.name)
             }
         }
         SettingsFeature.instance.data!!.set("game.list", list)
@@ -111,7 +111,11 @@ class UHCFeature : Listener {
                 Chat.sendMessage(player, Chat.line)
                 player.playSound(player.location, Sound.ENDERDRAGON_GROWL, 10F, 1F)
                 player.sendTitle(Chat.colored("&a&lGO!"), Chat.colored("&7You may now play the game, do &c/helpop&7 for help!"))
-                if (!SpecFeature.instance.getSpecs().contains(player.name)) player.inventory.setItem(0, ItemStack(Material.COOKED_BEEF, SettingsFeature.instance.data!!.getInt("game.starterfood")))
+                if (!SpecFeature.instance.getSpecs().contains(player.name)) {
+                    player.inventory.setItem(0, ItemStack(Material.COOKED_BEEF, SettingsFeature.instance.data!!.getInt("game.starterfood")))
+                    list.add(player.name)
+                    StatsHandler.getStatsPlayer(player).add("games_played", 1)
+                }
             }
             for (scenario in ScenarioHandler.getActiveScenarios()) {
                 scenario.onStart()
