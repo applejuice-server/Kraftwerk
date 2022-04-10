@@ -36,6 +36,7 @@ Only I and God know how this plugin works.
 class Kraftwerk : ExtendedJavaPlugin() {
 
     private var protocolManager: ProtocolManager? = null
+    var vote: Vote? = null
     lateinit var dataSource: DataSource
     lateinit var twitter: TwitterClient
 
@@ -104,6 +105,7 @@ class Kraftwerk : ExtendedJavaPlugin() {
         getCommand("tp").executor = TeleportCommand()
         getCommand("cancel").executor = CancelCommand()
         getCommand("near").executor = NearbyCommand()
+        getCommand("startvote").executor = StartVoteCommand()
 
         getCommand("gm").executor = GamemodeCommand()
         getCommand("gamemode").executor = GamemodeCommand()
@@ -132,6 +134,8 @@ class Kraftwerk : ExtendedJavaPlugin() {
         getCommand("molelist").executor = MolesListCommand()
         getCommand("store").executor = StoreCommand()
         getCommand("rules").executor = RulesCommand()
+        getCommand("voteyes").executor = VoteYesCommand()
+        getCommand("voteno").executor = VoteNoCommand()
 
         /* ProtocolLib stuff */
         if (Bukkit.getPluginManager().getPlugin("ProtocolLib") == null) {

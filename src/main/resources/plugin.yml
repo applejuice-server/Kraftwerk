@@ -220,6 +220,16 @@ commands:
       - nearby
       - nearbyplayers
     description: View nearby players within a 200 player radius.
+  voteyes:
+    aliases:
+      - yes
+    description: Votes yes to the current poll.
+  voteno:
+    aliases:
+      - no
+    description: Votes no to the current poll.
+  startvote:
+    description: Starts a 15 seconds yes/no poll.
 depend:
   - ProtocolLib
   - JDA
