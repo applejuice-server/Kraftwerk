@@ -13,6 +13,7 @@ import pink.mino.kraftwerk.features.SpecFeature
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GameState
 import pink.mino.kraftwerk.utils.Scoreboard
+import pink.mino.kraftwerk.utils.StatsHandler
 
 class PlayerJoinListener : Listener {
     @EventHandler
@@ -28,7 +29,7 @@ class PlayerJoinListener : Listener {
                 SpawnFeature.instance.send(player)
             }, 20L)
         }
-        //StatsHandler.addStatsPlayer(player)
+        StatsHandler.addStatsPlayer(player)
         Scoreboard.setScore(Chat.colored("${Chat.dash} &7Playing..."), Bukkit.getServer().onlinePlayers.size)
         e.joinMessage = ChatColor.translateAlternateColorCodes('&', "&8[&2+&8] &a${player.displayName} &8(&2${Bukkit.getServer().onlinePlayers.size}&8/&2${Bukkit.getServer().maxPlayers}&8)")
         if (GameState.currentState == GameState.LOBBY) {
