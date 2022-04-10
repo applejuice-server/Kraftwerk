@@ -9,6 +9,7 @@ import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.enchantment.EnchantItemEvent
 import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.inventory.CraftItemEvent
+import org.bukkit.event.player.PlayerItemConsumeEvent
 import pink.mino.kraftwerk.utils.GameState
 import pink.mino.kraftwerk.utils.StatsHandler
 
@@ -18,8 +19,8 @@ class StatsFeature : Listener {
     fun onPlayerDeath(e: PlayerDeathEvent) {
         if (GameState.currentState != GameState.INGAME) return
         StatsHandler.getStatsPlayer(e.entity).add("deaths", 1)
-        if (e.entity.killer.type == EntityType.PLAYER) {
-            StatsHandler.getStatsPlayer(e.entity.killer).add("kills", 1)
+        if (e.entity.killer != null && e.entity.killer.type == EntityType.PLAYER) {
+            StatsHandler.getStatsPlayer(e.entity.killer as Player).add("kills", 1)
         }
     }
 
@@ -39,6 +40,12 @@ class StatsFeature : Listener {
             }
             else -> {}
         }
+    }
+
+    @EventHandler
+    fun onConsume(e: PlayerItemConsumeEvent) {
+        if (GameState.currentState != GameState.INGAME) return
+        if (e.item.type == Material.GOLDEN_APPLE) StatsHandler.getStatsPlayer(e.player).add("gapples_eaten", 1)
     }
 
     @EventHandler
