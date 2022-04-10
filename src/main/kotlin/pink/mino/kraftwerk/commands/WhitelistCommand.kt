@@ -69,6 +69,9 @@ class WhitelistCommand : CommandExecutor {
                 Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} ${ChatColor.WHITE}${target.name}${ChatColor.GRAY} has been added to the whitelist."))
                 addWhitelist(target.name.lowercase())
             }
+            args[0] == "list" -> {
+                Chat.sendMessage(sender, "${Chat.prefix} Whitelist list: &f${SettingsFeature.instance.data!!.getStringList("whitelist.list").joinToString(", ")}&7.")
+            }
             args[0] == "remove" -> {
                 if (args.size == 1) {
                     sender.sendMessage("${ChatColor.RED}Usage: /wl remove <player>")
