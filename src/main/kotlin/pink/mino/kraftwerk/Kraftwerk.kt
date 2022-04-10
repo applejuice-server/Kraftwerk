@@ -221,11 +221,6 @@ class Kraftwerk : ExtendedJavaPlugin() {
         props.setProperty("dataSource.databaseName", database)
 
         val config = HikariConfig(props)
-        config.maximumPoolSize = 20
-        config.leakDetectionThreshold = 500000
-        config.connectionTimeout = 320000
-        config.maxLifetime = 320000
-        config.idleTimeout = 160000
         this.dataSource = HikariDataSource(config)
         testDataSource(this.dataSource)
     }
