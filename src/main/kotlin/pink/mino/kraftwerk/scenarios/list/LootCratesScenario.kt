@@ -24,7 +24,7 @@ class GiveLootCrates : BukkitRunnable() {
     var timer = 600
     override fun run() {
         timer -= 1
-        if (!ScenarioHandler.getActiveScenarios().contains(ScenarioHandler.getScenario("lootcrates"))) {
+        if (!ScenarioHandler.getActiveScenarios().contains(ScenarioHandler.getScenario("lootcrates")) && !ScenarioHandler.getActiveScenarios().contains(ScenarioHandler.getScenario("oplootcrates"))) {
             cancel()
         }
         if (GameState.currentState != GameState.INGAME) {
