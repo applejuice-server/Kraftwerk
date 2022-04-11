@@ -11,10 +11,9 @@ import org.bukkit.event.inventory.CraftItemEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.EnchantmentStorageMeta
-import org.bukkit.inventory.meta.PotionMeta
 import org.bukkit.plugin.java.JavaPlugin
-import org.bukkit.potion.PotionEffect
-import org.bukkit.potion.PotionEffectType
+import org.bukkit.potion.Potion
+import org.bukkit.potion.PotionType
 import pink.mino.kraftwerk.Kraftwerk
 import pink.mino.kraftwerk.features.SpecFeature
 import pink.mino.kraftwerk.scenarios.Scenario
@@ -78,12 +77,8 @@ class OPLootCratesScenario : Scenario(
             ItemStack(Material.GOLD_BLOCK, 2),
             ItemStack(Material.DIAMOND_BLOCK, 2),
         )
-        val speed1 = ItemStack(Material.POTION)
-        val speed1Meta = speed1.itemMeta as PotionMeta
-        speed1Meta.setMainEffect(PotionEffectType.SPEED)
-        speed1Meta.addCustomEffect(PotionEffect(PotionEffectType.SPEED, 3600, 0, true, true), true)
-        speed1.itemMeta = speed1Meta
-        list.add(speed1)
+        val speed1 = Potion(PotionType.SPEED, 2)
+        list.add(speed1.toItemStack(1))
         val chestplate = ItemStack(Material.DIAMOND_CHESTPLATE)
         val chestplateMeta = chestplate.itemMeta
         chestplateMeta.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 1, true)

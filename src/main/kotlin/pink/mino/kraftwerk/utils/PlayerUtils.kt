@@ -30,8 +30,11 @@ class PlayerUtils {
 
         fun bulkItems(player: Player, bulk: ArrayList<ItemStack>) {
             for (item in bulk) {
-                if (!inventoryFull(player)) player.inventory.addItem(item)
-                else player.world.dropItemNaturally(player.location, item)
+                if (!inventoryFull(player)) {
+                    player.inventory.addItem(item)
+                } else {
+                    player.world.dropItemNaturally(player.location, item)
+                }
             }
         }
     }

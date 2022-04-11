@@ -9,8 +9,6 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.potion.Potion
-import org.bukkit.potion.PotionEffect
-import org.bukkit.potion.PotionEffectType
 import org.bukkit.potion.PotionType
 import pink.mino.kraftwerk.scenarios.ScenarioHandler
 import pink.mino.kraftwerk.scenarios.list.MolesScenario
@@ -227,11 +225,7 @@ class MoleKitCommand : CommandExecutor {
                 Chat.sendMessage(sender, "${MolesScenario.instance.prefix} You've been given your &fFighter&7 kit.")
             }
             args[0].lowercase() == "potter" -> {
-                val speed2Potion = ItemBuilder(Material.POTION)
-                    .toPotion()
-                    .setMainEffect(PotionEffectType.SPEED)
-                    .addEffect(PotionEffect(PotionEffectType.SPEED, 1800, 1, true, true))
-                    .make()
+                val speed2Potion = Potion(PotionType.SPEED, 2)
                 val weaknessPotion = Potion(PotionType.WEAKNESS, 1)
                 weaknessPotion.isSplash = true
                 weaknessPotion.level = 1
@@ -239,9 +233,9 @@ class MoleKitCommand : CommandExecutor {
                 poisonPotion.isSplash = true
                 poisonPotion.level = 2
                 val bulk: ArrayList<ItemStack> = arrayListOf(
-                    speed2Potion,
+                    speed2Potion.toItemStack(1),
                     weaknessPotion.toItemStack(1),
-                    poisonPotion.toItemStack(1)
+                    poisonPotion.toItemStack(1),
                 )
                 PlayerUtils.bulkItems(sender, bulk)
                 MolesScenario.instance.moles[sender.uniqueId] = true
