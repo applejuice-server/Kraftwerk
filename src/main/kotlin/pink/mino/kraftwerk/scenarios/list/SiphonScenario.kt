@@ -13,6 +13,7 @@ import org.bukkit.potion.PotionEffectType
 import pink.mino.kraftwerk.scenarios.Scenario
 import pink.mino.kraftwerk.utils.GameState
 import java.util.*
+import kotlin.math.abs
 
 
 class SiphonScenario : Scenario(
@@ -31,6 +32,10 @@ class SiphonScenario : Scenario(
         Enchantment.DAMAGE_ALL
     )
 
+    fun getRandom(from: Int, to: Int): Int {
+        return if (from < to) from + Random().nextInt(abs(to - from)) else from - Random().nextInt(abs(to - from))
+    }
+
     @EventHandler
     fun onDeath(event: PlayerDeathEvent) {
         if (GameState.currentState != GameState.INGAME) return
@@ -39,7 +44,7 @@ class SiphonScenario : Scenario(
         killer.addPotionEffect(PotionEffect(PotionEffectType.REGENERATION, 100, 1, true, true))
         val item = ItemStack(Material.ENCHANTED_BOOK)
         val meta = item.itemMeta as EnchantmentStorageMeta
-        meta.addStoredEnchant(enchants[Random().nextInt(enchants.size)], Random().nextInt(2), true)
+        meta.addStoredEnchant(enchants[Random().nextInt(enchants.size)], getRandom(1, 3), true)
         item.itemMeta = meta
         killer.inventory.addItem(item)
         killer.level = killer.level + 2
