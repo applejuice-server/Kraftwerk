@@ -18,7 +18,7 @@ import kotlin.math.floor
 class ShootListener : Listener {
     @EventHandler
     fun onShoot(e: EntityDamageByEntityEvent) {
-        if (e.damager.type == EntityType.ARROW && ((e.damager as Arrow).shooter) is Player) {
+        if (e.damager.type == EntityType.ARROW && ((e.damager as Arrow).shooter) is Player && e.entity.type == EntityType.PLAYER) {
             Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
                 val shooter = ((e.damager as Arrow).shooter) as Player
                 val victim = e.entity as Player
