@@ -51,6 +51,11 @@ class Discord : ListenerAdapter() {
                 CommandData("wl", "Attempts to whitelist yourself on the server if the conditions are met.")
                     .addOption(OptionType.STRING, "ign", "The player you want to be whitelisted.", true)
             )
+            commands.addCommands(
+                CommandData("stats", "View the stats of another player on the server.")
+                    .addOption(OptionType.STRING, "player", "The player you want to view the stats for.", true)
+                    .setDefaultEnabled(false)
+            )
 
             commands.queue()
             instance = jda
