@@ -4,6 +4,7 @@ import org.bukkit.Bukkit
 import org.bukkit.GameMode
 import org.bukkit.Material
 import org.bukkit.Sound
+import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockBreakEvent
@@ -14,17 +15,189 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
+import org.bukkit.scheduler.BukkitRunnable
 import pink.mino.kraftwerk.Kraftwerk
 import pink.mino.kraftwerk.commands.SendTeamView
 import pink.mino.kraftwerk.scenarios.ScenarioHandler
+import pink.mino.kraftwerk.utils.ActionBar
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GameState
 import pink.mino.kraftwerk.utils.StatsHandler
+import kotlin.math.floor
 
+// https://github.com/LeonTG/Timer/blob/main/src/main/java/com/leontg77/timer/runnable/TimerRunnable.java#L157
+private fun timeToString(ticks: Long): String {
+    var t = ticks
+    val hours = floor(t / 3600.toDouble()).toInt()
+    t -= hours * 3600
+    val minutes = floor(t / 60.toDouble()).toInt()
+    t -= minutes * 60
+    val seconds = t.toInt()
+    val output = StringBuilder()
+    if (hours > 0) {
+        output.append(hours).append('h')
+        if (minutes == 0) {
+            output.append(minutes).append('m')
+        }
+    }
+    if (minutes > 0) {
+        output.append(minutes).append('m')
+    }
+    output.append(seconds).append('s')
+    return output.toString()
+}
+
+enum class Events {
+    PRE_START,
+    START,
+    FINAL_HEAL,
+    PVP,
+    MEETUP
+}
+
+class UHCTask : BukkitRunnable() {
+
+    private var finalHeal = SettingsFeature.instance.data!!.getInt("game.events.final-heal") * 60
+    var pvp = (SettingsFeature.instance.data!!.getInt("game.events.pvp") * 60) + (SettingsFeature.instance.data!!.getInt("game.events.final-heal") * 60)
+    private var meetup = (SettingsFeature.instance.data!!.getInt("game.events.meetup") * 60) + (SettingsFeature.instance.data!!.getInt("game.events.pvp") * 60) + (SettingsFeature.instance.data!!.getInt("game.events.final-heal") * 60)
+
+    private val rawPvP = SettingsFeature.instance.data!!.getInt("game.events.pvp") * 60
+    private val rawMeetup = SettingsFeature.instance.data!!.getInt("game.events.meetup") * 60
+
+    var timer = 0
+    var currentEvent: Events = Events.PRE_START
+
+    fun displayTimer(player: Player) {
+        if (currentEvent == Events.PRE_START) {
+            ActionBar.sendActionBarMessage(player, "&cStarting in ${Chat.dash} &f${timeToString(45 - timer.toLong())}")
+        } else if (currentEvent == Events.START) {
+            ActionBar.sendActionBarMessage(player, "&cFinal Heal is in ${Chat.dash} &f${timeToString(finalHeal - timer.toLong())}")
+        } else if (currentEvent == Events.FINAL_HEAL) {
+            ActionBar.sendActionBarMessage(player, "&cPvP is enabled in ${Chat.dash} &f${timeToString(rawPvP - timer.toLong())}")
+        } else if (currentEvent == Events.PVP) {
+            ActionBar.sendActionBarMessage(player, "&cMeetup is in ${Chat.dash} &f${timeToString(rawMeetup - timer.toLong())}")
+        } else if (currentEvent == Events.MEETUP) {
+            ActionBar.sendActionBarMessage(player, "&cIt is now Meetup! Head to 0,0! &8| &7Border: &f±${SettingsFeature.instance.data!!.getInt("pregen.border")}")
+        }
+    }
+
+    override fun run() {
+        var list = SettingsFeature.instance.data!!.getStringList("game.list")
+        if (list == null) list = ArrayList<String>()
+        when (timer) {
+            0 -> {
+                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Starting in &f45 seconds&7..."))
+            }
+            45 -> {
+                currentEvent = Events.START
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "cc")
+                GameState.setState(GameState.INGAME)
+                UHCFeature().unfreeze()
+                val scenarios = ArrayList<String>()
+                for (scenario in ScenarioHandler.getActiveScenarios()) {
+                    scenarios.add(scenario.name)
+                }
+                Bukkit.broadcastMessage(Chat.colored(Chat.line))
+                for (player in Bukkit.getOnlinePlayers()) {
+                    Chat.sendCenteredMessage(player, "&c&lUHC")
+                }
+                Bukkit.broadcastMessage(" ")
+                for (player in Bukkit.getOnlinePlayers()) {
+                    Chat.sendMessage(player, "&7You may &abegin&7! The host for this game is &c${SettingsFeature.instance.data!!.getString("game.host")}&7!")
+
+                    Chat.sendMessage(player, "&7Scenarios: &f${scenarios.joinToString(", ")}&7")
+                    Chat.sendCenteredMessage(player, " ")
+                    Chat.sendMessage(player, Chat.line)
+                    player.playSound(player.location, Sound.ENDERDRAGON_GROWL, 10F, 1F)
+                    player.sendTitle(Chat.colored("&a&lGO!"), Chat.colored("&7You may now play the game, do &c/helpop&7 for help!"))
+                    if (!SpecFeature.instance.getSpecs().contains(player.name)) {
+                        player.inventory.setItem(0, ItemStack(Material.COOKED_BEEF, SettingsFeature.instance.data!!.getInt("game.starterfood")))
+                        list.add(player.name)
+                        StatsHandler.getStatsPlayer(player).add("games_played", 1)
+                    }
+                }
+                for (scenario in ScenarioHandler.getActiveScenarios()) {
+                    scenario.onStart()
+                }
+                Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world")).setGameRuleValue("doDaylightCycle", true.toString())
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer cancel")
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer ${SettingsFeature.instance.data!!.getInt("game.events.final-heal") * 60} &cFinal Heal is in ${Chat.dash}&f")
+                for (player in Bukkit.getOnlinePlayers()) {
+                    player.addPotionEffect(PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 300, 100, true, true))
+                }
+            }
+            finalHeal -> {
+                currentEvent = Events.FINAL_HEAL
+                for (player in Bukkit.getOnlinePlayers()) {
+                    player.health = player.maxHealth
+                    player.foodLevel = 20
+                    player.saturation = 20F
+                    Chat.sendMessage(player, Chat.line)
+                    Chat.sendCenteredMessage(player, "&c&lUHC")
+                    Chat.sendMessage(player, " ")
+                    Chat.sendCenteredMessage(player, "&7All players have been healed & fed.")
+                    Chat.sendCenteredMessage(player, "&cPvP&7 is enabled in &c${rawPvP} minutes&7.")
+                    Chat.sendMessage(player, Chat.line)
+                    player.playSound(player.location, Sound.BURP, 10F, 1F)
+                }
+            }
+            pvp -> {
+                currentEvent = Events.PVP
+                for (world in Bukkit.getWorlds()) {
+                    world.pvp = true
+                }
+                for (scenario in ScenarioHandler.getActiveScenarios()) {
+                    scenario.onPvP()
+                }
+                for (player in Bukkit.getOnlinePlayers()) {
+                    Chat.sendMessage(player, Chat.line)
+                    Chat.sendCenteredMessage(player, "&c&lUHC")
+                    Chat.sendMessage(player, " ")
+                    Chat.sendCenteredMessage(player, "&7PvP has been &aenabled&7.")
+                    Chat.sendCenteredMessage(player, "&cMeetup&7 is enabled in &c${SettingsFeature.instance.data!!.getString("game.events.meetup")} minutes&7.")
+                    Chat.sendMessage(player, Chat.line)
+                    player.playSound(player.location, Sound.ANVIL_LAND, 10F, 1F)
+                }
+            }
+            meetup -> {
+                currentEvent = Events.MEETUP
+                Bukkit.broadcastMessage(Chat.colored(Chat.line))
+                for (player in Bukkit.getOnlinePlayers()) {
+                    Chat.sendCenteredMessage(player, "&c&lUHC")
+                    Chat.sendMessage(player, " ")
+                    Chat.sendCenteredMessage(player, "&7It's now &cMeetup&7! Head to &a0,0&7!")
+                    Chat.sendCenteredMessage(player, "&7The border will start shrinking until it's at &f25x25&7!")
+                }
+                for (scenario in ScenarioHandler.getActiveScenarios()) {
+                    scenario.onMeetup()
+                }
+                Bukkit.broadcastMessage(Chat.colored(Chat.line))
+                UHCFeature().scheduleShrink(500)
+                Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
+                    UHCFeature().scheduleShrink(250)
+                    Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
+                        UHCFeature().scheduleShrink(100)
+                        Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
+                            UHCFeature().scheduleShrink(75)
+                            Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
+                                UHCFeature().scheduleShrink(50)
+                                Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
+                                    UHCFeature().scheduleShrink(25)
+                                }, 6000)
+                            }, 6000)
+                        }, 6000)
+                    }, 6000)
+                }, 6000)
+            }
+        }
+        for (player in Bukkit.getOnlinePlayers()) {
+            displayTimer(player)
+        }
+        timer++
+    }
+}
 
 class UHCFeature : Listener {
-    var frozen: Boolean = false
-
     fun start(mode: String) {
         GameState.setState(GameState.WAITING)
         Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world")).time = 1000
@@ -86,111 +259,9 @@ class UHCFeature : Listener {
         } else if (mode == "teams") {
             ScatterFeature.scatter("teams", Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world")), SettingsFeature.instance.data!!.getInt("pregen.border"), true)
         }
-        frozen = true
-        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer cancel")
-        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer 45 &cStarting in ${Chat.dash}&f")
-        Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "cc")
-            frozen = false
-            unfreeze()
-            GameState.setState(GameState.INGAME)
-            val scenarios = ArrayList<String>()
-            for (scenario in ScenarioHandler.getActiveScenarios()) {
-                scenarios.add(scenario.name)
-            }
-            Bukkit.broadcastMessage(Chat.colored(Chat.line))
-            for (player in Bukkit.getOnlinePlayers()) {
-                Chat.sendCenteredMessage(player, "&c&lUHC")
-            }
-            Bukkit.broadcastMessage(" ")
-            for (player in Bukkit.getOnlinePlayers()) {
-                Chat.sendMessage(player, "&7You may &abegin&7! The host for this game is &c${SettingsFeature.instance.data!!.getString("game.host")}&7!")
-
-                Chat.sendMessage(player, "&7Scenarios: &f${scenarios.joinToString(", ")}&7")
-                Chat.sendCenteredMessage(player, " ")
-                Chat.sendMessage(player, Chat.line)
-                player.playSound(player.location, Sound.ENDERDRAGON_GROWL, 10F, 1F)
-                player.sendTitle(Chat.colored("&a&lGO!"), Chat.colored("&7You may now play the game, do &c/helpop&7 for help!"))
-                if (!SpecFeature.instance.getSpecs().contains(player.name)) {
-                    player.inventory.setItem(0, ItemStack(Material.COOKED_BEEF, SettingsFeature.instance.data!!.getInt("game.starterfood")))
-                    list.add(player.name)
-                    StatsHandler.getStatsPlayer(player).add("games_played", 1)
-                }
-            }
-            for (scenario in ScenarioHandler.getActiveScenarios()) {
-                scenario.onStart()
-            }
-            Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world")).setGameRuleValue("doDaylightCycle", true.toString())
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer cancel")
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer ${SettingsFeature.instance.data!!.getInt("game.events.final-heal") * 60} &cFinal Heal is in ${Chat.dash}&f")
-            for (player in Bukkit.getOnlinePlayers()) {
-                player.addPotionEffect(PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 300, 100, true, true))
-            }
-            Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                for (player in Bukkit.getOnlinePlayers()) {
-                    player.health = player.maxHealth
-                    player.foodLevel = 20
-                    player.saturation = 20F
-                    Chat.sendMessage(player, Chat.line)
-                    Chat.sendCenteredMessage(player, "&c&lUHC")
-                    Chat.sendMessage(player, " ")
-                    Chat.sendCenteredMessage(player, "&7All players have been healed & fed.")
-                    Chat.sendCenteredMessage(player, "&cPvP&7 is enabled in &c${SettingsFeature.instance.data!!.getString("game.events.pvp")} minutes&7.")
-                    Chat.sendMessage(player, Chat.line)
-                    player.playSound(player.location, Sound.BURP, 10F, 1F)
-                }
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer cancel")
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer ${SettingsFeature.instance.data!!.getInt("game.events.pvp") * 60} &cPvP is enabled in ${Chat.dash}&f")
-                Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                    for (world in Bukkit.getWorlds()) {
-                        world.pvp = true
-                    }
-                    for (scenario in ScenarioHandler.getActiveScenarios()) {
-                        scenario.onPvP()
-                    }
-                    for (player in Bukkit.getOnlinePlayers()) {
-                        Chat.sendMessage(player, Chat.line)
-                        Chat.sendCenteredMessage(player, "&c&lUHC")
-                        Chat.sendMessage(player, " ")
-                        Chat.sendCenteredMessage(player, "&7PvP has been &aenabled&7.")
-                        Chat.sendCenteredMessage(player, "&cMeetup&7 is enabled in &c${SettingsFeature.instance.data!!.getString("game.events.meetup")} minutes&7.")
-                        Chat.sendMessage(player, Chat.line)
-                        player.playSound(player.location, Sound.ANVIL_LAND, 10F, 1F)
-                    }
-                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer cancel")
-                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer ${SettingsFeature.instance.data!!.getInt("game.events.meetup") * 60} &cMeetup happens in ${Chat.dash}&f")
-                    Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                        Bukkit.broadcastMessage(Chat.colored(Chat.line))
-                        for (player in Bukkit.getOnlinePlayers()) {
-                            Chat.sendCenteredMessage(player, "&c&lUHC")
-                            Chat.sendMessage(player, " ")
-                            Chat.sendCenteredMessage(player, "&7It's now &cMeetup&7! Head to &a0,0&7!")
-                            Chat.sendCenteredMessage(player, "&7The border will start shrinking until it's at &f25x25&7!")
-                        }
-                        for (scenario in ScenarioHandler.getActiveScenarios()) {
-                            scenario.onMeetup()
-                        }
-                        Bukkit.broadcastMessage(Chat.colored(Chat.line))
-                        scheduleShrink(500)
-                        Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                            scheduleShrink(250)
-                            Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                                scheduleShrink(100)
-                                Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                                    scheduleShrink(75)
-                                    Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                                        scheduleShrink(50)
-                                        Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                                            scheduleShrink(25)
-                                        }, 6000)
-                                    }, 6000)
-                                }, 6000)
-                            }, 6000)
-                        }, 6000)
-                    }, (SettingsFeature.instance.data!!.getInt("game.events.meetup") * 60) * 20.toLong())
-                }, (SettingsFeature.instance.data!!.getInt("game.events.pvp") * 60) * 20.toLong())
-            }, (SettingsFeature.instance.data!!.getInt("game.events.final-heal") * 60) * 20.toLong())
-        }, 900L)
+        freeze()
+        JavaPlugin.getPlugin(Kraftwerk::class.java).game = UHCTask()
+        JavaPlugin.getPlugin(Kraftwerk::class.java).game!!.runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 20L)
     }
 
     fun freeze() {
@@ -213,7 +284,7 @@ class UHCFeature : Listener {
         }
     }
 
-    private fun scheduleShrink(newBorder: Int) {
+    fun scheduleShrink(newBorder: Int) {
         Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
             Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Shrinking to &f${newBorder}x${newBorder}&7 in &f10s&7."))
             Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {

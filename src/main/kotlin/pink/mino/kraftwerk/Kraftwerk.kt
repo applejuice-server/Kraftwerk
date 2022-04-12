@@ -37,6 +37,7 @@ class Kraftwerk : ExtendedJavaPlugin() {
 
     private var protocolManager: ProtocolManager? = null
     var vote: Vote? = null
+    var game: UHCTask? = null
     lateinit var dataSource: DataSource
     lateinit var twitter: TwitterClient
 
