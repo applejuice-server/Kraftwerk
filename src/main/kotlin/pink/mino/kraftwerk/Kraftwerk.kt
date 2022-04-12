@@ -134,6 +134,7 @@ class Kraftwerk : ExtendedJavaPlugin() {
         getCommand("molelist").executor = MolesListCommand()
         getCommand("store").executor = StoreCommand()
         getCommand("rules").executor = RulesCommand()
+        getCommand("statistics").executor = StatsCommand()
         getCommand("voteyes").executor = VoteYesCommand()
         getCommand("voteno").executor = VoteNoCommand()
 

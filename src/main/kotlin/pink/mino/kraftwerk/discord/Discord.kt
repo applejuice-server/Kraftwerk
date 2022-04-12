@@ -50,6 +50,7 @@ class Discord : ListenerAdapter() {
             commands.addCommands(
                 CommandData("wl", "Attempts to whitelist yourself on the server if the conditions are met.")
                     .addOption(OptionType.STRING, "ign", "The player you want to be whitelisted.", true)
+                    .setDefaultEnabled(false)
             )
             commands.addCommands(
                 CommandData("stats", "View the stats of another player on the server.")
