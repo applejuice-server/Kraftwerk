@@ -34,6 +34,7 @@ class ScenarioHandler {
             addScenario(MolesScenario.instance)
             addScenario(WebCageScenario())
             addScenario(NoCleanScenario.instance)
+            addScenario(GraveRobbersScenario())
             scenarios.sortWith(Comparator.comparing(Scenario::name))
         }
 
