@@ -33,7 +33,7 @@ class ActionBar {
          */
 
         fun sendActionBarMessage(@NotNull bukkitPlayer: Player, @NotNull message: String) {
-            sendRawActionBarMessage(bukkitPlayer, "{\"text\": \"$message\"}")
+            sendRawActionBarMessage(bukkitPlayer, "{\"text\": \"${Chat.colored(message)}\"}")
         }
 
         /**
