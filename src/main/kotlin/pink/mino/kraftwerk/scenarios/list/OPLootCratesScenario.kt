@@ -231,6 +231,6 @@ class OPLootCratesScenario : Scenario(
             }
             player.playSound(player.location, Sound.NOTE_PLING, 10F, 1F)
         }
-        GiveLootCrates().runTaskTimerAsynchronously(JavaPlugin.getPlugin(Kraftwerk::class.java), 20L, 20L)
+        GiveLootCrates().runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 20L, 20L)
     }
 }
