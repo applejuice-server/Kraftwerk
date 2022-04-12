@@ -41,10 +41,10 @@ class NoCleanScenario : Scenario(
     fun onPlayerDeath(e: PlayerDeathEvent) {
         if (!enabled) return
         if (GameState.currentState != GameState.INGAME) return
-        if (e.entity.killer.type == EntityType.PLAYER) {
-            Chat.sendMessage(e.entity.killer as Player, "&cYou've been given 15 seconds of NoClean!")
-            noClean[e.entity.killer as Player] = 15
-            NoCleanTask(e.entity.killer as Player).runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 20L)
+        if (e.entity.killer != null) {
+            Chat.sendMessage(e.entity.killer, "&cYou've been given 15 seconds of NoClean!")
+            noClean[e.entity.killer] = 15
+            NoCleanTask(e.entity.killer).runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 20L)
         }
     }
 
