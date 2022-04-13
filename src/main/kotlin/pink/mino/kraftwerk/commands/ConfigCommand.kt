@@ -66,6 +66,7 @@ class ConfigCommand : CommandExecutor {
             Chat.colored("&7AntiBurn ${Chat.dash} &c${getOption("antiburn")}"),
             Chat.colored("&7Pearl Damage ${Chat.dash} &c${getOption("pearldamage")}"),
             Chat.colored("&7Pearl Cooldown ${Chat.dash} &c${getOption("pearlcooldown")}"),
+            Chat.colored("&7Statless ${Chat.dash} &c${getOption("statless")}"),
             "",
             Chat.colored(Chat.guiLine),
         )

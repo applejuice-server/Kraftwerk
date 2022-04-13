@@ -57,7 +57,6 @@ class Discord : ListenerAdapter() {
                     .addOption(OptionType.STRING, "player", "The player you want to view the stats for.", true)
                     .setDefaultEnabled(false)
             )
-
             commands.queue()
             instance = jda
         }

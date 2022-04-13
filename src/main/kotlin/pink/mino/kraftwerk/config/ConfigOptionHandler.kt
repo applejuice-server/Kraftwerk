@@ -22,6 +22,7 @@ class ConfigOptionHandler {
             addOption(AntiBurnOption())
             addOption(PearlDamageOption())
             addOption(EnderPearlCooldownOption())
+            addOption(StatlessOption())
 
             addOption(CrossteamingOption())
             addOption(StalkingOption())

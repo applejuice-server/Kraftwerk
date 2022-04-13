@@ -10,6 +10,7 @@ import org.bukkit.event.enchantment.EnchantItemEvent
 import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.inventory.CraftItemEvent
 import org.bukkit.event.player.PlayerItemConsumeEvent
+import pink.mino.kraftwerk.config.ConfigOptionHandler
 import pink.mino.kraftwerk.utils.GameState
 import pink.mino.kraftwerk.utils.StatsHandler
 
@@ -18,6 +19,7 @@ class StatsFeature : Listener {
     @EventHandler
     fun onPlayerDeath(e: PlayerDeathEvent) {
         if (GameState.currentState != GameState.INGAME) return
+        if (ConfigOptionHandler.getOption("statless")!!.enabled) return
         StatsHandler.getStatsPlayer(e.entity).add("deaths", 1)
         if (e.entity.killer != null && e.entity.killer.type == EntityType.PLAYER) {
             StatsHandler.getStatsPlayer(e.entity.killer as Player).add("kills", 1)
@@ -27,6 +29,7 @@ class StatsFeature : Listener {
     @EventHandler
     fun onBlockBreak(e: BlockBreakEvent) {
         if (GameState.currentState != GameState.INGAME) return
+        if (ConfigOptionHandler.getOption("statless")!!.enabled) return
         val player = StatsHandler.getStatsPlayer(e.player)
         when (e.block.type) {
             Material.DIAMOND_ORE -> {
@@ -45,18 +48,21 @@ class StatsFeature : Listener {
     @EventHandler
     fun onConsume(e: PlayerItemConsumeEvent) {
         if (GameState.currentState != GameState.INGAME) return
+        if (ConfigOptionHandler.getOption("statless")!!.enabled) return
         if (e.item.type == Material.GOLDEN_APPLE) StatsHandler.getStatsPlayer(e.player).add("gapples_eaten", 1)
     }
 
     @EventHandler
     fun onCraft(e: CraftItemEvent) {
         if (GameState.currentState != GameState.INGAME) return
+        if (ConfigOptionHandler.getOption("statless")!!.enabled) return
         StatsHandler.getStatsPlayer(e.whoClicked as Player).add("times_crafted", 1)
     }
 
     @EventHandler
     fun onEnchant(e: EnchantItemEvent) {
         if (GameState.currentState != GameState.INGAME) return
+        if (ConfigOptionHandler.getOption("statless")!!.enabled) return
         StatsHandler.getStatsPlayer(e.enchanter).add("times_enchanted", 1)
     }
 }
