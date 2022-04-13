@@ -32,13 +32,13 @@ class StatsCommand : CommandExecutor {
             val oreMeta = ores.itemMeta
             oreMeta.displayName = Chat.colored("&4Ores")
             oreMeta.lore = listOf(
-                Chat.colored(Chat.line),
+                Chat.colored(Chat.guiLine),
                 "",
                 Chat.colored("&7Diamonds Mined ${Chat.dash} &c${player.diamondsMined}"),
                 Chat.colored("&7Gold Mined ${Chat.dash} &c${player.goldMined}"),
                 Chat.colored("&7Iron Mined ${Chat.dash} &c${player.diamondsMined}"),
                 "",
-                Chat.colored(Chat.line)
+                Chat.colored(Chat.guiLine)
             )
             ores.itemMeta = oreMeta
 
@@ -47,24 +47,24 @@ class StatsCommand : CommandExecutor {
             generalMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES)
             generalMeta.displayName = Chat.colored("&4General")
             generalMeta.lore = listOf(
-                Chat.colored(Chat.line),
+                Chat.colored(Chat.guiLine),
                 "",
                 Chat.colored("&7Kills ${Chat.dash} &c${player.kills}"),
                 Chat.colored("&7Wins ${Chat.dash} &c${player.wins}"),
                 Chat.colored("&7Deaths ${Chat.dash} &c${player.deaths}"),
                 Chat.colored("&7Games Played ${Chat.dash} &c${player.gamesPlayed}"),
                 "",
-                Chat.colored(Chat.line)
+                Chat.colored(Chat.guiLine)
             )
             val misc = ItemBuilder(Material.WATCH)
                 .name("&4Misc.")
-                .addLore(Chat.line)
+                .addLore(Chat.guiLine)
                 .addLore(" ")
                 .addLore("&7Times Enchanted ${Chat.dash} &c${player.timesEnchanted}")
                 .addLore("&7Times Crafted  ${Chat.dash} &c${player.timesCrafted}")
                 .addLore("&7Gapples Eaten ${Chat.dash} &c${player.gapplesEaten}")
                 .addLore(" ")
-                .addLore(Chat.line)
+                .addLore(Chat.guiLine)
                 .make()
             general.itemMeta = generalMeta
 
@@ -89,13 +89,13 @@ class StatsCommand : CommandExecutor {
             val oreMeta = ores.itemMeta
             oreMeta.displayName = Chat.colored("&4Ores")
             oreMeta.lore = listOf(
-                Chat.colored(Chat.line),
+                Chat.colored(Chat.guiLine),
                 "",
                 Chat.colored("&7Diamonds Mined ${Chat.dash} &c${player.diamondsMined}"),
                 Chat.colored("&7Gold Mined ${Chat.dash} &c${player.goldMined}"),
                 Chat.colored("&7Iron Mined ${Chat.dash} &c${player.ironMined}"),
                 "",
-                Chat.colored(Chat.line)
+                Chat.colored(Chat.guiLine)
             )
             ores.itemMeta = oreMeta
 
@@ -104,24 +104,24 @@ class StatsCommand : CommandExecutor {
             generalMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES)
             generalMeta.displayName = Chat.colored("&4General")
             generalMeta.lore = listOf(
-                Chat.colored(Chat.line),
+                Chat.colored(Chat.guiLine),
                 "",
                 Chat.colored("&7Kills ${Chat.dash} &c${player.kills}"),
                 Chat.colored("&7Wins ${Chat.dash} &c${player.wins}"),
                 Chat.colored("&7Deaths ${Chat.dash} &c${player.deaths}"),
                 Chat.colored("&7Games Played ${Chat.dash} &c${player.gamesPlayed}"),
                 "",
-                Chat.colored(Chat.line)
+                Chat.colored(Chat.guiLine)
             )
             val misc = ItemBuilder(Material.WATCH)
                 .name("&4Misc.")
-                .addLore(Chat.line)
+                .addLore(Chat.guiLine)
                 .addLore(" ")
                 .addLore("&7Times Enchanted ${Chat.dash} &c${player.timesEnchanted}")
                 .addLore("&7Times Crafted  ${Chat.dash} &c${player.timesCrafted}")
                 .addLore("&7Gapples Eaten ${Chat.dash} &c${player.gapplesEaten}")
                 .addLore(" ")
-                .addLore(Chat.line)
+                .addLore(Chat.guiLine)
                 .make()
             general.itemMeta = generalMeta
 

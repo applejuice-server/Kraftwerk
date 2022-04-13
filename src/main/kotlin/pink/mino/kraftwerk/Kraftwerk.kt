@@ -2,6 +2,7 @@ package pink.mino.kraftwerk
 
 import com.comphenix.protocol.ProtocolLibrary
 import com.comphenix.protocol.ProtocolManager
+import com.gmail.filoghost.holographicdisplays.api.HologramsAPI
 import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource
 import io.github.redouane59.twitter.TwitterClient
@@ -197,6 +198,35 @@ class Kraftwerk : ExtendedJavaPlugin() {
             world.pvp = true
         }
         InfoFeature().runTaskTimerAsynchronously(this, 0L, 6000L)
+
+        for (hologram in HologramsAPI.getHolograms(this)) {
+            hologram.delete()
+        }
+
+        /*
+        val gamesPlayed = HologramsAPI.createHologram(this, Location(Bukkit.getWorld("Spawn"), -230.5, 101.0, -131.5))
+        val wins = HologramsAPI.createHologram(this, Location(Bukkit.getWorld("Spawn"), -230.5, 101.0, -149.5))
+        val kills = HologramsAPI.createHologram(this, Location(Bukkit.getWorld("Spawn"), -212.5, 101.0, -149.5))
+        val diamondsMined = HologramsAPI.createHologram(this, Location(Bukkit.getWorld("Spawn"), -212.5, 101.0, -131.5))
+
+        gamesPlayed.appendTextLine(Chat.colored("&c&lGames Played"))
+        gamesPlayed.appendTextLine(Chat.guiLine)
+
+        wins.appendTextLine(Chat.colored("&c&lWins"))
+        wins.appendTextLine(Chat.guiLine)
+
+        kills.appendTextLine(Chat.colored("&c&lKills"))
+        kills.appendTextLine(Chat.guiLine)
+
+        diamondsMined.appendTextLine(Chat.colored("&c&lDiamonds Mined"))
+        diamondsMined.appendTextLine(Chat.guiLine)
+
+        StatsHandler.getTopValues("games_played", gamesPlayed)
+        StatsHandler.getTopValues("wins", wins)
+        StatsHandler.getTopValues("kills", kills)
+        StatsHandler.getTopValues("diamonds_mined", diamondsMined)
+
+         */
         Bukkit.getLogger().info("Kraftwerk enabled.")
     }
 

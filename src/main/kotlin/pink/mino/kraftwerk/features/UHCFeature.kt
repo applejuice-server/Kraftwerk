@@ -18,6 +18,7 @@ import org.bukkit.potion.PotionEffectType
 import org.bukkit.scheduler.BukkitRunnable
 import pink.mino.kraftwerk.Kraftwerk
 import pink.mino.kraftwerk.commands.SendTeamView
+import pink.mino.kraftwerk.config.ConfigOptionHandler
 import pink.mino.kraftwerk.scenarios.ScenarioHandler
 import pink.mino.kraftwerk.utils.ActionBar
 import pink.mino.kraftwerk.utils.Chat
@@ -56,28 +57,34 @@ enum class Events {
 }
 
 class UHCTask : BukkitRunnable() {
+    val finalHeal = SettingsFeature.instance.data!!.getInt("game.events.final-heal") * 60 + 45
+    val pvp = ((SettingsFeature.instance.data!!.getInt("game.events.pvp") + SettingsFeature.instance.data!!.getInt("game.events.final-heal")) * 60) + 45
+    val meetup = ((SettingsFeature.instance.data!!.getInt("game.events.pvp") + SettingsFeature.instance.data!!.getInt("game.events.final-heal") + SettingsFeature.instance.data!!.getInt("game.events.meetup")) * 60) + 45
 
-    private var finalHeal = SettingsFeature.instance.data!!.getInt("game.events.final-heal") * 60
-    var pvp = (SettingsFeature.instance.data!!.getInt("game.events.pvp") * 60) + (SettingsFeature.instance.data!!.getInt("game.events.final-heal") * 60)
-    private var meetup = (SettingsFeature.instance.data!!.getInt("game.events.meetup") * 60) + (SettingsFeature.instance.data!!.getInt("game.events.pvp") * 60) + (SettingsFeature.instance.data!!.getInt("game.events.final-heal") * 60)
-
-    private val rawPvP = SettingsFeature.instance.data!!.getInt("game.events.pvp") * 60
-    private val rawMeetup = SettingsFeature.instance.data!!.getInt("game.events.meetup") * 60
+    val rawPvP = (SettingsFeature.instance.data!!.getInt("game.events.pvp") * 60) + 45
+    val rawMeetup = (SettingsFeature.instance.data!!.getInt("game.events.meetup") * 60) + 45
 
     var timer = 0
     var currentEvent: Events = Events.PRE_START
 
-    fun displayTimer(player: Player) {
-        if (currentEvent == Events.PRE_START) {
-            ActionBar.sendActionBarMessage(player, "&cStarting in ${Chat.dash} &f${timeToString(45 - timer.toLong())}")
-        } else if (currentEvent == Events.START) {
-            ActionBar.sendActionBarMessage(player, "&cFinal Heal is in ${Chat.dash} &f${timeToString(finalHeal - timer.toLong())}")
-        } else if (currentEvent == Events.FINAL_HEAL) {
-            ActionBar.sendActionBarMessage(player, "&cPvP is enabled in ${Chat.dash} &f${timeToString(rawPvP - timer.toLong())}")
-        } else if (currentEvent == Events.PVP) {
-            ActionBar.sendActionBarMessage(player, "&cMeetup is in ${Chat.dash} &f${timeToString(rawMeetup - timer.toLong())}")
-        } else if (currentEvent == Events.MEETUP) {
-            ActionBar.sendActionBarMessage(player, "&cIt is now Meetup! Head to 0,0! &8| &7Border: &f±${SettingsFeature.instance.data!!.getInt("pregen.border")}")
+    private fun displayTimer(player: Player) {
+        when (currentEvent) {
+            Events.PRE_START -> {
+                ActionBar.sendActionBarMessage(player, "&cStarting in ${Chat.dash} &f${timeToString((45 - timer).toLong())}")
+            }
+            Events.START -> {
+                print((finalHeal - timer).toLong())
+                ActionBar.sendActionBarMessage(player, "&cFinal Heal is in ${Chat.dash} &f${timeToString((finalHeal - timer).toLong())}")
+            }
+            Events.FINAL_HEAL -> {
+                ActionBar.sendActionBarMessage(player, "&cPvP is enabled in ${Chat.dash} &f${timeToString((pvp - timer).toLong())}")
+            }
+            Events.PVP -> {
+                ActionBar.sendActionBarMessage(player, "&cMeetup is in ${Chat.dash} &f${timeToString((meetup - timer).toLong())}")
+            }
+            Events.MEETUP -> {
+                ActionBar.sendActionBarMessage(player, "&cIt is now Meetup! Head to 0,0! &8| &7Border: &f±${SettingsFeature.instance.data!!.getInt("pregen.border")}")
+            }
         }
     }
 
@@ -113,7 +120,7 @@ class UHCTask : BukkitRunnable() {
                     if (!SpecFeature.instance.getSpecs().contains(player.name)) {
                         player.inventory.setItem(0, ItemStack(Material.COOKED_BEEF, SettingsFeature.instance.data!!.getInt("game.starterfood")))
                         list.add(player.name)
-                        StatsHandler.getStatsPlayer(player).add("games_played", 1)
+                        if (!ConfigOptionHandler.getOption("statless")!!.enabled) StatsHandler.getStatsPlayer(player).add("games_played", 1)
                     }
                 }
                 for (scenario in ScenarioHandler.getActiveScenarios()) {
@@ -136,7 +143,7 @@ class UHCTask : BukkitRunnable() {
                     Chat.sendCenteredMessage(player, "&c&lUHC")
                     Chat.sendMessage(player, " ")
                     Chat.sendCenteredMessage(player, "&7All players have been healed & fed.")
-                    Chat.sendCenteredMessage(player, "&cPvP&7 is enabled in &c${rawPvP} minutes&7.")
+                    Chat.sendCenteredMessage(player, "&cPvP&7 is enabled in &c${rawPvP / 60} minutes&7.")
                     Chat.sendMessage(player, Chat.line)
                     player.playSound(player.location, Sound.BURP, 10F, 1F)
                 }
@@ -154,7 +161,7 @@ class UHCTask : BukkitRunnable() {
                     Chat.sendCenteredMessage(player, "&c&lUHC")
                     Chat.sendMessage(player, " ")
                     Chat.sendCenteredMessage(player, "&7PvP has been &aenabled&7.")
-                    Chat.sendCenteredMessage(player, "&cMeetup&7 is enabled in &c${SettingsFeature.instance.data!!.getString("game.events.meetup")} minutes&7.")
+                    Chat.sendCenteredMessage(player, "&cMeetup&7 is enabled in &c${rawMeetup / 60} minutes&7.")
                     Chat.sendMessage(player, Chat.line)
                     player.playSound(player.location, Sound.ANVIL_LAND, 10F, 1F)
                 }
@@ -311,8 +318,6 @@ class UHCFeature : Listener {
                                                     Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} The border has shrunken to &f${newBorder}x${newBorder}&7."))
                                                     if (newBorder != 25) {
                                                         Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Next border shrink in &f5 minutes."))
-                                                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer cancel")
-                                                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer 300 &cCurrent border ${Chat.dash} &f±${SettingsFeature.instance.data!!.getInt("pregen.border")} &8| &cNext border shrink in ${Chat.dash}&f")
                                                     }
                                                     Bukkit.broadcastMessage(Chat.colored(Chat.line))
                                                 }, 20L)
