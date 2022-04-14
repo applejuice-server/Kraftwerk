@@ -2,6 +2,7 @@ package pink.mino.kraftwerk.scenarios.list
 
 import com.gmail.filoghost.holographicdisplays.api.Hologram
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI
+import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.block.BlockFace
@@ -13,22 +14,27 @@ import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.scheduler.BukkitRunnable
 import pink.mino.kraftwerk.Kraftwerk
 import pink.mino.kraftwerk.scenarios.Scenario
+import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GameState
 
-class TimeBombTask(val player: Player, val location: Location, val hologram: Hologram) : BukkitRunnable() {
+class TimeBombTask(val player: Player, val location: Location, private val hologram: Hologram) : BukkitRunnable() {
     var timer = 30
     override fun run() {
         if (timer == 0) {
+            val chest = location.block.state as Chest
+            chest.inventory.clear()
             location.block.type = Material.AIR
             location.block.getRelative(BlockFace.NORTH).type = Material.AIR
-            location.world.createExplosion(location.x, location.y, location.y, 10F, false, true)
+            location.world.createExplosion(location.blockX + 0.5, location.blockY + 0.5, location.blockZ + 0.5, 10F, false, true)
             location.world.strikeLightning(location)
             hologram.delete()
+            Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} &f${player.name}&7's corpse has exploded."))
             cancel()
+            return
         }
         timer--
         if (hologram.size() == 1) hologram.removeLine(0)
-        hologram.appendTextLine("&e${timer}s")
+        hologram.appendTextLine(Chat.colored("&e${timer}s"))
     }
 }
 
