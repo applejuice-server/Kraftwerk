@@ -44,7 +44,7 @@ class MolesScenario : Scenario(
         return list
     }
 
-    fun assignMoles() {
+    fun assignMoles() = try {
         for (team in TeamsFeature.manager.getTeams()) {
             if (team.size != 0) {
                 val list = ArrayList<Player>()
@@ -60,7 +60,7 @@ class MolesScenario : Scenario(
                 }
             }
         }
-    }
+    } catch (e: Error) { print(e) }
 
     override fun onPvP() {
         assignMoles()
