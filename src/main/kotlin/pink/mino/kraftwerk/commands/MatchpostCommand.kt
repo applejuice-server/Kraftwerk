@@ -14,12 +14,14 @@ import org.bukkit.scheduler.BukkitRunnable
 import pink.mino.kraftwerk.Kraftwerk
 import pink.mino.kraftwerk.discord.Discord
 import pink.mino.kraftwerk.features.SettingsFeature
+import pink.mino.kraftwerk.utils.ActionBar
 import pink.mino.kraftwerk.utils.Chat
 import java.awt.Color
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
+import kotlin.math.floor
 
 class ScheduleBroadcast(private val opening: String) : BukkitRunnable() {
     fun getTime(): String {
@@ -119,6 +121,46 @@ class ScheduleBroadcast(private val opening: String) : BukkitRunnable() {
     }
 }
 
+class Opening(private val closing: Long) : BukkitRunnable() {
+    var timer = 0
+
+    private fun timeToString(ticks: Long): String {
+        var t = ticks
+        val hours = floor(t / 3600.toDouble()).toInt()
+        t -= hours * 3600
+        val minutes = floor(t / 60.toDouble()).toInt()
+        t -= minutes * 60
+        val seconds = t.toInt()
+        val output = StringBuilder()
+        if (hours > 0) {
+            output.append(hours).append('h')
+            if (minutes == 0) {
+                output.append(minutes).append('m')
+            }
+        }
+        if (minutes > 0) {
+            output.append(minutes).append('m')
+        }
+        output.append(seconds).append('s')
+        return output.toString()
+    }
+
+    private fun displayTimer(player: Player) {
+        ActionBar.sendActionBarMessage(player, "&cWhitelist is enabled in ${Chat.dash} &f${timeToString(closing - timer.toLong())}")
+    }
+
+    override fun run() {
+        if (timer == closing.toInt()) {
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wl on")
+            cancel()
+        }
+        timer++
+        for (player in Bukkit.getOnlinePlayers()) {
+            displayTimer(player)
+        }
+    }
+}
+
 class ScheduleOpening(private val opening: String) : BukkitRunnable() {
     fun getTime(): String {
         with(URL("https://hosts.uhc.gg/api/sync").openConnection() as HttpURLConnection) {
@@ -151,10 +193,10 @@ class ScheduleOpening(private val opening: String) : BukkitRunnable() {
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer cancel")
             val time: Long
             if (SettingsFeature.instance.data!!.getBoolean("matchpost.teamsGame")) {
-                time = 12000L
+                time = 600
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer 600 &cWhitelist is enabled in ${Chat.dash}&f")
             } else {
-                time = 6000L
+                time = 300
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer 300 &cWhitelist is enabled in ${Chat.dash}&f")
             }
             val host = Bukkit.getPlayer(SettingsFeature.instance.data!!.getString("game.host"))
@@ -171,9 +213,7 @@ class ScheduleOpening(private val opening: String) : BukkitRunnable() {
             Discord.instance!!.getTextChannelById(937811678735765554)!!.sendMessageEmbeds(embed.build()).queue()
             Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} The whitelist has been turned off automatically @ &c${opening}&7."))
             cancel()
-            Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wl on")
-            }, time)
+            Opening(time).runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 20L)
             SettingsFeature.instance.data!!.set("matchpost.opens", null)
             SettingsFeature.instance.saveData()
         }

@@ -108,6 +108,7 @@ class Kraftwerk : ExtendedJavaPlugin() {
         getCommand("cancel").executor = CancelCommand()
         getCommand("near").executor = NearbyCommand()
         getCommand("startvote").executor = StartVoteCommand()
+        getCommand("force").executor = ForceCommand()
 
         getCommand("gm").executor = GamemodeCommand()
         getCommand("gamemode").executor = GamemodeCommand()
