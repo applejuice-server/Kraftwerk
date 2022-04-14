@@ -44,6 +44,11 @@ class SkyHighScenario : Scenario(
     "skyhigh",
     Material.FEATHER
 ) {
+    override fun onPvP() {
+        SkyHighIterator().runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 20L)
+        Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} The damage tick for SkyHigh has started, the damage tick happen every 45 seconds."))
+    }
+
     override fun onStart() {
         val shovel = ItemStack(Material.DIAMOND_SPADE)
         val meta = shovel.itemMeta
@@ -56,11 +61,6 @@ class SkyHighScenario : Scenario(
                 Chat.sendMessage(player, "${Chat.prefix} You've been given your SkyHigh items.")
             }
         }
-    }
-
-    override fun onPvP() {
-        SkyHighIterator().runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 20L)
-        Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} The damage tick for SkyHigh has started, the damage tick happen every 45 seconds."))
     }
 
     override fun givePlayer(player: Player) {

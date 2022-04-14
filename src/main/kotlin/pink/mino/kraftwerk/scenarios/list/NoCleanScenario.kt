@@ -16,9 +16,10 @@ import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GameState
 
 class NoCleanTask(val player: Player) : BukkitRunnable() {
+    var timer = 15
     override fun run() {
-        NoCleanScenario.instance.noClean[player]?.minus(1)
-        if (NoCleanScenario.instance.noClean[player] == 0) {
+        timer -= 15
+        if (timer == 0) {
             cancel()
             NoCleanScenario.instance.noClean.remove(player)
             Chat.sendMessage(player, "&cYour NoClean has expired!")
@@ -35,7 +36,7 @@ class NoCleanScenario : Scenario(
     companion object {
         val instance = NoCleanScenario()
     }
-    val noClean: HashMap<Player, Int> = hashMapOf()
+    val noClean: HashMap<Player, Boolean> = hashMapOf()
 
     @EventHandler
     fun onPlayerDeath(e: PlayerDeathEvent) {
@@ -43,7 +44,7 @@ class NoCleanScenario : Scenario(
         if (GameState.currentState != GameState.INGAME) return
         if (e.entity.killer != null) {
             Chat.sendMessage(e.entity.killer, "&cYou've been given 15 seconds of NoClean!")
-            noClean[e.entity.killer] = 15
+            noClean[e.entity.killer] = true
             NoCleanTask(e.entity.killer).runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 20L)
         }
     }

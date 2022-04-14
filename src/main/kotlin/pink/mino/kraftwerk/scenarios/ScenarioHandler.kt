@@ -39,6 +39,8 @@ class ScenarioHandler {
             addScenario(TimeBombScenario())
             addScenario(NicholasCageScenario())
             addScenario(BatsScenario())
+            addScenario(ExtremeSkyHighScenario())
+            addScenario(WeakestLinkScenario())
             scenarios.sortWith(Comparator.comparing(Scenario::name))
         }
 
