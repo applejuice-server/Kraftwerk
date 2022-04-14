@@ -13,6 +13,7 @@ import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GuiBuilder
 import pink.mino.kraftwerk.utils.ItemBuilder
 import pink.mino.kraftwerk.utils.StatsHandler
+import kotlin.math.round
 
 class StatsCommand : CommandExecutor {
     override fun onCommand(
@@ -50,8 +51,9 @@ class StatsCommand : CommandExecutor {
                 Chat.colored(Chat.guiLine),
                 "",
                 Chat.colored("&7Kills ${Chat.dash} &c${player.kills}"),
-                Chat.colored("&7Wins ${Chat.dash} &c${player.wins}"),
                 Chat.colored("&7Deaths ${Chat.dash} &c${player.deaths}"),
+                Chat.colored("&7Wins ${Chat.dash} &c${player.wins}"),
+                Chat.colored("&7KDR ${Chat.dash} &c${round((player.kills.toDouble() / player.deaths.toDouble()) / 100.0)}"),
                 Chat.colored("&7Games Played ${Chat.dash} &c${player.gamesPlayed}"),
                 "",
                 Chat.colored(Chat.guiLine)
@@ -107,8 +109,9 @@ class StatsCommand : CommandExecutor {
                 Chat.colored(Chat.guiLine),
                 "",
                 Chat.colored("&7Kills ${Chat.dash} &c${player.kills}"),
-                Chat.colored("&7Wins ${Chat.dash} &c${player.wins}"),
                 Chat.colored("&7Deaths ${Chat.dash} &c${player.deaths}"),
+                Chat.colored("&7KDR ${Chat.dash} &c${round((player.kills.toDouble() / player.deaths.toDouble()) / 100.0)}"),
+                Chat.colored("&7Wins ${Chat.dash} &c${player.wins}"),
                 Chat.colored("&7Games Played ${Chat.dash} &c${player.gamesPlayed}"),
                 "",
                 Chat.colored(Chat.guiLine)
