@@ -73,7 +73,6 @@ class UHCTask : BukkitRunnable() {
                 ActionBar.sendActionBarMessage(player, "&cStarting in ${Chat.dash} &f${timeToString((45 - timer).toLong())}")
             }
             Events.START -> {
-                print((finalHeal - timer).toLong())
                 ActionBar.sendActionBarMessage(player, "&cFinal Heal is in ${Chat.dash} &f${timeToString((finalHeal - timer).toLong())}")
             }
             Events.FINAL_HEAL -> {
@@ -123,6 +122,8 @@ class UHCTask : BukkitRunnable() {
                         if (!ConfigOptionHandler.getOption("statless")!!.enabled) StatsHandler.getStatsPlayer(player).add("games_played", 1)
                     }
                 }
+                SettingsFeature.instance.data!!.set("game.list", list)
+                SettingsFeature.instance.saveData()
                 for (scenario in ScenarioHandler.getActiveScenarios()) {
                     scenario.onStart()
                 }

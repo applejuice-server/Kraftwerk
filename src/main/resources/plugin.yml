@@ -230,6 +230,8 @@ commands:
     description: Votes no to the current poll.
   startvote:
     description: Starts a 15 seconds yes/no poll.
+  force:
+    description: Force events to happen in the UHC game.
 depend:
   - ProtocolLib
   - JDA
