@@ -36,7 +36,6 @@ class SkyHighIterator : BukkitRunnable() {
             cancel()
         }
     }
-
 }
 
 class SkyHighScenario : Scenario(

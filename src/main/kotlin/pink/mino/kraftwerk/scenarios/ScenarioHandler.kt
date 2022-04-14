@@ -35,6 +35,10 @@ class ScenarioHandler {
             addScenario(WebCageScenario())
             addScenario(NoCleanScenario.instance)
             addScenario(GraveRobbersScenario())
+            addScenario(FalloutScenario())
+            addScenario(TimeBombScenario())
+            addScenario(NicholasCageScenario())
+            addScenario(BatsScenario())
             scenarios.sortWith(Comparator.comparing(Scenario::name))
         }
 
