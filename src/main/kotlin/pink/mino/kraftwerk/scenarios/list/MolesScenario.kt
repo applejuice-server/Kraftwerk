@@ -44,13 +44,14 @@ class MolesScenario : Scenario(
         return list
     }
 
-    fun assignMoles() = try {
+    fun assignMoles() {
         for (team in TeamsFeature.manager.getTeams()) {
             if (team.size != 0) {
                 val list = ArrayList<Player>()
                 for (teammate in team.players) {
                     if (teammate.isOnline) list.add(teammate as Player)
                 }
+                if (list.size == 0) continue
                 val teammateIndex = Random.nextInt(list.size)
                 for ((index, teammate) in list.withIndex()) {
                     if (index == teammateIndex) {
@@ -60,7 +61,7 @@ class MolesScenario : Scenario(
                 }
             }
         }
-    } catch (e: Error) { print(e) }
+    }
 
     override fun onPvP() {
         assignMoles()

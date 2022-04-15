@@ -292,7 +292,7 @@ class SpecFeature : Listener {
                         if (block.type === Material.DIAMOND_ORE) {
                             diamonds++
                             if (diamondsMined[p.uniqueId] == null) diamondsMined[p.uniqueId] = 0
-                            diamondsMined[p.uniqueId]!!.plus(1)
+                            diamondsMined[p.uniqueId]?.plus(diamonds)
                             if (brokenBlocks.containsKey(p.uniqueId)) {
                                 val blocks: HashSet<Block> = brokenBlocks[p.uniqueId]!!
                                 blocks.add(block)
@@ -325,7 +325,7 @@ class SpecFeature : Listener {
                         if (block.type === Material.GOLD_ORE) {
                             gold++
                             if (goldMined[p.uniqueId] == null) goldMined[p.uniqueId] = 0
-                            goldMined[p.uniqueId]!!.plus(1)
+                            goldMined[p.uniqueId]?.plus(1)
                             if (brokenBlocks.containsKey(p.uniqueId)) {
                                 val blocks: HashSet<Block> = brokenBlocks[p.uniqueId]!!
                                 blocks.add(block)

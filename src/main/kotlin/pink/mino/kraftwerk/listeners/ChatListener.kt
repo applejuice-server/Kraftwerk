@@ -7,7 +7,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.player.AsyncPlayerChatEvent
-import pink.mino.kraftwerk.features.TeamsFeature
+import pink.mino.kraftwerk.utils.PlayerUtils
 
 class ChatListener : Listener {
 
@@ -22,18 +22,10 @@ class ChatListener : Listener {
         val player = e.player
         val group: String? = vaultChat?.getPrimaryGroup(player)
         val prefix: String = ChatColor.translateAlternateColorCodes('&', vaultChat?.getGroupPrefix(player.world, group))
-        if (TeamsFeature.manager.getTeam(player) == null) {
-            if (player.hasPermission("uhc.staff.chat.white")) {
-                e.format = prefix + "%s" + ChatColor.DARK_GRAY + " » " + ChatColor.WHITE + "%s"
-            } else {
-                e.format = prefix + "%s" + ChatColor.DARK_GRAY + " » " + ChatColor.GRAY + "%s"
-            }
+        if (player.hasPermission("uhc.staff.chat.white")) {
+            e.format = prefix + pink.mino.kraftwerk.utils.Chat.colored("${PlayerUtils.getPrefix(player)}%s") + ChatColor.DARK_GRAY + " » " + ChatColor.WHITE + "%s"
         } else {
-            if (player.hasPermission("uhc.staff.chat.white")) {
-                e.format = ChatColor.translateAlternateColorCodes('&', "&8[${TeamsFeature.manager.getTeam(player)!!.prefix}${TeamsFeature.manager.getTeam(player)!!.name}&8] ") + prefix + "%s" + ChatColor.DARK_GRAY + " » " + ChatColor.WHITE + "%s"
-            } else {
-                e.format = ChatColor.translateAlternateColorCodes('&',"&8[${TeamsFeature.manager.getTeam(player)!!.prefix}${TeamsFeature.manager.getTeam(player)!!.name}&8] ") + prefix + "%s" + ChatColor.DARK_GRAY + " » " + ChatColor.GRAY + "%s"
-            }
+            e.format = prefix + pink.mino.kraftwerk.utils.Chat.colored("${PlayerUtils.getPrefix(player)}%s") + ChatColor.DARK_GRAY + " » " + ChatColor.GRAY + "%s"
         }
     }
 

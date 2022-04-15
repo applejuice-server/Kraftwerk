@@ -34,6 +34,9 @@ class ReplyCommand : CommandExecutor {
             return false
         }
 
+        ReplyTo.setRepliedTo(sender.uniqueId, target.uniqueId)
+        ReplyTo.setRepliedTo(target.uniqueId, sender.uniqueId)
+
         Chat.sendMessage(sender, "&7To: &f${target.displayName} &8- &7$message")
         Chat.sendMessage(target, "&7From: &f${sender.displayName} &8- &7$message")
 

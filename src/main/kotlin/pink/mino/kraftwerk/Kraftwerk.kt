@@ -2,7 +2,6 @@ package pink.mino.kraftwerk
 
 import com.comphenix.protocol.ProtocolLibrary
 import com.comphenix.protocol.ProtocolManager
-import com.gmail.filoghost.holographicdisplays.api.HologramsAPI
 import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource
 import io.github.redouane59.twitter.TwitterClient
@@ -25,6 +24,7 @@ import pink.mino.kraftwerk.listeners.lunar.PlayerRegisterListener
 import pink.mino.kraftwerk.scenarios.ScenarioHandler
 import pink.mino.kraftwerk.utils.GameState
 import pink.mino.kraftwerk.utils.Scoreboard
+import pink.mino.kraftwerk.utils.StatsPlayer
 import java.sql.SQLException
 import javax.sql.DataSource
 
@@ -39,6 +39,12 @@ class Kraftwerk : ExtendedJavaPlugin() {
     private var protocolManager: ProtocolManager? = null
     var vote: Vote? = null
     var game: UHCTask? = null
+
+    var topKills: ArrayList<StatsPlayer>? = arrayListOf()
+    var topDiamondsMined: ArrayList<StatsPlayer>? = arrayListOf()
+    var topGamesPlayed: ArrayList<StatsPlayer>? = arrayListOf()
+    var topWins: ArrayList<StatsPlayer>? = arrayListOf()
+
     lateinit var dataSource: DataSource
     lateinit var twitter: TwitterClient
 
@@ -138,6 +144,7 @@ class Kraftwerk : ExtendedJavaPlugin() {
         getCommand("store").executor = StoreCommand()
         getCommand("rules").executor = RulesCommand()
         getCommand("statistics").executor = StatsCommand()
+        getCommand("ping").executor = PingCommand()
         getCommand("voteyes").executor = VoteYesCommand()
         getCommand("voteno").executor = VoteNoCommand()
 
@@ -199,35 +206,9 @@ class Kraftwerk : ExtendedJavaPlugin() {
             world.pvp = true
         }
         InfoFeature().runTaskTimerAsynchronously(this, 0L, 6000L)
+        //HologramFeature.instance.setup()
+        //UpdateStats().runTaskTimer(this, 0L, 20L)
 
-        for (hologram in HologramsAPI.getHolograms(this)) {
-            hologram.delete()
-        }
-
-        /*
-        val gamesPlayed = HologramsAPI.createHologram(this, Location(Bukkit.getWorld("Spawn"), -230.5, 101.0, -131.5))
-        val wins = HologramsAPI.createHologram(this, Location(Bukkit.getWorld("Spawn"), -230.5, 101.0, -149.5))
-        val kills = HologramsAPI.createHologram(this, Location(Bukkit.getWorld("Spawn"), -212.5, 101.0, -149.5))
-        val diamondsMined = HologramsAPI.createHologram(this, Location(Bukkit.getWorld("Spawn"), -212.5, 101.0, -131.5))
-
-        gamesPlayed.appendTextLine(Chat.colored("&c&lGames Played"))
-        gamesPlayed.appendTextLine(Chat.guiLine)
-
-        wins.appendTextLine(Chat.colored("&c&lWins"))
-        wins.appendTextLine(Chat.guiLine)
-
-        kills.appendTextLine(Chat.colored("&c&lKills"))
-        kills.appendTextLine(Chat.guiLine)
-
-        diamondsMined.appendTextLine(Chat.colored("&c&lDiamonds Mined"))
-        diamondsMined.appendTextLine(Chat.guiLine)
-
-        StatsHandler.getTopValues("games_played", gamesPlayed)
-        StatsHandler.getTopValues("wins", wins)
-        StatsHandler.getTopValues("kills", kills)
-        StatsHandler.getTopValues("diamonds_mined", diamondsMined)
-
-         */
         Bukkit.getLogger().info("Kraftwerk enabled.")
     }
 

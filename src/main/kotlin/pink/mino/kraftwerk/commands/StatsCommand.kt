@@ -86,7 +86,7 @@ class StatsCommand : CommandExecutor {
                 Chat.sendMessage(sender, "&cInvalid player!")
                 return false
             }
-            val player = StatsHandler.getStatsPlayer(target as Player)
+            val player = StatsHandler.getStatsPlayer(target)
             val ores = ItemStack(Material.DIAMOND_ORE)
             val oreMeta = ores.itemMeta
             oreMeta.displayName = Chat.colored("&4Ores")

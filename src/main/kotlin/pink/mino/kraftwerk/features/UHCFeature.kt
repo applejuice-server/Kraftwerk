@@ -292,6 +292,16 @@ class UHCFeature : Listener {
         }
     }
 
+    fun insideBorder(player: Player, border: Int): Boolean {
+        val xLoc = player.location.x
+        val zLoc = player.location.z
+        val minX = border - (border * 2)
+        val maxX = border * 2
+        val minZ = border - (border * 2)
+        val maxZ = border * 2
+        return !(xLoc < minX || xLoc > maxX || zLoc < minZ || zLoc > maxZ)
+    }
+
     fun scheduleShrink(newBorder: Int) {
         Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
             Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Shrinking to &f${newBorder}x${newBorder}&7 in &f10s&7."))
@@ -314,6 +324,15 @@ class UHCFeature : Listener {
                                             Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
                                                 Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Shrinking to &f${newBorder}x${newBorder}&7 in &f1s&7."))
                                                 Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
+                                                    for (player in Bukkit.getOnlinePlayers()) {
+                                                        if (!SpecFeature.instance.getSpecs().contains(player.name)) {
+                                                            if (!insideBorder(player, newBorder)) {
+                                                                player.addPotionEffect(PotionEffect(PotionEffectType.WEAKNESS, 160, 10, true, false))
+                                                                player.addPotionEffect(PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 160, 10, true, false))
+                                                                Chat.sendMessage(player, "${Chat.prefix} You have gained &f8 seconds&7 of &fResistance X&7 as you are outside the border.")
+                                                            }
+                                                        }
+                                                    }
                                                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "border $newBorder")
                                                     Bukkit.broadcastMessage(Chat.colored(Chat.line))
                                                     Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} The border has shrunken to &f${newBorder}x${newBorder}&7."))

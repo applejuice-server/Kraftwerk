@@ -1,17 +1,64 @@
 package pink.mino.kraftwerk.utils
 
-import com.gmail.filoghost.holographicdisplays.api.Hologram
 import me.lucko.helper.Schedulers
 import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 import org.bukkit.event.Listener
 import org.bukkit.plugin.java.JavaPlugin
+import org.bukkit.scheduler.BukkitRunnable
 import pink.mino.kraftwerk.Kraftwerk
+import pink.mino.kraftwerk.features.HologramFeature
 import java.sql.SQLException
 import java.util.*
 
 val INSERT: String = "INSERT INTO stats VALUES(?, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0) ON DUPLICATE KEY UPDATE uuid=?"
+
+class UpdateStats : BukkitRunnable() {
+    var timer = 0
+    override fun run() {
+        if (timer == 0) {
+            if (Bukkit.getOnlinePlayers().isEmpty()) {
+                JavaPlugin.getPlugin(Kraftwerk::class.java).topGamesPlayed = arrayListOf()
+                JavaPlugin.getPlugin(Kraftwerk::class.java).topDiamondsMined = arrayListOf()
+                JavaPlugin.getPlugin(Kraftwerk::class.java).topKills = arrayListOf()
+                JavaPlugin.getPlugin(Kraftwerk::class.java).topWins = arrayListOf()
+
+                val values = arrayListOf("games_played", "diamonds_mined", "wins", "kills")
+                with(JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection) {
+                    for (value in values) {
+                        val statement = this@with.prepareStatement("SELECT uuid FROM stats ORDER BY $value DESC LIMIT 10")
+                        val result = statement.executeQuery()
+                        var index = 0
+
+                        while (result.next()) {
+                            index++
+                            val player = StatsPlayer(Bukkit.getOfflinePlayer(UUID.fromString(result.getString(1))))
+                            when (value) {
+                                "games_played" -> {
+                                    JavaPlugin.getPlugin(Kraftwerk::class.java).topGamesPlayed!!.add(player)
+                                }
+                                "diamonds_mined" -> {
+                                    JavaPlugin.getPlugin(Kraftwerk::class.java).topDiamondsMined!!.add(player)
+                                }
+                                "wins" -> {
+                                    JavaPlugin.getPlugin(Kraftwerk::class.java).topWins!!.add(player)
+                                }
+                                "kills" -> {
+                                    JavaPlugin.getPlugin(Kraftwerk::class.java).topKills!!.add(player)
+                                }
+                            }
+                        }
+                    }
+                }
+                HologramFeature.instance.update()
+                print("Updated stats.")
+                timer = 10
+            }
+        }
+        timer--
+    }
+}
 
 class StatsPlayer(val player: OfflinePlayer) : Listener {
     var diamondsMined = 0
@@ -211,34 +258,6 @@ class StatsHandler : Listener {
                 print("Loaded stats for ${player.name}")
             }
             return statsPlayers[player.uniqueId]!!
-        }
-
-        fun getTopValues(value: String, hologram: Hologram) {
-            Schedulers.async().run runnable@{
-                with(JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection) {
-                    val statement = this@with.prepareStatement("SELECT uuid FROM stats ORDER BY $value DESC LIMIT 10")
-                    val result = statement.executeQuery()
-                    var index = 0
-                    while (result.next()) {
-                        when (value) {
-                            "games_played" -> {
-                                hologram.appendTextLine(Chat.colored("&7${index}. &f${Bukkit.getOfflinePlayer(UUID.fromString(result.getString(1))).name} ${Chat.dash} &c${StatsPlayer(Bukkit.getOfflinePlayer(UUID.fromString(result.getString(1)))).gamesPlayed}"))
-                            }
-                            "wins" -> {
-                                hologram.appendTextLine(Chat.colored("&7${index}. &f${Bukkit.getOfflinePlayer(UUID.fromString(result.getString(1))).name} ${Chat.dash} &c${StatsPlayer(Bukkit.getOfflinePlayer(UUID.fromString(result.getString(1)))).wins}"))
-                            }
-                            "kills" -> {
-                                hologram.appendTextLine(Chat.colored("&7${index}. &f${Bukkit.getOfflinePlayer(UUID.fromString(result.getString(1))).name} ${Chat.dash} &c${StatsPlayer(Bukkit.getOfflinePlayer(UUID.fromString(result.getString(1)))).kills}"))
-                            }
-                            "diamonds_mined" -> {
-                                hologram.appendTextLine(Chat.colored("&7${index}. &f${Bukkit.getOfflinePlayer(UUID.fromString(result.getString(1))).name} ${Chat.dash} &c${StatsPlayer(Bukkit.getOfflinePlayer(UUID.fromString(result.getString(1)))).diamondsMined}"))
-                            }
-                        }
-                        index++
-                    }
-                    hologram.appendTextLine(Chat.guiLine)
-                }
-            }
         }
     }
 }

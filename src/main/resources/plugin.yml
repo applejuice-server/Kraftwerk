@@ -232,6 +232,10 @@ commands:
     description: Starts a 15 seconds yes/no poll.
   force:
     description: Force events to happen in the UHC game.
+  ping:
+    aliases:
+      - ms
+    description: View a player's ping.
 depend:
   - ProtocolLib
   - JDA
