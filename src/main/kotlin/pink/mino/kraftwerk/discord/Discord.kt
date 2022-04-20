@@ -6,6 +6,7 @@ import net.dv8tion.jda.api.entities.Activity
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import net.dv8tion.jda.api.interactions.commands.OptionType
 import net.dv8tion.jda.api.interactions.commands.build.CommandData
+import net.dv8tion.jda.api.interactions.commands.privileges.CommandPrivilege
 import net.dv8tion.jda.api.requests.GatewayIntent
 import pink.mino.kraftwerk.discord.listeners.MemberJoin
 import pink.mino.kraftwerk.discord.listeners.SlashCommand
@@ -50,8 +51,24 @@ class Discord : ListenerAdapter() {
             commands.addCommands(
                 CommandData("wl", "Attempts to whitelist yourself on the server if the conditions are met.")
                     .addOption(OptionType.STRING, "ign", "The player you want to be whitelisted.", true)
-                    .setDefaultEnabled(false)
             )
+
+            val tale = CommandPrivilege(
+                CommandPrivilege.Type.ROLE,
+                true,
+                789529302449782795L
+            )
+            val myth = CommandPrivilege(
+                CommandPrivilege.Type.ROLE,
+                true,
+                789529360054353961
+            )
+            val legend = CommandPrivilege(
+                CommandPrivilege.Type.ROLE,
+                true,
+                789529441047019520
+            )
+
             commands.addCommands(
                 CommandData("stats", "View the stats of another player on the server.")
                     .addOption(OptionType.STRING, "player", "The player you want to view the stats for.", true)
