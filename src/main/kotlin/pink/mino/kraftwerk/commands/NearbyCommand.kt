@@ -10,6 +10,7 @@ import org.bukkit.entity.Player
 import pink.mino.kraftwerk.features.SpecFeature
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.PlayerUtils
+import kotlin.math.floor
 
 class NearbyCommand : CommandExecutor {
     override fun onCommand(
@@ -35,12 +36,12 @@ class NearbyCommand : CommandExecutor {
             Chat.sendCenteredMessage(sender, "&7No players nearby!")
         } else {
             for (player in players) {
-                val text = TextComponent(Chat.colored("&c${player.location.x}, ${player.location.y}, ${player.location.z} &8- &f${PlayerUtils.getPrefix(player)}${player.name} &8(&c${sender.location.distance(player.location)}m&8)"))
+                val text = TextComponent(Chat.colored("&c${floor(player.location.x)}, ${floor(player.location.y)}, ${floor(player.location.z)} &8- &f${PlayerUtils.getPrefix(player)}${player.name} &8(&c${floor(sender.location.distance(player.location))}m&8)"))
                 text.clickEvent = ClickEvent(
                     ClickEvent.Action.SUGGEST_COMMAND,
                     "/tp ${player.name}"
                 )
-                Chat.sendMessage(sender, "&c${player.location.x}, ${player.location.y}, ${player.location.z} &8- &f${PlayerUtils.getPrefix(player)}${player.name} &8(&c${sender.location.distance(player.location)}m&8)")
+                Chat.sendMessage(sender, "&c${floor(player.location.x)}, ${floor(player.location.y)}, ${floor(player.location.z)} &8- &f${PlayerUtils.getPrefix(player)}${player.name} &8(&c${floor(sender.location.distance(player.location))}m&8)")
             }
         }
         Chat.sendMessage(sender, Chat.line)
