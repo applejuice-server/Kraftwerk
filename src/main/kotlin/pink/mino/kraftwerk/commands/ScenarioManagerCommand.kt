@@ -99,6 +99,10 @@ class ScenarioManagerCommand : CommandExecutor {
             .name("&eBack")
             .addLore("&7Go to the previous page.")
             .make()
+        val resetScenarios = ItemBuilder(Material.REDSTONE_BLOCK)
+            .name("&4Reset Scenarios")
+            .addLore("&7Disables all scenarios.")
+            .make()
         if (page > 0) {
             gui.item(32, next).onClick runnable@ {
                 it.isCancelled = true
@@ -110,12 +114,28 @@ class ScenarioManagerCommand : CommandExecutor {
                 sender.closeInventory()
                 Bukkit.dispatchCommand(sender, "sm ${page - 1}")
             }
+            gui.item(31, resetScenarios).onClick runnable@ {
+                it.isCancelled = true
+                sender.closeInventory()
+                for (scenario in ScenarioHandler.getActiveScenarios()) {
+                    ScenarioHandler.getScenario(scenario.id)!!.toggle()
+                }
+                Bukkit.dispatchCommand(sender, "sm $page")
+            }
         } else {
             gui.item(31, next).onClick runnable@ {
                 it.isCancelled = true
                 sender.closeInventory()
                 if (page == 0) Bukkit.dispatchCommand(sender, "sm ${page + 2}")
                 else Bukkit.dispatchCommand(sender, "sm ${page + 1}")
+            }
+            gui.item(30, resetScenarios).onClick runnable@ {
+                it.isCancelled = true
+                sender.closeInventory()
+                for (scenario in ScenarioHandler.getActiveScenarios()) {
+                    ScenarioHandler.getScenario(scenario.id)!!.toggle()
+                }
+                Bukkit.dispatchCommand(sender, "sm $page")
             }
         }
         sender.openInventory(gui.make())

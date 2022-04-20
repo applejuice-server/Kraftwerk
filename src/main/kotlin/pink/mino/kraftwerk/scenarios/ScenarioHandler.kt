@@ -41,6 +41,12 @@ class ScenarioHandler {
             addScenario(BatsScenario())
             addScenario(ExtremeSkyHighScenario())
             addScenario(WeakestLinkScenario())
+            addScenario(EnchantedDeathScenario())
+            addScenario(InfiniteEnchanterScenario())
+            addScenario(BloodDiamondsScenario())
+            addScenario(VeinMinerScenario())
+            addScenario(VillagerMadnessScenario())
+
             scenarios.sortWith(Comparator.comparing(Scenario::name))
         }
 
