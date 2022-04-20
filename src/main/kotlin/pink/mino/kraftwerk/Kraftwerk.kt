@@ -147,6 +147,7 @@ class Kraftwerk : ExtendedJavaPlugin() {
         getCommand("ping").executor = PingCommand()
         getCommand("voteyes").executor = VoteYesCommand()
         getCommand("voteno").executor = VoteNoCommand()
+        //getCommand("hotbar").executor = HotbarCommand()
 
         /* ProtocolLib stuff */
         if (Bukkit.getPluginManager().getPlugin("ProtocolLib") == null) {
@@ -206,8 +207,6 @@ class Kraftwerk : ExtendedJavaPlugin() {
             world.pvp = true
         }
         InfoFeature().runTaskTimerAsynchronously(this, 0L, 6000L)
-        //HologramFeature.instance.setup()
-        //UpdateStats().runTaskTimer(this, 0L, 20L)
 
         Bukkit.getLogger().info("Kraftwerk enabled.")
     }
