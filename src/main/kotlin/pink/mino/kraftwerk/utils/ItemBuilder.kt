@@ -6,13 +6,11 @@ import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.EnchantmentStorageMeta
 import org.bukkit.inventory.meta.ItemMeta
-import org.bukkit.inventory.meta.PotionMeta
-import org.bukkit.potion.PotionEffect
-import org.bukkit.potion.PotionEffectType
+import org.bukkit.inventory.meta.SkullMeta
 
 
 class ItemBuilder(material: Material) {
-    val item: ItemStack = ItemStack(material)
+    var item: ItemStack = ItemStack(material)
     var meta: ItemMeta = item.itemMeta
 
     fun name(name: String): ItemBuilder {
@@ -21,10 +19,10 @@ class ItemBuilder(material: Material) {
         return this
     }
     fun addLore(line: String): ItemBuilder {
-        var lores = meta.lore
-        if (lores == null) lores = ArrayList()
-        lores.add(Chat.colored(line))
-        meta.lore = lores
+        var lore = meta.lore
+        if (lore == null) lore = ArrayList()
+        lore.add(Chat.colored(line))
+        meta.lore = lore
         item.itemMeta = meta
         return this
     }
@@ -57,14 +55,19 @@ class ItemBuilder(material: Material) {
         item.durability = durability
         return this
     }
-    fun toPotion(): ItemBuilder {
-        if (item.type != Material.POTION) throw Error("You can't do this, this isn't a potion.")
-        meta = meta as PotionMeta
+    fun setAmount(amount: Int): ItemBuilder {
+        item.amount = amount
+        return this
+    }
+    fun toSkull(): ItemBuilder {
+        if (item.type != Material.SKULL_ITEM) throw Error("You can't do this, this isn't a head.")
+        meta = meta as SkullMeta
+        item = ItemStack(Material.SKULL_ITEM, 1, 3)
         item.itemMeta = meta
         return this
     }
     fun toEnchant(): ItemBuilder {
-        if (item.type != Material.ENCHANTED_BOOK) throw Error("You can't do this, this isn't an enchant book..")
+        if (item.type != Material.ENCHANTED_BOOK) throw Error("You can't do this, this isn't an enchant book.")
         meta = meta as EnchantmentStorageMeta
         item.itemMeta = meta
         return this
@@ -78,20 +81,11 @@ class ItemBuilder(material: Material) {
         item.itemMeta = meta
         return this
     }
-    fun addEffect(potionEffect: PotionEffect): ItemBuilder {
-        if (meta is PotionMeta) {
-            (meta as PotionMeta).addCustomEffect(potionEffect, true)
+    fun setOwner(owner: String): ItemBuilder {
+        if (meta is SkullMeta) {
+            (meta as SkullMeta).owner = owner
         } else {
-            throw Error("You're attempting to add an effect to something that isn't a potion.")
-        }
-        item.itemMeta = meta
-        return this
-    }
-    fun setMainEffect(potionEffectType: PotionEffectType): ItemBuilder {
-        if (meta is PotionMeta) {
-            (meta as PotionMeta).setMainEffect(potionEffectType)
-        } else {
-            throw Error("You're attempting to set a main effect to something that isn't a potion.")
+            throw Error("You're attempting to set the owner to something that isn't a skull.")
         }
         item.itemMeta = meta
         return this
