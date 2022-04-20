@@ -117,6 +117,10 @@ class PregenCommand : CommandExecutor {
                     if (block.type == Material.LEAVES || block.type == Material.LEAVES_2 || block.type == Material.LOG || block.type == Material.LOG_2) {
                         block.type = Material.AIR
                     }
+                    if (block.type == Material.WATER || block.type == Material.STATIONARY_WATER) {
+                        block.type = Material.STAINED_GLASS
+                        block.data = 3.toByte()
+                    }
                 }
             }
         }
