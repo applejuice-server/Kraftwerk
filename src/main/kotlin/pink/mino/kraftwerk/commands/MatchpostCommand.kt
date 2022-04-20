@@ -14,6 +14,7 @@ import org.bukkit.scheduler.BukkitRunnable
 import pink.mino.kraftwerk.Kraftwerk
 import pink.mino.kraftwerk.discord.Discord
 import pink.mino.kraftwerk.features.SettingsFeature
+import pink.mino.kraftwerk.scenarios.ScenarioHandler
 import pink.mino.kraftwerk.utils.ActionBar
 import pink.mino.kraftwerk.utils.Chat
 import java.awt.Color
@@ -252,6 +253,7 @@ class MatchpostCommand : CommandExecutor {
         val scenarios: Any
         var team: String? = null
         var teamsGame: Boolean = false
+        val scenarioList = ArrayList<String>()
         with(URL("https://hosts.uhc.gg/api/matches/${args[0]}").openConnection() as HttpURLConnection) {
             requestMethod = "GET"
             setRequestProperty("User-Agent", "Mozilla/5.0")
@@ -290,7 +292,14 @@ class MatchpostCommand : CommandExecutor {
                     team = "Random To${(map["size"] as Double).toInt()}"
                 }
                 id = map["id"] as Double
-                scenarios = map["scenarios"] as Any
+                scenarios = map["scenarios"] as List<*>
+                for (scenario in ScenarioHandler.getActiveScenarios()){
+                    scenario.toggle()
+                }
+                for (scenario in scenarios) {
+                    scenarioList.add((scenario as String).lowercase().replace(" ", ""))
+                    ScenarioHandler.getScenario(scenario.lowercase().replace(" ", ""))!!.toggle()
+                }
                 opening = "${(map["opens"] as String)[11]}${(map["opens"] as String)[12]}:${(map["opens"] as String)[14]}${(map["opens"] as String)[15]}"
             }
         }
@@ -299,6 +308,7 @@ class MatchpostCommand : CommandExecutor {
         SettingsFeature.instance.data!!.set("matchpost.host", host)
         SettingsFeature.instance.data!!.set("matchpost.id", id.toInt())
         SettingsFeature.instance.data!!.set("matchpost.scenarios", scenarios)
+        SettingsFeature.instance.data!!.set("matchpost.scenarios.id", scenarioList)
         SettingsFeature.instance.data!!.set("matchpost.opens", opening)
         ScheduleOpening(opening).runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 300L)
         ScheduleBroadcast(opening).runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 300L)
