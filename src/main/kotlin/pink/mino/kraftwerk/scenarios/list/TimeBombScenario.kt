@@ -48,6 +48,7 @@ class TimeBombScenario : Scenario(
     fun onPlayerDeath(e: PlayerDeathEvent) {
         if (!enabled) return
         if (GameState.currentState != GameState.INGAME) return
+        if (e.entity.world.name == "Spawn") return
         val chest1 = e.entity.location.block
         chest1.type = Material.CHEST
         val chest2 = e.entity.location.block.getRelative(BlockFace.NORTH)
