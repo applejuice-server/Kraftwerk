@@ -1,64 +1,16 @@
 package pink.mino.kraftwerk.utils
 
 import me.lucko.helper.Schedulers
-import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 import org.bukkit.event.Listener
 import org.bukkit.plugin.java.JavaPlugin
-import org.bukkit.scheduler.BukkitRunnable
 import pink.mino.kraftwerk.Kraftwerk
-import pink.mino.kraftwerk.features.HologramFeature
 import java.sql.SQLException
 import java.util.*
 
 val INSERT: String = "INSERT INTO stats VALUES(?, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0) ON DUPLICATE KEY UPDATE uuid=?"
-
-class UpdateStats : BukkitRunnable() {
-    var timer = 0
-    override fun run() {
-        if (timer == 0) {
-            if (Bukkit.getOnlinePlayers().isEmpty()) {
-                JavaPlugin.getPlugin(Kraftwerk::class.java).topGamesPlayed = arrayListOf()
-                JavaPlugin.getPlugin(Kraftwerk::class.java).topDiamondsMined = arrayListOf()
-                JavaPlugin.getPlugin(Kraftwerk::class.java).topKills = arrayListOf()
-                JavaPlugin.getPlugin(Kraftwerk::class.java).topWins = arrayListOf()
-
-                val values = arrayListOf("games_played", "diamonds_mined", "wins", "kills")
-                with(JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection) {
-                    for (value in values) {
-                        val statement = this@with.prepareStatement("SELECT uuid FROM stats ORDER BY $value DESC LIMIT 10")
-                        val result = statement.executeQuery()
-                        var index = 0
-
-                        while (result.next()) {
-                            index++
-                            val player = StatsPlayer(Bukkit.getOfflinePlayer(UUID.fromString(result.getString(1))))
-                            when (value) {
-                                "games_played" -> {
-                                    JavaPlugin.getPlugin(Kraftwerk::class.java).topGamesPlayed!!.add(player)
-                                }
-                                "diamonds_mined" -> {
-                                    JavaPlugin.getPlugin(Kraftwerk::class.java).topDiamondsMined!!.add(player)
-                                }
-                                "wins" -> {
-                                    JavaPlugin.getPlugin(Kraftwerk::class.java).topWins!!.add(player)
-                                }
-                                "kills" -> {
-                                    JavaPlugin.getPlugin(Kraftwerk::class.java).topKills!!.add(player)
-                                }
-                            }
-                        }
-                    }
-                }
-                HologramFeature.instance.update()
-                print("Updated stats.")
-                timer = 10
-            }
-        }
-        timer--
-    }
-}
+val INSERT_HOTBAR: String = "INSERT INTO hotbar VALUES(?, 1, 2, 3, 4, 5, 6, 7, 8, 9) ON DUPLICATE KEY UPDATE uuid=?"
 
 class StatsPlayer(val player: OfflinePlayer) : Listener {
     var diamondsMined = 0
@@ -73,6 +25,42 @@ class StatsPlayer(val player: OfflinePlayer) : Listener {
     var gapplesEaten = 0
     var timesCrafted = 0
     var timesEnchanted = 0
+
+    var slot1 = 1
+    var slot2 = 2
+    var slot3 = 3
+    var slot4 = 4
+    var slot5 = 5
+    var slot6 = 6
+    var slot7 = 7
+    var slot8 = 8
+    var slot9 = 9
+
+    fun loadHotbar() = try {
+        Schedulers.async().run runnable@ {
+            with (JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection) {
+                val insert = this@with.prepareStatement(INSERT_HOTBAR)
+                insert.setString(1, player.uniqueId.toString())
+                insert.setString(2, player.uniqueId.toString())
+                insert.execute()
+                val select = this.prepareStatement("SELECT * FROM hotbar WHERE uuid='${player.uniqueId}'")
+                val result = select.executeQuery()
+                if (result.next()) {
+                    slot1 = result.getInt("slot1")
+                    slot2 = result.getInt("slot2")
+                    slot3 = result.getInt("slot3")
+                    slot4 = result.getInt("slot4")
+                    slot5 = result.getInt("slot5")
+                    slot6 = result.getInt("slot6")
+                    slot7 = result.getInt("slot7")
+                    slot8 = result.getInt("slot8")
+                    slot9 = result.getInt("slot9")
+                }
+            }
+        }
+    } catch (e: SQLException) {
+        e.printStackTrace()
+    }
 
     fun load(value: String) = try {
         Schedulers.async().run runnable@ {
@@ -137,7 +125,29 @@ class StatsPlayer(val player: OfflinePlayer) : Listener {
             this.save("gapples_eaten")
             this.save("times_crafted")
             this.save("times_enchanted")
+            this.saveHotbar()
         }
+    }
+
+    fun saveHotbar() = try {
+        Schedulers.async().run runnable@{
+            with(JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection) {
+                val save = this@with.prepareStatement("UPDATE hotbar SET slot1 = ?, slot2 = ?, slot3 = ?, slot4 = ?, slot5 = ?, slot6 = ?, slot7 = ?, slot8 = ?, slot9 = ? WHERE uuid = ?")
+                save.setInt(1, slot1)
+                save.setInt(2, slot2)
+                save.setInt(3, slot3)
+                save.setInt(4, slot4)
+                save.setInt(5, slot5)
+                save.setInt(6, slot6)
+                save.setInt(7, slot7)
+                save.setInt(8, slot8)
+                save.setInt(9, slot9)
+                save.setString(10, player.uniqueId.toString())
+                save.execute()
+            }
+        }
+    } catch (e: SQLException) {
+        e.printStackTrace()
     }
 
     fun save(obj: String) = try {
@@ -239,6 +249,7 @@ class StatsHandler : Listener {
                 statsPlayers[player.uniqueId]!!.load("gapples_eaten")
                 statsPlayers[player.uniqueId]!!.load("times_crafted")
                 statsPlayers[player.uniqueId]!!.load("times_enchanted")
+                statsPlayers[player.uniqueId]!!.loadHotbar()
                 print("Loaded stats for ${player.name}.")
             }
         }
@@ -255,6 +266,7 @@ class StatsHandler : Listener {
                 statsPlayers[player.uniqueId]!!.load("gapples_eaten")
                 statsPlayers[player.uniqueId]!!.load("times_crafted")
                 statsPlayers[player.uniqueId]!!.load("times_enchanted")
+                statsPlayers[player.uniqueId]!!.loadHotbar()
                 print("Loaded stats for ${player.name}")
             }
             return statsPlayers[player.uniqueId]!!
