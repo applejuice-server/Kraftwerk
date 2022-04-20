@@ -13,6 +13,7 @@ import pink.mino.kraftwerk.scenarios.Scenario
 import pink.mino.kraftwerk.scenarios.ScenarioHandler
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GameState
+import pink.mino.kraftwerk.utils.PlayerUtils
 
 class ExtremeSkyHighIterator : BukkitRunnable() {
     var timer = 30
@@ -57,7 +58,7 @@ class ExtremeSkyHighScenario : Scenario(
         shovel.itemMeta = meta
         for (player in Bukkit.getOnlinePlayers()) {
             if (!SpecFeature.instance.getSpecs().contains(player.name)) {
-                player.inventory.addItem(ItemStack(Material.STAINED_CLAY, 128, 14), ItemStack(Material.PUMPKIN, 2), ItemStack(Material.SNOW_BLOCK, 4), ItemStack(Material.STRING, 2), shovel, ItemStack(Material.FEATHER, 16))
+                PlayerUtils.bulkItems(player, arrayListOf(ItemStack(Material.STAINED_CLAY, 128, 14), ItemStack(Material.PUMPKIN, 2), ItemStack(Material.SNOW_BLOCK, 4), ItemStack(Material.STRING, 2), shovel, ItemStack(Material.FEATHER, 16)))
                 Chat.sendMessage(player, "${Chat.prefix} You've been given your SkyHigh items.")
             }
         }
@@ -69,7 +70,7 @@ class ExtremeSkyHighScenario : Scenario(
         meta.spigot().isUnbreakable = true
         meta.addEnchant(Enchantment.DIG_SPEED, 10, true)
         shovel.itemMeta = meta
-        player.inventory.addItem(ItemStack(Material.STAINED_CLAY, 128, 14), ItemStack(Material.PUMPKIN, 2), ItemStack(Material.SNOW_BLOCK, 4), ItemStack(Material.STRING, 2), shovel, ItemStack(Material.FEATHER, 16))
+        PlayerUtils.bulkItems(player, arrayListOf(ItemStack(Material.STAINED_CLAY, 128, 14), ItemStack(Material.PUMPKIN, 2), ItemStack(Material.SNOW_BLOCK, 4), ItemStack(Material.STRING, 2), shovel, ItemStack(Material.FEATHER, 16)))
         Chat.sendMessage(player, "${Chat.prefix} You've been given your SkyHigh items.")
     }
 }
