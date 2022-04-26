@@ -298,7 +298,8 @@ class MatchpostCommand : CommandExecutor {
                 }
                 for (scenario in scenarios) {
                     scenarioList.add((scenario as String).lowercase().replace(" ", ""))
-                    ScenarioHandler.getScenario(scenario.lowercase().replace(" ", ""))!!.toggle()
+                    try { ScenarioHandler.getScenario(scenario.lowercase().replace(" ", ""))!!.toggle()
+                    } catch (_: Exception) {}
                 }
                 opening = "${(map["opens"] as String)[11]}${(map["opens"] as String)[12]}:${(map["opens"] as String)[14]}${(map["opens"] as String)[15]}"
             }
@@ -307,8 +308,8 @@ class MatchpostCommand : CommandExecutor {
         SettingsFeature.instance.data!!.set("matchpost.teamsGame", teamsGame)
         SettingsFeature.instance.data!!.set("matchpost.host", host)
         SettingsFeature.instance.data!!.set("matchpost.id", id.toInt())
+        SettingsFeature.instance.data!!.set("matchpost.scenarioIds", scenarioList)
         SettingsFeature.instance.data!!.set("matchpost.scenarios", scenarios)
-        SettingsFeature.instance.data!!.set("matchpost.scenarios.id", scenarioList)
         SettingsFeature.instance.data!!.set("matchpost.opens", opening)
         ScheduleOpening(opening).runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 300L)
         ScheduleBroadcast(opening).runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 300L)
