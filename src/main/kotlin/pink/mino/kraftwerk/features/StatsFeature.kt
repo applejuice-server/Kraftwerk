@@ -1,12 +1,14 @@
 package pink.mino.kraftwerk.features
 
 import org.bukkit.Material
+import org.bukkit.entity.Arrow
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.enchantment.EnchantItemEvent
+import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.inventory.CraftItemEvent
 import org.bukkit.event.player.PlayerItemConsumeEvent
@@ -64,5 +66,14 @@ class StatsFeature : Listener {
         if (GameState.currentState != GameState.INGAME) return
         if (ConfigOptionHandler.getOption("statless")!!.enabled) return
         StatsHandler.getStatsPlayer(e.enchanter).add("times_enchanted", 1)
+    }
+
+    @EventHandler
+    fun onDamageByPlayer(e: EntityDamageByEntityEvent) {
+        if (e.damager.type == EntityType.ARROW && (e.damager as Arrow).shooter is Player) {
+            if (GameState.currentState != GameState.INGAME) return
+            if (ConfigOptionHandler.getOption("statless")!!.enabled) return
+            StatsHandler.getStatsPlayer((e.damager as Arrow).shooter as Player).add("bow_shots")
+        }
     }
 }

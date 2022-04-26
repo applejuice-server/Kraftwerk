@@ -18,6 +18,7 @@ import pink.mino.kraftwerk.features.TeamsFeature
 import pink.mino.kraftwerk.scenarios.ScenarioHandler
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GameState
+import pink.mino.kraftwerk.utils.StatsHandler
 import java.util.*
 
 class LatescatterCommand : CommandExecutor {
@@ -69,7 +70,7 @@ class LatescatterCommand : CommandExecutor {
             player.addPotionEffect(PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 300, 1000, true, false))
             ScatterFeature.scatterSolo(player, Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world")), SettingsFeature.instance.data!!.getInt("pregen.border"))
             player.inventory.setItem(0, ItemStack(Material.COOKED_BEEF, SettingsFeature.instance.data!!.getInt("game.starterfood")))
-            //Stats.addGamesPlayed(player)
+            StatsHandler.getStatsPlayer(player).gamesPlayed.plus(1)
             for (scenario in ScenarioHandler.getActiveScenarios()) {
                 scenario.givePlayer(player)
             }
@@ -117,7 +118,7 @@ class LatescatterCommand : CommandExecutor {
             player.addPotionEffect(PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 300, 1000, true, false))
             player.teleport(teammate.location)
             player.inventory.setItem(0, ItemStack(Material.COOKED_BEEF, SettingsFeature.instance.data!!.getInt("game.starterfood")))
-           // Stats.addGamesPlayed(player)
+            StatsHandler.getStatsPlayer(player).gamesPlayed.plus(1)
             for (scenario in ScenarioHandler.getActiveScenarios()) {
                 scenario.givePlayer(player)
             }

@@ -206,6 +206,8 @@ class Kraftwerk : ExtendedJavaPlugin() {
         for (world in Bukkit.getWorlds()) {
             world.pvp = true
         }
+
+        //UpdateLeaderboards().runTaskTimer(this, 0L, 20L)
         InfoFeature().runTaskTimerAsynchronously(this, 0L, 6000L)
 
         Bukkit.getLogger().info("Kraftwerk enabled.")

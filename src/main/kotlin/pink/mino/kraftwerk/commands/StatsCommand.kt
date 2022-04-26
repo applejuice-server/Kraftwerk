@@ -36,8 +36,10 @@ class StatsCommand : CommandExecutor {
             .thenRunSync runnable@ {
                 Chat.sendMessage(sender, "${Chat.prefix} &7Loading stats for &f${target.name}&7...")
             }
-            .thenApplyAsync { StatsHandler.getStatsPlayer(target) }
-            .thenAcceptSync runnable@ { statsPlayer ->
+            .thenApplyAsync {
+                StatsHandler.getStatsPlayer(target)
+            }
+            .thenAcceptSync { statsPlayer ->
                 val ores = ItemBuilder(Material.DIAMOND_ORE)
                     .name("&4Ores")
                     .addLore(Chat.guiLine)
@@ -48,7 +50,6 @@ class StatsCommand : CommandExecutor {
                     .addLore(" ")
                     .addLore(Chat.guiLine)
                     .make()
-
                 val general = ItemBuilder(Material.DIAMOND_SWORD)
                     .name("&4General")
                     .addLore(Chat.guiLine)
@@ -62,7 +63,6 @@ class StatsCommand : CommandExecutor {
                     .addLore(Chat.guiLine)
                     .noAttributes()
                     .make()
-
                 val misc = ItemBuilder(Material.WATCH)
                     .name("&4Misc.")
                     .addLore(Chat.guiLine)
@@ -73,12 +73,14 @@ class StatsCommand : CommandExecutor {
                     .addLore(" ")
                     .addLore(Chat.guiLine)
                     .make()
+
                 val skull = ItemBuilder(Material.SKULL_ITEM)
                     .name("&f${target.name}")
                     .addLore("&7The statistics for &f${target.name}&7.")
                     .toSkull()
                     .setOwner(target.name)
                     .make()
+
                 gui.item(0, skull).onClick runnable@ {
                     it.isCancelled = true
                 }

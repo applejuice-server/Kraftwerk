@@ -1,5 +1,6 @@
 package pink.mino.kraftwerk.listeners
 
+import me.lucko.helper.Schedulers
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.event.EventHandler
@@ -29,7 +30,9 @@ class PlayerJoinListener : Listener {
                 SpawnFeature.instance.send(player)
             }, 20L)
         }
-        StatsHandler.addStatsPlayer(player)
+        Schedulers.async().run {
+            StatsHandler.addStatsPlayer(player)
+        }
         Scoreboard.setScore(Chat.colored("${Chat.dash} &7Playing..."), Bukkit.getServer().onlinePlayers.size)
         e.joinMessage = ChatColor.translateAlternateColorCodes('&', "&8[&2+&8] &a${player.displayName} &8(&2${Bukkit.getServer().onlinePlayers.size}&8/&2${Bukkit.getServer().maxPlayers}&8)")
         if (GameState.currentState == GameState.LOBBY) {
