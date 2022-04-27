@@ -2,17 +2,13 @@ package pink.mino.kraftwerk.listeners
 import net.citizensnpcs.api.CitizensAPI
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
-import org.bukkit.GameMode
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.plugin.java.JavaPlugin
 import pink.mino.kraftwerk.Kraftwerk
-import pink.mino.kraftwerk.features.CombatLogFeature
-import pink.mino.kraftwerk.features.SettingsFeature
-import pink.mino.kraftwerk.features.SpecFeature
-import pink.mino.kraftwerk.features.TeamsFeature
+import pink.mino.kraftwerk.features.*
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GameState
 import pink.mino.kraftwerk.utils.Scoreboard
@@ -34,7 +30,6 @@ class PlayerDeathListener : Listener {
                 if (killer != null) {
                     val o = SettingsFeature.instance.data!!.getInt("game.kills.${killer.name}")
                     SettingsFeature.instance.data!!.set("game.kills.${killer.name}", o + 1)
-                    //Stats.addKill(killer)
                     val color: String = if (TeamsFeature.manager.getTeam(killer) != null) {
                         TeamsFeature.manager.getTeam(killer)!!.prefix
                     } else {
@@ -44,7 +39,6 @@ class PlayerDeathListener : Listener {
                 }
                 val list = SettingsFeature.instance.data!!.getStringList("game.list")
                 list.remove(player.name)
-                //Stats.addDeath(player)
                 SettingsFeature.instance.data!!.set("game.list", list)
                 SettingsFeature.instance.saveData()
                 val kills = SettingsFeature.instance.data!!.getInt("game.kills.${player.name}")
@@ -63,11 +57,12 @@ class PlayerDeathListener : Listener {
                             player,
                             "${Chat.prefix} You've been sent into spectator mode as you are a staff member."
                         )
+                        player.spigot().respawn()
                     }, 20L)
                 } else {
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wl remove ${player.name}")
                 }
-                player.gameMode = GameMode.SPECTATOR
+                SpawnFeature.instance.send(player)
                 Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
                     if (!player.hasPermission("uhc.staff")) {
                         player.kickPlayer(Chat.colored("&7Thank you for playing!\n\n&7Join our discord for more games: &cdsc.gg/apple-juice"))
@@ -78,27 +73,28 @@ class PlayerDeathListener : Listener {
                 player.spigot().respawn()
             }, 20L)
         } else {
-            e.entity.world.strikeLightningEffect(e.entity.location)
-            val player = e.entity
-            val killer = e.entity.killer
-            val npc = CitizensAPI.getNPCRegistry().getNPC(e.entity)
-            e.deathMessage = ChatColor.translateAlternateColorCodes('&', "&8»&f ${killer.name} has killed ${npc.name} &8«")
-            if (killer != null) {
-                val o = SettingsFeature.instance.data!!.getInt("game.kills.${killer.name}")
-                SettingsFeature.instance.data!!.set("game.kills.${killer.name}", o + 1)
-                //Stats.addKill(killer)
-                val color: String = if (TeamsFeature.manager.getTeam(killer) != null) {
-                    TeamsFeature.manager.getTeam(killer)!!.prefix
-                } else {
-                    "&f"
+            if (GameState.currentState == GameState.INGAME) {
+                e.entity.world.strikeLightningEffect(e.entity.location)
+                val player = e.entity
+                val killer = e.entity.killer
+                val npc = CitizensAPI.getNPCRegistry().getNPC(e.entity)
+                e.deathMessage =
+                    ChatColor.translateAlternateColorCodes('&', "&8»&f ${killer.name} has killed ${npc.name} &8«")
+                if (killer != null) {
+                    val o = SettingsFeature.instance.data!!.getInt("game.kills.${killer.name}")
+                    SettingsFeature.instance.data!!.set("game.kills.${killer.name}", o + 1)
+                    val color: String = if (TeamsFeature.manager.getTeam(killer) != null) {
+                        TeamsFeature.manager.getTeam(killer)!!.prefix
+                    } else {
+                        "&f"
+                    }
+                    Scoreboard.setScore(Chat.colored("${Chat.dash} ${color}${killer.name}"), o + 1)
                 }
-                Scoreboard.setScore(Chat.colored("${Chat.dash} ${color}${killer.name}"), o + 1)
+                val list = SettingsFeature.instance.data!!.getStringList("game.list")
+                list.remove(player.name)
+                SettingsFeature.instance.data!!.set("game.list", list)
+                SettingsFeature.instance.saveData()
             }
-            val list = SettingsFeature.instance.data!!.getStringList("game.list")
-            list.remove(player.name)
-            //Stats.addDeath(player)
-            SettingsFeature.instance.data!!.set("game.list", list)
-            SettingsFeature.instance.saveData()
         }
     }
 }
