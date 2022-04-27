@@ -1,6 +1,8 @@
 package pink.mino.kraftwerk.features
 
 import com.lunarclient.bukkitapi.LunarClientAPI
+import net.md_5.bungee.api.chat.ClickEvent
+import net.md_5.bungee.api.chat.TextComponent
 import org.bukkit.*
 import org.bukkit.block.Block
 import org.bukkit.entity.Arrow
@@ -24,6 +26,9 @@ import java.util.*
 
 
 class SpecFeature : Listener {
+    val diamondsMined: HashMap<UUID, Int> = HashMap()
+    val goldMined: HashMap<UUID, Int> = HashMap()
+
     companion object {
         val instance = SpecFeature()
     }
@@ -273,8 +278,6 @@ class SpecFeature : Listener {
     }
 
     var brokenBlocks: HashMap<UUID, HashSet<Block>> = HashMap<UUID, HashSet<Block>>()
-    val diamondsMined: HashMap<UUID, Int> = HashMap()
-    val goldMined: HashMap<UUID, Int> = HashMap()
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun onBreak(e: BlockBreakEvent) {
@@ -292,7 +295,7 @@ class SpecFeature : Listener {
                         if (block.type === Material.DIAMOND_ORE) {
                             diamonds++
                             if (diamondsMined[p.uniqueId] == null) diamondsMined[p.uniqueId] = 0
-                            diamondsMined[p.uniqueId]?.plus(diamonds)
+                            diamondsMined[p.uniqueId] = diamondsMined[p.uniqueId]!! + 1
                             if (brokenBlocks.containsKey(p.uniqueId)) {
                                 val blocks: HashSet<Block> = brokenBlocks[p.uniqueId]!!
                                 blocks.add(block)
@@ -325,7 +328,7 @@ class SpecFeature : Listener {
                         if (block.type === Material.GOLD_ORE) {
                             gold++
                             if (goldMined[p.uniqueId] == null) goldMined[p.uniqueId] = 0
-                            goldMined[p.uniqueId]?.plus(1)
+                            goldMined[p.uniqueId] = goldMined[p.uniqueId]!! + 1
                             if (brokenBlocks.containsKey(p.uniqueId)) {
                                 val blocks: HashSet<Block> = brokenBlocks[p.uniqueId]!!
                                 blocks.add(block)
@@ -342,10 +345,12 @@ class SpecFeature : Listener {
             for (player in Bukkit.getOnlinePlayers()) {
                 if (getSpecs().contains(player.name)) {
                     Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                        Chat.sendMessage(
-                            player,
-                            "$prefix ${PlayerUtils.getPrefix(p)}${p.name}&7 has mined &6Gold Ore&7. &8(&7T: &6${goldMined[p.uniqueId]} &8| &7V: &6${gold}&8)"
+                        val comp = TextComponent(Chat.colored("$prefix ${PlayerUtils.getPrefix(p)}${p.name}&7 has mined &6Gold Ore&7. &8(&7T: &6${goldMined[p.uniqueId]} &8| &7V: &6${gold}&8)"))
+                        comp.clickEvent = ClickEvent(
+                            ClickEvent.Action.SUGGEST_COMMAND,
+                            "/tp ${p.name}"
                         )
+                        player.spigot().sendMessage(comp)
                     }, 1L)
                 }
             }
@@ -365,10 +370,12 @@ class SpecFeature : Listener {
                 for (player in Bukkit.getOnlinePlayers()) {
                     if (getSpecs().contains(player.name)) {
                         Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                            Chat.sendMessage(
-                                player,
-                                "$prefix ${PlayerUtils.getPrefix(p)}${p.name} &8(${PlayerUtils.getHealth(p)}&8)&7 took ${HealthChatColorer.returnHealth(percentage)}${percentage.toInt()}%&7 due to &fFall&7. "
+                            val comp = TextComponent(Chat.colored("$prefix ${PlayerUtils.getPrefix(p)}${p.name} &8(${PlayerUtils.getHealth(p)}&8)&7 took ${HealthChatColorer.returnHealth(percentage)}${percentage.toInt()}%&7 due to &fFall&7."))
+                            comp.clickEvent = ClickEvent(
+                                ClickEvent.Action.SUGGEST_COMMAND,
+                                "/tp ${p.name}"
                             )
+                            player.spigot().sendMessage(comp)
                         }, 1L)
                     }
                 }
@@ -376,12 +383,12 @@ class SpecFeature : Listener {
             EntityDamageEvent.DamageCause.FIRE, EntityDamageEvent.DamageCause.FIRE_TICK, EntityDamageEvent.DamageCause.LAVA, EntityDamageEvent.DamageCause.MELTING -> {
                 for (player in Bukkit.getOnlinePlayers()) {
                     if (getSpecs().contains(player.name)) {
-                        Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                            Chat.sendMessage(
-                                player,
-                                "$prefix ${PlayerUtils.getPrefix(p)}${p.name} &8(${PlayerUtils.getHealth(p)}&8)&7 took ${HealthChatColorer.returnHealth(percentage)}${percentage.toInt()}%&7 due to &fBurning&7. "
-                            )
-                        }, 1L)
+                        val comp = TextComponent(Chat.colored("$prefix ${PlayerUtils.getPrefix(p)}${p.name} &8(${PlayerUtils.getHealth(p)}&8)&7 took ${HealthChatColorer.returnHealth(percentage)}${percentage.toInt()}%&7 due to &fBurning&7."))
+                        comp.clickEvent = ClickEvent(
+                            ClickEvent.Action.SUGGEST_COMMAND,
+                            "/tp ${p.name}"
+                        )
+                        player.spigot().sendMessage(comp)
                     }
                 }
             }
@@ -392,10 +399,12 @@ class SpecFeature : Listener {
                 for (player in Bukkit.getOnlinePlayers()) {
                     if (getSpecs().contains(player.name)) {
                         Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                            Chat.sendMessage(
-                                player,
-                                "$prefix ${PlayerUtils.getPrefix(p)}${p.name} &8(${PlayerUtils.getHealth(p)}&8)&7 took ${HealthChatColorer.returnHealth(percentage)}${percentage.toInt()}%&7 due to &fUnknown&7. "
+                            val comp = TextComponent(Chat.colored("$prefix ${PlayerUtils.getPrefix(p)}${p.name} &8(${PlayerUtils.getHealth(p)}&8)&7 took ${HealthChatColorer.returnHealth(percentage)}${percentage.toInt()}%&7 due to &fUnknown&7."))
+                            comp.clickEvent = ClickEvent(
+                                ClickEvent.Action.SUGGEST_COMMAND,
+                                "/tp ${p.name}"
                             )
+                            player.spigot().sendMessage(comp)
                         }, 1L)
                     }
                 }
@@ -415,10 +424,12 @@ class SpecFeature : Listener {
             for (player in Bukkit.getOnlinePlayers()) {
                 if (getSpecs().contains(player.name)) {
                     Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                        Chat.sendMessage(
-                            player,
-                            "$prefix ${PlayerUtils.getPrefix(p)}${p.name} &8(${PlayerUtils.getHealth(p)}&8)&7 took ${HealthChatColorer.returnHealth(percentage)}${percentage.toInt()}%&7 due to &fPvE&7. "
+                        val comp = TextComponent(Chat.colored("$prefix ${PlayerUtils.getPrefix(p)}${p.name} &8(${PlayerUtils.getHealth(p)}&8)&7 took ${HealthChatColorer.returnHealth(percentage)}${percentage.toInt()}%&7 due to &fPvE&7."))
+                        comp.clickEvent = ClickEvent(
+                            ClickEvent.Action.SUGGEST_COMMAND,
+                            "/tp ${p.name}"
                         )
+                        player.spigot().sendMessage(comp)
                     }, 1L)
                 }
             }
@@ -428,10 +439,12 @@ class SpecFeature : Listener {
             for (player in Bukkit.getOnlinePlayers()) {
                 if (getSpecs().contains(player.name)) {
                     Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                        Chat.sendMessage(
-                            player,
-                            "$prefix ${PlayerUtils.getPrefix(p)}${p.name} &8(${PlayerUtils.getHealth(p)}&8)&7 took ${HealthChatColorer.returnHealth(percentage)}${percentage.toInt()}%&7 due to ${PlayerUtils.getPrefix(damager)}${damager.name} &8(${PlayerUtils.getHealth(damager)}&8)&7. &8(&fPvP&8)"
+                        val comp = TextComponent(Chat.colored("$prefix ${PlayerUtils.getPrefix(p)}${p.name} &8(${PlayerUtils.getHealth(p)}&8)&7 took ${HealthChatColorer.returnHealth(percentage)}${percentage.toInt()}%&7 due to ${PlayerUtils.getPrefix(damager)}${damager.name} &8(${PlayerUtils.getHealth(damager)}&8)&7. &8(&fPvP&8)"))
+                        comp.clickEvent = ClickEvent(
+                            ClickEvent.Action.SUGGEST_COMMAND,
+                            "/tp ${p.name}"
                         )
+                        player.spigot().sendMessage(comp)
                     }, 1L)
                 }
             }
@@ -442,10 +455,12 @@ class SpecFeature : Listener {
                 for (player in Bukkit.getOnlinePlayers()) {
                     if (getSpecs().contains(player.name)) {
                         Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                            Chat.sendMessage(
-                                player,
-                                "$prefix ${PlayerUtils.getPrefix(p)}${p.name} &8(${PlayerUtils.getHealth(p)}&8)&7 took ${HealthChatColorer.returnHealth(percentage)}${percentage.toInt()}%&7 due to ${PlayerUtils.getPrefix(damager)}${damager.name} &8(${PlayerUtils.getHealth(damager)}&8)&7. &8(&fBow&8)"
+                            val comp = TextComponent(Chat.colored("$prefix ${PlayerUtils.getPrefix(p)}${p.name} &8(${PlayerUtils.getHealth(p)}&8)&7 took ${HealthChatColorer.returnHealth(percentage)}${percentage.toInt()}%&7 due to ${PlayerUtils.getPrefix(damager)}${damager.name} &8(${PlayerUtils.getHealth(damager)}&8)&7. &8(&fBow&8)"))
+                            comp.clickEvent = ClickEvent(
+                                ClickEvent.Action.SUGGEST_COMMAND,
+                                "/tp ${p.name}"
                             )
+                            player.spigot().sendMessage(comp)
                         }, 1L)
                     }
                 }
