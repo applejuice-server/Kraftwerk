@@ -39,19 +39,31 @@ class WinnerCommand : CommandExecutor {
             }
             return false
         }
-        val player = Bukkit.getOfflinePlayer(args[0])
-        if (player == null) {
-            Chat.sendMessage(sender, "&cInvalid player, please provide a valid player.")
-            return false
-        }
-        if (winners.contains(player.name)) {
-            winners.remove(player.name)
-            SettingsFeature.instance.data!!.set("game.winners", winners)
-            Chat.sendMessage(sender, "${Chat.prefix} &f${player.name}&7 has been removed from the winner list.\n&7New list: &f${winners.joinToString(", ")}")
-        } else {
-            winners.add(player.name)
-            SettingsFeature.instance.data!!.set("game.winners", winners)
-            Chat.sendMessage(sender, "${Chat.prefix} &f${player.name}&7 has been added to the winner list.\n&7New list: &f${winners.joinToString(", ")}")
+        for (argument in args) {
+            val player = Bukkit.getOfflinePlayer(argument)
+            if (player == null) {
+                Chat.sendMessage(sender, "&cInvalid player, please provide a valid player.")
+                return false
+            }
+            if (winners.contains(player.name)) {
+                winners.remove(player.name)
+                SettingsFeature.instance.data!!.set("game.winners", winners)
+                Chat.sendMessage(
+                    sender,
+                    "${Chat.prefix} &f${player.name}&7 has been removed from the winner list.\n&7New list: &f${
+                        winners.joinToString(", ")
+                    }"
+                )
+            } else {
+                winners.add(player.name)
+                SettingsFeature.instance.data!!.set("game.winners", winners)
+                Chat.sendMessage(
+                    sender,
+                    "${Chat.prefix} &f${player.name}&7 has been added to the winner list.\n&7New list: &f${
+                        winners.joinToString(", ")
+                    }"
+                )
+            }
         }
         SettingsFeature.instance.saveData()
         return true

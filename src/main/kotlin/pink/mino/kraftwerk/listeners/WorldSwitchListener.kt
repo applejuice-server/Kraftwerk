@@ -11,18 +11,23 @@ import pink.mino.kraftwerk.Kraftwerk
 class WorldSwitchListener : Listener {
     @EventHandler
     fun onWorldSwitch(e: PlayerChangedWorldEvent) {
-        if (e.player.gameMode == GameMode.CREATIVE) {
-            Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                e.player.gameMode = GameMode.CREATIVE
-            }, 20L)
-        } else if (e.player.gameMode == GameMode.SPECTATOR) {
-            Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                e.player.gameMode = GameMode.SPECTATOR
-            }, 20L)
-        } else if (e.player.gameMode == GameMode.SURVIVAL) {
-            Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                e.player.gameMode = GameMode.SURVIVAL
-            }, 20L)
+        when (e.player.gameMode) {
+            GameMode.CREATIVE -> {
+                Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
+                    e.player.gameMode = GameMode.CREATIVE
+                }, 1L)
+            }
+            GameMode.SPECTATOR -> {
+                Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
+                    e.player.gameMode = GameMode.SPECTATOR
+                }, 1L)
+            }
+            GameMode.SURVIVAL -> {
+                Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
+                    e.player.gameMode = GameMode.SURVIVAL
+                }, 1L)
+            }
+            else -> {}
         }
     }
 }
