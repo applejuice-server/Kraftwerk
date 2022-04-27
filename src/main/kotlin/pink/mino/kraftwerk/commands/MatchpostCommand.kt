@@ -215,6 +215,7 @@ class ScheduleOpening(private val opening: String) : BukkitRunnable() {
             Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} The whitelist has been turned off automatically @ &c${opening}&7."))
             cancel()
             Opening(time).runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 20L)
+            SettingsFeature.instance.data!!.set("whitelist.requests", false)
             SettingsFeature.instance.data!!.set("matchpost.opens", null)
             SettingsFeature.instance.saveData()
         }
