@@ -53,6 +53,7 @@ class EndGameCommand : CommandExecutor {
             }
         }
         val host = Bukkit.getOfflinePlayer(SettingsFeature.instance.data!!.getString("game.host"))
+        val gameTitle = SettingsFeature.instance.data!!.getString("matchpost.host")
         val embed = EmbedBuilder()
         embed.setColor(Color(255, 61, 61))
         embed.setTitle(SettingsFeature.instance.data!!.getString("matchpost.host"))
@@ -103,7 +104,8 @@ class EndGameCommand : CommandExecutor {
         Bukkit.broadcastMessage(Chat.colored(Chat.line))
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wl off")
         val log = File("./logs/latest.log")
-        Discord.instance!!.getTextChannelById(955314362019635270)!!.sendFile(log).queue()
+        Discord.instance!!.getTextChannelById(937811334106583040)!!.sendMessage("**${gameTitle}**").queue()
+        Discord.instance!!.getTextChannelById(955314362019635270)!!.sendFile(log, "game.log").queue()
         return true
     }
 
