@@ -48,9 +48,7 @@ class EditConfigCommand : CommandExecutor {
                     var color: String = if (option.enabled) "&a"
                     else "&c"
                     itemMeta.displayName = Chat.colored("${color}${option.name}")
-                    itemMeta.lore = listOf(
-                        Chat.colored("&7${option.description}")
-                    )
+                    itemMeta.lore = Chat.scenarioTextWrap(Chat.colored("&7${option.description}"), 40)
                     item.itemMeta = itemMeta
                     gui.item(iterator, item).onClick runnable@ {
                         it.isCancelled = true
@@ -75,9 +73,7 @@ class EditConfigCommand : CommandExecutor {
                     var color: String = if (option.enabled) "&a"
                     else "&c"
                     itemMeta.displayName = Chat.colored("${color}${option.name}")
-                    itemMeta.lore = listOf(
-                        Chat.colored("&7${option.description}")
-                    )
+                    itemMeta.lore = Chat.scenarioTextWrap(Chat.colored("&7${option.description}"), 40)
                     item.itemMeta = itemMeta
                     gui.item(iterator, item).onClick runnable@ {
                         it.isCancelled = true
@@ -102,9 +98,7 @@ class EditConfigCommand : CommandExecutor {
                     var color: String = if (option.enabled) "&a"
                     else "&c"
                     itemMeta.displayName = Chat.colored("${color}${option.name}")
-                    itemMeta.lore = listOf(
-                        Chat.colored("&7${option.description}")
-                    )
+                    itemMeta.lore = Chat.scenarioTextWrap(Chat.colored("&7${option.description}"), 40)
                     item.itemMeta = itemMeta
                     gui.item(iterator, item).onClick runnable@ {
                         it.isCancelled = true

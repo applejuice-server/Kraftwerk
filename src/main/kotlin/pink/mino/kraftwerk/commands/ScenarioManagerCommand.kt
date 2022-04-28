@@ -52,9 +52,7 @@ class ScenarioManagerCommand : CommandExecutor {
                     var color: String = if (scenario.enabled) "&a"
                     else "&c"
                     meta.displayName = Chat.colored("${color}${scenario.name}")
-                    meta.lore = listOf(
-                        Chat.colored("&7${scenario.description}")
-                    )
+                    meta.lore = Chat.scenarioTextWrap(Chat.colored("&7${scenario.description}"), 40)
                     item.itemMeta = meta
                     gui.item(i, item).onClick runnable@ {
                         ScenarioHandler.getScenario(scenario.id)?.toggle()
@@ -74,9 +72,7 @@ class ScenarioManagerCommand : CommandExecutor {
                     var color: String = if (scenario.enabled) "&a"
                     else "&c"
                     meta.displayName = Chat.colored("${color}${scenario.name}")
-                    meta.lore = listOf(
-                        Chat.colored("&7${scenario.description}")
-                    )
+                    meta.lore = Chat.scenarioTextWrap(Chat.colored("&7${scenario.description}"), 40)
                     item.itemMeta = meta
                     gui.item(i, item).onClick runnable@ {
                         ScenarioHandler.getScenario(scenario.id)?.toggle()

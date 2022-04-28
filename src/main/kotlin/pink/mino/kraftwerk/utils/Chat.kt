@@ -25,6 +25,22 @@ class Chat {
             }
         }
 
+        fun scenarioTextWrap(text: String, width: Int): ArrayList<String> {
+            val words = text.split(" ")
+            val lines = ArrayList<String>()
+            var currentLine = ""
+            for (word in words) {
+                if (currentLine.length + word.length + 1 > width) {
+                    lines.add(colored("&7${currentLine}"))
+                    currentLine = "&7$word "
+                } else {
+                    currentLine += "&7$word "
+                }
+            }
+            lines.add(colored("&7${currentLine}"))
+            return lines
+        }
+
         /* Function to get centered MOTDs */
         fun centerMotd(message: String): String {
             val text = ChatColor.translateAlternateColorCodes('&', message)
