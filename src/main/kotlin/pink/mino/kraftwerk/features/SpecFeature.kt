@@ -87,6 +87,11 @@ class SpecFeature : Listener {
         )
         invSee.itemMeta = invSeeMeta
         p.inventory.setItem(1, invSee)
+        val respawnPlayers = ItemBuilder(Material.COMPASS)
+            .name("&cRespawn Players")
+            .addLore("&7Right-click to respawn players.")
+            .make()
+        p.inventory.setItem(2, respawnPlayers)
         if (LunarClientAPI.getInstance().isRunningLunarClient(p)) {
             LunarClientAPI.getInstance().giveAllStaffModules(p)
         }
@@ -181,6 +186,8 @@ class SpecFeature : Listener {
                     } else {
                         Chat.sendMessage(e.player, "&cYou can't use this feature yet.")
                     }
+                } else if (e.item.itemMeta.displayName == Chat.colored("&cRespawn Players")) {
+                    Bukkit.dispatchCommand(e.player, "respawn")
                 }
             }
         }

@@ -83,6 +83,7 @@ class Kraftwerk : ExtendedJavaPlugin() {
         Bukkit.getServer().pluginManager.registerEvents(PortalListener(), this)
         Bukkit.getServer().pluginManager.registerEvents(WorldSwitchListener(), this)
         Bukkit.getServer().pluginManager.registerEvents(StatsFeature(), this)
+        Bukkit.getServer().pluginManager.registerEvents(RespawnFeature.instance, this)
 
         /* Registering commands */
         getCommand("clear").executor = ClearInventoryCommand()
@@ -115,6 +116,8 @@ class Kraftwerk : ExtendedJavaPlugin() {
         getCommand("near").executor = NearbyCommand()
         getCommand("startvote").executor = StartVoteCommand()
         getCommand("force").executor = ForceCommand()
+        getCommand("respawn").executor = RespawnCommand()
+
 
         getCommand("gm").executor = GamemodeCommand()
         getCommand("gamemode").executor = GamemodeCommand()

@@ -236,6 +236,11 @@ commands:
     aliases:
       - ms
     description: View a player's ping.
+  respawn:
+    aliases:
+      - revive
+      - res
+    description: Respawns a player.
 depend:
   - ProtocolLib
   - JDA
