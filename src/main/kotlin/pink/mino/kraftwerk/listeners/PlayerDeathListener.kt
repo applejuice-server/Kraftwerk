@@ -2,13 +2,17 @@ package pink.mino.kraftwerk.listeners
 import net.citizensnpcs.api.CitizensAPI
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
+import org.bukkit.GameMode
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.plugin.java.JavaPlugin
 import pink.mino.kraftwerk.Kraftwerk
-import pink.mino.kraftwerk.features.*
+import pink.mino.kraftwerk.features.CombatLogFeature
+import pink.mino.kraftwerk.features.SettingsFeature
+import pink.mino.kraftwerk.features.SpecFeature
+import pink.mino.kraftwerk.features.TeamsFeature
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GameState
 import pink.mino.kraftwerk.utils.Scoreboard
@@ -62,7 +66,7 @@ class PlayerDeathListener : Listener {
                 } else {
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wl remove ${player.name}")
                 }
-                SpawnFeature.instance.send(player)
+                player.gameMode = GameMode.SPECTATOR
                 Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
                     if (!player.hasPermission("uhc.staff")) {
                         player.kickPlayer(Chat.colored("&7Thank you for playing!\n\n&7Join our discord for more games: &cdsc.gg/apple-juice"))
