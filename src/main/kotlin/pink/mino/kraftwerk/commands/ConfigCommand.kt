@@ -28,6 +28,15 @@ class ConfigCommand : CommandExecutor {
         }
     }
 
+    private fun getNether(option: String): String {
+        val op = SettingsFeature.instance.data!!.getString("game.nether.${option}").toBoolean()
+        return if (op) {
+            "Enabled"
+        } else {
+            "Disabled"
+        }
+    }
+
     private fun getEventTime(event: String): Int {
         return SettingsFeature.instance.data!!.getInt("game.events.${event}")
     }
@@ -214,11 +223,11 @@ class ConfigCommand : CommandExecutor {
         netherConfigMeta.lore = listOf(
             Chat.colored(Chat.guiLine),
             "",
-            Chat.colored("&7Nether ${Chat.dash} &c${getOption("nether")}"),
-            Chat.colored("&7Nerfed Quartz ${Chat.dash} &c${getOption("nerfedQuartz")}"),
-            Chat.colored("&7Tier II Potions ${Chat.dash} &c${getOption("tierII")}"),
-            Chat.colored("&7Strength Potions ${Chat.dash} &c${getOption("strengthPotions")}"),
-            Chat.colored("&7Splash Potions ${Chat.dash} &c${getOption("splashPotions")}"),
+            Chat.colored("&7Nether ${Chat.dash} &c${getNether("nether")}"),
+            Chat.colored("&7Nerfed Quartz ${Chat.dash} &c${getNether("nerfedquartz")}"),
+            Chat.colored("&7Tier II Potions ${Chat.dash} &c${getNether("tierii")}"),
+            Chat.colored("&7Strength Potions ${Chat.dash} &c${getNether("strengthpotions")}"),
+            Chat.colored("&7Splash Potions ${Chat.dash} &c${getNether("splashpotions")}"),
             "",
             Chat.colored(Chat.guiLine)
         )

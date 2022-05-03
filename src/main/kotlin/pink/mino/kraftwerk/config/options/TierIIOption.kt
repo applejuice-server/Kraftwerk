@@ -9,7 +9,7 @@ class TierIIOption : ConfigOption(
     "Tier II",
     "Toggles whether Tier II potions can be crafted.",
     "nether",
-    "tierII",
+    "tierii",
     Material.GLOWSTONE
 ) {
     @EventHandler

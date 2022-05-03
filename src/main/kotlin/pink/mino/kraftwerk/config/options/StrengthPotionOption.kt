@@ -9,7 +9,7 @@ class StrengthPotionOption : ConfigOption(
     "Strength Potions",
     "Toggles whether Strength potions can be brewed.",
     "nether",
-    "strengthPotions",
+    "strengthpotions",
     Material.BLAZE_POWDER
 ) {
     @EventHandler

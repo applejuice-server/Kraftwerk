@@ -9,7 +9,7 @@ class NerfedQuartzOption : ConfigOption(
     "Nerfed Quartz",
     "Halves the XP of Quartz.",
     "nether",
-    "nerfedQuartz",
+    "nerfedquartz",
     Material.QUARTZ_ORE
 ) {
     @EventHandler

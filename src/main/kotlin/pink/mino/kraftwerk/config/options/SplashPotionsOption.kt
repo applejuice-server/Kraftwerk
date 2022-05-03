@@ -9,7 +9,7 @@ class SplashPotionsOption : ConfigOption(
     "Splash Potions",
     "Toggles whether splash potions can be crafted.",
     "nether",
-    "splashPotions",
+    "splashpotions",
     Material.SULPHUR
 ) {
     @EventHandler
