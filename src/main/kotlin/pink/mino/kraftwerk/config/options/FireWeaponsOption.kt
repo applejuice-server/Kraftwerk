@@ -20,17 +20,14 @@ class FireWeaponsOption : ConfigOption(
     @EventHandler
     fun onPlayerEnchant(event: EnchantItemEvent) {
         if (enabled) return
-        val enchants: MutableMap<Enchantment, Int> = event.enchantsToAdd
-        if (!enchants.containsKey(fireAspectEnchant) || !enchants.containsKey(flameEnchant)) {
+        if (event.enchantsToAdd.containsKey(fireAspectEnchant) || event.enchantsToAdd.containsKey(flameEnchant)) {
+            event.enchantsToAdd.remove(fireAspectEnchant)
+            event.enchantsToAdd.remove(flameEnchant)
+        }
+        if (event.enchantsToAdd.containsKey(Enchantment.DAMAGE_ALL) || event.enchantsToAdd.containsKey(Enchantment.DAMAGE_UNDEAD) || event.enchantsToAdd.containsKey(Enchantment.DAMAGE_ARTHROPODS)) {
             return
         }
-        enchants.remove(fireAspectEnchant)
-        if (enchants.containsKey(Enchantment.DAMAGE_ALL) || enchants.containsKey(Enchantment.DAMAGE_UNDEAD) || enchants.containsKey(
-                Enchantment.DAMAGE_ARTHROPODS
-            )
-        ) {
-            return
-        }
-        enchants[Enchantment.DAMAGE_ALL] = (event.whichButton() + 1).coerceAtMost(3)
+        event.enchantsToAdd[Enchantment.DAMAGE_ALL] = (event.whichButton() + 1).coerceAtMost(3)
+
     }
 }
