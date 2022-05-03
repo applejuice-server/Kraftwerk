@@ -1,6 +1,5 @@
 package pink.mino.kraftwerk.utils
 
-import me.lucko.helper.Schedulers
 import me.lucko.helper.promise.Promise
 import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
@@ -164,18 +163,16 @@ class StatsPlayer(val player: OfflinePlayer) : Listener {
     }
 
     fun saveAll() {
-        Schedulers.async().run runnable@ {
-            this.save("kills")
-            this.save("wins")
-            this.save("deaths")
-            this.save("games_played")
-            this.save("diamonds_mined")
-            this.save("gold_mined")
-            this.save("iron_mined")
-            this.save("gapples_eaten")
-            this.save("times_crafted")
-            this.save("times_enchanted")
-        }
+        this.save("kills")
+        this.save("wins")
+        this.save("deaths")
+        this.save("games_played")
+        this.save("diamonds_mined")
+        this.save("gold_mined")
+        this.save("iron_mined")
+        this.save("gapples_eaten")
+        this.save("times_crafted")
+        this.save("times_enchanted")
     }
 
     fun save(obj: String) = try {
