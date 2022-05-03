@@ -87,7 +87,7 @@ class SpecFeature : Listener {
         )
         invSee.itemMeta = invSeeMeta
         p.inventory.setItem(1, invSee)
-        val respawnPlayers = ItemBuilder(Material.COMPASS)
+        val respawnPlayers = ItemBuilder(Material.BONE)
             .name("&cRespawn Players")
             .addLore("&7Right-click to respawn players.")
             .make()
