@@ -49,8 +49,8 @@ class LatescatterCommand : CommandExecutor {
         if (args.size == 1) {
             player = Bukkit.getPlayer(args[0])
             player.playSound(player.location, Sound.WOOD_CLICK, 10F, 1F)
-            player.health = 20.0
             player.maxHealth = 20.0
+            player.health = player.maxHealth
             player.isFlying = false
             player.allowFlight = false
             player.foodLevel = 20
@@ -97,8 +97,8 @@ class LatescatterCommand : CommandExecutor {
                 team!!.addPlayer(player)
             }
             player.playSound(player.location, Sound.WOOD_CLICK, 10F, 1F)
-            player.health = 20.0
             player.maxHealth = 20.0
+            player.health = player.maxHealth
             player.isFlying = false
             player.allowFlight = false
             player.foodLevel = 20
