@@ -47,7 +47,7 @@ class EndGameCommand : CommandExecutor {
         for (player in Bukkit.getOnlinePlayers()) {
             if (winners.contains(player.name)) {
                 player.sendTitle(Chat.colored("&6&lVICTORY!"), Chat.colored("&7Congratulations, you won the game!"))
-                if (!ConfigOptionHandler.getOption("statless")!!.enabled) StatsHandler.getStatsPlayer(player).wins.plus(1)
+                if (!ConfigOptionHandler.getOption("statless")!!.enabled) StatsHandler.getStatsPlayer(player).wins += 1
             } else {
                 player.sendTitle(Chat.colored("&c&lGAME OVER!"), Chat.colored("&7The game has concluded!"))
             }
