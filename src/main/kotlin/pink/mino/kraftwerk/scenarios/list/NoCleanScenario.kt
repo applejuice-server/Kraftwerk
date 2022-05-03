@@ -18,7 +18,7 @@ import pink.mino.kraftwerk.utils.GameState
 class NoCleanTask(val player: Player) : BukkitRunnable() {
     var timer = 15
     override fun run() {
-        timer -= 15
+        timer -= 1
         if (timer == 0) {
             cancel()
             NoCleanScenario.instance.noClean.remove(player)
