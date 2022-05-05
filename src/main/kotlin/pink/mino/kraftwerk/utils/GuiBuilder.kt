@@ -20,6 +20,7 @@ class GuiBuilder : Listener {
     private val items: HashMap<Int, ItemStack>
     private val runnableHashMap: HashMap<Int, Consumer<InventoryClickEvent>>
     private var slot = 0
+
     fun rows(newRows: Int): GuiBuilder {
         rows = newRows
         return this
@@ -92,5 +93,6 @@ class GuiBuilder : Listener {
         name = "Inventory"
         rows = 1
         items = HashMap()
-        runnableHashMap = HashMap()    }
+        runnableHashMap = HashMap()
+    }
 }

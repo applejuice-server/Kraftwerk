@@ -81,15 +81,15 @@ class RespawnCommand : CommandExecutor {
                 return false
             }
             var size = 1
-            if (RespawnFeature.instance.respawnablePlayers.size > 9) {
+            if (RespawnFeature.instance.respawnablePlayers.size >= 9) {
                 size = 2
-            } else if (RespawnFeature.instance.respawnablePlayers.size > 18) {
+            } else if (RespawnFeature.instance.respawnablePlayers.size >= 18) {
                 size = 3
-            } else if (RespawnFeature.instance.respawnablePlayers.size > 27) {
+            } else if (RespawnFeature.instance.respawnablePlayers.size >= 27) {
                 size = 4
-            } else if (RespawnFeature.instance.respawnablePlayers.size > 36) {
+            } else if (RespawnFeature.instance.respawnablePlayers.size >= 36) {
                 size = 5
-            } else if (RespawnFeature.instance.respawnablePlayers.size > 45) {
+            } else if (RespawnFeature.instance.respawnablePlayers.size >= 45) {
                 size = 6
             }
             val gui = GuiBuilder().rows(size).name(Chat.colored("&cRespawnable Players"))
