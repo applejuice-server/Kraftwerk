@@ -51,11 +51,8 @@ class PregenConfigHandler {
 }
 
 class PregenCommand : CommandExecutor {
-
     val blacklistNames: ArrayList<String> = arrayListOf("world", "world_nether", "world_the_end", "Spawn", "Arena")
-
     fun createWorld(pregenConfig: PregenConfig) {
-
         if (Bukkit.getWorld(pregenConfig.name) != null) {
             Bukkit.getServer().unloadWorld(pregenConfig.name, true)
             for (file in Bukkit.getServer().worldContainer.listFiles()!!) {
@@ -65,6 +62,7 @@ class PregenCommand : CommandExecutor {
                 }
             }
         }
+        if (pregenConfig.player.isOnline) Chat.sendMessage(pregenConfig.player as Player, "&7Creating world &8'&f${pregenConfig.name}&8'...")
 
         val wc = WorldCreator(pregenConfig.name)
         wc.environment(pregenConfig.type)
@@ -78,6 +76,8 @@ class PregenCommand : CommandExecutor {
             wc.generator("CityWorld")
         }
         val world = wc.createWorld()
+        print("Created world ${pregenConfig.name}.")
+        SettingsFeature.instance.data!!.set("pregen.world", world.name)
 
         Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
             val border = Bukkit.getWorld(pregenConfig.name).worldBorder
@@ -125,6 +125,8 @@ class PregenCommand : CommandExecutor {
         PregenConfigHandler.removeConfig(pregenConfig.player)
         SettingsFeature.instance.data!!.set("world.list", list)
         SettingsFeature.instance.saveData()
+        if (pregenConfig.player.isOnline) Chat.sendMessage(pregenConfig.player as Player, "&7Your world has been set as the default UHC world, to change this, use &f/w worlds&7.")
+
     }
 
     override fun onCommand(sender: CommandSender, command: Command, label: String?, args: Array<String>): Boolean {

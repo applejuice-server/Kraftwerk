@@ -48,6 +48,8 @@ class ItemBuilder(material: Material) {
     }
     fun noAttributes(): ItemBuilder {
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES)
+        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS)
+        meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE)
         item.itemMeta = meta
         return this
     }

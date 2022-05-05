@@ -1,12 +1,17 @@
 package pink.mino.kraftwerk.commands
 
 import org.bukkit.Bukkit
+import org.bukkit.Material
 import org.bukkit.World
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
+import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
+import pink.mino.kraftwerk.features.SettingsFeature
 import pink.mino.kraftwerk.utils.Chat
+import pink.mino.kraftwerk.utils.GuiBuilder
+import pink.mino.kraftwerk.utils.ItemBuilder
 
 class WorldCommand : CommandExecutor {
     override fun onCommand(
@@ -27,6 +32,7 @@ class WorldCommand : CommandExecutor {
             Chat.sendCenteredMessage(player, "&c&lWorld Help")
             Chat.sendMessage(player, "${Chat.prefix} &f/world tp <world> &8- &7Teleport to the provided world.")
             Chat.sendMessage(player, "${Chat.prefix} &f/world list &8- &7List all worlds.")
+            Chat.sendMessage(player, "${Chat.prefix} &f/world worlds &8- &7List all UHC worlds.")
             Chat.sendMessage(player, Chat.line)
             return false
         } else if (args[0].lowercase() == "list") {
@@ -58,6 +64,53 @@ class WorldCommand : CommandExecutor {
             val world = Bukkit.getWorld(args[1])
             player.teleport(world.spawnLocation)
             Chat.sendMessage(player, "${Chat.prefix} Teleported to &c${world.name}&7's spawn.")
+        } else if (args[0].lowercase() == "worlds") {
+            val gui = GuiBuilder().name("&c&lWorlds").rows(4)
+            for ((index, world) in Bukkit.getServer().worlds.withIndex()) {
+                var item: ItemBuilder
+                when (world.environment) {
+                    World.Environment.NORMAL -> {
+                        item = ItemBuilder(Material.GRASS)
+                            .name("&a${world.name}")
+                            .addLore("&7Contains &f${world.players.size} players&7.")
+                            .addLore(" ")
+                            .addLore("&8Left Click&7 to teleport to this world.")
+                            .addLore("&8Right Click&7 to set this world as the current UHC world.")
+                    }
+                    World.Environment.NETHER -> {
+                        item = ItemBuilder(Material.NETHERRACK)
+                            .name("&c${world.name}")
+                            .addLore("&7Contains &f${world.players.size} players&7.")
+                            .addLore(" ")
+                            .addLore("&8Left Click&7 to teleport to this world.")
+                            .addLore("&8Right Click&7 to set this world as the current UHC world.")
+                    }
+                    World.Environment.THE_END -> {
+                        item = ItemBuilder(Material.ENDER_STONE)
+                            .name("&f${world.name}")
+                            .addLore("&7Contains &f${world.players.size} players&7.")
+                            .addLore(" ")
+                            .addLore("&8Left Click&7 to teleport to this world.")
+                            .addLore("&8Right Click&7 to set this world as the current UHC world.")
+                    }
+                }
+                if (SettingsFeature.instance.data!!.getString("pregen.world") == world.name) {
+                    item.addEnchantment(Enchantment.DURABILITY, 1)
+                    item.name("&a${world.name} &8(&7Current UHC World&8)")
+                }
+                item.noAttributes()
+                gui.item(index, item.make()).onClick {
+                    it.isCancelled = true
+                    if (it.isLeftClick) {
+                        sender.teleport(world.spawnLocation)
+                        Chat.sendMessage(sender, "${Chat.prefix} Teleported to &c${world.name}&7's spawn.")
+                    } else if (it.isRightClick) {
+                        SettingsFeature.instance.data!!.set("pregen.world", world.name)
+                        Chat.sendMessage(sender, "${Chat.prefix} Set &c${world.name}&7 as the current UHC world.")
+                    }
+                }
+            }
+            sender.openInventory(gui.make())
         }
 
         return true
