@@ -42,8 +42,6 @@ class EndGameCommand : CommandExecutor {
             Chat.sendMessage(sender, "&cYou have no winners set! You need to set them using /winner <player>!")
             return false
         }
-        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mv load Spawn")
-        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mv load Arena")
         for (player in Bukkit.getOnlinePlayers()) {
             if (winners.contains(player.name)) {
                 player.sendTitle(Chat.colored("&6&lVICTORY!"), Chat.colored("&7Congratulations, you won the game!"))

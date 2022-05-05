@@ -11,6 +11,7 @@ import net.dv8tion.jda.api.entities.Activity
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.Material
+import org.bukkit.WorldCreator
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.ShapedRecipe
 import org.bukkit.inventory.meta.ItemMeta
@@ -117,6 +118,7 @@ class Kraftwerk : ExtendedJavaPlugin() {
         getCommand("startvote").executor = StartVoteCommand()
         getCommand("force").executor = ForceCommand()
         getCommand("respawn").executor = RespawnCommand()
+        getCommand("editpregen").executor = EditPregenCommand()
 
 
         getCommand("gm").executor = GamemodeCommand()
@@ -206,10 +208,13 @@ class Kraftwerk : ExtendedJavaPlugin() {
 
         GameState.setState(GameState.LOBBY)
         Bukkit.getLogger().info("Game state set to Lobby.")
+        for (world in Bukkit.getWorldContainer().list()!!) {
+            server.createWorld(WorldCreator(world))
+            print("World $world loaded.")
+        }
         for (world in Bukkit.getWorlds()) {
             world.pvp = true
         }
-
         //UpdateLeaderboards().runTaskTimer(this, 0L, 20L)
         InfoFeature().runTaskTimerAsynchronously(this, 0L, 6000L)
 
