@@ -20,13 +20,6 @@ class PlayerJoinListener : Listener {
     @EventHandler
     fun onPlayerJoin(e: PlayerJoinEvent) {
         val player = e.player
-        if (player.hasPlayedBefore()) {
-            Chat.sendMessage(player, "${Chat.prefix} Welcome back to &capple&ajuice&7, &f${player.displayName}&7!")
-        } else {
-            for (p in Bukkit.getOnlinePlayers()) {
-                Chat.sendMessage(p, "${Chat.prefix} Welcome to &capple&ajuice&7, &f${player.displayName}&7! &8(&c#${Bukkit.getOfflinePlayers().size}&8)")
-            }
-        }
 
         Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
             SpawnFeature.instance.send(player)
