@@ -7,6 +7,7 @@ import com.mysql.jdbc.jdbc2.optional.MysqlDataSource
 import io.github.redouane59.twitter.TwitterClient
 import io.github.redouane59.twitter.signature.TwitterCredentials
 import me.lucko.helper.plugin.ExtendedJavaPlugin
+import me.lucko.helper.profiles.ProfileRepository
 import net.dv8tion.jda.api.entities.Activity
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
@@ -16,6 +17,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.ShapedRecipe
 import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.material.MaterialData
+import org.bukkit.plugin.java.JavaPlugin
 import pink.mino.kraftwerk.commands.*
 import pink.mino.kraftwerk.config.ConfigOptionHandler
 import pink.mino.kraftwerk.discord.Discord
@@ -24,8 +26,11 @@ import pink.mino.kraftwerk.listeners.*
 import pink.mino.kraftwerk.listeners.lunar.PlayerRegisterListener
 import pink.mino.kraftwerk.scenarios.ScenarioHandler
 import pink.mino.kraftwerk.utils.GameState
+import pink.mino.kraftwerk.utils.ProfileService
 import pink.mino.kraftwerk.utils.Scoreboard
 import pink.mino.kraftwerk.utils.StatsPlayer
+import java.nio.file.Files
+import java.nio.file.Path
 import java.sql.SQLException
 import javax.sql.DataSource
 
@@ -51,6 +56,7 @@ class Kraftwerk : ExtendedJavaPlugin() {
 
     companion object {
         val instance = this
+        val profiles = JavaPlugin.getPlugin(Kraftwerk::class.java).getService(ProfileRepository::class.java)
     }
 
     override fun load() {
@@ -169,14 +175,20 @@ class Kraftwerk : ExtendedJavaPlugin() {
         /* Sets up misc features */
         SettingsFeature.instance.setup(this)
         TeamsFeature.manager.setupTeams()
-        Scoreboard.kills!!.unregister()
         Scoreboard.setup()
+        if (Scoreboard.sb.getObjective("killboard") != null) {
+            Scoreboard.kills!!.unregister()
+            Scoreboard.setup()
+        }
         ConfigOptionHandler.setup()
         ScenarioHandler.setup()
         addRecipes()
 
         setupDataSource()
         setupTwitter()
+
+
+        this.provideService(ProfileRepository::class.java, ProfileService())
 
         /* Discord */
         Discord.main()
@@ -214,6 +226,17 @@ class Kraftwerk : ExtendedJavaPlugin() {
         }
         for (world in Bukkit.getWorlds()) {
             world.pvp = true
+        }
+        Bukkit.getWorldContainer().listFiles()!!.forEach { file ->
+            if (file.name == "Spawn") {
+                Files.walk(file.toPath()).sorted(Comparator.reverseOrder()).map(Path::toFile).forEach {
+                    if (it.isDirectory) {
+                        if (it.name == "stats" || it.name == "playerdata") {
+                            it.deleteRecursively()
+                        }
+                    }
+                }
+            }
         }
         //UpdateLeaderboards().runTaskTimer(this, 0L, 20L)
         InfoFeature().runTaskTimerAsynchronously(this, 0L, 6000L)

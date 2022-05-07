@@ -26,10 +26,11 @@ class PlayerJoinListener : Listener {
             for (p in Bukkit.getOnlinePlayers()) {
                 Chat.sendMessage(p, "${Chat.prefix} Welcome to &capple&ajuice&7, &f${player.displayName}&7! &8(&c#${Bukkit.getOfflinePlayers().size}&8)")
             }
-            Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                SpawnFeature.instance.send(player)
-            }, 20L)
         }
+
+        Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
+            SpawnFeature.instance.send(player)
+        }, 20L)
         Schedulers.async().run {
             StatsHandler.addStatsPlayer(player)
         }

@@ -1,7 +1,6 @@
 package pink.mino.kraftwerk.utils
 
-import me.lucko.helper.promise.Promise
-import org.bukkit.Bukkit
+import me.lucko.helper.utils.Log
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 import org.bukkit.event.Listener
@@ -11,93 +10,6 @@ import java.sql.SQLException
 import java.util.*
 
 val INSERT: String = "INSERT INTO stats VALUES(?, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0) ON DUPLICATE KEY UPDATE uuid=?"
-
-/*
-class UpdateLeaderboards : BukkitRunnable() {
-    var timer = 1
-    var firstTime = true
-    override fun run() {
-        timer -= 1
-        if (timer == 0) {
-            val plugin = JavaPlugin.getPlugin(Kraftwerk::class.java)
-            if (GameState.currentState != GameState.INGAME) {
-                for (hologram in HologramsAPI.getHolograms(plugin)) {
-                    hologram.delete()
-                }
-
-                val gamesPlayed =
-                    HologramsAPI.createHologram(plugin, Location(Bukkit.getWorld("Spawn"), -230.5, 101.0, -131.5))
-                val wins =
-                    HologramsAPI.createHologram(plugin, Location(Bukkit.getWorld("Spawn"), -230.5, 101.0, -149.5))
-                val kills =
-                    HologramsAPI.createHologram(plugin, Location(Bukkit.getWorld("Spawn"), -212.5, 101.0, -149.5))
-                val diamondsMined =
-                    HologramsAPI.createHologram(plugin, Location(Bukkit.getWorld("Spawn"), -212.5, 101.0, -131.5))
-
-                gamesPlayed.appendTextLine(Chat.colored("&c&lGames Played"))
-                gamesPlayed.appendTextLine(Chat.guiLine)
-                wins.appendTextLine(Chat.colored("&c&lWins"))
-                wins.appendTextLine(Chat.guiLine)
-                kills.appendTextLine(Chat.colored("&c&lKills"))
-                kills.appendTextLine(Chat.guiLine)
-                diamondsMined.appendTextLine(Chat.colored("&c&lDiamonds Mined"))
-                diamondsMined.appendTextLine(Chat.guiLine)
-
-
-                if (firstTime) {
-                    Schedulers.async().run {
-                        StatsHandler.getTopValues("games_played")
-                        StatsHandler.getTopValues("kills")
-                        StatsHandler.getTopValues("diamonds_mined")
-                        StatsHandler.getTopValues("wins")
-                    }
-                    firstTime = false
-                    print("Retrieved top players for the first time.")
-                } else {
-                    Promise.start()
-                        .thenApplyAsync { StatsHandler.getTopValues("games_played") }
-                        .thenAcceptSync {
-                            for ((index, statsPlayer) in it.withIndex()) {
-                                gamesPlayed.appendTextLine(Chat.colored("&e#${index + 1} &f${statsPlayer.player.name} &8- &b${statsPlayer.gamesPlayed}"))
-                            }
-                            gamesPlayed.appendTextLine(Chat.guiLine)
-                        }
-
-                    Promise.start()
-                        .thenApplyAsync { StatsHandler.getTopValues("wins") }
-                        .thenAcceptSync {
-                            for ((index, statsPlayer) in it.withIndex()) {
-                                wins.appendTextLine(Chat.colored("&e#${index + 1} &f${statsPlayer.player.name} &8- &b${statsPlayer.wins}"))
-                            }
-                            wins.appendTextLine(Chat.guiLine)
-                        }
-
-                    Promise.start()
-                        .thenApplyAsync { StatsHandler.getTopValues("kills") }
-                        .thenAcceptSync {
-                            for ((index, statsPlayer) in it.withIndex()) {
-                                kills.appendTextLine(Chat.colored("&e#${index + 1} &f${statsPlayer.player.name} &8- &b${statsPlayer.kills}"))
-                            }
-                            kills.appendTextLine(Chat.guiLine)
-                        }
-
-                    Promise.start()
-                        .thenApplyAsync { StatsHandler.getTopValues("diamonds_mined") }
-                        .thenAcceptSync {
-                            for ((index, statsPlayer) in it.withIndex()) {
-                                diamondsMined.appendTextLine(Chat.colored("&e#${index + 1} &f${statsPlayer.player.name} &8- &b${statsPlayer.diamondsMined}"))
-                            }
-                            diamondsMined.appendTextLine(Chat.guiLine)
-                        }
-                    print("Updated leaderboards on the server.")
-                }
-            }
-            timer = 20
-        }
-
-    }
-}*/
-
 
 class StatsPlayer(val player: OfflinePlayer) : Listener {
     var diamondsMined = 0
@@ -272,9 +184,10 @@ class StatsHandler : Listener {
                 statsPlayers[player.uniqueId]!!.load("gapples_eaten")
                 statsPlayers[player.uniqueId]!!.load("times_crafted")
                 statsPlayers[player.uniqueId]!!.load("times_enchanted")
-                print("Loaded stats for ${player.name}.")
+                Log.info("Loaded player stats for ${player.name}.")
             }
         }
+
         fun getStatsPlayer(player: OfflinePlayer) : StatsPlayer {
             if (statsPlayers[player.uniqueId] == null) {
                 statsPlayers[player.uniqueId] = StatsPlayer(player)
@@ -288,28 +201,9 @@ class StatsHandler : Listener {
                 statsPlayers[player.uniqueId]!!.load("gapples_eaten")
                 statsPlayers[player.uniqueId]!!.load("times_crafted")
                 statsPlayers[player.uniqueId]!!.load("times_enchanted")
-                print("Loaded stats for ${player.name}")
+                Log.info("Loaded player stats for ${player.name}.")
             }
             return statsPlayers[player.uniqueId]!!
-        }
-
-        fun getTopValues(value: String): ArrayList<StatsPlayer> {
-            val top: ArrayList<StatsPlayer> = arrayListOf()
-            with(JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection) {
-                val statement = this@with.prepareStatement("SELECT uuid FROM stats ORDER BY $value DESC LIMIT 10")
-                val result = statement.executeQuery()
-                while (result.next()) {
-                    val player = Bukkit.getOfflinePlayer(UUID.fromString(result.getString("uuid")))
-                    Promise.start()
-                        .thenApplyAsync {
-                            getStatsPlayer(player)
-                        }
-                        .thenApplySync {
-                            top.add(it)
-                        }
-                }
-                return top
-            }
         }
     }
 }
