@@ -17,7 +17,6 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.ShapedRecipe
 import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.material.MaterialData
-import org.bukkit.plugin.java.JavaPlugin
 import pink.mino.kraftwerk.commands.*
 import pink.mino.kraftwerk.config.ConfigOptionHandler
 import pink.mino.kraftwerk.discord.Discord
@@ -56,7 +55,6 @@ class Kraftwerk : ExtendedJavaPlugin() {
 
     companion object {
         val instance = this
-        val profiles = JavaPlugin.getPlugin(Kraftwerk::class.java).getService(ProfileRepository::class.java)
     }
 
     override fun load() {
