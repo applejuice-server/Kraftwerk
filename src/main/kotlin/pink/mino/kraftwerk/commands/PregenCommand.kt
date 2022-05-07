@@ -14,6 +14,8 @@ import pink.mino.kraftwerk.utils.BlockUtil
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GuiBuilder
 import pink.mino.kraftwerk.utils.ItemBuilder
+import java.nio.file.Files
+import java.nio.file.Path
 
 enum class PregenerationGenerationTypes {
     NONE,
@@ -57,6 +59,7 @@ class PregenCommand : CommandExecutor {
             Bukkit.getServer().unloadWorld(pregenConfig.name, true)
             for (file in Bukkit.getServer().worldContainer.listFiles()!!) {
                 if (file.name == pregenConfig.name) {
+                    Files.walk(file.toPath()).sorted(Comparator.reverseOrder()).map(Path::toFile).forEach { it.delete() }
                     file.delete()
                     print("Deleted world file for ${pregenConfig.name}.")
                 }
@@ -79,20 +82,18 @@ class PregenCommand : CommandExecutor {
         print("Created world ${pregenConfig.name}.")
         SettingsFeature.instance.data!!.set("pregen.world", world.name)
 
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
+            "wb shape rectangular"
+        )
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
+            "wb ${pregenConfig.name} setcorners ${pregenConfig.border} ${pregenConfig.border} -${pregenConfig.border} -${pregenConfig.border}"
+        )
+
         Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
             val border = Bukkit.getWorld(pregenConfig.name).worldBorder
             border.size = pregenConfig.border.toDouble() * 2
             border.setCenter(0.0, 0.0)
 
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
-                "wb ${pregenConfig.border} clear"
-            )
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
-                "wb shape rectangular"
-            )
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
-                "wb ${pregenConfig.name} setcorners ${pregenConfig.border} ${pregenConfig.border} -${pregenConfig.border} -${pregenConfig.border}"
-            )
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
                 "wb ${pregenConfig.name} fill 200"
             )
@@ -123,6 +124,7 @@ class PregenCommand : CommandExecutor {
         if (list == null) list = ArrayList<String>()
         list.add(pregenConfig.name)
         PregenConfigHandler.removeConfig(pregenConfig.player)
+        SettingsFeature.instance.data!!.set("pregen.border", pregenConfig.border)
         SettingsFeature.instance.data!!.set("world.list", list)
         SettingsFeature.instance.saveData()
         if (pregenConfig.player.isOnline) Chat.sendMessage(pregenConfig.player as Player, "&7Your world has been set as the default UHC world, to change this, use &f/w worlds&7.")

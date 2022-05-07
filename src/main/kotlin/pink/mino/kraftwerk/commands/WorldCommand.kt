@@ -106,8 +106,10 @@ class WorldCommand : CommandExecutor {
                         Chat.sendMessage(sender, "${Chat.prefix} Teleported to &c${world.name}&7's spawn.")
                     } else if (it.isRightClick) {
                         SettingsFeature.instance.data!!.set("pregen.world", world.name)
+                        SettingsFeature.instance.data!!.set("pregen.border", world.worldBorder.size / 2)
                         Chat.sendMessage(sender, "${Chat.prefix} Set &c${world.name}&7 as the current UHC world.")
                     }
+                    SettingsFeature.instance.saveData()
                 }
             }
             sender.openInventory(gui.make())
