@@ -36,6 +36,7 @@ commands:
     aliases:
       - sendcoords
       - coords
+      - tl
     description: Sends your coordinates to your team.
   team:
     description: General team commands.
