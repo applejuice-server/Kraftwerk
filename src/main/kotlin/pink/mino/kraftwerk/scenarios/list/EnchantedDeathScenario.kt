@@ -3,7 +3,7 @@ package pink.mino.kraftwerk.scenarios.list
 import org.bukkit.Material
 import org.bukkit.event.EventHandler
 import org.bukkit.event.entity.PlayerDeathEvent
-import org.bukkit.event.inventory.PrepareItemCraftEvent
+import org.bukkit.event.inventory.CraftItemEvent
 import org.bukkit.inventory.ItemStack
 import pink.mino.kraftwerk.scenarios.Scenario
 import pink.mino.kraftwerk.utils.GameState
@@ -15,11 +15,12 @@ class EnchantedDeathScenario : Scenario(
     Material.ENCHANTMENT_TABLE
 ) {
     @EventHandler
-    fun onPlayerCraft(e: PrepareItemCraftEvent) {
+    fun onPlayerCraft(e: CraftItemEvent) {
         if (!enabled) return
         if (GameState.currentState != GameState.INGAME) return
-        if (e.inventory.result.type == Material.ENCHANTMENT_TABLE) {
-            e.inventory.result.type = Material.AIR
+        val item: ItemStack? = e.currentItem
+        if (item != null) {
+            e.isCancelled = item == ItemStack(Material.ENCHANTMENT_TABLE)
         }
     }
 
