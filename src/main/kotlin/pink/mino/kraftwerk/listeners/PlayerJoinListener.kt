@@ -20,10 +20,6 @@ class PlayerJoinListener : Listener {
     @EventHandler
     fun onPlayerJoin(e: PlayerJoinEvent) {
         val player = e.player
-
-        Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-            SpawnFeature.instance.send(player)
-        }, 20L)
         Schedulers.async().run {
             StatsHandler.addStatsPlayer(player)
         }
