@@ -36,7 +36,7 @@ class Vote(val question: String) {
 
     fun startTimer() {
         VoteTimer(this).runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 20L)
-        Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Poll: &c${question} &8|&7 Use &a/voteyes &7or &c/voteno&7 to respond."))
+        Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Poll: &c${question} &8|&7 Use &a/yes &7or &c/no&7 to respond."))
     }
 }
 

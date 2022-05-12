@@ -66,7 +66,7 @@ class ScatterFeature : Listener {
                             Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
                                 player.teleport(scatteringHashmap[player])
                                 Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Scattering &c${player.name}&8 (&c${index + 1}&8/&c${scatteringList.size}&8)"))
-                            }, 5L)
+                            }, 20L)
                         }
                     }
                     scattering = false
@@ -135,7 +135,7 @@ class ScatterFeature : Listener {
                                     player.teleport(teamLocations[team])
                                     Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Scattering &c${team.name}&7 teammate &c${player.name}&8 (&c${index + 1}&8/&c${Bukkit.getOnlinePlayers().size}&8)"))
                                 }
-                            }, 5L)
+                            }, 20L)
                         }
                     }
                     scattering = false
