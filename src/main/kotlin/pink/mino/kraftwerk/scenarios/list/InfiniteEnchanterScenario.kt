@@ -21,9 +21,9 @@ class InfiniteEnchanterScenario : Scenario(
                 val list = arrayListOf(
                     ItemStack(Material.ENCHANTMENT_TABLE, 2),
                     ItemStack(Material.BOOKSHELF, 64),
-                    ItemStack(Material.LAPIS_BLOCK, 64),
-                    ItemStack(Material.EXP_BOTTLE, 128),
+                    ItemStack(Material.LAPIS_BLOCK, 64)
                 )
+                player.level = 20000
                 PlayerUtils.bulkItems(player, list)
                 Chat.sendMessage(player, "${Chat.prefix} You've been given your &cInfinite Enchanter&7 items.")
             }
@@ -37,6 +37,7 @@ class InfiniteEnchanterScenario : Scenario(
             ItemStack(Material.LAPIS_BLOCK, 64),
             ItemStack(Material.EXP_BOTTLE, 128),
         )
+        player.level = 20000
         PlayerUtils.bulkItems(player, list)
         Chat.sendMessage(player, "${Chat.prefix} You've been given your &cInfinite Enchanter&7 items.")
     }
