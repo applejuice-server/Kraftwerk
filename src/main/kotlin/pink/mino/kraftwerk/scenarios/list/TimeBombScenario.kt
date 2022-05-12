@@ -21,10 +21,12 @@ class TimeBombTask(val player: Player, val location: Location, private val holog
     var timer = 30
     override fun run() {
         if (timer == 0) {
-            val chest = location.block.state as Chest
-            chest.inventory.clear()
-            location.block.type = Material.AIR
-            location.block.getRelative(BlockFace.NORTH).type = Material.AIR
+            if (location.block.type == Material.CHEST) {
+                val chest = location.block.state as Chest
+                chest.inventory.clear()
+                location.block.type = Material.AIR
+                location.block.getRelative(BlockFace.NORTH).type = Material.AIR
+            }
             location.world.createExplosion(location.blockX + 0.5, location.blockY + 0.5, location.blockZ + 0.5, 10F, false, true)
             location.world.strikeLightning(location)
             hologram.delete()
