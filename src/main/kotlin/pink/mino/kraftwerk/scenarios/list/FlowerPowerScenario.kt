@@ -2,6 +2,7 @@ package pink.mino.kraftwerk.scenarios.list
 
 import org.bukkit.Material
 import org.bukkit.block.Block
+import org.bukkit.entity.EntityType
 import org.bukkit.entity.Item
 import org.bukkit.event.EventHandler
 import org.bukkit.event.block.BlockBreakEvent
@@ -61,6 +62,7 @@ class FlowerPowerScenario : Scenario(
     fun onSpawn(e: ItemSpawnEvent) {
         if (!enabled) return
         if (GameState.currentState != GameState.INGAME) return
+        if (e.entityType != EntityType.DROPPED_ITEM) return
         val item: Item = e.entity
         val type: Material = item.itemStack.type
         if (blacklistedMaterials.contains(type) || flowerTypes.contains(type)) {
