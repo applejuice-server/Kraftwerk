@@ -16,7 +16,6 @@ class PlayerQuitListener : Listener {
         val player = e.player
         e.quitMessage = ChatColor.translateAlternateColorCodes('&', "&8[&4-&8] &c${player.displayName} &8(&4${Bukkit.getServer().onlinePlayers.size - 1}&8/&4${Bukkit.getServer().maxPlayers}&8)")
         Scoreboard.setScore(Chat.colored("${Chat.dash} &7Playing..."), Bukkit.getServer().onlinePlayers.size - 1)
-        StatsHandler.getStatsPlayer(player)
         if (StatsHandler.statsPlayers[player.uniqueId] != null) {
             Promise.start()
                 .thenApplyAsync { StatsHandler.statsPlayers[player.uniqueId]!!.saveAll() }

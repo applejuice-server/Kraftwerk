@@ -79,6 +79,7 @@ class PregenCommand : CommandExecutor {
             wc.generator("CityWorld")
         }
         val world = wc.createWorld()
+        world.difficulty = Difficulty.HARD
         print("Created world ${pregenConfig.name}.")
         SettingsFeature.instance.data!!.set("pregen.world", world.name)
 
