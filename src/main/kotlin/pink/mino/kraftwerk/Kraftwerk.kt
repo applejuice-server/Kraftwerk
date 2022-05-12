@@ -5,9 +5,10 @@ import com.comphenix.protocol.ProtocolManager
 import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource
 import io.github.redouane59.twitter.TwitterClient
-import io.github.redouane59.twitter.signature.TwitterCredentials
 import me.lucko.helper.plugin.ExtendedJavaPlugin
 import me.lucko.helper.profiles.ProfileRepository
+import me.lucko.helper.utils.Log
+import me.lucko.spark.api.Spark
 import net.dv8tion.jda.api.entities.Activity
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
@@ -52,6 +53,7 @@ class Kraftwerk : ExtendedJavaPlugin() {
 
     lateinit var dataSource: DataSource
     lateinit var twitter: TwitterClient
+    lateinit var spark: Spark
 
     companion object {
         val instance = this
@@ -62,6 +64,7 @@ class Kraftwerk : ExtendedJavaPlugin() {
     }
 
     override fun enable() {
+        this.provideService(ProfileRepository::class.java, ProfileService())
         /* Registering listeners */
         Bukkit.getServer().pluginManager.registerEvents(ServerListPingListener(), this)
         Bukkit.getServer().pluginManager.registerEvents(PlayerJoinListener(), this)
@@ -84,7 +87,6 @@ class Kraftwerk : ExtendedJavaPlugin() {
         Bukkit.getServer().pluginManager.registerEvents(ShootListener(), this)
         Bukkit.getServer().pluginManager.registerEvents(PlayerInteractListener(), this)
         Bukkit.getServer().pluginManager.registerEvents(PlayerRegisterListener(), this)
-        Bukkit.getServer().pluginManager.registerEvents(TabFeature(), this)
         Bukkit.getServer().pluginManager.registerEvents(PortalListener(), this)
         Bukkit.getServer().pluginManager.registerEvents(WorldSwitchListener(), this)
         Bukkit.getServer().pluginManager.registerEvents(StatsFeature(), this)
@@ -167,7 +169,6 @@ class Kraftwerk : ExtendedJavaPlugin() {
 
         /* This just enables Hardcore Hearts */
         protocolManager?.addPacketListener(HardcoreHeartsFeature())
-        // TODO("Finish this") Events.get().register(LiteBans())
         CustomPayloadFixerFeature(this)
 
         /* Sets up misc features */
@@ -183,10 +184,13 @@ class Kraftwerk : ExtendedJavaPlugin() {
         addRecipes()
 
         setupDataSource()
-        setupTwitter()
 
-
-        this.provideService(ProfileRepository::class.java, ProfileService())
+        val provider = Bukkit.getServicesManager().getRegistration(
+            Spark::class.java
+        )
+        if (provider != null) {
+            spark = provider.provider
+        }
 
         /* Discord */
         Discord.main()
@@ -217,41 +221,19 @@ class Kraftwerk : ExtendedJavaPlugin() {
         }
 
         GameState.setState(GameState.LOBBY)
-        Bukkit.getLogger().info("Game state set to Lobby.")
+        Log.info("Game state set to Lobby.")
         for (world in Bukkit.getWorldContainer().list()!!) {
             server.createWorld(WorldCreator(world))
-            print("World $world loaded.")
+            Log.info("World $world loaded.")
         }
         for (world in Bukkit.getWorlds()) {
             world.pvp = true
         }
-        Bukkit.getWorldContainer().listFiles()!!.forEach { file ->
-            if (file.name == "Spawn") {
-                Files.walk(file.toPath()).sorted(Comparator.reverseOrder()).map(Path::toFile).forEach {
-                    if (it.isDirectory) {
-                        if (it.name == "stats" || it.name == "playerdata") {
-                            it.deleteRecursively()
-                        }
-                    }
-                }
-            }
-        }
         //UpdateLeaderboards().runTaskTimer(this, 0L, 20L)
         InfoFeature().runTaskTimerAsynchronously(this, 0L, 6000L)
+        TabFeature().runTaskTimer(this, 0L, 20L)
 
         Bukkit.getLogger().info("Kraftwerk enabled.")
-    }
-
-    fun setupTwitter() {
-        this.twitter = TwitterClient(
-            TwitterCredentials.builder()
-                .accessToken("1498385359121657864-vL64dNrkXfoF9jCOAQfVfSCBzhI5cf")
-                .accessTokenSecret("9S8KMk5SiSWD71BlklxQ1pCpnKhSV2p98PTjvfnPXeLW8")
-                .bearerToken("AAAAAAAAAAAAAAAAAAAAAFTvZgEAAAAAx%2FlXSH6jVLANz9JfjDspD94jdDA%3DP1VqgNG9N38xOPDyz9Kd1mjSPNwxsTgJjB2XRaBSp8J3TXeqKO")
-                .apiKey("0FrHNXc5kgVMBILgwwpZW3k7r")
-                .apiSecretKey("O40NzNFgVmcVuHxIlx8MgI0yO5qlnyncS9D2q0PkxGHIyYYpPS")
-                .build()
-        )
     }
 
     fun setupDataSource() {
@@ -288,6 +270,19 @@ class Kraftwerk : ExtendedJavaPlugin() {
         SettingsFeature.instance.data!!.set("game.list", ArrayList<String>())
         SettingsFeature.instance.data!!.set("game.kills", null)
         SettingsFeature.instance.saveData()
+        Bukkit.getWorldContainer().listFiles()!!.forEach { file ->
+            if (file.name == "Spawn") {
+                Files.walk(file.toPath()).sorted(Comparator.reverseOrder()).map(Path::toFile).forEach {
+                    if (it.isDirectory) {
+                        if (it.name == "stats" || it.name == "playerdata") {
+                            it.listFiles()?.forEach { file ->
+                                file.delete()
+                            }
+                        }
+                    }
+                }
+            }
+        }
         Bukkit.getLogger().info("Kraftwerk disabled.")
     }
 

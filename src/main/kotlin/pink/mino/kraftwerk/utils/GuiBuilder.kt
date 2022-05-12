@@ -8,6 +8,7 @@ import org.bukkit.event.HandlerList
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
+import org.bukkit.event.inventory.InventoryType
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.java.JavaPlugin.getPlugin
@@ -50,6 +51,11 @@ class GuiBuilder : Listener {
 
     @EventHandler
     fun onInventoryClick(e: InventoryClickEvent) {
+        if (e.whoClicked.openInventory.type != InventoryType.CHEST || ChatColor.stripColor(e.inventory.name) == "Chest" || ChatColor.stripColor(e.inventory.name) == "Large Chest") return
+        if (e.clickedInventory == e.whoClicked.inventory) {
+            e.isCancelled = true
+            return
+        }
         if (e.currentItem != null) {
             if (e.currentItem.type != Material.AIR) {
                 if (ChatColor.stripColor(e.inventory.name)
