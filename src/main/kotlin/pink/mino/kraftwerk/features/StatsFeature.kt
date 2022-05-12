@@ -1,5 +1,7 @@
 package pink.mino.kraftwerk.features
 
+import me.lucko.helper.Schedulers
+import me.lucko.helper.promise.Promise
 import org.bukkit.Material
 import org.bukkit.entity.Arrow
 import org.bukkit.entity.EntityType
@@ -22,9 +24,9 @@ class StatsFeature : Listener {
     fun onPlayerDeath(e: PlayerDeathEvent) {
         if (GameState.currentState != GameState.INGAME) return
         if (ConfigOptionHandler.getOption("statless")!!.enabled) return
-        StatsHandler.getStatsPlayer(e.entity).add("deaths", 1)
+        Schedulers.async().run { StatsHandler.getStatsPlayer(e.entity).add("deaths", 1) }
         if (e.entity.killer != null && e.entity.killer.type == EntityType.PLAYER) {
-            StatsHandler.getStatsPlayer(e.entity.killer as Player).add("kills", 1)
+            Schedulers.async().run { StatsHandler.getStatsPlayer(e.entity.killer as Player).add("kills", 1) }
         }
     }
 
@@ -32,40 +34,45 @@ class StatsFeature : Listener {
     fun onBlockBreak(e: BlockBreakEvent) {
         if (GameState.currentState != GameState.INGAME) return
         if (ConfigOptionHandler.getOption("statless")!!.enabled) return
-        val player = StatsHandler.getStatsPlayer(e.player)
-        when (e.block.type) {
-            Material.DIAMOND_ORE -> {
-                player.add("diamonds_mined", 1)
+        Promise.start()
+            .thenApplyAsync {
+                StatsHandler.getStatsPlayer(e.player)
             }
-            Material.GOLD_ORE -> {
-                player.add("gold_mined", 1)
+            .thenAcceptSync {
+                when (e.block.type) {
+                    Material.DIAMOND_ORE -> {
+                        it.add("diamonds_mined", 1)
+                    }
+                    Material.GOLD_ORE -> {
+                        it.add("gold_mined", 1)
+                    }
+                    Material.IRON_ORE -> {
+                        it.add("iron_mined", 1)
+                    }
+                    else -> {}
+                }
             }
-            Material.IRON_ORE -> {
-                player.add("iron_mined", 1)
-            }
-            else -> {}
-        }
     }
 
     @EventHandler
     fun onConsume(e: PlayerItemConsumeEvent) {
         if (GameState.currentState != GameState.INGAME) return
         if (ConfigOptionHandler.getOption("statless")!!.enabled) return
-        if (e.item.type == Material.GOLDEN_APPLE) StatsHandler.getStatsPlayer(e.player).add("gapples_eaten", 1)
+        if (e.item.type == Material.GOLDEN_APPLE) Schedulers.async().run { StatsHandler.getStatsPlayer(e.player).add("gapples_eaten", 1) }
     }
 
     @EventHandler
     fun onCraft(e: CraftItemEvent) {
         if (GameState.currentState != GameState.INGAME) return
         if (ConfigOptionHandler.getOption("statless")!!.enabled) return
-        StatsHandler.getStatsPlayer(e.whoClicked as Player).add("times_crafted", 1)
+        Schedulers.async().run { StatsHandler.getStatsPlayer(e.whoClicked as Player).add("times_crafted", 1) }
     }
 
     @EventHandler
     fun onEnchant(e: EnchantItemEvent) {
         if (GameState.currentState != GameState.INGAME) return
         if (ConfigOptionHandler.getOption("statless")!!.enabled) return
-        StatsHandler.getStatsPlayer(e.enchanter).add("times_enchanted", 1)
+        Schedulers.async().run { StatsHandler.getStatsPlayer(e.enchanter).add("times_enchanted", 1) }
     }
 
     @EventHandler
@@ -73,7 +80,7 @@ class StatsFeature : Listener {
         if (e.damager.type == EntityType.ARROW && (e.damager as Arrow).shooter is Player) {
             if (GameState.currentState != GameState.INGAME) return
             if (ConfigOptionHandler.getOption("statless")!!.enabled) return
-            StatsHandler.getStatsPlayer((e.damager as Arrow).shooter as Player).add("bow_shots")
+            Schedulers.async().run { StatsHandler.getStatsPlayer((e.damager as Arrow).shooter as Player).add("bow_shots") }
         }
     }
 }

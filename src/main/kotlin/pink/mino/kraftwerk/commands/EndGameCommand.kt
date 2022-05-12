@@ -1,5 +1,6 @@
 package pink.mino.kraftwerk.commands
 
+import me.lucko.helper.Schedulers
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.entities.Activity
 import org.bukkit.Bukkit
@@ -45,7 +46,7 @@ class EndGameCommand : CommandExecutor {
         for (player in Bukkit.getOnlinePlayers()) {
             if (winners.contains(player.name)) {
                 player.sendTitle(Chat.colored("&6&lVICTORY!"), Chat.colored("&7Congratulations, you won the game!"))
-                if (!ConfigOptionHandler.getOption("statless")!!.enabled) StatsHandler.getStatsPlayer(player).add("wins", 1)
+                if (!ConfigOptionHandler.getOption("statless")!!.enabled) Schedulers.async().run { StatsHandler.getStatsPlayer(player).add("wins", 1) }
             } else {
                 player.sendTitle(Chat.colored("&c&lGAME OVER!"), Chat.colored("&7The game has concluded!"))
             }
@@ -81,6 +82,7 @@ class EndGameCommand : CommandExecutor {
         SettingsFeature.instance.data!!.set("pregen.world", null)
         SettingsFeature.instance.data!!.set("game.nether", false)
         SettingsFeature.instance.data!!.set("whitelist.requests", false)
+        SettingsFeature.instance.data!!.set("whitelist.list", ArrayList<String>())
         SettingsFeature.instance.data!!.set("matchpost.opens", null)
         SettingsFeature.instance.data!!.set("matchpost.host", null)
         SettingsFeature.instance.data!!.set("matchpost.posted", null)

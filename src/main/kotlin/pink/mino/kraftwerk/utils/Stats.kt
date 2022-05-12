@@ -1,5 +1,7 @@
 package pink.mino.kraftwerk.utils
 
+import me.lucko.helper.Schedulers
+import me.lucko.helper.promise.Promise
 import me.lucko.helper.utils.Log
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
@@ -204,6 +206,24 @@ class StatsHandler : Listener {
                 Log.info("Loaded player stats for ${player.name}.")
             }
             return statsPlayers[player.uniqueId]!!
+        }
+
+        fun getTopValues(value: String): Promise<ArrayList<UUID>> {
+            return Schedulers.async().supply {
+                val topValues = ArrayList<UUID>()
+                try {
+                    with (JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection) {
+                        val statement = prepareStatement("SELECT uuid FROM stats ORDER BY $value DESC LIMIT 10")
+                        val result = statement.executeQuery()
+                        while (result.next()) {
+                            topValues.add(UUID.fromString(result.getString("uuid")))
+                        }
+                    }
+                } catch (e: SQLException) {
+                    e.printStackTrace()
+                }
+                return@supply topValues
+            }
         }
     }
 }

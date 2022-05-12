@@ -1,5 +1,6 @@
 package pink.mino.kraftwerk.commands
 
+import me.lucko.helper.Schedulers
 import org.bukkit.*
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
@@ -58,6 +59,7 @@ class LatescatterCommand : CommandExecutor {
             player.gameMode = GameMode.SURVIVAL
             player.inventory.clear()
             player.inventory.armorContents = null
+            player.enderChest.clear()
             player.itemOnCursor = ItemStack(Material.AIR)
             val openInventory = player.openInventory
             if (openInventory.type == InventoryType.CRAFTING) {
@@ -70,7 +72,7 @@ class LatescatterCommand : CommandExecutor {
             player.addPotionEffect(PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 300, 1000, true, false))
             ScatterFeature.scatterSolo(player, Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world")), SettingsFeature.instance.data!!.getInt("pregen.border"))
             player.inventory.setItem(0, ItemStack(Material.COOKED_BEEF, SettingsFeature.instance.data!!.getInt("game.starterfood")))
-            StatsHandler.getStatsPlayer(player).gamesPlayed.plus(1)
+            Schedulers.async().run { StatsHandler.getStatsPlayer(player).add("games_played",1) }
             for (scenario in ScenarioHandler.getActiveScenarios()) {
                 scenario.givePlayer(player)
             }
@@ -105,6 +107,7 @@ class LatescatterCommand : CommandExecutor {
             player.saturation = 20F
             player.gameMode = GameMode.SURVIVAL
             player.inventory.clear()
+            player.enderChest.clear()
             player.inventory.armorContents = null
             player.itemOnCursor = ItemStack(Material.AIR)
             val openInventory = player.openInventory
@@ -118,7 +121,7 @@ class LatescatterCommand : CommandExecutor {
             player.addPotionEffect(PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 300, 1000, true, false))
             player.teleport(teammate.location)
             player.inventory.setItem(0, ItemStack(Material.COOKED_BEEF, SettingsFeature.instance.data!!.getInt("game.starterfood")))
-            StatsHandler.getStatsPlayer(player).gamesPlayed.plus(1)
+            Schedulers.async().run { StatsHandler.getStatsPlayer(player).add("games_played",1) }
             for (scenario in ScenarioHandler.getActiveScenarios()) {
                 scenario.givePlayer(player)
             }

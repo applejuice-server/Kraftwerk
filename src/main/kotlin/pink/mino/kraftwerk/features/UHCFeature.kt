@@ -1,5 +1,6 @@
 package pink.mino.kraftwerk.features
 
+import me.lucko.helper.Schedulers
 import org.bukkit.Bukkit
 import org.bukkit.GameMode
 import org.bukkit.Material
@@ -119,7 +120,7 @@ class UHCTask : BukkitRunnable() {
                     if (!SpecFeature.instance.getSpecs().contains(player.name)) {
                         player.inventory.setItem(0, ItemStack(Material.COOKED_BEEF, SettingsFeature.instance.data!!.getInt("game.starterfood")))
                         list.add(player.name)
-                        if (!ConfigOptionHandler.getOption("statless")!!.enabled) StatsHandler.getStatsPlayer(player).add("games_played", 1)
+                        if (!ConfigOptionHandler.getOption("statless")!!.enabled) Schedulers.async().run { StatsHandler.getStatsPlayer(player).add("games_played", 1) }
                     }
                 }
                 SettingsFeature.instance.data!!.set("game.list", list)
