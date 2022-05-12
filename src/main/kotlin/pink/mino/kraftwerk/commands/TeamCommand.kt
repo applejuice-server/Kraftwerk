@@ -124,6 +124,8 @@ class TeamCommand : CommandExecutor {
                 Chat.sendMessage(sender, "${Chat.prefix} &f/team management <on/off> ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Enable/disable team management.")
                 Chat.sendMessage(sender, "${Chat.prefix} &f/team size <size> ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Set the size of teams.")
                 Chat.sendMessage(sender, "${Chat.prefix} &f/team set <player1> <player2> ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Sets Player 1 to the Player 2's team.")
+                Chat.sendMessage(sender, "${Chat.prefix} &f/team bulk <list of players> ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Adds a list of players to a team.")
+                Chat.sendMessage(sender, "${Chat.prefix} &f/team remove <player> ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Removes a player from a team.")
                 Chat.sendMessage(sender, "${Chat.prefix} &f/team delete <team name> ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Deletes the provided team.")
                 Chat.sendMessage(sender, "${Chat.prefix} &f/team friendlyfire <on/off> ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Toggles friendly fire.")
                 Chat.sendMessage(sender, "${Chat.prefix} &f/team kickunder <number> ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Kicks all solos/teams under a certain threshold.")
@@ -411,6 +413,61 @@ class TeamCommand : CommandExecutor {
                     Chat.sendMessage(player as Player, "${Chat.prefix} &f${target.name}&7 has been added to your team.")
                 }
             }
+        } else if (args[0] == "bulk" || args[0] == "ct") {
+            if (sender is Player) {
+                if (!sender.hasPermission("uhc.staff.team")) {
+                    Chat.sendMessage(sender, "${ChatColor.RED}You don't have permission to use this command.")
+                    return false
+                }
+            }
+            if (args.size < 2) {
+                Chat.sendMessage(sender, "${Chat.prefix} Invalid usage: &f/team bulk <list of players>&7.")
+                return false
+            }
+            var t: Team? = null
+            for (team in TeamsFeature.manager.getTeams()) {
+                if (team.size == 0) {
+                    t = team
+                }
+            }
+            for ((index, element) in args.withIndex()) {
+                if (index == 0) continue
+                val target = Bukkit.getPlayer(element)
+                if (target == null) {
+                    Chat.sendMessage(sender, "&c${element} is not online.")
+                    continue
+                }
+                val team = TeamsFeature.manager.getTeam(target)
+                if (team != null) {
+                    Chat.sendMessage(sender, "&c${element} is already in a team.")
+                    continue
+                }
+                t!!.addPlayer(target)
+            }
+            Chat.sendMessage(sender, "${Chat.prefix} Successfully added all players to the team.")
+        } else if (args[0] == "remove" || args[0] == "kick") {
+            if (sender is Player) {
+                if (!sender.hasPermission("uhc.staff.team")) {
+                    Chat.sendMessage(sender, "${ChatColor.RED}You don't have permission to use this command.")
+                    return false
+                }
+            }
+            if (args.size < 2) {
+                Chat.sendMessage(sender, "${Chat.prefix} Invalid usage: &f/team remove <Player>&7.")
+                return false
+            }
+            val target = Bukkit.getPlayer(args[1])
+            if (target == null) {
+                Chat.sendMessage(sender, "${Chat.prefix} Invalid player: &f${args[1]}&7.")
+                return false
+            }
+            val team = TeamsFeature.manager.getTeam(target)
+            if (team == null) {
+                Chat.sendMessage(sender, "${Chat.prefix} That player is currently not in a team right now.")
+                return false
+            }
+            team.removePlayer(target)
+            Chat.sendMessage(sender, "${Chat.prefix} Successfully removed &f${target.name}&7 from &f${team.name}&7's team")
         } else if (args[0] == "friendlyfire") {
             if (sender is Player) {
                 if (!sender.hasPermission("uhc.staff.team")) {
