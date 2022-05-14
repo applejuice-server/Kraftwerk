@@ -7,10 +7,58 @@ import org.bukkit.World
 import org.bukkit.entity.Player
 import org.bukkit.event.Listener
 import org.bukkit.plugin.java.JavaPlugin
+import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.scoreboard.Team
 import pink.mino.kraftwerk.Kraftwerk
 import pink.mino.kraftwerk.utils.Chat
 import kotlin.random.Random
+
+class FFAScatterTask(
+    val players: ArrayList<Player>,
+    val scatterList: HashMap<Player, Location>,
+) : BukkitRunnable() {
+    var i = 0
+    override fun run() {
+        if (i == players.size) {
+            cancel()
+            return
+        }
+        if (!SpecFeature.instance.getSpecs().contains(players[i].name)) {
+            if (players[i].isOnline) {
+                players[i].teleport(scatterList[players[i]])
+                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Scattering &c${players[i].name}&8 (&c${i + 1}&8/&c${players.size}&8)"))
+            }
+        }
+        i++
+    }
+}
+
+class TeamScatterTask(
+    val players: ArrayList<Player>,
+    val solosList: HashMap<Player, Location>,
+    val teamsList: HashMap<Team, Location>
+) : BukkitRunnable() {
+    var i = 0
+    override fun run() {
+        if (i == players.size) {
+            cancel()
+            return
+        }
+        if (!SpecFeature.instance.getSpecs().contains(players[i].name)) {
+            if (players[i].isOnline) {
+                val team = TeamsFeature.manager.getTeam(players[i])
+                if (team == null) {
+                    players[i].teleport(solosList[players[i]])
+                    Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Scattering solo &c${players[i].name}&8 (&c${i + 1}&8/&c${players.size}&8)"))
+                } else {
+                    players[i].teleport(teamsList[team])
+                    Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Scattering ${team.prefix}${team.name}&7 teammate &c${players[i].name}&8 (&c${i + 1}&8/&c${players.size}&8)"))
+                }
+            }
+        }
+        i++
+    }
+}
 
 class ScatterFeature : Listener {
     companion object {
@@ -61,14 +109,11 @@ class ScatterFeature : Listener {
                         }
                     }
                     Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Locations found, now scattering players."))
-                    for ((index, player) in scatteringList.withIndex()) {
-                        if (!SpecFeature.instance.getSpecs().contains(player.name)) {
-                            Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                                player.teleport(scatteringHashmap[player])
-                                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Scattering &c${player.name}&8 (&c${index + 1}&8/&c${scatteringList.size}&8)"))
-                            }, 20L)
-                        }
+                    val players = ArrayList<Player>()
+                    for (player in Bukkit.getOnlinePlayers()) {
+                        players.add(player)
                     }
+                    FFAScatterTask(players, scatteringHashmap).runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 5L)
                     scattering = false
                     Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} &7Successfully scattered all players!"))
                     Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
@@ -124,20 +169,11 @@ class ScatterFeature : Listener {
                         }
                         }
                     Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Locations found, now scattering players."))
-                    for ((index, player) in Bukkit.getOnlinePlayers().withIndex()) {
-                        if (!SpecFeature.instance.getSpecs().contains(player.name)) {
-                            Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                                val team = TeamsFeature.manager.getTeam(player)
-                                if (team == null) {
-                                    player.teleport(solosLocations[player])
-                                    Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Scattering solo &c${player.name}&8 (&c${index + 1}&8/&c${Bukkit.getOnlinePlayers().size}&8)"))
-                                } else {
-                                    player.teleport(teamLocations[team])
-                                    Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Scattering &c${team.name}&7 teammate &c${player.name}&8 (&c${index + 1}&8/&c${Bukkit.getOnlinePlayers().size}&8)"))
-                                }
-                            }, 20L)
-                        }
+                    val players = ArrayList<Player>()
+                    for (player in Bukkit.getOnlinePlayers()) {
+                        players.add(player)
                     }
+                    TeamScatterTask(players, solosLocations, teamLocations).runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 5L)
                     scattering = false
                     Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} &7Successfully scattered all players!"))
                     Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {

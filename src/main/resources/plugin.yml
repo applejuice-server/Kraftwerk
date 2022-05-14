@@ -79,14 +79,6 @@ commands:
     aliases:
       - w
     description: Main command for the world manager.
-  scatter:
-    aliases:
-      - sct
-      - sca
-      - sctter
-      - spread
-      - scat
-    description: Randomly scatter players across a world.
   clearchat:
     aliases:
       - cc
@@ -129,6 +121,12 @@ commands:
   latescatter:
     aliases:
       - ls
+      - sct
+      - sca
+      - sctter
+      - spread
+      - scat
+      - scatter
     description: Latescatters the provided player.
   matchpost:
     aliases:
