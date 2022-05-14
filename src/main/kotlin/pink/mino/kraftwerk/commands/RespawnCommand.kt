@@ -1,5 +1,6 @@
 package pink.mino.kraftwerk.commands
 
+import me.lucko.helper.utils.Log
 import org.bukkit.*
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
@@ -53,7 +54,7 @@ class RespawnFeature : Listener {
         if (player.inventory.leggings != null) leggings[player.uniqueId] = player.inventory.leggings
         if (player.inventory.boots != null) boots[player.uniqueId] = player.inventory.boots
         respawnablePlayers.add(player)
-        print("Saved ${player.name}'s death.")
+        Log.info("Saved ${player.name}'s death.")
     }
 }
 

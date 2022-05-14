@@ -77,16 +77,16 @@ class StatsPlayer(val player: OfflinePlayer) : Listener {
     }
 
     fun saveAll() {
-        this.save("kills")
-        this.save("wins")
-        this.save("deaths")
-        this.save("games_played")
-        this.save("diamonds_mined")
-        this.save("gold_mined")
-        this.save("iron_mined")
-        this.save("gapples_eaten")
-        this.save("times_crafted")
-        this.save("times_enchanted")
+        if (this.kills != 0) this.save("kills")
+        if (this.wins != 0) this.save("wins")
+        if (this.deaths != 0) this.save("deaths")
+        if (this.gamesPlayed != 0) this.save("games_played")
+        if (this.diamondsMined != 0) this.save("diamonds_mined")
+        if (this.goldMined != 0) this.save("gold_mined")
+        if (this.ironMined != 0) this.save("iron_mined")
+        if (this.gapplesEaten != 0) this.save("gapples_eaten")
+        if (this.timesCrafted != 0) this.save("times_crafted")
+        if (this.timesEnchanted != 0) this.save("times_enchanted")
     }
 
     fun save(obj: String) = try {
