@@ -5,6 +5,7 @@ import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
+import pink.mino.kraftwerk.features.SpecFeature
 import pink.mino.kraftwerk.utils.Chat
 
 class GamemodeCommand : CommandExecutor {
@@ -18,6 +19,10 @@ class GamemodeCommand : CommandExecutor {
         }
         if (sender !is Player) {
             sender.sendMessage("You can't use this command as you technically aren't a player.")
+            return false
+        }
+        if (SpecFeature.instance.isSpec(sender)) {
+            Chat.sendMessage(sender, "${Chat.prefix} &cYou can't use this command while spectating.")
             return false
         }
 

@@ -2,7 +2,6 @@ package pink.mino.kraftwerk.listeners
 import net.citizensnpcs.api.CitizensAPI
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
-import org.bukkit.GameMode
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -11,7 +10,6 @@ import org.bukkit.plugin.java.JavaPlugin
 import pink.mino.kraftwerk.Kraftwerk
 import pink.mino.kraftwerk.features.CombatLogFeature
 import pink.mino.kraftwerk.features.SettingsFeature
-import pink.mino.kraftwerk.features.SpecFeature
 import pink.mino.kraftwerk.features.TeamsFeature
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GameState
@@ -54,24 +52,9 @@ class PlayerDeathListener : Listener {
                 Scoreboard.deleteScore(Chat.colored("${Chat.dash} ${color}${player.name}"))
                 if (kills > 0) Scoreboard.setScore(Chat.colored("${Chat.dash} ${color}&m${player.name}"), kills)
                 CombatLogFeature.instance.removeCombatLog(player.name)
-                if (player.hasPermission("uhc.staff")) {
-                    Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                        SpecFeature.instance.spec(player)
-                        Chat.sendMessage(
-                            player,
-                            "${Chat.prefix} You've been sent into spectator mode as you are a staff member."
-                        )
-                        player.spigot().respawn()
-                    }, 20L)
-                } else {
+                if (!player.hasPermission("uhc.staff")) {
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wl remove ${player.name}")
                 }
-                player.gameMode = GameMode.SPECTATOR
-                Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                    if (!player.hasPermission("uhc.staff")) {
-                        player.kickPlayer(Chat.colored("&7Thank you for playing!\n\n&7Join our discord for more games: &cdsc.gg/apple-juice"))
-                    }
-                }, 1200L)
             }
             Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
                 player.spigot().respawn()

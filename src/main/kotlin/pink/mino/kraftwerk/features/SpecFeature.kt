@@ -1,6 +1,11 @@
 package pink.mino.kraftwerk.features
 
+import com.comphenix.protocol.PacketType
+import com.comphenix.protocol.events.ListenerPriority
+import com.comphenix.protocol.events.PacketAdapter
+import com.comphenix.protocol.events.PacketEvent
 import com.lunarclient.bukkitapi.LunarClientAPI
+import me.lucko.helper.Schedulers
 import net.md_5.bungee.api.chat.ClickEvent
 import net.md_5.bungee.api.chat.TextComponent
 import org.bukkit.*
@@ -12,17 +17,92 @@ import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
+import org.bukkit.event.block.Action
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.entity.EntityDamageEvent
+import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.player.*
 import org.bukkit.inventory.ItemStack
-import org.bukkit.inventory.meta.SkullMeta
 import org.bukkit.plugin.java.JavaPlugin
+import org.bukkit.scheduler.BukkitRunnable
 import pink.mino.kraftwerk.Kraftwerk
 import pink.mino.kraftwerk.utils.*
 import java.util.*
+import kotlin.math.floor
+
+class InvSeeFeature(private val player: Player, private val target: Player, ) : BukkitRunnable() {
+    override fun run() {
+        if (!target.isOnline) {
+            cancel()
+            return
+        }
+        if (player.openInventory.title != "${target.name}'s Inventory") {
+            cancel()
+            return
+        }
+        for ((index, item) in target.inventory.contents.withIndex()) {
+            if (item == null) {
+                player.openInventory.topInventory.setItem(index, ItemStack(Material.AIR))
+            } else {
+                player.openInventory.topInventory.setItem(index, item)
+            }
+        }
+
+        if (target.inventory.helmet != null) player.openInventory.topInventory.setItem(38, target.inventory.helmet)
+        if (target.inventory.chestplate != null) player.openInventory.topInventory.setItem(39, target.inventory.chestplate)
+        if (target.inventory.leggings != null) player.openInventory.topInventory.setItem(41, target.inventory.leggings)
+        if (target.inventory.boots != null) player.openInventory.topInventory.setItem(42, target.inventory.boots)
+    }
+}
+
+class SpecClickFeature : PacketAdapter(JavaPlugin.getPlugin(Kraftwerk::class.java), ListenerPriority.MONITOR, PacketType.Play.Client.WINDOW_CLICK) {
+    override fun onPacketReceiving(e: PacketEvent) {
+        if (e.packetType.equals(PacketType.Play.Client.WINDOW_CLICK)) {
+            val packet = e.packet
+            if (SpecFeature.instance.isSpec(e.player)) {
+                val p = e.player
+                when (packet.integers.read(1)) {
+                    19 -> {
+                        p.teleport(Location(p.world, 0.0, 100.0, 0.0))
+                        Chat.sendMessage(p, "${Chat.prefix} You have been teleported to 0,0.")
+                    }
+                    21 -> {
+                        Bukkit.dispatchCommand(p, "nearby")
+                    }
+                    23 -> {
+                        val list = ArrayList<Player>()
+                        for (player in Bukkit.getOnlinePlayers()) {
+                            if (player != p && !SpecFeature.instance.isSpec(player)) {
+                                list.add(player)
+                            }
+                        }
+                        if (list.isEmpty()) {
+                            Chat.sendMessage(p, "${Chat.prefix} There are no players nearby.")
+                            return
+                        }
+                        Chat.sendMessage(p, Chat.line)
+                        Chat.sendCenteredMessage(p, "&c&lPlayer Locations")
+                        for (player in list) {
+                            Chat.sendMessage(
+                                p,
+                                "${Chat.prefix} &7${player.name} &7is at &b${floor(player.location.x)}, &7${floor(player.location.y)}, &7${
+                                    floor(player.location.z)
+                                }"
+                            )
+                        }
+                        Chat.sendMessage(p, Chat.line)
+                    }
+                    25 -> {
+                        Bukkit.dispatchCommand(p, "respawn")
+                    }
+                    else -> { return }
+                }
+            }
+        }
+    }
+}
 
 
 class SpecFeature : Listener {
@@ -47,7 +127,7 @@ class SpecFeature : Listener {
         }
         p.inventory.clear()
         p.inventory.armorContents = null
-        p.gameMode = GameMode.CREATIVE
+        p.gameMode = GameMode.SPECTATOR
 
         var list = SettingsFeature.instance.data!!.getStringList("game.list")
         if (list.contains(p.name)) list.remove(p.name)
@@ -56,42 +136,34 @@ class SpecFeature : Listener {
         if (!list.contains(p.name)) list.add(p.name)
         SettingsFeature.instance.data!!.set("game.specs", list)
         SettingsFeature.instance.saveData()
-        updateVisibility()
-        specChat("&f${p.name}&7 has entered spectator mode.")
-        Chat.sendMessage(p, "${Chat.prefix} You are now in spectator mode.")
 
-        val randomTeleport = ItemStack(Material.SKULL_ITEM, 1, 3)
-        val randomTeleportMeta = randomTeleport.itemMeta as SkullMeta
-        randomTeleportMeta.owner = p.name
-        randomTeleportMeta.displayName = Chat.colored("&cRandom Teleport")
-        randomTeleportMeta.lore = listOf(
-            Chat.colored("&7Right-click to randomly teleport to a player.")
-        )
-        randomTeleport.itemMeta = randomTeleportMeta
-        p.inventory.setItem(0, randomTeleport)
+        specChat("&f${p.name}&7 has entered spectator mode.", p)
 
-        val teleportTo00 = ItemStack(Material.GOLDEN_APPLE)
-        val teleportTo00Meta = teleportTo00.itemMeta
-        teleportTo00Meta.displayName = Chat.colored("&cTeleport to 0,0")
-        teleportTo00Meta.lore = listOf(
-            Chat.colored("&7Right-click to teleport to &c0,0&7.")
-        )
-        teleportTo00.itemMeta = teleportTo00Meta
-        p.inventory.setItem(8, teleportTo00)
-
-        val invSee = ItemStack(Material.BOOK)
-        val invSeeMeta = invSee.itemMeta
-        invSeeMeta.displayName = Chat.colored("&cInventory View")
-        invSeeMeta.lore = listOf(
-            Chat.colored("&7Right-click on a player to view someone's inventory.")
-        )
-        invSee.itemMeta = invSeeMeta
-        p.inventory.setItem(1, invSee)
-        val respawnPlayers = ItemBuilder(Material.BONE)
-            .name("&cRespawn Players")
-            .addLore("&7Right-click to respawn players.")
+        val teleportTo00 = ItemBuilder(Material.EYE_OF_ENDER)
+            .name("&cTeleport to 0,0")
+            .addLore("&7Click the item to teleport yourself to &c0,0&7.")
             .make()
-        p.inventory.setItem(2, respawnPlayers)
+        val nearby = ItemBuilder(Material.COMPASS)
+            .name("&cNearby Players")
+            .addLore("&7Click the item to see a list of nearby players.")
+            .make()
+        val locations = ItemBuilder(Material.MAP)
+            .name("&cPlayer Locations")
+            .addLore("&7Click the item to see a list of player locations.")
+            .make()
+        val respawn = ItemBuilder(Material.BONE)
+            .name("&cRespawn Players")
+            .addLore("&7Click to view a list of dead players that can be respawned.")
+            .make()
+
+        p.inventory.setItem(19, teleportTo00)
+        p.inventory.setItem(21, nearby)
+        p.inventory.setItem(23, locations)
+        p.inventory.setItem(25, respawn)
+
+        Chat.sendMessage(p, "${Chat.prefix} You are now in spectator mode.")
+        Chat.sendMessage(p, "${Chat.dash} &7Your &bLunar Client&7 staff modules have been enabled.")
+
         if (LunarClientAPI.getInstance().isRunningLunarClient(p)) {
             LunarClientAPI.getInstance().giveAllStaffModules(p)
         }
@@ -109,7 +181,6 @@ class SpecFeature : Listener {
         }
         p.inventory.clear()
         p.inventory.armorContents = null
-        p.gameMode = GameMode.CREATIVE
 
         SpawnFeature.instance.send(p)
         var list = SettingsFeature.instance.data!!.getStringList("game.list")
@@ -119,44 +190,69 @@ class SpecFeature : Listener {
         list.remove(p.name)
         SettingsFeature.instance.data!!.set("game.specs", list)
         SettingsFeature.instance.saveData()
-        updateVisibility()
+
         if (LunarClientAPI.getInstance().isRunningLunarClient(p)) {
             LunarClientAPI.getInstance().disableAllStaffModules(p)
+            Chat.sendMessage(p, "${Chat.dash} &7Your &bLunar Client&7 staff modules have been disabled.")
         }
-        specChat("&f${p.name}&7 has left spectator mode.")
+        specChat("&f${p.name}&7 has left spectator mode.", p)
         Chat.sendMessage(p, "${Chat.prefix} You are no longer in spectator mode.")
-    }
-
-    fun updateVisibility() {
-        for (player in Bukkit.getOnlinePlayers()) {
-            if (getSpecs().contains(player.name)) {
-                for (p2 in Bukkit.getOnlinePlayers()) {
-                    if (getSpecs().contains(p2.name)) {
-                        player.showPlayer(p2)
-                    } else {
-                        player.showPlayer(p2)
-                    }
-                }
-            } else {
-                for (p2 in Bukkit.getOnlinePlayers()) {
-                    if (getSpecs().contains(p2.name)) {
-                        player.hidePlayer(p2)
-                    } else {
-                        player.showPlayer(p2)
-                    }
-                }
-            }
-        }
     }
 
     fun getSpecs(): List<String> {
         return SettingsFeature.instance.data!!.getStringList("game.specs")
     }
 
-    fun specChat(chat: String) {
+    fun isSpec(p: Player): Boolean {
+        return getSpecs().contains(p.name)
+    }
+
+    fun specChat(chat: String, p: Player? = null) {
         for (player in Bukkit.getOnlinePlayers()) {
             if (getSpecs().contains(player.name)) {
+                if (p != null && p == player) {
+                    continue
+                }
                 Chat.sendMessage(player, "${Chat.prefix} $chat")
+            }
+        }
+    }
+
+    @EventHandler
+    fun onInventoryClick(e: InventoryClickEvent) {
+        val p = e.whoClicked as Player
+        if (isSpec(p)) {
+            e.isCancelled = true
+            if (e.currentItem != null && e.currentItem.type != Material.AIR) {
+                when (e.currentItem.itemMeta.displayName) {
+                    "&cTeleport to 0,0" -> {
+                        p.teleport(Location(p.world, 0.0, 100.0, 0.0))
+                        Chat.sendMessage(p, "${Chat.prefix} You have been teleported to 0,0.")
+                    }
+                    "&cNearby Players" -> {
+                        Bukkit.dispatchCommand(p, "nearby")
+                    }
+                    "&cPlayer Locations" -> {
+                        val list = ArrayList<Player>()
+                        for (player in Bukkit.getOnlinePlayers()) {
+                            if (player != p && !isSpec(player)) {
+                                list.add(player)
+                            }
+                        }
+                        if (list.isEmpty()) {
+                            Chat.sendMessage(p, "${Chat.prefix} There are no players online.")
+                        }
+                        Chat.sendMessage(p, Chat.line)
+                        Chat.sendCenteredMessage(p, "&c&lPlayer Locations")
+                        for (player in list) {
+                            Chat.sendMessage(p, "${Chat.prefix} &7${player.name} &7is at &b${floor(player.location.x)}, &7${floor(player.location.y)}, &7${floor(player.location.z)}")
+                        }
+                        Chat.sendMessage(p, Chat.line)
+                    }
+                    "&cRespawn Players" -> {
+                        Bukkit.dispatchCommand(p, "respawn")
+                    }
+                }
             }
         }
     }
@@ -164,8 +260,9 @@ class SpecFeature : Listener {
     @EventHandler
     fun onPlayerInteract(e: PlayerInteractEvent) {
         if (getSpecs().contains(e.player.name)) {
-            if (e.item !== null) {
-                if (e.item.itemMeta.displayName == Chat.colored("&cRandom Teleport")) {
+            if (e.player.gameMode == GameMode.SPECTATOR) {
+                if (e.action == Action.LEFT_CLICK_AIR || e.action == Action.LEFT_CLICK_BLOCK) {
+                    e.isCancelled = true
                     val list = ArrayList<Player>()
                     for (player in Bukkit.getOnlinePlayers()) {
                         if (!getSpecs().contains(player.name)) list.add(player)
@@ -177,17 +274,6 @@ class SpecFeature : Listener {
                     val target = list.random()
                     e.player.teleport(target.location)
                     Chat.sendMessage(e.player, "${Chat.prefix} Teleported to &f${target.name}&7!")
-                } else if (e.item.itemMeta.displayName == Chat.colored("&cTeleport to 0,0")) {
-                    if (GameState.currentState == GameState.INGAME) {
-                        val world = Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world"))
-                        val location = Location(world, 0.0, world.getHighestBlockAt(0, 0).location.y + 5.0, 0.0)
-                        e.player.teleport(location)
-                        Chat.sendMessage(e.player, "${Chat.prefix} Teleported to &c0,0&7.")
-                    } else {
-                        Chat.sendMessage(e.player, "&cYou can't use this feature yet.")
-                    }
-                } else if (e.item.itemMeta.displayName == Chat.colored("&cRespawn Players")) {
-                    Bukkit.dispatchCommand(e.player, "respawn")
                 }
             }
         }
@@ -197,38 +283,14 @@ class SpecFeature : Listener {
     fun onPlayerInteractWithPlayer(e: PlayerInteractEntityEvent) {
         if (e.player.itemInHand == null) return
         if (getSpecs().contains(e.player.name)) {
-            if (e.player.itemInHand.itemMeta.displayName == Chat.colored("&cInventory View")) {
-                if (e.rightClicked.type == EntityType.PLAYER) {
-                    val gui = GuiBuilder().rows(5).name(ChatColor.translateAlternateColorCodes('&', "&cInventory Viewer"))
-                    val player = (e.rightClicked as Player)
-                    for ((index, item) in player.inventory.contents.withIndex()) {
-                        if (item == null) {
-                            gui.item(index, ItemStack(Material.AIR)).onClick runnable@ {
-                                it.isCancelled = true
-                            }
-                        } else {
-                            gui.item(index, item).onClick runnable@ {
-                                it.isCancelled = true
-                            }
-                        }
-                    }
-                    if (player.inventory.helmet != null) gui.item(38, player.inventory.helmet).onClick runnable@ {
-                        it.isCancelled = true
-                    }
-                    if (player.inventory.chestplate != null) gui.item(39, player.inventory.chestplate).onClick runnable@ {
-                        it.isCancelled = true
-                    }
-                    if (player.inventory.leggings != null) gui.item(41, player.inventory.leggings).onClick runnable@ {
-                        it.isCancelled = true
-                    }
-                    if (player.inventory.boots != null) gui.item(42, player.inventory.boots).onClick runnable@ {
-                        it.isCancelled = true
-                    }
-                    e.player.openInventory(gui.make())
-                } else {
-                    Chat.sendMessage(e.player, "&cYou aren't right clicking anyone.")
-                    return
-                }
+            if (e.rightClicked.type == EntityType.PLAYER) {
+                val player = (e.rightClicked as Player)
+                val gui = GuiBuilder().rows(5).name(ChatColor.translateAlternateColorCodes('&', "${player.name}'s Inventory"))
+                e.player.openInventory(gui.make())
+                InvSeeFeature(e.player, player).runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0, 20L)
+            } else {
+                Chat.sendMessage(e.player, "&cYou aren't right clicking anyone.")
+                return
             }
         }
     }
@@ -236,15 +298,10 @@ class SpecFeature : Listener {
     @EventHandler
     fun onPlayerJoin(e: PlayerJoinEvent) {
         if (getSpecs().contains(e.player.name)) {
-            if (GameState.currentState == GameState.INGAME || GameState.currentState == GameState.WAITING) {
+            Schedulers.sync().runLater(runnable@ {
                 spec(e.player)
-                Chat.sendMessage(e.player, "${Chat.prefix} You are still currently in spectator mode.")
-            } else if (GameState.currentState == GameState.LOBBY) {
-                unspec(e.player)
-                Chat.sendMessage(e.player, "${Chat.prefix} You've been automatically placed out of spectator mode.")
-            }
+            }, 5L)
         }
-        updateVisibility()
     }
 
     @EventHandler
