@@ -7,7 +7,6 @@ import net.md_5.bungee.api.chat.ClickEvent
 import net.md_5.bungee.api.chat.TextComponent
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
-import org.bukkit.OfflinePlayer
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
@@ -29,6 +28,12 @@ import java.util.function.Consumer
 
 class SendTeamView(val team: Team) : BukkitRunnable() {
     override fun run() {
+        if (!TeamsFeature.manager.getTeams().contains(team)) {
+            cancel()
+        }
+        if (team == null) {
+            cancel()
+        }
         if (team.size == 0) {
             cancel()
         }
@@ -136,68 +141,60 @@ class TeamCommand : CommandExecutor {
         } else if (args[0] == "create") {
             val player = sender as Player
             if (player.scoreboard.getPlayerTeam(player) != null) {
-                Chat.sendMessage(player, "&cYou are already on a team.")
+                Chat.sendMessage(player, "&cYou're already on a team.")
                 return true
             }
             if (SettingsFeature.instance.data!!.getString("game.ffa").toBoolean()) {
-                Chat.sendMessage(player, "&cYou can't use this command at the moment.")
+                Chat.sendMessage(player, "&cTeam management is disabled at the moment.")
                 return true
             }
             if (GameState.valueOf(SettingsFeature.instance.data!!.getString("game.state")) != GameState.LOBBY) {
-                Chat.sendMessage(player, "&cYou can't use this command at the moment.")
+                Chat.sendMessage(player, "&cYou can't manage teams while the game is running!")
                 return true
             }
 
-            for (team in TeamsFeature.manager.getTeams()) {
-                if (team.size == 0) {
-                    team.addPlayer(player)
-                    SendTeamView(team).runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 20L)
-                    Chat.sendMessage(player, "${Chat.prefix} Team created! Use ${ChatColor.WHITE}/team invite <player>${ChatColor.GRAY} to invite a player.")
-                    return true
-                }
-            }
+            val team = TeamsFeature.manager.createTeam(player)
+
+            SendTeamView(team).runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 20L)
+            Chat.sendMessage(sender, "${Chat.prefix} Successfully created &f${team.displayName}&7!")
         } else if (args[0] == "invite") {
             val player = sender as Player
-            val oPlayer = player as OfflinePlayer
-            var team = player.scoreboard.getPlayerTeam(oPlayer)
+            var team = TeamsFeature.manager.getTeam(player)
             if (SettingsFeature.instance.data!!.getString("game.ffa").toBoolean()) {
-                Chat.sendMessage(player, "&cYou can't use this command at the moment.")
+                Chat.sendMessage(player, "${Chat.prefix} Team management is disabled at the moment.")
                 return true
             }
             if (args.size == 1) {
-                Chat.sendMessage(player, "&cInvalid usage: /team invite <player>")
+                Chat.sendMessage(player, "${Chat.prefix} Usage: &f/team invite <player>")
                 return false
             }
             if (team == null) {
-                Bukkit.dispatchCommand(player, "team create")
-                team = player.scoreboard.getPlayerTeam(oPlayer)
+                team = TeamsFeature.manager.createTeam(player)
+                SendTeamView(team).runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 20L)
             }
             if (team.size >= SettingsFeature.instance.data!!.getString("game.teamSize").toInt()) {
-                player.sendMessage("${ChatColor.RED}Your team has reached the max teamsize.")
+                Chat.sendMessage(player, "&cYour team is too full to invite anyone!")
                 return true
             }
             val target = Bukkit.getServer().getPlayer(args[1])
             if (target == null) {
-                player.sendMessage("${ChatColor.RED}That player is not online at the moment.")
+                Chat.sendMessage(player, "&cThat player is not online!")
                 return false
             }
-            val oTarget = target as OfflinePlayer
-            val team1 = player.scoreboard.getPlayerTeam(oTarget)
+            val targetTeam = TeamsFeature.manager.getTeam(target)
 
-            if (team1 != null) {
-                player.sendMessage("${ChatColor.RED}That player is already on a team.")
+            if (targetTeam != null) {
+                Chat.sendMessage(player, "&cThat player is already on a team.")
                 return true
             }
             if (target == player) {
-                player.sendMessage("${ChatColor.RED}You can't send a invite request to yourself.")
+                Chat.sendMessage(player, "&cYou can't send a invite request to yourself.")
                 return true
             }
 
             for (players in team.players) {
                 if (players is Player) {
-                    Chat.sendMessage(players, Chat.line)
                     Chat.sendMessage(player, "${Chat.prefix} ${ChatColor.WHITE}${target.name}${ChatColor.GRAY} was invited to your team.")
-                    Chat.sendMessage(players, Chat.line)
                 }
             }
 
@@ -252,17 +249,14 @@ class TeamCommand : CommandExecutor {
             }
             if (invites.containsKey(target) && invites[target]!!.contains(player)) {
                 if (team.size >= SettingsFeature.instance.data!!.getString("game.teamSize").toInt()) {
-                    player.sendMessage("${ChatColor.RED}That team has reached the max teamsize.")
+                    player.sendMessage("${ChatColor.RED}That team is too full to join!")
                     return false
                 }
-
-                Chat.sendMessage(player, "${Chat.prefix} Request accepted.")
+                Chat.sendMessage(player, "${Chat.prefix} &7You have joined &f${team.displayName}&7!")
                 team.addPlayer(player)
                 for (players in team.players) {
-                    if (players is Player) {
-                        players.sendMessage(Chat.line)
+                    if (players is Player && players != player) {
                         Chat.sendMessage(players, "${Chat.prefix} ${ChatColor.WHITE}${player.name}${ChatColor.GRAY} joined your team.")
-                        players.sendMessage(Chat.line)
                     }
                 }
 
@@ -303,11 +297,7 @@ class TeamCommand : CommandExecutor {
                 }
             }
             val player = sender as Player
-            for (team in TeamsFeature.manager.getTeams()) {
-                for (p in team.players) {
-                    team.removePlayer(p)
-                }
-            }
+            TeamsFeature.manager.resetTeams()
             Chat.sendMessage(player, "${Chat.prefix} You've reset all teams.")
         } else if (args[0] == "leave") {
             val player = sender as Player
@@ -331,10 +321,11 @@ class TeamCommand : CommandExecutor {
             Chat.sendMessage(player, "${Chat.prefix} You left your team.")
             for (players in team.players) {
                 if (players is Player) {
-                    players.sendMessage(Chat.line)
                     Chat.sendMessage(players, "${Chat.prefix}${ChatColor.WHITE}${player.name}${ChatColor.GRAY} left your team.")
-                    players.sendMessage(Chat.line)
                 }
+            }
+            if (team.players.size == 0) {
+                TeamsFeature.manager.deleteTeam(team)
             }
         } else if (args[0] == "list") {
             Chat.sendMessage(sender, Chat.line)
@@ -348,7 +339,7 @@ class TeamCommand : CommandExecutor {
                     for (player in team.players) {
                         list.add(player.name)
                     }
-                    Chat.sendMessage(sender, "${team.prefix}${team.name} &8(&f${list.size}&8) ${Chat.dash} &f${list.joinToString(", ")}")
+                    Chat.sendMessage(sender, "${team.displayName} &8(&f${list.size}&8) ${Chat.dash} &f${list.joinToString(", ")}")
                 }
             }
             if (teamList.isEmpty()) {
@@ -511,6 +502,7 @@ class TeamCommand : CommandExecutor {
                 return false
             }
             for (player in Bukkit.getOnlinePlayers()) {
+                if (SpecFeature.instance.isSpec(player)) continue
                 val team = TeamsFeature.manager.getTeam(player)
                 if (team == null) {
                     player.kickPlayer(Chat.colored("&cYou've been kicked as you are not on a team."))
@@ -527,11 +519,7 @@ class TeamCommand : CommandExecutor {
                     return false
                 }
             }
-            for (team in TeamsFeature.manager.getTeams()) {
-                for (p in team.players) {
-                    team.removePlayer(p)
-                }
-            }
+            TeamsFeature.manager.resetTeams()
             Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Randomizing all players into teams of &c${SettingsFeature.instance.data!!.getInt("game.teamSize")}&7."))
             val valid: ArrayList<Player> = ArrayList()
             for (player in Bukkit.getOnlinePlayers()) {
@@ -560,11 +548,7 @@ class TeamCommand : CommandExecutor {
                     return false
                 }
             }
-            for (team in TeamsFeature.manager.getTeams()) {
-                for (p in team.players) {
-                    team.removePlayer(p)
-                }
-            }
+            TeamsFeature.manager.resetTeams()
             Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Randomizing all players into &cRed&7 vs &9Blue&7."))
             val valid: ArrayList<Player> = ArrayList()
             for (player in Bukkit.getOnlinePlayers()) {

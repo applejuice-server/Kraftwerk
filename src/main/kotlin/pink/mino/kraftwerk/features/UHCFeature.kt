@@ -221,12 +221,8 @@ class UHCFeature : Listener {
             for (player in Bukkit.getOnlinePlayers()) {
                 if (!SpecFeature.instance.getSpecs().contains(player.name)) {
                     if (TeamsFeature.manager.getTeam(player) == null) {
-                        for (team in TeamsFeature.manager.getTeams()) {
-                            if (team.size == 0) {
-                                team.addPlayer(player)
-                                SendTeamView(team).runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 20L)
-                            }
-                        }
+                        val team = TeamsFeature.manager.createTeam(player)
+                        SendTeamView(team).runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 20L)
                     }
                 }
             }

@@ -11,7 +11,6 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
-import org.bukkit.scoreboard.Team
 import pink.mino.kraftwerk.Kraftwerk
 import pink.mino.kraftwerk.features.ScatterFeature
 import pink.mino.kraftwerk.features.SettingsFeature
@@ -20,7 +19,6 @@ import pink.mino.kraftwerk.scenarios.ScenarioHandler
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GameState
 import pink.mino.kraftwerk.utils.StatsHandler
-import java.util.*
 
 class LatescatterCommand : CommandExecutor {
     override fun onCommand(
@@ -84,16 +82,9 @@ class LatescatterCommand : CommandExecutor {
             player = Bukkit.getPlayer(args[0])
             teammate = Bukkit.getPlayer(args[1])
             if (TeamsFeature.manager.getTeam(teammate) == null) {
-                val oTeams = ArrayList<Team>()
-                for (team in TeamsFeature.manager.getTeams()) {
-                    if (team.size == 0) {
-                        oTeams.add(team)
-                    }
-                }
-                val det = Random().nextInt(oTeams.size)
-                SendTeamView(oTeams[det]).runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 20L)
-                oTeams[det].addPlayer(teammate)
-                oTeams[det].addPlayer(player)
+                val team = TeamsFeature.manager.createTeam(player)
+                team.addPlayer(teammate)
+                SendTeamView(team).runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 20L)
             } else {
                 val team = TeamsFeature.manager.getTeam(teammate)
                 team!!.addPlayer(player)

@@ -1,14 +1,17 @@
 package pink.mino.kraftwerk.features
 
+import me.lucko.helper.utils.Log
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.entity.Player
 import org.bukkit.scoreboard.Scoreboard
 import org.bukkit.scoreboard.Team
 
+
 class TeamsFeature private constructor() {
-    private val sb: Scoreboard = Bukkit.getScoreboardManager().mainScoreboard
+    val sb: Scoreboard = Bukkit.getScoreboardManager().mainScoreboard
     private val teams = ArrayList<Team>()
+    val colors = ArrayList<String>()
 
     /**
      * Gets a list of all teams.
@@ -38,6 +41,45 @@ class TeamsFeature private constructor() {
         team.addPlayer(player)
     }
 
+    fun deleteTeam(team: Team) {
+        Log.info("Automatically deleted ${team.name} because it was empty.")
+        teams.remove(team)
+        team.unregister()
+    }
+
+    fun resetTeams() {
+        for (team in teams) {
+            team.unregister()
+        }
+        teams.clear()
+    }
+
+    fun createTeam(player: Player): Team {
+        // Create a new team with name.
+        val name = "UHC${teams.size + 1}"
+        val team = sb.registerNewTeam(name)
+
+        // Remove randomly selected color.
+        if (colors.isEmpty()) setupColors()
+        val color = colors.random()
+        colors.remove(color)
+
+        // Set up color & misc.
+        team.prefix = color
+        team.suffix = "§r"
+        team.displayName = color + "Team #${teams.size + 1}"
+        team.setAllowFriendlyFire(true)
+        team.setCanSeeFriendlyInvisibles(true)
+
+        // Add player.
+        team.addPlayer(player)
+
+        // Add to list.
+        teams.add(team)
+        Log.info("Created ${team.name} for ${player.name}.")
+        return team
+    }
+
     /**
      * Gets the team of a player.
      * @param player the player wanting.
@@ -50,42 +92,30 @@ class TeamsFeature private constructor() {
     /**
      * Sets up all the teams.
      */
-    fun setupTeams() {
-        val list = ArrayList<String>()
+    fun setupColors() {
         for (color in ChatColor.values()) {
-            if (color === ChatColor.RESET || color === ChatColor.MAGIC || color === ChatColor.BOLD || color === ChatColor.ITALIC || color === ChatColor.UNDERLINE || color === ChatColor.STRIKETHROUGH) {
-                continue
-            }
-            list.add(color.toString())
+            if (color == ChatColor.MAGIC) continue
+            if (color == ChatColor.RESET) continue
+            if (color == ChatColor.STRIKETHROUGH) continue
+            if (color == ChatColor.UNDERLINE) continue
+            if (color == ChatColor.BOLD) continue
+            if (color == ChatColor.ITALIC) continue
+            colors.add(color.toString())
         }
-        val list2 = ArrayList<String>()
-        for (li in list) {
-            list2.add(li + ChatColor.BOLD)
-            list2.add(li + ChatColor.ITALIC)
-            list2.add(li + ChatColor.UNDERLINE)
-            list2.add(li + ChatColor.BOLD + ChatColor.ITALIC)
-            list2.add(li + ChatColor.BOLD + ChatColor.ITALIC + ChatColor.UNDERLINE)
-            list2.add(li + ChatColor.BOLD + ChatColor.UNDERLINE)
-            list2.add(li + ChatColor.ITALIC + ChatColor.UNDERLINE)
+        colors.shuffle()
+        val li = ArrayList<String>()
+        for (color in colors) {
+            li.add(color + ChatColor.ITALIC)
+            li.add(color + ChatColor.BOLD)
+            li.add(color + ChatColor.UNDERLINE)
+            li.add(color + ChatColor.ITALIC + ChatColor.BOLD)
+            li.add(color + ChatColor.ITALIC + ChatColor.UNDERLINE)
+            li.add(color + ChatColor.ITALIC + ChatColor.BOLD + ChatColor.UNDERLINE)
+            li.add(color + ChatColor.BOLD + ChatColor.UNDERLINE)
         }
-        list.remove(ChatColor.WHITE.toString())
-        list.remove(ChatColor.GRAY.toString() + ChatColor.ITALIC.toString())
-        list.addAll(list2)
-        val spec: Team = if (sb.getTeam("spec") == null) sb.registerNewTeam("spec") else sb.getTeam("spec")
-        spec.displayName = "spec"
-        spec.prefix = "§7§o"
-        spec.suffix = "§r"
-        spec.setAllowFriendlyFire(false)
-        spec.setCanSeeFriendlyInvisibles(true)
-        for (i in list.indices) {
-            val team: Team = if (sb.getTeam("UHC" + (i + 1)) == null) sb.registerNewTeam("UHC" + (i + 1)) else sb.getTeam("UHC" + (i + 1))
-            team.displayName = "UHC" + (i + 1)
-            team.prefix = list[i]
-            team.suffix = "§r"
-            team.setAllowFriendlyFire(true)
-            team.setCanSeeFriendlyInvisibles(true)
-            teams.add(team)
-        }
+        li.shuffle()
+        colors.addAll(li)
+        Log.info("Setup teams colors.")
     }
 
     companion object {
