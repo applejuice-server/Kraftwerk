@@ -20,6 +20,8 @@ import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.ItemBuilder
 
 class SpawnFeature : Listener {
+    val spawnLocation = Location(Bukkit.getWorld("Spawn"), -221.5, 95.0, -140.5)
+
     companion object {
         val instance = SpawnFeature()
     }
@@ -36,7 +38,7 @@ class SpawnFeature : Listener {
         }
         p.inventory.clear()
         p.inventory.armorContents = null
-        p.gameMode = GameMode.SURVIVAL
+        p.gameMode = GameMode.ADVENTURE
         p.exp = 0F
         p.level = 0
         val arenaSword = ItemBuilder(Material.IRON_SWORD)

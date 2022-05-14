@@ -73,7 +73,7 @@ class TabFeature : BukkitRunnable() {
         val header = ChatSerializer.a("{\"text\": \"${Chat.colored("\n&capple&ajuice")}\n${Chat.colored("&7TPS: ${checkTps(
             Math.round(tpsLast10Secs * 100.0) / 100.0
         )} &8| &7Ping: &f${checkPing(craftplayer.handle.ping)}")}ms\n\"}")
-        val footer = ChatSerializer.a("{\"text\": \"\n${Chat.colored(" &7Game: &f${SettingsFeature.instance.data!!.getString("game.host")}'s ${SettingsFeature.instance.data!!.getString("matchpost.team")} \n&7Scenarios: &f${scenarioTextWrap(scenarios.joinToString(", "), 40).joinToString("\n")} ")}\n\"}")
+        val footer = ChatSerializer.a("{\"text\": \"\n${Chat.colored(" &7Game: &f${SettingsFeature.instance.data!!.getString("game.host")}'s ${SettingsFeature.instance.data!!.getString("matchpost.team")} \n &7Scenarios: &f${scenarioTextWrap(scenarios.joinToString(", "), 40).joinToString("\n")} ")}\n\"}")
         val packet = PacketPlayOutPlayerListHeaderFooter()
         try {
             val headerField = packet.javaClass.getDeclaredField("a")
