@@ -64,12 +64,12 @@ class Kraftwerk : ExtendedJavaPlugin() {
     }
 
     override fun enable() {
-        this.provideService(ProfileRepository::class.java, ProfileService())
         /* Registering listeners */
         Bukkit.getServer().pluginManager.registerEvents(ServerListPingListener(), this)
         Bukkit.getServer().pluginManager.registerEvents(PlayerJoinListener(), this)
         Bukkit.getServer().pluginManager.registerEvents(PlayerQuitListener(), this)
         Bukkit.getServer().pluginManager.registerEvents(PlayerDeathListener(), this)
+        Bukkit.getServer().pluginManager.registerEvents(PlayerRespawnListener(), this)
         Bukkit.getServer().pluginManager.registerEvents(CommandListener(), this)
         Bukkit.getServer().pluginManager.registerEvents(ChatListener(), this)
         Bukkit.getServer().pluginManager.registerEvents(WorldInitializeListener(), this)
@@ -102,7 +102,6 @@ class Kraftwerk : ExtendedJavaPlugin() {
         getCommand("config").executor = ConfigCommand()
         getCommand("editconfig").executor = EditConfigCommand()
         getCommand("world").executor = WorldCommand()
-        getCommand("scatter").executor = ScatterCommand()
         getCommand("clearchat").executor = ClearChatCommand()
         getCommand("whitelist").executor = WhitelistCommand()
         getCommand("regenarena").executor = RegenArenaCommand()
@@ -169,11 +168,12 @@ class Kraftwerk : ExtendedJavaPlugin() {
 
         /* This just enables Hardcore Hearts */
         protocolManager?.addPacketListener(HardcoreHeartsFeature())
+        protocolManager!!.addPacketListener(SpecClickFeature())
         CustomPayloadFixerFeature(this)
 
         /* Sets up misc features */
         SettingsFeature.instance.setup(this)
-        TeamsFeature.manager.setupTeams()
+        TeamsFeature.manager.setupColors()
         Scoreboard.setup()
         if (Scoreboard.sb.getObjective("killboard") != null) {
             Scoreboard.kills!!.unregister()
@@ -185,6 +185,7 @@ class Kraftwerk : ExtendedJavaPlugin() {
 
         setupDataSource()
 
+        this.provideService(ProfileRepository::class.java, ProfileService())
         val provider = Bukkit.getServicesManager().getRegistration(
             Spark::class.java
         )
@@ -282,6 +283,9 @@ class Kraftwerk : ExtendedJavaPlugin() {
                     }
                 }
             }
+        }
+        for (team in TeamsFeature.manager.sb.teams) {
+            team.unregister()
         }
         Bukkit.getLogger().info("Kraftwerk disabled.")
     }
