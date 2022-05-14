@@ -16,13 +16,10 @@ class VoteTimer(private val vote: Vote) : BukkitRunnable() {
     override fun run() {
         timer -= 1
         if (timer == 0) {
-            if (vote.yes > vote.no) {
-                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} &aYes&7 wins with &a${vote.yes} yes(es)&7! &8| &7Question: &c${vote.question}"))
-            } else if (vote.no > vote.yes) {
-                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} &cNo&7 wins with &c${vote.no} no(s)&7! &8| &7Question: &c${vote.question}"))
-            } else {
-                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} &7It's a draw! &8| &7Question: &c${vote.question}"))
-            }
+            Bukkit.broadcastMessage(Chat.colored(Chat.line))
+            Bukkit.broadcastMessage(Chat.colored("&7Vote results: &a${vote.yes} yes(s) &7/ &c${vote.no} no(s)"))
+            Bukkit.broadcastMessage(Chat.colored("&7Question: &c${vote.question}"))
+            Bukkit.broadcastMessage(Chat.colored(Chat.line))
             JavaPlugin.getPlugin(Kraftwerk::class.java).vote = null
             cancel()
         }
