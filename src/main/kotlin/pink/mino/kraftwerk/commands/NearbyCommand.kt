@@ -27,7 +27,7 @@ class NearbyCommand : CommandExecutor {
         val players = ArrayList<Player>()
         for (entity in entites) {
             if (entity.type == EntityType.PLAYER) {
-                players.add(entity as Player)
+                if (!SpecFeature.instance.isSpec(entity as Player)) players.add(entity)
             }
         }
         Chat.sendMessage(sender, Chat.line)
