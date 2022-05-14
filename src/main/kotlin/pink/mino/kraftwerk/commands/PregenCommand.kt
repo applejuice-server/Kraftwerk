@@ -58,7 +58,7 @@ class PregenCommand : CommandExecutor {
         if (Bukkit.getWorld(pregenConfig.name) != null) {
             Bukkit.getServer().unloadWorld(pregenConfig.name, true)
             for (file in Bukkit.getServer().worldContainer.listFiles()!!) {
-                if (file.name == pregenConfig.name) {
+                if (file.name.lowercase() == pregenConfig.name.lowercase()) {
                     Files.walk(file.toPath()).sorted(Comparator.reverseOrder()).map(Path::toFile).forEach { it.delete() }
                     file.delete()
                     print("Deleted world file for ${pregenConfig.name}.")
