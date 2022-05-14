@@ -23,6 +23,8 @@ class FireWeaponsOption : ConfigOption(
         if (event.enchantsToAdd.containsKey(fireAspectEnchant) || event.enchantsToAdd.containsKey(flameEnchant)) {
             event.enchantsToAdd.remove(fireAspectEnchant)
             event.enchantsToAdd.remove(flameEnchant)
+        } else {
+            return
         }
         if (event.enchantsToAdd.containsKey(Enchantment.DAMAGE_ALL) || event.enchantsToAdd.containsKey(Enchantment.DAMAGE_UNDEAD) || event.enchantsToAdd.containsKey(Enchantment.DAMAGE_ARTHROPODS)) {
             return
