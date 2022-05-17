@@ -93,7 +93,8 @@ class ScatterFeature : Listener {
                                     world.getHighestBlockAt(location).type != Material.LAVA &&
                                     world.getHighestBlockAt(location).type != Material.WATER &&
                                     world.getHighestBlockAt(location).type != Material.STATIONARY_WATER &&
-                                    world.getHighestBlockAt(location).type != Material.WATER_LILY
+                                    world.getHighestBlockAt(location).type != Material.WATER_LILY &&
+                                    world.getHighestBlockAt(location).type != Material.AIR
                                 ) {
                                     finalLocation = Location(
                                         world,

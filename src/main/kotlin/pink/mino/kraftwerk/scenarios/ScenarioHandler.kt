@@ -46,6 +46,10 @@ class ScenarioHandler {
             addScenario(BloodDiamondsScenario())
             addScenario(VeinMinerScenario())
             addScenario(VillagerMadnessScenario())
+            addScenario(ParanoiaScenario())
+            addScenario(RewardingLongshotsScenario())
+            addScenario(BigCrackScenario())
+            addScenario(UndergroundParallelScenario())
 
             scenarios.sortWith(Comparator.comparing(Scenario::name))
         }
@@ -77,9 +81,6 @@ class ScenarioHandler {
         private fun addScenario(scenario: Scenario) {
             scenarios.add(scenario)
             Bukkit.getPluginManager().registerEvents(scenario, JavaPlugin.getPlugin(Kraftwerk::class.java))
-            if (scenario.command) {
-                JavaPlugin.getPlugin(Kraftwerk::class.java).getCommand(scenario.commandName).executor = scenario.executor
-            }
         }
     }
 }
