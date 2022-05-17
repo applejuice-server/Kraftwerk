@@ -102,9 +102,6 @@ class EditPregenCommand : CommandExecutor {
                         pregenConfig.generator = PregenerationGenerationTypes.CITY_WORLD
                     }
                     PregenerationGenerationTypes.CITY_WORLD -> {
-                        pregenConfig.generator = PregenerationGenerationTypes.SPAWNERS_GALORE
-                    }
-                    PregenerationGenerationTypes.SPAWNERS_GALORE -> {
                         pregenConfig.generator = PregenerationGenerationTypes.NONE
                     }
                 }

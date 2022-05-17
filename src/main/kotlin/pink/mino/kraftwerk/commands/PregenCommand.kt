@@ -19,7 +19,6 @@ import java.nio.file.Path
 
 enum class PregenerationGenerationTypes {
     NONE,
-    SPAWNERS_GALORE,
     CITY_WORLD
 }
 
@@ -71,11 +70,7 @@ class PregenCommand : CommandExecutor {
         wc.environment(pregenConfig.type)
         wc.type(WorldType.NORMAL)
 
-        if (pregenConfig.generator == PregenerationGenerationTypes.SPAWNERS_GALORE) {
-            var defaultSettings = "{\"useMonuments\":false,\"graniteSize\":1,\"graniteCount\":0,\"graniteMinHeight\":0,\"graniteMaxHeight\":0,\"dioriteSize\":1,\"dioriteCount\":0,\"dioriteMinHeight\":0,\"dioriteMaxHeight\":0,\"andesiteSize\":1,\"andesiteCount\":0,\"andesiteMinHeight\":0,\"andesiteMaxHeight\":0"
-            defaultSettings += ",\"dungeonChance\":100}"
-            wc.generatorSettings(defaultSettings)
-        } else if (pregenConfig.generator == PregenerationGenerationTypes.CITY_WORLD) {
+        if (pregenConfig.generator == PregenerationGenerationTypes.CITY_WORLD) {
             wc.generator("CityWorld")
         }
         val world = wc.createWorld()
@@ -209,9 +204,9 @@ class PregenCommand : CommandExecutor {
                 }
                 gui.item(8, submit).onClick {
                     it.isCancelled = true
-                    createWorld(pregenConfig)
                     gui.close()
                     sender.closeInventory()
+                    createWorld(pregenConfig)
                 }
                 gui.item(0, config).onClick {
                     it.isCancelled = true
