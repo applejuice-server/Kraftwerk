@@ -9,6 +9,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import pink.mino.kraftwerk.scenarios.Scenario
 import pink.mino.kraftwerk.utils.Chat
+import pink.mino.kraftwerk.utils.GameState
 import pink.mino.kraftwerk.utils.PlayerUtils
 import kotlin.math.floor
 
@@ -22,6 +23,8 @@ class RewardingLongshotsScenario : Scenario(
 
     @EventHandler
     fun onPlayerShoot(e: EntityDamageByEntityEvent) {
+        if (!enabled) return
+        if (GameState.currentState != GameState.INGAME) return
         if (e.damager.type == EntityType.ARROW && ((e.damager as Arrow).shooter) is Player && e.entity.type == EntityType.PLAYER) {
             val distance = (e.damager as Arrow).location.distance((((e.damager as Arrow).shooter) as Player).location)
             val prizes = ArrayList<Material>()
@@ -51,7 +54,7 @@ class RewardingLongshotsScenario : Scenario(
                 prizes.add(Material.DIAMOND)
                 prizes.add(Material.DIAMOND)
             }
-            if (!broadcast) Bukkit.broadcastMessage(Chat.colored("$prefix &7${PlayerUtils.getPrefix((((e.damager as Arrow).shooter) as Player))}${(((e.damager as Arrow).shooter) as Player).name}&7 hit &7${e.entity} from over &f${floor(distance)} &7blocks away!"))
+            if (broadcast) Bukkit.broadcastMessage(Chat.colored("$prefix &7${PlayerUtils.getPrefix((((e.damager as Arrow).shooter) as Player))}${(((e.damager as Arrow).shooter) as Player).name}&7 hit &7${e.entity.name} from over &f${floor(distance)} &7blocks away!"))
             if (prizes.isNotEmpty()) Chat.sendMessage((((e.damager as Arrow).shooter) as Player), prefix + "You got &a${prizes.size} &7prizes!")
         }
     }
