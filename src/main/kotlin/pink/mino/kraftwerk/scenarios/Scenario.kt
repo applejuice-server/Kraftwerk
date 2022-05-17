@@ -2,7 +2,7 @@ package pink.mino.kraftwerk.scenarios
 
 import org.bukkit.Bukkit
 import org.bukkit.Material
-import org.bukkit.command.CommandExecutor
+import org.bukkit.block.Block
 import org.bukkit.entity.Player
 import org.bukkit.event.Listener
 import pink.mino.kraftwerk.features.SettingsFeature
@@ -13,10 +13,8 @@ abstract class Scenario(
     var description: String,
     var id: String,
     var material: Material,
-    var enabled: Boolean = false,
-    var command: Boolean = false,
-    var commandName: String = "none",
-    var executor: CommandExecutor? = null
+    val gen: Boolean = false,
+    var enabled: Boolean = false
 ): Listener {
     init {
         if (SettingsFeature.instance.data!!.getString("game.scenarios.$id").isNullOrEmpty()) {
@@ -58,6 +56,7 @@ abstract class Scenario(
     open fun onStart() {}
     open fun onMeetup() {}
     open fun givePlayer(player: Player) {}
+    open fun handleBlock(block: Block) {}
 
     open fun onToggle(to: Boolean) {}
 }

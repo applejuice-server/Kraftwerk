@@ -91,6 +91,7 @@ class Kraftwerk : ExtendedJavaPlugin() {
         Bukkit.getServer().pluginManager.registerEvents(WorldSwitchListener(), this)
         Bukkit.getServer().pluginManager.registerEvents(StatsFeature(), this)
         Bukkit.getServer().pluginManager.registerEvents(RespawnFeature.instance, this)
+        //Bukkit.getServer().pluginManager.registerEvents(PregenFeature(), this)
 
         /* Registering commands */
         getCommand("clear").executor = ClearInventoryCommand()
@@ -124,6 +125,7 @@ class Kraftwerk : ExtendedJavaPlugin() {
         getCommand("force").executor = ForceCommand()
         getCommand("respawn").executor = RespawnCommand()
         getCommand("editpregen").executor = EditPregenCommand()
+        getCommand("generate").executor = GenerateCommand()
 
 
         getCommand("gm").executor = GamemodeCommand()

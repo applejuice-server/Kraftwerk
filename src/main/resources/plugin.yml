@@ -244,6 +244,10 @@ commands:
     aliases:
       - ep
     description: Edits the pregeneration configuration.
+  generate:
+    aliases:
+      - gen
+    description: Generates your current world with the pregeneration scenarios.
 depend:
   - ProtocolLib
   - JDA
