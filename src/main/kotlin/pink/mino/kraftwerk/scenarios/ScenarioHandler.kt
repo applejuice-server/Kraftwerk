@@ -50,6 +50,7 @@ class ScenarioHandler {
             addScenario(RewardingLongshotsScenario())
             addScenario(BigCrackScenario())
             addScenario(UndergroundParallelScenario())
+            addScenario(SkyOresScenario())
 
             scenarios.sortWith(Comparator.comparing(Scenario::name))
         }
