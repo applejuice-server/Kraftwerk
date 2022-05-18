@@ -11,7 +11,6 @@ import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 import pink.mino.kraftwerk.Kraftwerk
 import pink.mino.kraftwerk.config.ConfigOptionHandler
-import pink.mino.kraftwerk.discord.Discord
 import pink.mino.kraftwerk.features.SettingsFeature
 import pink.mino.kraftwerk.features.SpawnFeature
 import pink.mino.kraftwerk.features.TeamsFeature
@@ -70,11 +69,13 @@ class EndGameCommand : CommandExecutor {
             }
         }
         embed.addField("Matchpost", "https://hosts.uhc.gg/m/${SettingsFeature.instance.data!!.getInt("matchpost.id")}", false)
-        Discord.instance!!.getTextChannelById(937811334106583040)!!.sendMessageEmbeds(embed.build()).queue()
-        if (SettingsFeature.instance.data!!.getString("server.region") == "NA") {
-            Discord.instance!!.presence.activity = Activity.playing("na.applejuice.bar")
-        } else {
-            Discord.instance!!.presence.activity = Activity.playing("eu.applejuice.bar")
+        if (JavaPlugin.getPlugin(Kraftwerk::class.java).discord) {
+            JavaPlugin.getPlugin(Kraftwerk::class.java).discordInstance.getTextChannelById(937811334106583040)!!.sendMessageEmbeds(embed.build()).queue()
+            if (SettingsFeature.instance.data!!.getString("server.region") == "NA") {
+                JavaPlugin.getPlugin(Kraftwerk::class.java).discordInstance.presence.activity = Activity.playing("na.applejuice.bar")
+            } else {
+                JavaPlugin.getPlugin(Kraftwerk::class.java).discordInstance.presence.activity = Activity.playing("eu.applejuice.bar")
+            }
         }
         SettingsFeature.instance.data!!.set("game.winners", ArrayList<String>())
         SettingsFeature.instance.data!!.set("game.list", ArrayList<String>())
@@ -104,8 +105,10 @@ class EndGameCommand : CommandExecutor {
         Bukkit.broadcastMessage(Chat.colored(Chat.line))
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wl off")
         val log = File("./logs/latest.log")
-        Discord.instance!!.getTextChannelById(955314362019635270)!!.sendMessage("**${gameTitle}**").queue()
-        Discord.instance!!.getTextChannelById(955314362019635270)!!.sendFile(log, "game.log").queue()
+        if (JavaPlugin.getPlugin(Kraftwerk::class.java).discord) {
+            JavaPlugin.getPlugin(Kraftwerk::class.java).discordInstance.getTextChannelById(955314362019635270)!!.sendMessage("**${gameTitle}**").queue()
+            JavaPlugin.getPlugin(Kraftwerk::class.java).discordInstance.getTextChannelById(955314362019635270)!!.sendFile(log, "game.log").queue()
+        }
         return true
     }
 

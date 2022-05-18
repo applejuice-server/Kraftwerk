@@ -20,8 +20,10 @@ class PlayerJoinListener : Listener {
     @EventHandler
     fun onPlayerJoin(e: PlayerJoinEvent) {
         val player = e.player
-        Schedulers.async().run {
-            StatsHandler.addStatsPlayer(player)
+        if (JavaPlugin.getPlugin(Kraftwerk::class.java).database) {
+            Schedulers.async().run {
+                StatsHandler.addStatsPlayer(player)
+            }
         }
         Scoreboard.setScore(Chat.colored("${Chat.dash} &7Playing..."), Bukkit.getServer().onlinePlayers.size)
         e.joinMessage = ChatColor.translateAlternateColorCodes('&', "&8[&2+&8] &a${player.displayName} &8(&2${Bukkit.getServer().onlinePlayers.size}&8/&2${Bukkit.getServer().maxPlayers}&8)")

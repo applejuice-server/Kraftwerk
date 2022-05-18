@@ -3,7 +3,8 @@ package pink.mino.kraftwerk.listeners
 import litebans.api.Entry
 import litebans.api.Events
 import net.dv8tion.jda.api.EmbedBuilder
-import pink.mino.kraftwerk.discord.Discord
+import org.bukkit.plugin.java.JavaPlugin
+import pink.mino.kraftwerk.Kraftwerk
 import java.awt.Color
 
 class LiteBans : Events.Listener() {
@@ -23,6 +24,6 @@ class LiteBans : Events.Listener() {
         } else if (entry.type.lowercase() == "kick") {
 
         }
-        Discord.instance!!.getTextChannelById(943681242681987102)!!.sendMessageEmbeds(embed.build()).queue()
+        JavaPlugin.getPlugin(Kraftwerk::class.java).discordInstance.getTextChannelById(943681242681987102)!!.sendMessageEmbeds(embed.build()).queue()
     }
 }

@@ -9,6 +9,8 @@ import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
+import org.bukkit.plugin.java.JavaPlugin
+import pink.mino.kraftwerk.Kraftwerk
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GuiBuilder
 import pink.mino.kraftwerk.utils.ItemBuilder
@@ -25,6 +27,9 @@ class StatsCommand : CommandExecutor {
         if (sender !is Player) {
             sender.sendMessage("You can't use this command as you technically aren't a player.")
             return false
+        }
+        if (!JavaPlugin.getPlugin(Kraftwerk::class.java).database) {
+            Chat.sendMessage(sender, "&cThis command is unuseable as the database isn't functional.")
         }
         val gui = GuiBuilder().rows(1).name(ChatColor.translateAlternateColorCodes('&', "&4Stats"))
         val target: OfflinePlayer = if (args.isEmpty()) {

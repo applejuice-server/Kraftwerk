@@ -12,7 +12,6 @@ import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.scheduler.BukkitRunnable
 import pink.mino.kraftwerk.Kraftwerk
-import pink.mino.kraftwerk.discord.Discord
 import pink.mino.kraftwerk.features.SettingsFeature
 import pink.mino.kraftwerk.scenarios.ScenarioHandler
 import pink.mino.kraftwerk.utils.ActionBar
@@ -97,15 +96,16 @@ class ScheduleBroadcast(private val opening: String) : BukkitRunnable() {
             }
             embed.addField("IP", "$flag - `${SettingsFeature.instance.data!!.getString("server.region").lowercase()}.applejuice.bar`", true)
             embed.addField("Matchpost", "https://hosts.uhc.gg/m/${SettingsFeature.instance.data!!.getInt("matchpost.id")}", true)
-
-            Discord.instance!!.getTextChannelById(937811305102999573)!!.sendMessage("<@&793406242013839381> (Use /togglematches to toggle matchpost alerts)").queue()
-            Discord.instance!!.getTextChannelById(937811305102999573)!!.sendMessageEmbeds(embed.build()).queue()
+            if (JavaPlugin.getPlugin(Kraftwerk::class.java).discord) {
+                JavaPlugin.getPlugin(Kraftwerk::class.java).discordInstance.getTextChannelById(937811305102999573)!!.sendMessage("<@&793406242013839381> (Use /togglematches to toggle matchpost alerts)").queue()
+                JavaPlugin.getPlugin(Kraftwerk::class.java).discordInstance.getTextChannelById(937811305102999573)!!.sendMessageEmbeds(embed.build()).queue()
+            }
             embed = EmbedBuilder()
             embed.setColor(Color(255, 61, 61))
             embed.setTitle(SettingsFeature.instance.data!!.getString("matchpost.host"))
             embed.setThumbnail("https://visage.surgeplay.com/bust/512/${host.uniqueId}")
             embed.addField("Pre-whitelists are on!", "You are now allowed to use the command `/wl` to request to pre-whitelist yourself in the server!", false)
-            Discord.instance!!.getTextChannelById(937812061948346398)!!.sendMessageEmbeds(embed.build()).queue()
+            JavaPlugin.getPlugin(Kraftwerk::class.java).discordInstance.getTextChannelById(937812061948346398)!!.sendMessageEmbeds(embed.build()).queue()
             SettingsFeature.instance.data!!.set("whitelist.requests", true)
             SettingsFeature.instance.data!!.set("matchpost.posted", true)
             SettingsFeature.instance.saveData()
@@ -203,7 +203,9 @@ class ScheduleOpening(private val opening: String) : BukkitRunnable() {
             } else if (SettingsFeature.instance.data!!.getString("server.region") == "NA") {
                 embed.addField("Game Open!", "The game is now open @ :beverage_box: `na.applejuice.bar`.", false)
             }
-            Discord.instance!!.getTextChannelById(937811678735765554)!!.sendMessageEmbeds(embed.build()).queue()
+            if (JavaPlugin.getPlugin(Kraftwerk::class.java).discord) {
+                JavaPlugin.getPlugin(Kraftwerk::class.java).discordInstance.getTextChannelById(937811678735765554)!!.sendMessageEmbeds(embed.build()).queue()
+            }
             Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} The whitelist has been turned off automatically @ &c${opening}&7."))
             cancel()
             Opening(time).runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 20L)
@@ -306,7 +308,7 @@ class MatchpostCommand : CommandExecutor {
         SettingsFeature.instance.data!!.set("matchpost.opens", opening)
         ScheduleOpening(opening).runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 300L)
         ScheduleBroadcast(opening).runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 300L)
-        Discord.instance!!.presence.activity = Activity.playing(host)
+        if (JavaPlugin.getPlugin(Kraftwerk::class.java).discord) JavaPlugin.getPlugin(Kraftwerk::class.java).discordInstance.presence.activity = Activity.playing(host)
         Chat.sendMessage(sender, "${Chat.prefix} Set the matchpost to &chttps://hosts.uhc.gg/m/${id.toInt()}")
         SettingsFeature.instance.saveData()
         return true

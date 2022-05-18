@@ -4,11 +4,11 @@ import com.comphenix.protocol.ProtocolLibrary
 import com.comphenix.protocol.ProtocolManager
 import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource
-import io.github.redouane59.twitter.TwitterClient
 import me.lucko.helper.plugin.ExtendedJavaPlugin
 import me.lucko.helper.profiles.ProfileRepository
 import me.lucko.helper.utils.Log
 import me.lucko.spark.api.Spark
+import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.entities.Activity
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
@@ -28,10 +28,10 @@ import pink.mino.kraftwerk.scenarios.ScenarioHandler
 import pink.mino.kraftwerk.utils.GameState
 import pink.mino.kraftwerk.utils.ProfileService
 import pink.mino.kraftwerk.utils.Scoreboard
-import pink.mino.kraftwerk.utils.StatsPlayer
 import java.nio.file.Files
 import java.nio.file.Path
 import java.sql.SQLException
+import javax.security.auth.login.LoginException
 import javax.sql.DataSource
 
 
@@ -46,13 +46,11 @@ class Kraftwerk : ExtendedJavaPlugin() {
     var vote: Vote? = null
     var game: UHCTask? = null
 
-    var topKills: ArrayList<StatsPlayer>? = arrayListOf()
-    var topDiamondsMined: ArrayList<StatsPlayer>? = arrayListOf()
-    var topGamesPlayed: ArrayList<StatsPlayer>? = arrayListOf()
-    var topWins: ArrayList<StatsPlayer>? = arrayListOf()
+    var database: Boolean = false
+    var discord: Boolean = false
 
+    lateinit var discordInstance: JDA
     lateinit var dataSource: DataSource
-    lateinit var twitter: TwitterClient
     lateinit var spark: Spark
 
     companion object {
@@ -175,6 +173,11 @@ class Kraftwerk : ExtendedJavaPlugin() {
 
         /* Sets up misc features */
         SettingsFeature.instance.setup(this)
+        if (SettingsFeature.instance.data!!.getString("server.region") == null) {
+            SettingsFeature.instance.data!!.set("server.region", "NA")
+            SettingsFeature.instance.saveData()
+            Log.warn("Server region not set. Defaulting to NA.")
+        }
         TeamsFeature.manager.setupColors()
         Scoreboard.setup()
         if (Scoreboard.sb.getObjective("killboard") != null) {
@@ -187,7 +190,7 @@ class Kraftwerk : ExtendedJavaPlugin() {
 
         setupDataSource()
 
-        this.provideService(ProfileRepository::class.java, ProfileService())
+        if (database) this.provideService(ProfileRepository::class.java, ProfileService())
         val provider = Bukkit.getServicesManager().getRegistration(
             Spark::class.java
         )
@@ -196,31 +199,39 @@ class Kraftwerk : ExtendedJavaPlugin() {
         }
 
         /* Discord */
-        Discord.main()
+        try {
+            val discord = Discord()
+            discordInstance = discord.instance
+        } catch (e: LoginException) {
+            Log.severe("Could not connect to Discord, Discord features will be disabled.")
+            e.printStackTrace()
+        }
 
-        if (!SettingsFeature.instance.data!!.getBoolean("matchpost.posted")) SettingsFeature.instance.data!!.set("whitelist.requests", false)
-        SettingsFeature.instance.saveData()
-        if (!SettingsFeature.instance.data!!.getBoolean("matchpost.cancelled")) {
-            if (SettingsFeature.instance.data!!.getString("matchpost.opens") != null) {
-                ScheduleBroadcast(SettingsFeature.instance.data!!.getString("matchpost.opens")).runTaskTimer(this, 0L, 300L)
-                ScheduleOpening(SettingsFeature.instance.data!!.getString("matchpost.opens")).runTaskTimer(this, 0L, 300L)
-            }
-            if (SettingsFeature.instance.data!!.getString("matchpost.host") == null) {
-                if (SettingsFeature.instance.data!!.getString("server.region") == "NA") {
-                    Discord.instance!!.presence.activity = Activity.playing("na.applejuice.bar")
-                } else {
-                    Discord.instance!!.presence.activity = Activity.playing("eu.applejuice.bar")
-                }
-            }
-            else Discord.instance!!.presence.activity = Activity.playing(SettingsFeature.instance.data!!.getString("matchpost.host"))
-        } else {
-            if (SettingsFeature.instance.data!!.getString("server.region") == "NA") {
-                Discord.instance!!.presence.activity = Activity.playing("na.applejuice.bar")
-            } else {
-                Discord.instance!!.presence.activity = Activity.playing("eu.applejuice.bar")
-            }
-            SettingsFeature.instance.data!!.set("matchpost.cancelled", null)
+        if (discord) {
+            if (!SettingsFeature.instance.data!!.getBoolean("matchpost.posted")) SettingsFeature.instance.data!!.set("whitelist.requests", false)
             SettingsFeature.instance.saveData()
+            if (!SettingsFeature.instance.data!!.getBoolean("matchpost.cancelled")) {
+                if (SettingsFeature.instance.data!!.getString("matchpost.opens") != null) {
+                    ScheduleBroadcast(SettingsFeature.instance.data!!.getString("matchpost.opens")).runTaskTimer(this, 0L, 300L)
+                    ScheduleOpening(SettingsFeature.instance.data!!.getString("matchpost.opens")).runTaskTimer(this, 0L, 300L)
+                }
+                if (SettingsFeature.instance.data!!.getString("matchpost.host") == null) {
+                    if (SettingsFeature.instance.data!!.getString("server.region") == "NA") {
+                        this.discordInstance.presence.activity = Activity.playing("na.applejuice.bar")
+                    } else {
+                        this.discordInstance.presence.activity = Activity.playing("eu.applejuice.bar")
+                    }
+                }
+                else this.discordInstance.presence.activity = Activity.playing(SettingsFeature.instance.data!!.getString("matchpost.host"))
+            } else {
+                if (SettingsFeature.instance.data!!.getString("server.region") == "NA") {
+                    this.discordInstance.presence.activity = Activity.playing("na.applejuice.bar")
+                } else {
+                    this.discordInstance.presence.activity = Activity.playing("eu.applejuice.bar")
+                }
+                SettingsFeature.instance.data!!.set("matchpost.cancelled", null)
+                SettingsFeature.instance.saveData()
+            }
         }
 
         GameState.setState(GameState.LOBBY)
@@ -240,6 +251,11 @@ class Kraftwerk : ExtendedJavaPlugin() {
     }
 
     fun setupDataSource() {
+        if (SettingsFeature.instance.data!!.getString("database.host") == null) {
+            Log.info("No database host found, disabling database features.")
+            this.database = false
+            return
+        }
         val host = SettingsFeature.instance.data!!.getString("database.host")
         val port = SettingsFeature.instance.data!!.getInt("database.port")
         val database = SettingsFeature.instance.data!!.getString("database.database")
@@ -254,7 +270,15 @@ class Kraftwerk : ExtendedJavaPlugin() {
         dataSource.user = user
         dataSource.setPassword(password)
 
-        testDataSource(dataSource)
+        try {
+            testDataSource(dataSource)
+            this.database = true
+        } catch (e: SQLException) {
+            Log.severe("Could not connect to database, database features will be disabled.")
+            this.database = false
+            e.printStackTrace()
+            return
+        }
 
         this.dataSource = dataSource
     }

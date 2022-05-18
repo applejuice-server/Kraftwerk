@@ -120,7 +120,7 @@ class UHCTask : BukkitRunnable() {
                     if (!SpecFeature.instance.getSpecs().contains(player.name)) {
                         player.inventory.setItem(0, ItemStack(Material.COOKED_BEEF, SettingsFeature.instance.data!!.getInt("game.starterfood")))
                         list.add(player.name)
-                        if (!ConfigOptionHandler.getOption("statless")!!.enabled) Schedulers.async().run { StatsHandler.getStatsPlayer(player).add("games_played", 1) }
+                        if (!ConfigOptionHandler.getOption("statless")!!.enabled && JavaPlugin.getPlugin(Kraftwerk::class.java).database) Schedulers.async().run { StatsHandler.getStatsPlayer(player).add("games_played", 1) }
                     }
                 }
                 SettingsFeature.instance.data!!.set("game.list", list)
