@@ -1,5 +1,6 @@
 package pink.mino.kraftwerk.commands
 
+import me.lucko.helper.utils.Log
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.World
@@ -12,6 +13,8 @@ import pink.mino.kraftwerk.features.SettingsFeature
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GuiBuilder
 import pink.mino.kraftwerk.utils.ItemBuilder
+import java.nio.file.Files
+import java.nio.file.Path
 
 class WorldCommand : CommandExecutor {
     override fun onCommand(
@@ -33,6 +36,7 @@ class WorldCommand : CommandExecutor {
             Chat.sendMessage(player, "${Chat.prefix} &f/world tp <world> &8- &7Teleport to the provided world.")
             Chat.sendMessage(player, "${Chat.prefix} &f/world list &8- &7List all worlds.")
             Chat.sendMessage(player, "${Chat.prefix} &f/world worlds &8- &7List all UHC worlds.")
+            Chat.sendMessage(player, "${Chat.prefix} &f/world delete <world> &8- &7Deletes the provided world.")
             Chat.sendMessage(player, Chat.line)
             return false
         } else if (args[0].lowercase() == "list") {
@@ -113,6 +117,29 @@ class WorldCommand : CommandExecutor {
                 }
             }
             sender.openInventory(gui.make())
+        } else if (args[0] == "delete") {
+            if (args.size < 2) {
+                Chat.sendMessage(sender, "${Chat.prefix} &7Usage: &f/world delete <world>")
+                return false
+            }
+            val world = Bukkit.getWorld(args[1])
+            if (world == null) {
+                Chat.sendMessage(sender, "&cThat world doesn't exist.")
+                return false
+            }
+            if (world.name == "Spawn" || world.name == "Arena") {
+                Chat.sendMessage(sender, "&cThat world cannot be deleted.")
+                return false
+            }
+            Bukkit.getServer().unloadWorld(world.name, true)
+            for (file in Bukkit.getServer().worldContainer.listFiles()!!) {
+                if (file.name.lowercase() == world.name.lowercase()) {
+                    Files.walk(file.toPath()).sorted(Comparator.reverseOrder()).map(Path::toFile).forEach { it.delete() }
+                    file.delete()
+                    Log.info("Deleted world file for ${world.name}.")
+                }
+            }
+            Chat.sendMessage(sender, "${Chat.prefix} &7Successfully deleted &f${world.name}&7.")
         }
 
         return true

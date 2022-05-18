@@ -13,12 +13,15 @@ import pink.mino.kraftwerk.Kraftwerk
 import pink.mino.kraftwerk.config.ConfigOptionHandler
 import pink.mino.kraftwerk.features.SettingsFeature
 import pink.mino.kraftwerk.features.SpawnFeature
+import pink.mino.kraftwerk.features.SpecFeature
 import pink.mino.kraftwerk.features.TeamsFeature
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GameState
 import pink.mino.kraftwerk.utils.StatsHandler
 import java.awt.Color
 import java.io.File
+import java.nio.file.Files
+import java.nio.file.Path
 
 class EndGameCommand : CommandExecutor {
     override fun onCommand(
@@ -90,6 +93,7 @@ class EndGameCommand : CommandExecutor {
         SettingsFeature.instance.saveData()
         Bukkit.broadcastMessage(Chat.colored(Chat.line))
         for (player in Bukkit.getOnlinePlayers()) {
+            if (SpecFeature.instance.isSpec(player)) SpecFeature.instance.unspec(player)
             SpawnFeature.instance.send(player)
             Chat.sendCenteredMessage(player, "&c&lGAME OVER!")
             Chat.sendMessage(player, " ")
@@ -98,6 +102,15 @@ class EndGameCommand : CommandExecutor {
         }
         for (world in Bukkit.getWorlds()) {
             world.pvp = true
+        }
+        val world = Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world"))
+        Bukkit.getServer().unloadWorld(world.name, true)
+        for (file in Bukkit.getServer().worldContainer.listFiles()!!) {
+            if (file.name.lowercase() == world.name.lowercase()) {
+                Files.walk(file.toPath()).sorted(Comparator.reverseOrder()).map(Path::toFile).forEach { it.delete() }
+                file.delete()
+                print("Deleted world file for ${world.name}.")
+            }
         }
         Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "restart")
