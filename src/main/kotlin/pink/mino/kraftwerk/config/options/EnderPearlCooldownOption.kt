@@ -17,6 +17,7 @@ class EnderPearlCooldownOption : ConfigOption(
     var cooldowns = HashMap<String, Long>()
     @EventHandler
     fun onPlayerInteract(e: PlayerInteractEvent) {
+        if (!enabled) return
         if (e.item != null && e.item.type == Material.ENDER_PEARL) {
             if (e.action == Action.RIGHT_CLICK_AIR || e.action == Action.RIGHT_CLICK_BLOCK) {
                 val cooldownTime = 10
