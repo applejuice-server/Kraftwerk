@@ -29,6 +29,9 @@ class ParanoiaScenario : Scenario(
     fun onBlockBreak(e: BlockBreakEvent) {
         if (!enabled) return
         if (GameState.currentState != GameState.INGAME) return
+        if (brokenBlocks.containsKey(e.player.uniqueId)) {
+            if (brokenBlocks[e.player.uniqueId]!!.contains(e.block)) return
+        }
         if (e.block.type == Material.DIAMOND_ORE) {
             var diamonds = 0
             for (x in -2..1) {
