@@ -105,7 +105,9 @@ class ScheduleBroadcast(private val opening: String) : BukkitRunnable() {
             embed.setTitle(SettingsFeature.instance.data!!.getString("matchpost.host"))
             embed.setThumbnail("https://visage.surgeplay.com/bust/512/${host.uniqueId}")
             embed.addField("Pre-whitelists are on!", "You are now allowed to use the command `/wl` to request to pre-whitelist yourself in the server!", false)
-            JavaPlugin.getPlugin(Kraftwerk::class.java).discordInstance.getTextChannelById(937812061948346398)!!.sendMessageEmbeds(embed.build()).queue()
+            if (JavaPlugin.getPlugin(Kraftwerk::class.java).discord) {
+                JavaPlugin.getPlugin(Kraftwerk::class.java).discordInstance.getTextChannelById(937812061948346398)!!.sendMessageEmbeds(embed.build()).queue()
+            }
             SettingsFeature.instance.data!!.set("whitelist.requests", true)
             SettingsFeature.instance.data!!.set("matchpost.posted", true)
             SettingsFeature.instance.saveData()

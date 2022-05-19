@@ -14,6 +14,7 @@ import pink.mino.kraftwerk.config.ConfigOptionHandler
 import pink.mino.kraftwerk.features.SettingsFeature
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GuiBuilder
+import pink.mino.kraftwerk.utils.ItemBuilder
 
 class EditConfigCommand : CommandExecutor {
 
@@ -30,14 +31,84 @@ class EditConfigCommand : CommandExecutor {
             }
         }
         val player = sender as Player
-        if (args.isEmpty()) {
-            // TODO("Make a main config editor menu")
-            Chat.sendMessage(player, "&cYou need to provide a valid menu to edit.")
-            return false
-        }
         var gui: GuiBuilder? = null
         var size: Int = 35
-        if (args[0].lowercase() == "options") {
+        if (args.isEmpty()) {
+            gui = GuiBuilder().rows(2).name(ChatColor.translateAlternateColorCodes('&', "&4Edit UHC Config"))
+            size = 17
+            val rates = ItemBuilder(Material.FLINT)
+                .name("&cRates")
+                .addLore("&7Click here to edit rates.")
+                .make()
+            gui.item(0, rates).onClick runnable@ {
+                it.isCancelled = true
+                player.closeInventory()
+                Bukkit.dispatchCommand(player, "editconfig rates")
+            }
+            val settings = ItemBuilder(Material.LAVA_BUCKET)
+                .name("&cSettings")
+                .addLore("&7Click here to edit general options.")
+                .make()
+            gui.item(1, settings).onClick runnable@ {
+                it.isCancelled = true
+                player.closeInventory()
+                Bukkit.dispatchCommand(player, "editconfig options")
+            }
+            val teams = ItemBuilder(Material.DIAMOND_SWORD)
+                .name("&cTeams")
+                .addLore("&7Click here to edit teams.")
+                .make()
+            gui.item(2, teams).onClick runnable@ {
+                it.isCancelled = true
+                player.closeInventory()
+                Bukkit.dispatchCommand(player, "editconfig teams")
+            }
+            val starterFood = ItemBuilder(Material.COOKED_BEEF)
+                .name("&cStarter Food")
+                .addLore("&7Click here to edit starter food.")
+                .make()
+            gui.item(3, starterFood).onClick runnable@ {
+                it.isCancelled = true
+                player.closeInventory()
+                Bukkit.dispatchCommand(player, "editconfig starterfood")
+            }
+            val host = ItemBuilder(Material.COMPASS)
+                .name("&cHost")
+                .addLore("&7Click here to set yourself as the host.")
+                .make()
+            gui.item(4, host).onClick runnable@ {
+                it.isCancelled = true
+                player.closeInventory()
+                Bukkit.dispatchCommand(player, "editconfig host")
+            }
+            val events = ItemBuilder(Material.WATCH)
+                .name("&cEvents")
+                .addLore("&7Click here to edit events.")
+                .make()
+            gui.item(5, events).onClick runnable@ {
+                it.isCancelled = true
+                player.closeInventory()
+                Bukkit.dispatchCommand(player, "editconfig events")
+            }
+            val nether = ItemBuilder(Material.NETHER_STAR)
+                .name("&cNether")
+                .addLore("&7Click here to edit nether options.")
+                .make()
+            gui.item(6, nether).onClick runnable@ {
+                it.isCancelled = true
+                player.closeInventory()
+                Bukkit.dispatchCommand(player, "editconfig nether")
+            }
+            val rules = ItemBuilder(Material.PAPER)
+                .name("&cRules")
+                .addLore("&7Click here to edit rules.")
+                .make()
+            gui.item(7, rules).onClick runnable@ {
+                it.isCancelled = true
+                player.closeInventory()
+                Bukkit.dispatchCommand(player, "editconfig rules")
+            }
+        } else if (args[0].lowercase() == "options") {
             gui = GuiBuilder().rows(2).name(ChatColor.translateAlternateColorCodes('&', "&4Edit UHC Config"))
             size = 17
             var iterator = 0
@@ -518,7 +589,11 @@ class EditConfigCommand : CommandExecutor {
         gui!!.item(size, back).onClick runnable@ {
             it.isCancelled = true
             sender.closeInventory()
-            Bukkit.getServer().dispatchCommand(player as CommandSender, "uhc")
+            if (args.isEmpty()) {
+                Bukkit.getServer().dispatchCommand(player as CommandSender, "uhc")
+            } else {
+                Bukkit.getServer().dispatchCommand(player as CommandSender, "editconfig")
+            }
         }
         player.openInventory(gui.make())
         return true
