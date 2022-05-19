@@ -12,6 +12,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityDamageByEntityEvent
+import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.java.JavaPlugin
@@ -91,6 +92,15 @@ class CombatLogFeature : Listener {
             e.drops.add(item)
         }
         e.npc.destroy()
+    }
+
+    @EventHandler
+    fun onPlayerDeath(e: PlayerDeathEvent) {
+        if (GameState.currentState == GameState.INGAME) {
+            if (getCombatLogList().contains(e.entity.name)) {
+                removeCombatLog(e.entity.name)
+            }
+        }
     }
 
     @EventHandler

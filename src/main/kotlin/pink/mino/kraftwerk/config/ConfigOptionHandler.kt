@@ -23,6 +23,7 @@ class ConfigOptionHandler {
             addOption(PearlDamageOption())
             addOption(EnderPearlCooldownOption())
             addOption(StatlessOption())
+            addOption(DoubleArrowsOption())
 
             addOption(CrossteamingOption())
             addOption(StalkingOption())
