@@ -201,6 +201,7 @@ class Kraftwerk : ExtendedJavaPlugin() {
         /* Discord */
         try {
             val discord = Discord()
+            this.discord = true
             discordInstance = discord.instance
         } catch (e: LoginException) {
             Log.severe("Could not connect to Discord, Discord features will be disabled.")
