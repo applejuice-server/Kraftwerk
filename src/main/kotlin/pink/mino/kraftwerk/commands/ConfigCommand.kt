@@ -44,7 +44,7 @@ class ConfigCommand : CommandExecutor {
         return if (op) {
             "&aAllowed"
         } else {
-            "&cNot allowed"
+            "&cNot Allowed"
         }
     }
 
@@ -63,6 +63,7 @@ class ConfigCommand : CommandExecutor {
             .addLore(" &7Starter Food ${Chat.dash} &f${SettingsFeature.instance.data!!.getInt("game.starterfood")} ")
             .addLore(" ")
             .addLore(" &7Statless ${Chat.dash} &7${getOption("statless")} ")
+            .addLore(" &7Double Arrows ${Chat.dash} &7${getOption("doublearrows")}")
             .addLore(" ")
             .addLore(" &7Pearl Damage ${Chat.dash} &7${getOption("pearldamage")} ")
             .addLore(" &7Pearl Cooldown ${Chat.dash} &7${getOption("pearlcooldown")} ")
@@ -144,11 +145,14 @@ class ConfigCommand : CommandExecutor {
             .name(" &4&lTeam Config")
             .noAttributes()
             .addLore("")
-            .addLore(" &7Team Size ${Chat.dash} &fTo${SettingsFeature.instance.data!!.getInt("game.teamSize")} ")
-            .addLore(" &7Team Management ${Chat.dash} &f${ffa} ")
-            .addLore(" ")
-            .make()
-        gui.item(12, teamConfig).onClick runnable@ {
+        if (SettingsFeature.instance.data!!.getInt("game.teamSize") == 1) {
+            teamConfig.addLore(" &7Team Size ${Chat.dash} &fFFA ")
+        } else {
+            teamConfig.addLore(" &7Team Size ${Chat.dash} &fTo${SettingsFeature.instance.data!!.getInt("game.teamSize")} ")
+        }
+        teamConfig.addLore(" &7Team Management ${Chat.dash} &f${ffa} ").addLore(" ")
+        val teamConf = teamConfig.make();
+        gui.item(12, teamConf).onClick runnable@ {
             it.isCancelled = true
             if (sender.hasPermission("uhc.staff")) {
                 Bukkit.dispatchCommand(sender, "editconfig teams")
@@ -232,11 +236,31 @@ class ConfigCommand : CommandExecutor {
             .addLore(" &7Click here to edit the UHC configuration. ")
             .addLore(" ")
             .make()
+
+        val pvpConfig = ItemBuilder(Material.BOOK_AND_QUILL)
+            .name(" &4&lPvP/Meetup Config ")
+            .addLore(" ")
+            .addLore(" &7Stalking ${Chat.dash} &f${getRule("stalking")}")
+            .addLore(" &7Stealing ${Chat.dash} &f${getRule("stealing")}")
+            .addLore(" ")
+            .addLore(" &7Crossteaming ${Chat.dash} &f${getRule("crossteaming")}")
+            .addLore(" &7iPvP ${Chat.dash} &cNot Allowed")
+            .addLore(" ")
+            .addLore(" &7Skybasing ${Chat.dash} &f${getRule("skybasing")}")
+            .addLore(" &7Running At Meetup ${Chat.dash} &f${getRule("runningatmu")}")
+            .addLore(" ")
+            .make()
         if (sender.hasPermission("uhc.staff")) {
-            gui.item(21, editConfig).onClick runnable@ {
+            gui.item(22, editConfig).onClick runnable@ {
                 it.isCancelled = true
                 if (sender.hasPermission("uhc.staff")) {
                     Bukkit.dispatchCommand(sender, "editconfig")
+                }
+            }
+            gui.item(21, pvpConfig).onClick runnable@ {
+                it.isCancelled = true
+                if (sender.hasPermission("uhc.staff")) {
+                    Bukkit.dispatchCommand(sender, "editconfig rules")
                 }
             }
             gui.item(23, netherConfig).onClick runnable@ {
@@ -246,7 +270,13 @@ class ConfigCommand : CommandExecutor {
                 }
             }
         } else {
-            gui.item(22, netherConfig).onClick runnable@ {
+            gui.item(21, pvpConfig).onClick runnable@ {
+                it.isCancelled = true
+                if (sender.hasPermission("uhc.staff")) {
+                    Bukkit.dispatchCommand(sender, "editconfig rules")
+                }
+            }
+            gui.item(23, netherConfig).onClick runnable@ {
                 it.isCancelled = true
                 if (sender.hasPermission("uhc.staff")) {
                     Bukkit.dispatchCommand(sender, "editconfig nether")
