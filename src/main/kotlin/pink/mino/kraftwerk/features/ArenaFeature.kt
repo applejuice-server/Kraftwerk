@@ -188,6 +188,15 @@ class ArenaFeature : Listener {
         }
     }
 
+    fun getPlayers(): List<Player> {
+        val players = ArrayList<Player>()
+        for (player in Bukkit.getOnlinePlayers()) {
+            if (player.world.name == "Arena" && !SpecFeature.instance.isSpec(player)) {
+                players.add(player)
+            }
+        }
+        return players
+    }
     fun sendToPlayers(message: String) {
         for (player in Bukkit.getOnlinePlayers()) {
             if (player.world.name == "Arena") {
