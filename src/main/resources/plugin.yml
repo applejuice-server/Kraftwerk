@@ -250,7 +250,6 @@ commands:
     description: Generates your current world with the pregeneration scenarios.
 depend:
   - ProtocolLib
-  - JDA
   - Vault
   - Citizens
   - LiteBans
