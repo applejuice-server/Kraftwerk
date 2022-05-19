@@ -48,6 +48,15 @@ class ConfigCommand : CommandExecutor {
         }
     }
 
+    private fun getFinalBorder(): Int {
+        val op = ScenarioHandler.getScenario("bigcrack")!!.enabled;
+        return if (op) {
+            75
+        } else {
+            25
+        }
+    }
+
     override fun onCommand(sender: CommandSender, cmd: Command, lbl: String, args: Array<String>): Boolean {
         if (sender !is Player) {
             sender.sendMessage("You can't use this command as you technically aren't a player.")
@@ -195,7 +204,7 @@ class ConfigCommand : CommandExecutor {
             .addLore(" ")
             .addLore(" &7The border shrinks every &e5 minutes&7. ")
             .addLore(" &7The first shrink will be &f500x500&7. ")
-            .addLore(" &7The last shrink will be &f25x25&7. ")
+            .addLore(" &7The last shrink will be &f${getFinalBorder()}x${getFinalBorder()}&7. ")
             .addLore(" ")
             .make()
         gui.item(15, border).onClick runnable@ {

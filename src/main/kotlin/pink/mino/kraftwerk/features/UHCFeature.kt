@@ -175,7 +175,11 @@ class UHCTask : BukkitRunnable() {
                     Chat.sendCenteredMessage(player, "&c&lUHC")
                     Chat.sendMessage(player, " ")
                     Chat.sendCenteredMessage(player, "&7It's now &cMeetup&7! Head to &a0,0&7!")
-                    Chat.sendCenteredMessage(player, "&7The border will start shrinking until it's at &f25x25&7!")
+                    if (ScenarioHandler.getScenario("bigcrack")!!.enabled) {
+                        Chat.sendCenteredMessage(player, "&7The border will start shrinking until it's at &f75x75&7!")
+                    } else {
+                        Chat.sendCenteredMessage(player, "&7The border will start shrinking until it's at &f25x25&7!")
+                    }
                 }
                 for (scenario in ScenarioHandler.getActiveScenarios()) {
                     scenario.onMeetup()
@@ -188,12 +192,14 @@ class UHCTask : BukkitRunnable() {
                         UHCFeature().scheduleShrink(100)
                         Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
                             UHCFeature().scheduleShrink(75)
-                            Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                                UHCFeature().scheduleShrink(50)
+                            if (!ScenarioHandler.getScenario("bigcrack")!!.enabled) {
                                 Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                                    UHCFeature().scheduleShrink(25)
+                                    UHCFeature().scheduleShrink(50)
+                                    Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
+                                        UHCFeature().scheduleShrink(25)
+                                    }, 6000)
                                 }, 6000)
-                            }, 6000)
+                            }
                         }, 6000)
                     }, 6000)
                 }, 6000)
@@ -333,8 +339,14 @@ class UHCFeature : Listener {
                                                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "border $newBorder")
                                                     Bukkit.broadcastMessage(Chat.colored(Chat.line))
                                                     Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} The border has shrunken to &f${newBorder}x${newBorder}&7."))
-                                                    if (newBorder != 25) {
-                                                        Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Next border shrink in &f5 minutes."))
+                                                    if (ScenarioHandler.getScenario("bigcrack")!!.enabled) {
+                                                        if (newBorder != 75) {
+                                                            Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Next border shrink in &f5 minutes."))
+                                                        }
+                                                    } else {
+                                                        if (newBorder != 25) {
+                                                            Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Next border shrink in &f5 minutes."))
+                                                        }
                                                     }
                                                     Bukkit.broadcastMessage(Chat.colored(Chat.line))
                                                 }, 20L)
