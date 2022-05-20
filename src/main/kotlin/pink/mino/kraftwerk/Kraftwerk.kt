@@ -46,6 +46,8 @@ class Kraftwerk : ExtendedJavaPlugin() {
     var vote: Vote? = null
     var game: UHCTask? = null
 
+    var arena: Boolean = true
+
     var database: Boolean = false
     var discord: Boolean = false
 
