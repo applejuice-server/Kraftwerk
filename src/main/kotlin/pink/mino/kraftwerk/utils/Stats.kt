@@ -128,7 +128,6 @@ class StatsPlayer(val player: OfflinePlayer) : Listener {
             save.setInt(1, value)
             save.setString(2, player.uniqueId.toString())
             save.execute()
-            print("Set $obj for ${player.name} to $value")
         }
     } catch (e: SQLException) {
         e.printStackTrace()

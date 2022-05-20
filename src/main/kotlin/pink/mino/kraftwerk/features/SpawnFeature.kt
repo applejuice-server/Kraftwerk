@@ -60,11 +60,17 @@ class SpawnFeature : Listener {
             .make()
         p.inventory.setItem(3, config)
 
-        val scenarios = ItemBuilder(Material.EMERALD)
+        val donator = ItemBuilder(Material.EMERALD)
+            .name("&cDonator Menu &7(Right Click)")
+            .addLore("&7Right-click to view the Donator Menu.")
+            .make()
+        p.inventory.setItem(0, donator)
+
+        val scenarios = ItemBuilder(Material.CHEST)
             .name("&cActive Scenarios &7(Right Click)")
             .addLore("&7Right-click to view active scenarios.")
             .make()
-        p.inventory.setItem(0, scenarios)
+        p.inventory.setItem(8, scenarios)
 
         val location = Location(Bukkit.getWorld("Spawn"), -221.5, 95.0, -140.5)
         p.teleport(location)
@@ -97,6 +103,10 @@ class SpawnFeature : Listener {
                     Chat.colored("&cActive Scenarios &7(Right Click)") -> {
                         e.isCancelled = true
                         Bukkit.dispatchCommand(e.player, "scen")
+                    }
+                    Chat.colored("&cDonator Menu &7(Right Click)") -> {
+                        e.isCancelled = true
+                        Chat.sendMessage(e.player, "&cThis feature isn't available yet.")
                     }
                 }
             }
