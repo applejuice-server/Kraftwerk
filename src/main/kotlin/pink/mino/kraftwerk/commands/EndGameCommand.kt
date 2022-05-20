@@ -83,7 +83,6 @@ class EndGameCommand : CommandExecutor {
         SettingsFeature.instance.data!!.set("game.winners", ArrayList<String>())
         SettingsFeature.instance.data!!.set("game.list", ArrayList<String>())
         SettingsFeature.instance.data!!.set("game.kills", null)
-        SettingsFeature.instance.data!!.set("pregen.world", null)
         SettingsFeature.instance.data!!.set("game.nether", false)
         SettingsFeature.instance.data!!.set("whitelist.requests", false)
         SettingsFeature.instance.data!!.set("whitelist.list", ArrayList<String>())
@@ -112,6 +111,8 @@ class EndGameCommand : CommandExecutor {
                 print("Deleted world file for ${world.name}.")
             }
         }
+        SettingsFeature.instance.data!!.set("pregen.world", null)
+        SettingsFeature.instance.saveData()
         Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "restart")
         }, 900L)
