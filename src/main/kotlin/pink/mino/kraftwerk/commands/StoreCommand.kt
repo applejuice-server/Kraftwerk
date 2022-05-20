@@ -12,7 +12,7 @@ class StoreCommand : CommandExecutor {
         label: String?,
         args: Array<String>
     ): Boolean {
-        sender.sendMessage(Chat.colored("${Chat.prefix} View the server store @ &chttps://store.applejuice.bar"))
+        sender.sendMessage(Chat.colored("${Chat.prefix} View the server store @ &chttps://applejuice.tebex.io/"))
         return false
     }
 }

@@ -1,6 +1,7 @@
 package pink.mino.kraftwerk.listeners
 
 import me.lucko.helper.promise.Promise
+import me.lucko.helper.utils.Log
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.event.EventHandler
@@ -13,10 +14,17 @@ import pink.mino.kraftwerk.utils.Scoreboard
 import pink.mino.kraftwerk.utils.StatsHandler
 
 class PlayerQuitListener : Listener {
+    private var vaultChat: net.milkbowl.vault.chat.Chat? = null
+
+    init {
+        vaultChat = Bukkit.getServer().servicesManager.load(net.milkbowl.vault.chat.Chat::class.java)
+    }
     @EventHandler
     fun onPlayerQuit(e: PlayerQuitEvent) {
         val player = e.player
-        e.quitMessage = ChatColor.translateAlternateColorCodes('&', "&8[&4-&8] &c${player.displayName} &8(&4${Bukkit.getServer().onlinePlayers.size - 1}&8/&4${Bukkit.getServer().maxPlayers}&8)")
+        val group: String = vaultChat!!.getPrimaryGroup(player)
+        val prefix: String = if (vaultChat!!.getGroupPrefix(player.world, group) != "&7") Chat.colored(vaultChat!!.getGroupPrefix(player.world, group)) else Chat.colored("&c")
+        e.quitMessage = ChatColor.translateAlternateColorCodes('&', "&8(&4-&8) ${prefix}${player.displayName} &8[&4${Bukkit.getServer().onlinePlayers.size - 1}&8/&4${Bukkit.getServer().maxPlayers}&8]")
         Scoreboard.setScore(Chat.colored("${Chat.dash} &7Playing..."), Bukkit.getServer().onlinePlayers.size - 1)
         if (JavaPlugin.getPlugin(Kraftwerk::class.java).database) {
             if (StatsHandler.statsPlayers[player.uniqueId] != null) {
@@ -24,7 +32,7 @@ class PlayerQuitListener : Listener {
                     .thenApplyAsync { StatsHandler.statsPlayers[player.uniqueId]!!.saveAll() }
                     .thenAcceptSync {
                         StatsHandler.statsPlayers.remove(player.uniqueId)
-                        print("Saved stats for ${player.name}.")
+                        Log.info("Saved stats for ${player.name}.")
                     }
             }
         }

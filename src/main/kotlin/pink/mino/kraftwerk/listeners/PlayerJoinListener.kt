@@ -16,7 +16,16 @@ import pink.mino.kraftwerk.utils.GameState
 import pink.mino.kraftwerk.utils.Scoreboard
 import pink.mino.kraftwerk.utils.StatsHandler
 
+import net.milkbowl.vault.chat.Chat as VaultChat
+
 class PlayerJoinListener : Listener {
+
+    private var vaultChat: VaultChat? = null
+
+    init {
+        vaultChat = Bukkit.getServer().servicesManager.load(net.milkbowl.vault.chat.Chat::class.java)
+    }
+
     @EventHandler
     fun onPlayerJoin(e: PlayerJoinEvent) {
         val player = e.player
@@ -26,7 +35,10 @@ class PlayerJoinListener : Listener {
             }
         }
         Scoreboard.setScore(Chat.colored("${Chat.dash} &7Playing..."), Bukkit.getServer().onlinePlayers.size)
-        e.joinMessage = ChatColor.translateAlternateColorCodes('&', "&8[&2+&8] &a${player.displayName} &8(&2${Bukkit.getServer().onlinePlayers.size}&8/&2${Bukkit.getServer().maxPlayers}&8)")
+
+        val group: String = vaultChat!!.getPrimaryGroup(player)
+        val prefix: String = if (vaultChat!!.getGroupPrefix(player.world, group) != "&7") Chat.colored(vaultChat!!.getGroupPrefix(player.world, group)) else Chat.colored("&a")
+        e.joinMessage = ChatColor.translateAlternateColorCodes('&', "&8(&2+&8) ${prefix}${player.displayName} &8[&2${Bukkit.getServer().onlinePlayers.size}&8/&2${Bukkit.getServer().maxPlayers}&8]")
         if (GameState.currentState == GameState.LOBBY) {
             Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
                 SpawnFeature.instance.send(player)
