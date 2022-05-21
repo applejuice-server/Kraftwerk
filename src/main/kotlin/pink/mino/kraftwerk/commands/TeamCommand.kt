@@ -21,6 +21,8 @@ import pink.mino.kraftwerk.features.TeamsFeature
 import pink.mino.kraftwerk.scenarios.ScenarioHandler
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GameState
+import pink.mino.kraftwerk.utils.PerkChecker
+import pink.mino.kraftwerk.utils.PlayerUtils
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.function.Consumer
@@ -60,6 +62,29 @@ class TeamCommand : CommandExecutor {
 
     private var invites = HashMap<Player, ArrayList<Player>>()
     private val settings: SettingsFeature = SettingsFeature.instance
+    val colors = listOf(
+        "black",
+        "dark_blue",
+        "dark_green",
+        "dark_aqua",
+        "dark_red",
+        "dark_purple",
+        "gold",
+        "gray",
+        "dark_gray",
+        "blue",
+        "green",
+        "aqua",
+        "red",
+        "light_purple",
+        "yellow",
+        "white"
+    )
+    val modifiers = listOf(
+        "bold",
+        "underline",
+        "italic"
+    )
 
     private fun <T> splitList(list: ArrayList<T>, size: Int): MutableList<ArrayList<T>> {
         val iterator = list.iterator()
@@ -122,6 +147,7 @@ class TeamCommand : CommandExecutor {
             Chat.sendMessage(sender, "${Chat.prefix} &f/team accept <player> ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Accept a player's team invite.")
             Chat.sendMessage(sender, "${Chat.prefix} &f/team list ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Brings a list of teams and their members.")
             Chat.sendMessage(sender, "${Chat.prefix} &f/pm <message> ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Talk in team chat.")
+            Chat.sendMessage(sender, "${Chat.prefix} &f/team color <color> [bold] [italic] [underline] &8(&6GOLD AND ABOVE&8) ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Changes your team color.")
             Chat.sendMessage(sender, "${Chat.prefix} &f/pmc ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Send your coordinates.")
             Chat.sendMessage(sender, Chat.line)
             if (sender.hasPermission("uhc.staff.team")) {
@@ -373,6 +399,7 @@ class TeamCommand : CommandExecutor {
                     LunarClientAPI.getInstance().sendTeammates(player as Player, LCPacketTeammates(player.uniqueId, 100L, HashMap()))
                 }
             }
+            TeamsFeature.manager.deleteTeam(selectedTeam)
             Chat.sendMessage(sender, "${Chat.prefix} ${selectedTeam.prefix}${selectedTeam.name}&7 has been deleted & all members kicked.")
         } else if (args[0] == "set") {
             if (sender is Player) {
@@ -396,7 +423,13 @@ class TeamCommand : CommandExecutor {
                 Chat.sendMessage(sender, "&cThat player is currently not in a team right now.")
                 return false
             }
+            val targetTeam = TeamsFeature.manager.getTeam(target)
             team.addPlayer(target)
+            if (targetTeam != null) {
+                if (targetTeam.size == 0) {
+                    TeamsFeature.manager.deleteTeam(targetTeam)
+                }
+            }
             Chat.sendMessage(sender, "${Chat.prefix} Successfully added &f${target2.name}&7 to &f${target.name}&7's team")
             Chat.sendMessage(target, "${Chat.prefix} You've been added to &f${target2.name}&7's team")
             for (player in team.players) {
@@ -458,6 +491,9 @@ class TeamCommand : CommandExecutor {
                 return false
             }
             team.removePlayer(target)
+            if (team.size == 0) {
+                TeamsFeature.manager.deleteTeam(team)
+            }
             Chat.sendMessage(sender, "${Chat.prefix} Successfully removed &f${target.name}&7 from &f${team.name}&7's team")
         } else if (args[0] == "friendlyfire") {
             if (sender is Player) {
@@ -510,6 +546,7 @@ class TeamCommand : CommandExecutor {
                     if (team.players.size < args[1].toInt()) {
                         player.kickPlayer(Chat.colored("&cYou've been kicked as your team is undersized."))
                     }
+                    TeamsFeature.manager.deleteTeam(team)
                 }
             }
         } else if (args[0] == "randomize") {
@@ -567,6 +604,64 @@ class TeamCommand : CommandExecutor {
                 } else {
                     blue.addPlayer(player)
                 }
+            }
+        } else if (args[0] == "color") {
+            if (!PerkChecker.checkPerk(sender as Player, "uhc.donator.teamColors")) {
+                Chat.sendMessage(sender, "&cBuy &6Gold&c to use this perk. &eapplejuice.tebex.io")
+                return false
+            }
+            if (TeamsFeature.manager.getTeam(sender) == null) {
+                Chat.sendMessage(sender, "${Chat.prefix} You are not on a team.")
+                return false
+            }
+            if (args.size == 1) {
+                Chat.sendMessage(sender, "${Chat.prefix} Invalid usage: &f/team color <color> [bold] [italic] [underline]&7.")
+                return false
+            }
+            if (args.size > 5) {
+                Chat.sendMessage(sender, "${Chat.prefix} Invalid usage: &f/team color <color> [bold] [italic] [underline]&7.")
+                return false
+            }
+            val colors = arrayListOf<ChatColor>()
+            for ((index, arg) in args.withIndex()) {
+                if (index == 0) continue
+                if (ChatColor.valueOf(arg.uppercase()) == null) {
+                    Chat.sendMessage(sender, "${Chat.prefix} Invalid color: &f/team color <color> [bold] [italic] [underline]&7.")
+                    return false
+                }
+                colors.add(ChatColor.valueOf(arg.uppercase()))
+            }
+            if (colors.size == 0) {
+                Chat.sendMessage(sender, "${Chat.prefix} Invalid usage: &f/team color <color> [bold] [italic] [underline]&7.")
+                return false
+            }
+            var selectedColor = ""
+            if (colors.contains(ChatColor.BOLD)) {
+                selectedColor += ChatColor.BOLD.toString()
+                colors.removeAll(listOf(ChatColor.BOLD))
+            }
+            if (colors.contains(ChatColor.ITALIC)) {
+                selectedColor += ChatColor.ITALIC.toString()
+                colors.removeAll(listOf(ChatColor.ITALIC))
+            }
+            if (colors.contains(ChatColor.UNDERLINE)) {
+                selectedColor += ChatColor.UNDERLINE.toString()
+                colors.removeAll(listOf(ChatColor.UNDERLINE))
+            }
+            if (colors.isEmpty()) {
+                Chat.sendMessage(sender, "${Chat.prefix} Invalid usage: &f/team color <color> [bold] [italic] [underline]&7.")
+                return false
+            }
+            selectedColor = colors[0].toString() + selectedColor
+            print(selectedColor)
+            if (!TeamsFeature.manager.colors.contains(selectedColor)) {
+                Chat.sendMessage(sender, "${Chat.prefix} This color is already in use.")
+                return false
+            } else {
+                TeamsFeature.manager.colors.add(TeamsFeature.manager.getTeam(sender)!!.prefix)
+                TeamsFeature.manager.colors.remove(selectedColor)
+                TeamsFeature.manager.getTeam(sender)!!.prefix = selectedColor
+                Bukkit.broadcastMessage(Chat.colored("&8[&2$$$&8] &f${PlayerUtils.getPrefix(sender)}${sender.name} &7has selected &f$selectedColor${args[1]}&7 as their team color."))
             }
         }
 

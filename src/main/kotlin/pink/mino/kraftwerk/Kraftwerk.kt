@@ -91,6 +91,7 @@ class Kraftwerk : ExtendedJavaPlugin() {
         Bukkit.getServer().pluginManager.registerEvents(WorldSwitchListener(), this)
         Bukkit.getServer().pluginManager.registerEvents(StatsFeature(), this)
         Bukkit.getServer().pluginManager.registerEvents(RespawnFeature.instance, this)
+        Bukkit.getServer().pluginManager.registerEvents(PickupFeature.instance, this)
         //Bukkit.getServer().pluginManager.registerEvents(PregenFeature(), this)
 
         /* Registering commands */
@@ -159,6 +160,9 @@ class Kraftwerk : ExtendedJavaPlugin() {
         getCommand("ping").executor = PingCommand()
         getCommand("voteyes").executor = VoteYesCommand()
         getCommand("voteno").executor = VoteNoCommand()
+        getCommand("donator").executor = DonatorCommand()
+        getCommand("lapis").executor = LapisCommand()
+        getCommand("redstone").executor = RedstoneCommand()
         //getCommand("hotbar").executor = HotbarCommand()
 
         /* ProtocolLib stuff */

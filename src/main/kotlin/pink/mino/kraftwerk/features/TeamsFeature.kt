@@ -105,12 +105,12 @@ class TeamsFeature private constructor() {
         colors.shuffle()
         val li = ArrayList<String>()
         for (color in colors) {
-            li.add(color + ChatColor.ITALIC)
             li.add(color + ChatColor.BOLD)
+            li.add(color + ChatColor.ITALIC)
             li.add(color + ChatColor.UNDERLINE)
-            li.add(color + ChatColor.ITALIC + ChatColor.BOLD)
+            li.add(color + ChatColor.BOLD + ChatColor.ITALIC)
             li.add(color + ChatColor.ITALIC + ChatColor.UNDERLINE)
-            li.add(color + ChatColor.ITALIC + ChatColor.BOLD + ChatColor.UNDERLINE)
+            li.add(color + ChatColor.BOLD + ChatColor.ITALIC + ChatColor.UNDERLINE)
             li.add(color + ChatColor.BOLD + ChatColor.UNDERLINE)
         }
         li.shuffle()
