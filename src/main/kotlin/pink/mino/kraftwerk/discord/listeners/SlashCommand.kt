@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.entities.VoiceChannel
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
+import net.dv8tion.jda.api.interactions.commands.OptionMapping
 import net.dv8tion.jda.api.utils.MarkdownSanitizer
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
@@ -124,18 +125,16 @@ class SlashCommand : ListenerAdapter() {
                     return
                 }
 
-                val command: List<String> = event.commandString.split(" size: ")
+                val size = event.getOption("size")
 
-                var foundChannel: Boolean = false
-                var isUsersChannel: Boolean = false
+                var foundChannel = false
+                var isUsersChannel = false
                 var vc: VoiceChannel? = null
 
                 for (channel in guild!!.voiceChannels) {
                     if (!channel.members.contains(member)) continue
                     foundChannel = true
-                    if (channel.name.contains(member.effectiveName + member.user.discriminator)) {
-                        isUsersChannel = true
-                    }
+                    if (channel.name.contains(member.effectiveName + member.user.discriminator, true)) isUsersChannel = true
                     vc = channel
                     break
                 }
@@ -153,9 +152,9 @@ class SlashCommand : ListenerAdapter() {
                     return
                 }
 
-                var cmd: Int = 0
+                var cmd: Int
                 try {
-                    cmd = command[1].toInt()
+                    cmd = Integer.parseInt(size.toString())
                 } catch (e: NumberFormatException) {
                     event.deferReply().setContent("You did not input a valid size.").queue runnable@ {
                         it.deleteOriginal().queueAfter(5, TimeUnit.SECONDS)
