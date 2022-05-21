@@ -31,7 +31,7 @@ class MemberJoinVC : ListenerAdapter() {
             return
         }
 
-        event.guild.createVoiceChannel("${member.nickname}" + "'s Channel", event.guild.getCategoryById(VC_CHANNELS_ID)).queue()
+        event.guild.createVoiceChannel(member.effectiveName + member.user.discriminator + "'s Channel", event.guild.getCategoryById(VC_CHANNELS_ID)).queue()
 
         Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), runnable@ {
             var newVC: AudioChannel? = null
