@@ -1,13 +1,10 @@
 package pink.mino.kraftwerk.discord.listeners
 
 import net.dv8tion.jda.api.entities.AudioChannel
-import net.dv8tion.jda.api.entities.Channel
-import net.dv8tion.jda.api.entities.VoiceChannel
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
-import org.bukkit.scheduler.BukkitRunnable
 import pink.mino.kraftwerk.Kraftwerk
 
 class MemberJoinVC : ListenerAdapter() {
@@ -31,12 +28,12 @@ class MemberJoinVC : ListenerAdapter() {
         }
         if (vc != null) {
             event.guild.moveVoiceMember(member, vc).queue()
-            return;
+            return
         }
 
-        event.guild.createVoiceChannel(member.effectiveName + member.user.discriminator + "'s Channel", event.guild.getCategoryById(VC_CHANNELS_ID)).queue()
+        event.guild.createVoiceChannel("${member.nickname}" + "'s Channel", event.guild.getCategoryById(VC_CHANNELS_ID)).queue()
 
-        Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), Runnable {
+        Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), runnable@ {
             var newVC: AudioChannel? = null
             for (channel in event.guild.voiceChannels) {
                 if (channel.name.contains(member.effectiveName + member.user.discriminator)) {
