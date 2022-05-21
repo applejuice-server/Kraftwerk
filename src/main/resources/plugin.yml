@@ -1,5 +1,5 @@
 name: Kraftwerk
-author: Minota
+authors: [Minota, MrcsM]
 version: 1.2.0
 description: Plugin for managing UHCs.
 main: pink.mino.kraftwerk.Kraftwerk
@@ -260,6 +260,10 @@ commands:
     aliases:
       - l
     description: Toggles lapis pickup.
+  giveitems:
+    aliases:
+      - gi
+    description: Give scenario items to a player.
 depend:
   - ProtocolLib
   - Vault

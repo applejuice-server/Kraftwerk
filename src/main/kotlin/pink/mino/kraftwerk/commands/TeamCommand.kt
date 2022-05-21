@@ -30,10 +30,10 @@ import java.util.function.Consumer
 
 class SendTeamView(val team: Team) : BukkitRunnable() {
     override fun run() {
-        if (!TeamsFeature.manager.getTeams().contains(team)) {
+        if (team == null) {
             cancel()
         }
-        if (team == null) {
+        if (!TeamsFeature.manager.getTeams().contains(team)) {
             cancel()
         }
         if (team.size == 0) {
