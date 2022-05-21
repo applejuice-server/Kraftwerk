@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter
 import net.dv8tion.jda.api.interactions.commands.OptionType
 import net.dv8tion.jda.api.interactions.commands.build.CommandData
 import net.dv8tion.jda.api.requests.GatewayIntent
+import net.dv8tion.jda.api.utils.cache.CacheFlag
 import pink.mino.kraftwerk.discord.listeners.MemberJoin
 import pink.mino.kraftwerk.discord.listeners.MemberJoinVC
 import pink.mino.kraftwerk.discord.listeners.MemberLeaveVC
@@ -26,6 +27,7 @@ class Discord : ListenerAdapter() {
             GatewayIntent.GUILD_MEMBERS,
             GatewayIntent.GUILD_VOICE_STATES
         )
+            .enableCache(CacheFlag.VOICE_STATE)
             .addEventListeners(SlashCommand())
             .addEventListeners(MemberJoin())
             .addEventListeners(MemberJoinVC())
