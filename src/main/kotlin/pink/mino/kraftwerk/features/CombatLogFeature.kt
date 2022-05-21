@@ -97,51 +97,51 @@ class CombatLogFeature : Listener {
     @EventHandler
     fun onPlayerDeath(e: PlayerDeathEvent) {
         if (GameState.currentState == GameState.INGAME) {
-            if (getCombatLogList().contains(e.entity.name)) {
-                removeCombatLog(e.entity.name)
-            }
+            removeCombatLog(e.entity.name)
         }
     }
 
     @EventHandler
     fun onPlayerQuit(e: PlayerQuitEvent) {
         if (GameState.currentState == GameState.INGAME) {
-            if (getCombatLogList().contains(e.player.name)) {
-                WhitelistCommand().removeWhitelist(e.player.name)
-                val list = SettingsFeature.instance.data!!.getStringList("game.list")
-                list.remove(e.player.name)
-                SettingsFeature.instance.data!!.set("game.list", list)
-                SettingsFeature.instance.saveData()
-                removeCombatLog(e.player.name)
-                val npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER, e.player.name)
-                npc.spawn(e.player.location)
-                Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                    if (npc.isSpawned) {
-                        npc.name = Chat.colored("&8(&aLogger&8)&f ${e.player.name}")
-                        npc.isProtected = false
-                        npc.getOrAddTrait(Equipment::class.java)
-                            .set(Equipment.EquipmentSlot.HELMET, e.player.inventory.helmet)
-                        npc.getOrAddTrait(Equipment::class.java)
-                            .set(Equipment.EquipmentSlot.CHESTPLATE, e.player.inventory.chestplate)
-                        npc.getOrAddTrait(Equipment::class.java)
-                            .set(Equipment.EquipmentSlot.LEGGINGS, e.player.inventory.leggings)
-                        npc.getOrAddTrait(Equipment::class.java)
-                            .set(Equipment.EquipmentSlot.BOOTS, e.player.inventory.boots)
-                        npc.getOrAddTrait(Inventory::class.java)
-                            .contents = e.player.inventory.contents
-                        val drops = arrayListOf<ItemStack>(*e.player.inventory.contents)
-                        drops.add(e.player.inventory.helmet)
-                        drops.add(e.player.inventory.chestplate)
-                        drops.add(e.player.inventory.leggings)
-                        drops.add(e.player.inventory.boots)
-                        dropsHash[npc] = drops
+            if (e.player.world.name != "Spawn") {
+                if (getCombatLogList().contains(e.player.name)) {
+                    WhitelistCommand().removeWhitelist(e.player.name)
+                    val list = SettingsFeature.instance.data!!.getStringList("game.list")
+                    list.remove(e.player.name)
+                    SettingsFeature.instance.data!!.set("game.list", list)
+                    SettingsFeature.instance.saveData()
+                    removeCombatLog(e.player.name)
+                    val npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER, e.player.name)
+                    npc.spawn(e.player.location)
+                    Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
+                        if (npc.isSpawned) {
+                            npc.name = Chat.colored("&8(&aLogger&8)&f ${e.player.name}")
+                            npc.isProtected = false
+                            npc.getOrAddTrait(Equipment::class.java)
+                                .set(Equipment.EquipmentSlot.HELMET, e.player.inventory.helmet)
+                            npc.getOrAddTrait(Equipment::class.java)
+                                .set(Equipment.EquipmentSlot.CHESTPLATE, e.player.inventory.chestplate)
+                            npc.getOrAddTrait(Equipment::class.java)
+                                .set(Equipment.EquipmentSlot.LEGGINGS, e.player.inventory.leggings)
+                            npc.getOrAddTrait(Equipment::class.java)
+                                .set(Equipment.EquipmentSlot.BOOTS, e.player.inventory.boots)
+                            npc.getOrAddTrait(Inventory::class.java)
+                                .contents = e.player.inventory.contents
+                            val drops = arrayListOf<ItemStack>(*e.player.inventory.contents)
+                            drops.add(e.player.inventory.helmet)
+                            drops.add(e.player.inventory.chestplate)
+                            drops.add(e.player.inventory.leggings)
+                            drops.add(e.player.inventory.boots)
+                            dropsHash[npc] = drops
 
-                        val entity = npc as LivingEntity
-                        entity.health = e.player.health
-                        entity.maxHealth = e.player.maxHealth
-                    }
-                }, 20L)
-                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} &f${e.player.name}&7 has been removed from the game for combat logging."))
+                            val entity = npc as LivingEntity
+                            entity.health = e.player.health
+                            entity.maxHealth = e.player.maxHealth
+                        }
+                    }, 20L)
+                    Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} &f${e.player.name}&7 has been removed from the game for combat logging."))
+                }
             }
         }
     }
