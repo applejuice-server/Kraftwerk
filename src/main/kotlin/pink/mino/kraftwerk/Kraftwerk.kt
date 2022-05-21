@@ -31,7 +31,6 @@ import pink.mino.kraftwerk.utils.Scoreboard
 import java.nio.file.Files
 import java.nio.file.Path
 import java.sql.SQLException
-import javax.security.auth.login.LoginException
 import javax.sql.DataSource
 
 
@@ -205,14 +204,7 @@ class Kraftwerk : ExtendedJavaPlugin() {
         }
 
         /* Discord */
-        try {
-            val discord = Discord()
-            this.discord = true
-            discordInstance = discord.instance
-        } catch (e: LoginException) {
-            Log.severe("Could not connect to Discord, Discord features will be disabled.")
-            e.printStackTrace()
-        }
+        Discord.main()
 
         if (discord) {
             if (!SettingsFeature.instance.data!!.getBoolean("matchpost.posted")) SettingsFeature.instance.data!!.set("whitelist.requests", false)
@@ -224,17 +216,17 @@ class Kraftwerk : ExtendedJavaPlugin() {
                 }
                 if (SettingsFeature.instance.data!!.getString("matchpost.host") == null) {
                     if (SettingsFeature.instance.data!!.getString("server.region") == "NA") {
-                        this.discordInstance.presence.activity = Activity.playing("na.applejuice.bar")
+                        Discord.instance!!.presence.activity = Activity.playing("na.applejuice.bar")
                     } else {
-                        this.discordInstance.presence.activity = Activity.playing("eu.applejuice.bar")
+                        Discord.instance!!.presence.activity = Activity.playing("eu.applejuice.bar")
                     }
                 }
-                else this.discordInstance.presence.activity = Activity.playing(SettingsFeature.instance.data!!.getString("matchpost.host"))
+                else Discord.instance!!.presence.activity = Activity.playing(SettingsFeature.instance.data!!.getString("matchpost.host"))
             } else {
                 if (SettingsFeature.instance.data!!.getString("server.region") == "NA") {
-                    this.discordInstance.presence.activity = Activity.playing("na.applejuice.bar")
+                    Discord.instance!!.presence.activity = Activity.playing("na.applejuice.bar")
                 } else {
-                    this.discordInstance.presence.activity = Activity.playing("eu.applejuice.bar")
+                    Discord.instance!!.presence.activity = Activity.playing("eu.applejuice.bar")
                 }
                 SettingsFeature.instance.data!!.set("matchpost.cancelled", null)
                 SettingsFeature.instance.saveData()
@@ -250,6 +242,8 @@ class Kraftwerk : ExtendedJavaPlugin() {
         for (world in Bukkit.getWorlds()) {
             world.pvp = true
         }
+
+        Discord.instance!!.getTextChannelById(756953696038027425)!!.sendMessage("test")
         //UpdateLeaderboards().runTaskTimer(this, 0L, 20L)
         InfoFeature().runTaskTimerAsynchronously(this, 0L, 6000L)
         TabFeature().runTaskTimer(this, 0L, 20L)

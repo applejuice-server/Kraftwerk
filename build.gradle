@@ -29,7 +29,7 @@ dependencies {
     compileOnly 'org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT'
     compileOnly group: "com.comphenix.protocol", name: "ProtocolLib", version: "4.5.0"
     implementation "org.jetbrains.kotlin:kotlin-stdlib"
-    implementation ("net.dv8tion:JDA:5.0.0-alpha.3") {
+    compileOnly ("net.dv8tion:JDA:5.0.0-alpha.3") {
         exclude module: 'opus-java'
     }
     compileOnly "com.gitlab.ruany:LiteBansAPI:0.3.5"
