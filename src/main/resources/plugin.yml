@@ -248,6 +248,18 @@ commands:
     aliases:
       - gen
     description: Generates your current world with the pregeneration scenarios.
+  donator:
+    aliases:
+      - d
+    description: View the donator menu.
+  redstone:
+    aliases:
+      - rs
+    description: Toggle redstone pickup.
+  lapis:
+    aliases:
+      - l
+    description: Toggles lapis pickup.
 depend:
   - ProtocolLib
   - Vault

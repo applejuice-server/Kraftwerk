@@ -22,7 +22,7 @@ class ChatListener : Listener {
         val player = e.player
         val group: String? = vaultChat?.getPrimaryGroup(player)
         val prefix: String = ChatColor.translateAlternateColorCodes('&', vaultChat?.getGroupPrefix(player.world, group))
-        if (player.hasPermission("uhc.donator.chat")) {
+        if (player.hasPermission("uhc.donator.emotes")) {
             if (e.message.contains(":shrug:", true)) {
                 e.message = e.message.replace(":shrug:", pink.mino.kraftwerk.utils.Chat.colored("&e¯\\_(ツ)_/¯&r"))
             }
@@ -35,8 +35,17 @@ class ChatListener : Listener {
             if (e.message.contains(":star:", true)) {
                 e.message = e.message.replace(":star:", pink.mino.kraftwerk.utils.Chat.colored("&e✰&r"))
             }
+            if (e.message.contains(":100:", true)) {
+                e.message = e.message.replace(":100:", pink.mino.kraftwerk.utils.Chat.colored("&c&l&n100&r"))
+            }
+            if (e.message.contains("o7", true)) {
+                e.message = e.message.replace("o7", pink.mino.kraftwerk.utils.Chat.colored("&e(｀-´)>&r"))
+            }
+            if (e.message.contains(":blush:", true)) {
+                e.message = e.message.replace(":blush:", pink.mino.kraftwerk.utils.Chat.colored("&d(◡‿◡✿)&r"))
+            }
         }
-        if (player.hasPermission("uhc.donator.chat")) {
+        if (player.hasPermission("uhc.donator.emotes")) {
             e.format = prefix + pink.mino.kraftwerk.utils.Chat.colored("${PlayerUtils.getPrefix(player)}%s") + ChatColor.DARK_GRAY + " » " + ChatColor.WHITE + "%s"
         } else {
             e.format = prefix + pink.mino.kraftwerk.utils.Chat.colored("${PlayerUtils.getPrefix(player)}%s") + ChatColor.DARK_GRAY + " » " + ChatColor.GRAY + "%s"

@@ -1,16 +1,23 @@
 package pink.mino.kraftwerk.discord.listeners
 
 import me.lucko.helper.Schedulers
+import me.lucko.helper.profiles.ProfileRepository
+import me.lucko.helper.promise.Promise
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import net.dv8tion.jda.api.utils.MarkdownSanitizer
 import org.bukkit.Bukkit
+import org.bukkit.plugin.java.JavaPlugin
+import pink.mino.kraftwerk.Kraftwerk
 import pink.mino.kraftwerk.features.SettingsFeature
 import pink.mino.kraftwerk.scenarios.ScenarioHandler
+import pink.mino.kraftwerk.utils.StatsHandler
 import java.awt.Color
 
 class SlashCommand : ListenerAdapter() {
+
+    val profileService = JavaPlugin.getPlugin(Kraftwerk::class.java).getService(ProfileRepository::class.java)
     override fun onSlashCommand(event: SlashCommandEvent) {
         if (event.guild == null) return
         val member = event.member
@@ -79,6 +86,30 @@ class SlashCommand : ListenerAdapter() {
                 embed.setAuthor("applejuice — Scenario List", "https://dsc.gg/apple-juice", event.jda.selfUser.avatarUrl)
                 embed.setDescription("Scenarios: `${list.joinToString(", ")}`")
                 event.replyEmbeds(embed.build()).setEphemeral(false).queue()
+            }
+            "stats" -> {
+                val player = event.getOption("player")!!.asString
+                profileService.lookupProfile(player)
+                    .thenAcceptSync { it ->
+                        if (!it.isPresent) {
+                            return@thenAcceptSync event.reply("That player has never joined the server or is invalid.").queue()
+                        }
+                        val profile = it.get()
+                        val actual = Bukkit.getOfflinePlayer(profile.uniqueId)
+                        Promise.start()
+                            .thenApplyAsync { StatsHandler.getStatsPlayer(actual) }
+                            .thenAcceptSync { statsPlayer ->
+                                val embed = EmbedBuilder()
+                                val kdr = if (statsPlayer.kills != 0 && statsPlayer.deaths != 0) statsPlayer.kills / statsPlayer.deaths else "0.0"
+                                embed.setColor(Color(255, 61, 61))
+                                embed.setTitle("${MarkdownSanitizer.escape(actual.name)}'s stats")
+                                embed.addField("PvP", "Kills: **${statsPlayer.kills}**\nDeaths: **${statsPlayer.deaths}**\nKDR: **${kdr}**\nWins: **${statsPlayer.wins}**\nGames Played: **${statsPlayer.gamesPlayed}**", true)
+                                embed.addField("Misc.", "Times Enchanted: **${statsPlayer.timesEnchanted}**\nTimes Crafted: **${statsPlayer.timesCrafted}**\nGapples Eaten: **${statsPlayer.gapplesEaten}**", true)
+                                embed.addField("Ores Mined", "Diamonds Mined: **${statsPlayer.diamondsMined}**\nGold Mined: **${statsPlayer.goldMined}**\nIron Mined: **${statsPlayer.ironMined}**", true)
+                                embed.setThumbnail("https://crafatar.com/avatars/${profile.uniqueId}?size=128&overlay")
+                                event.replyEmbeds(embed.build()).setEphemeral(false).queue()
+                            }
+                    }
             }
             else -> event.reply("I can't handle that command right now :(").setEphemeral(true).queue()
         }

@@ -106,7 +106,7 @@ class SpawnFeature : Listener {
                     }
                     Chat.colored("&cDonator Menu &7(Right Click)") -> {
                         e.isCancelled = true
-                        Chat.sendMessage(e.player, "&cThis feature isn't available yet.")
+                        Bukkit.dispatchCommand(e.player, "donator")
                     }
                 }
             }
