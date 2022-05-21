@@ -127,7 +127,7 @@ class Kraftwerk : ExtendedJavaPlugin() {
         getCommand("respawn").executor = RespawnCommand()
         getCommand("editpregen").executor = EditPregenCommand()
         getCommand("generate").executor = GenerateCommand()
-
+        getCommand("giveitems").executor = GiveItemsCommand()
 
         getCommand("gm").executor = GamemodeCommand()
         getCommand("gamemode").executor = GamemodeCommand()
