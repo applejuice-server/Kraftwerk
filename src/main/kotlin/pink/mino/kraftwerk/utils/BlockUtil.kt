@@ -32,7 +32,7 @@ class BlockUtil {
     fun degradeDurability(player: Player) {
         val item = player.itemInHand
 
-        if ((item.type == Material.AIR) || (item.type == Material.BOW) || item.type.maxDurability.toInt() == 0) {
+        if ((item.type == Material.AIR) || (item.type == Material.BOW) || item.type.maxDurability.toInt() == 0 || item.itemMeta.spigot().isUnbreakable) {
             return
         }
 
