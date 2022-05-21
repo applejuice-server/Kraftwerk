@@ -22,7 +22,7 @@ class ExtremeSkyHighIterator : BukkitRunnable() {
         if (timer == 0) {
             for (player in Bukkit.getOnlinePlayers()) {
                 if (player.location.y < 200) {
-                    if (!SpecFeature.instance.getSpecs().contains(player.name)) {
+                    if (!SpecFeature.instance.getSpecs().contains(player.name) && player.world.name != "Spawn") {
                         player.damage(4.0)
                         Chat.sendMessage(player, "&cYou've been damaged for not being above y-101.")
                     }
