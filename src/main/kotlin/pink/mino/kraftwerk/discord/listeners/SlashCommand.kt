@@ -4,6 +4,7 @@ import me.lucko.helper.Schedulers
 import me.lucko.helper.profiles.ProfileRepository
 import me.lucko.helper.promise.Promise
 import net.dv8tion.jda.api.EmbedBuilder
+import net.dv8tion.jda.api.entities.VoiceChannel
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import net.dv8tion.jda.api.utils.MarkdownSanitizer
@@ -14,6 +15,7 @@ import pink.mino.kraftwerk.features.SettingsFeature
 import pink.mino.kraftwerk.scenarios.ScenarioHandler
 import pink.mino.kraftwerk.utils.StatsHandler
 import java.awt.Color
+import java.util.concurrent.TimeUnit
 
 class SlashCommand : ListenerAdapter() {
 
@@ -110,6 +112,67 @@ class SlashCommand : ListenerAdapter() {
                                 event.replyEmbeds(embed.build()).setEphemeral(false).queue()
                             }
                     }
+            }
+            "limit" -> {
+                if (event.channel.idLong != 937811643818201098L) {
+                    event.reply("Please use <#937811643818201098> for bot commands!").queue runnable@{
+                        it.deleteOriginal().queueAfter(5, TimeUnit.SECONDS)
+                    }
+                    return
+                }
+                if (member == null) {
+                    return
+                }
+
+                val command: List<String> = event.commandString.split(" size: ")
+
+                var foundChannel: Boolean = false
+                var isUsersChannel: Boolean = false
+                var vc: VoiceChannel? = null
+
+                for (channel in guild!!.voiceChannels) {
+                    if (!channel.members.contains(member)) continue
+                    foundChannel = true
+                    if (channel.name.contains(member.effectiveName + member.user.discriminator)) {
+                        isUsersChannel = true
+                    }
+                    vc = channel
+                    break
+                }
+                if (!foundChannel) {
+                    event.deferReply().setContent("You are not connected to a voice channel!").queue runnable@ {
+                        it.deleteOriginal().queueAfter(5, TimeUnit.SECONDS)
+                    }
+                    return
+                }
+
+                if (!isUsersChannel) {
+                    event.deferReply().setContent("You are not the owner of the VC you're connected to.").queue runnable@ {
+                        it.deleteOriginal().queueAfter(5, TimeUnit.SECONDS)
+                    }
+                    return
+                }
+
+                var cmd: Int = 0
+                try {
+                    cmd = command[1].toInt()
+                } catch (e: NumberFormatException) {
+                    event.deferReply().setContent("You did not input a valid size.").queue runnable@ {
+                        it.deleteOriginal().queueAfter(5, TimeUnit.SECONDS)
+                    }
+                    return
+                }
+
+                if (cmd > 99) {
+                    cmd = 0
+                }
+
+                vc!!.manager.setUserLimit(cmd).queue()
+                if (cmd == 0) {
+                    event.deferReply().setContent("You have set the user limit to `unlimited`.").queue()
+                } else {
+                    event.deferReply().setContent("You have changed your channel limit to `${cmd}`.").queue()
+                }
             }
             else -> event.reply("I can't handle that command right now :(").setEphemeral(true).queue()
         }
