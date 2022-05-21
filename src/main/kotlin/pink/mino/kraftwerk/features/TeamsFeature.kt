@@ -12,6 +12,7 @@ class TeamsFeature private constructor() {
     val sb: Scoreboard = Bukkit.getScoreboardManager().mainScoreboard
     private val teams = ArrayList<Team>()
     val colors = ArrayList<String>()
+    var teamCount: Int = 0
 
     /**
      * Gets a list of all teams.
@@ -56,7 +57,8 @@ class TeamsFeature private constructor() {
 
     fun createTeam(player: Player): Team {
         // Create a new team with name.
-        val name = "UHC${teams.size + 1}"
+        teamCount++
+        val name = "UHC${teamCount}"
         val team = sb.registerNewTeam(name)
 
         // Remove randomly selected color.
@@ -67,7 +69,7 @@ class TeamsFeature private constructor() {
         // Set up color & misc.
         team.prefix = color
         team.suffix = "§r"
-        team.displayName = color + "Team #${teams.size + 1}"
+        team.displayName = color + "Team #${teamCount}"
         team.setAllowFriendlyFire(true)
         team.setCanSeeFriendlyInvisibles(true)
 

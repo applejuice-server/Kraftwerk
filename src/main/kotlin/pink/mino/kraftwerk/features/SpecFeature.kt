@@ -428,7 +428,7 @@ class SpecFeature : Listener {
         val p = e.entity as Player
         if (e.finalDamage == 0.0 || e.damage == 0.0 || e.isCancelled) return
         if (p.health - e.finalDamage <= 0) return
-        val percentage = (e.damage / 2) * 10
+        val percentage = (e.finalDamage / 2) * 10
         when (e.cause) {
             EntityDamageEvent.DamageCause.FALL -> {
                 for (player in Bukkit.getOnlinePlayers()) {
@@ -483,7 +483,7 @@ class SpecFeature : Listener {
         val p = e.entity as Player
         if (e.finalDamage == 0.0 || e.damage == 0.0 || e.isCancelled) return
         if (p.health - e.finalDamage <= 0) return
-        val percentage = (e.damage / 2) * 10
+        val percentage = (e.finalDamage / 2) * 10
         if (e.entity is Monster) {
             for (player in Bukkit.getOnlinePlayers()) {
                 if (getSpecs().contains(player.name)) {
