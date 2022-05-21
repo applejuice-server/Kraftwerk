@@ -8,6 +8,8 @@ import net.dv8tion.jda.api.interactions.commands.OptionType
 import net.dv8tion.jda.api.interactions.commands.build.CommandData
 import net.dv8tion.jda.api.requests.GatewayIntent
 import pink.mino.kraftwerk.discord.listeners.MemberJoin
+import pink.mino.kraftwerk.discord.listeners.MemberJoinVC
+import pink.mino.kraftwerk.discord.listeners.MemberLeaveVC
 import pink.mino.kraftwerk.discord.listeners.SlashCommand
 import pink.mino.kraftwerk.features.SettingsFeature
 import javax.security.auth.login.LoginException
@@ -25,6 +27,8 @@ class Discord : ListenerAdapter() {
         )
             .addEventListeners(SlashCommand())
             .addEventListeners(MemberJoin())
+            .addEventListeners(MemberJoinVC())
+            .addEventListeners(MemberLeaveVC())
             .build()
 
         if (SettingsFeature.instance.data!!.getString("server.region") == "NA") {
@@ -54,6 +58,10 @@ class Discord : ListenerAdapter() {
             CommandData("stats", "View the stats of another player on the server.")
                 .addOption(OptionType.STRING, "player", "The player you want to view the stats for.", true)
                 .setDefaultEnabled(false)
+        )
+        commands.addCommands(
+            CommandData("limit", "Change the limit on your personal voice channel.")
+                .addOption(OptionType.INTEGER, "size", "The size you want to set the limit to.", true)
         )
         commands.queue()
         instance = jda
