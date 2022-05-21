@@ -23,7 +23,8 @@ class Discord : ListenerAdapter() {
         }
         val jda = JDABuilder.createLight(
             SettingsFeature.instance.data!!.getString("discord.token"),
-            GatewayIntent.GUILD_MEMBERS
+            GatewayIntent.GUILD_MEMBERS,
+            GatewayIntent.GUILD_VOICE_STATES
         )
             .addEventListeners(SlashCommand())
             .addEventListeners(MemberJoin())
