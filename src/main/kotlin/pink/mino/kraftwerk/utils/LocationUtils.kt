@@ -3,6 +3,7 @@ package pink.mino.kraftwerk.utils
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.TravelAgent
+import org.bukkit.World
 import org.bukkit.WorldBorder
 import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
@@ -69,5 +70,21 @@ object LocationUtils {
             }
         }
         return pos
+    }
+
+    fun getHighestBlock(loc: Location): Location {
+        var highest: Int
+        highest = if (loc.world.environment == World.Environment.NETHER) {
+            127
+        } else {
+            255
+        }
+
+        for (i in highest downTo 0) {
+            if (loc.world.getBlockAt(loc.blockX, i, loc.blockZ).type != Material.AIR && loc.world.getBlockAt(loc.blockX, i, loc.blockZ).type != Material.LONG_GRASS && loc.world.getBlockAt(loc.blockX, i, loc.blockZ).type != Material.DOUBLE_PLANT && loc.world.getBlockAt(loc.blockX, i, loc.blockZ).type != Material.YELLOW_FLOWER && loc.world.getBlockAt(loc.blockX, i, loc.blockZ).type != Material.RED_ROSE && loc.world.getBlockAt(loc.blockX, i, loc.blockZ).type != Material.VINE) {
+                return loc.world.getBlockAt(loc.blockX, i, loc.blockZ).location
+            }
+        }
+        return loc
     }
 }
