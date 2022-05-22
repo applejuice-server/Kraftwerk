@@ -87,7 +87,7 @@ class SpecClickFeature : PacketAdapter(JavaPlugin.getPlugin(Kraftwerk::class.jav
                         for (player in list) {
                             Chat.sendMessage(
                                 p,
-                                "${Chat.prefix} &7${player.name} &7is at &b${floor(player.location.x)}, &7${floor(player.location.y)}, &7${
+                                "${Chat.prefix} &7${player.name} &7is at &b${floor(player.location.x)}&7, &b${floor(player.location.y)}&7, &b${
                                     floor(player.location.z)
                                 }"
                             )
@@ -411,7 +411,7 @@ class SpecFeature : Listener {
                     Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
                         val comp = TextComponent(Chat.colored("$prefix ${PlayerUtils.getPrefix(p)}${p.name}&7 has mined &6Gold Ore&7. &8(&7T: &6${goldMined[p.uniqueId]} &8| &7V: &6${gold}&8)"))
                         comp.clickEvent = ClickEvent(
-                            ClickEvent.Action.SUGGEST_COMMAND,
+                            ClickEvent.Action.RUN_COMMAND,
                             "/tp ${p.name}"
                         )
                         player.spigot().sendMessage(comp)
@@ -436,7 +436,7 @@ class SpecFeature : Listener {
                         Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
                             val comp = TextComponent(Chat.colored("$prefix ${PlayerUtils.getPrefix(p)}${p.name} &8(${PlayerUtils.getHealth(p)}&8)&7 took ${HealthChatColorer.returnHealth(percentage)}${percentage.toInt()}%&7 due to &fFall&7."))
                             comp.clickEvent = ClickEvent(
-                                ClickEvent.Action.SUGGEST_COMMAND,
+                                ClickEvent.Action.RUN_COMMAND,
                                 "/tp ${p.name}"
                             )
                             player.spigot().sendMessage(comp)
@@ -449,7 +449,7 @@ class SpecFeature : Listener {
                     if (getSpecs().contains(player.name)) {
                         val comp = TextComponent(Chat.colored("$prefix ${PlayerUtils.getPrefix(p)}${p.name} &8(${PlayerUtils.getHealth(p)}&8)&7 took ${HealthChatColorer.returnHealth(percentage)}${percentage.toInt()}%&7 due to &fBurning&7."))
                         comp.clickEvent = ClickEvent(
-                            ClickEvent.Action.SUGGEST_COMMAND,
+                            ClickEvent.Action.RUN_COMMAND,
                             "/tp ${p.name}"
                         )
                         player.spigot().sendMessage(comp)
@@ -465,7 +465,7 @@ class SpecFeature : Listener {
                         Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
                             val comp = TextComponent(Chat.colored("$prefix ${PlayerUtils.getPrefix(p)}${p.name} &8(${PlayerUtils.getHealth(p)}&8)&7 took ${HealthChatColorer.returnHealth(percentage)}${percentage.toInt()}%&7 due to &fUnknown&7."))
                             comp.clickEvent = ClickEvent(
-                                ClickEvent.Action.SUGGEST_COMMAND,
+                                ClickEvent.Action.RUN_COMMAND,
                                 "/tp ${p.name}"
                             )
                             player.spigot().sendMessage(comp)
@@ -490,7 +490,7 @@ class SpecFeature : Listener {
                     Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
                         val comp = TextComponent(Chat.colored("$prefix ${PlayerUtils.getPrefix(p)}${p.name} &8(${PlayerUtils.getHealth(p)}&8)&7 took ${HealthChatColorer.returnHealth(percentage)}${percentage.toInt()}%&7 due to &fPvE&7."))
                         comp.clickEvent = ClickEvent(
-                            ClickEvent.Action.SUGGEST_COMMAND,
+                            ClickEvent.Action.RUN_COMMAND,
                             "/tp ${p.name}"
                         )
                         player.spigot().sendMessage(comp)
@@ -505,7 +505,7 @@ class SpecFeature : Listener {
                     Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
                         val comp = TextComponent(Chat.colored("$prefix ${PlayerUtils.getPrefix(p)}${p.name} &8(${PlayerUtils.getHealth(p)}&8)&7 took ${HealthChatColorer.returnHealth(percentage)}${percentage.toInt()}%&7 due to ${PlayerUtils.getPrefix(damager)}${damager.name} &8(${PlayerUtils.getHealth(damager)}&8)&7. &8(&fPvP&8)"))
                         comp.clickEvent = ClickEvent(
-                            ClickEvent.Action.SUGGEST_COMMAND,
+                            ClickEvent.Action.RUN_COMMAND,
                             "/tp ${p.name}"
                         )
                         player.spigot().sendMessage(comp)
@@ -521,7 +521,7 @@ class SpecFeature : Listener {
                         Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
                             val comp = TextComponent(Chat.colored("$prefix ${PlayerUtils.getPrefix(p)}${p.name} &8(${PlayerUtils.getHealth(p)}&8)&7 took ${HealthChatColorer.returnHealth(percentage)}${percentage.toInt()}%&7 due to ${PlayerUtils.getPrefix(damager)}${damager.name} &8(${PlayerUtils.getHealth(damager)}&8)&7. &8(&fBow&8)"))
                             comp.clickEvent = ClickEvent(
-                                ClickEvent.Action.SUGGEST_COMMAND,
+                                ClickEvent.Action.RUN_COMMAND,
                                 "/tp ${p.name}"
                             )
                             player.spigot().sendMessage(comp)
