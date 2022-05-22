@@ -2,6 +2,7 @@ package pink.mino.kraftwerk.discord
 
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.JDABuilder
+import net.dv8tion.jda.api.entities.Activity
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import net.dv8tion.jda.api.interactions.commands.OptionType
 import net.dv8tion.jda.api.interactions.commands.build.CommandData
@@ -34,7 +35,13 @@ class Discord : ListenerAdapter() {
                 .addEventListeners(MemberJoinVC())
                 .addEventListeners(MemberLeaveVC())
                 .build()
-            
+
+            if (SettingsFeature.instance.data!!.getString("server.region") == "NA") {
+                jda.presence.activity = Activity.playing("na.applejuice.bar")
+            } else {
+                jda.presence.activity = Activity.playing("eu.applejuice.bar")
+            }
+
             val commands = jda.updateCommands()
 
             commands.addCommands(
