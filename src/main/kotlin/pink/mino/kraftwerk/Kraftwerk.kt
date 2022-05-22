@@ -23,6 +23,7 @@ import pink.mino.kraftwerk.config.ConfigOptionHandler
 import pink.mino.kraftwerk.discord.Discord
 import pink.mino.kraftwerk.features.*
 import pink.mino.kraftwerk.listeners.*
+import pink.mino.kraftwerk.listeners.donator.CowboyFeature
 import pink.mino.kraftwerk.listeners.donator.MobEggsListener
 import pink.mino.kraftwerk.listeners.lunar.PlayerRegisterListener
 import pink.mino.kraftwerk.scenarios.ScenarioHandler
@@ -95,6 +96,7 @@ class Kraftwerk : ExtendedJavaPlugin() {
 
         /* Donator Listeners */
         Bukkit.getServer().pluginManager.registerEvents(MobEggsListener(), this)
+        Bukkit.getServer().pluginManager.registerEvents(CowboyFeature(), this)
         //Bukkit.getServer().pluginManager.registerEvents(PregenFeature(), this)
 
         /* Registering commands */
