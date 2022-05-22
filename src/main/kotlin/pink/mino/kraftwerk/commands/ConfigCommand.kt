@@ -49,7 +49,7 @@ class ConfigCommand : CommandExecutor {
     }
 
     private fun getFinalBorder(): Int {
-        val op = ScenarioHandler.getScenario("bigcrack")!!.enabled;
+        val op = ScenarioHandler.getScenario("bigcrack")!!.enabled
         return if (op) {
             75
         } else {
@@ -160,7 +160,7 @@ class ConfigCommand : CommandExecutor {
             teamConfig.addLore(" &7Team Size ${Chat.dash} &fTo${SettingsFeature.instance.data!!.getInt("game.teamSize")} ")
         }
         teamConfig.addLore(" &7Team Management ${Chat.dash} &f${ffa} ").addLore(" ")
-        val teamConf = teamConfig.make();
+        val teamConf = teamConfig.make()
         gui.item(12, teamConf).onClick runnable@ {
             it.isCancelled = true
             if (sender.hasPermission("uhc.staff")) {
@@ -188,7 +188,7 @@ class ConfigCommand : CommandExecutor {
             .addLore("")
             .addLore(" &7Split Enchants ${Chat.dash} ${getOption("splitenchants")} ")
             .addLore(" &7Bookshelves ${Chat.dash} ${getOption("bookshelves")} ")
-            .addLore(" &7Fire Weapons ${Chat.dash} ${getOption("bookshelves")} ")
+            .addLore(" &7Fire Weapons ${Chat.dash} ${getOption("fireweapons")} ")
             .addLore(" ")
             .make()
         gui.item(14, enchanting).onClick runnable@ {
