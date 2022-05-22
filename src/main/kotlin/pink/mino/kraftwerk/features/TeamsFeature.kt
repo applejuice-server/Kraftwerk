@@ -55,7 +55,7 @@ class TeamsFeature private constructor() {
         teams.clear()
     }
 
-    fun createTeam(player: Player): Team {
+    fun createTeam(player: Player? = null): Team {
         // Create a new team with name.
         teamCount++
         val name = "UHC${teamCount}"
@@ -74,11 +74,12 @@ class TeamsFeature private constructor() {
         team.setCanSeeFriendlyInvisibles(true)
 
         // Add player.
-        team.addPlayer(player)
+        if (player != null) team.addPlayer(player)
 
         // Add to list.
         teams.add(team)
-        Log.info("Created ${team.name} for ${player.name}.")
+        if (player != null) Log.info("Created ${team.name} for ${player.name}.")
+        else Log.info("Created ${team.name}.")
         return team
     }
 

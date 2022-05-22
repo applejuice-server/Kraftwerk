@@ -448,12 +448,7 @@ class TeamCommand : CommandExecutor {
                 Chat.sendMessage(sender, "${Chat.prefix} Invalid usage: &f/team bulk <list of players>&7.")
                 return false
             }
-            var t: Team? = null
-            for (team in TeamsFeature.manager.getTeams()) {
-                if (team.size == 0) {
-                    t = team
-                }
-            }
+            val t: Team = TeamsFeature.manager.createTeam()
             for ((index, element) in args.withIndex()) {
                 if (index == 0) continue
                 val target = Bukkit.getPlayer(element)
@@ -466,7 +461,7 @@ class TeamCommand : CommandExecutor {
                     Chat.sendMessage(sender, "&c${element} is already in a team.")
                     continue
                 }
-                t!!.addPlayer(target)
+                t.addPlayer(target)
             }
             Chat.sendMessage(sender, "${Chat.prefix} Successfully added all players to the team.")
         } else if (args[0] == "remove" || args[0] == "kick") {
