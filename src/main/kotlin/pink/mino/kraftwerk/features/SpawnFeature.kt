@@ -18,6 +18,8 @@ import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerItemConsumeEvent
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.ItemBuilder
+import pink.mino.kraftwerk.utils.Perk
+import pink.mino.kraftwerk.utils.PerkChecker
 
 class SpawnFeature : Listener {
     val spawnLocation = Location(Bukkit.getWorld("Spawn"), -221.5, 95.0, -140.5)
@@ -71,6 +73,18 @@ class SpawnFeature : Listener {
             .addLore("&7Right-click to view active scenarios.")
             .make()
         p.inventory.setItem(8, scenarios)
+
+        val mobEggs = ItemBuilder(Material.EGG)
+            .name("&2Mob Eggs &7(Throw)")
+            .addLore("&7Throw these eggs in the Spawn to spawn mobs!")
+            .addLore("&7&oMobs last for 10 seconds.")
+            .addLore("&7&oEggs replenish after 10 seconds of no eggs.")
+            .setAmount(5)
+            .make()
+        val perks = PerkChecker.checkPerks(p)
+        if (perks.contains(Perk.MOB_EGGS)) {
+            p.inventory.setItem(7, mobEggs)
+        }
 
         val location = Location(Bukkit.getWorld("Spawn"), -221.5, 95.0, -140.5)
         p.teleport(location)
