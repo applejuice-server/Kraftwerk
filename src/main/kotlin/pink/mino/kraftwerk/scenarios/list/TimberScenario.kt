@@ -1,5 +1,6 @@
 package pink.mino.kraftwerk.scenarios.list
 
+import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.block.Block
@@ -22,22 +23,21 @@ class TimberScenario : Scenario(
         if (!enabled) return
         if (event.isCancelled) return
         if (GameState.currentState !== GameState.INGAME) return
-        handleBreak(event.block, 0, event.player)
+        if (event.block.type != Material.LOG && event.block.type != Material.LOG_2) return
+        timberTree(event.block.location, event.block.type, event.player)
     }
 
-    private fun handleBreak(tree: Block?, broken: Int, player: Player) {
-        if (broken > 30) return
-        if (tree == null || tree.type === Material.AIR) return
-        if (tree.type !== Material.LOG && tree.type !== Material.LOG_2) return
-        tree.breakNaturally()
-        val loc = tree.location
-        loc.world.playSound(loc, Sound.DIG_WOOD, 0.5f, 1f)
-        BlockUtil().degradeDurability(player)
+    private fun timberTree(loc: Location, material: Material, player: Player) {
         for (x in loc.blockX - 1..loc.blockX + 1) {
             for (y in loc.blockY - 1..loc.blockY + 1) {
                 for (z in loc.blockZ - 1..loc.blockZ + 1) {
-                    val block = loc.world.getBlockAt(x, y, z)
-                    handleBreak(block, broken + 1, player)
+                    val newLoc = Location(loc.world, x.toDouble(), y.toDouble(), z.toDouble())
+                    if (loc.world.getBlockAt(x, y, z).type == material) {
+                        loc.world.getBlockAt(x, y, z).breakNaturally()
+                        loc.world.playSound(newLoc, Sound.DIG_WOOD, 1f, 1f)
+                        BlockUtil().degradeDurability(player)
+                        timberTree(newLoc, material, player)
+                    }
                 }
             }
         }

@@ -242,7 +242,7 @@ class Kraftwerk : ExtendedJavaPlugin() {
             world.pvp = true
         }
 
-        Discord.instance!!.getTextChannelById(756953696038027425)!!.sendMessage("test")
+        //Discord.instance!!.getTextChannelById(756953696038027425)!!.sendMessage("test")
         //UpdateLeaderboards().runTaskTimer(this, 0L, 20L)
         InfoFeature().runTaskTimerAsynchronously(this, 0L, 6000L)
         TabFeature().runTaskTimer(this, 0L, 20L)
