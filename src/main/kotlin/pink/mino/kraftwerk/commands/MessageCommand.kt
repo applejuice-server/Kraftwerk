@@ -39,7 +39,6 @@ class MessageCommand : CommandExecutor {
         ReplyTo.setRepliedTo(player.uniqueId, target.uniqueId)
         ReplyTo.setRepliedTo(target.uniqueId, player.uniqueId)
 
-        player.playSound(player.location, Sound.NOTE_PLING, 10.toFloat(), 0.toFloat())
         target.playSound(player.location, Sound.NOTE_PLING, 10.toFloat(), 0.toFloat())
         return true
     }
