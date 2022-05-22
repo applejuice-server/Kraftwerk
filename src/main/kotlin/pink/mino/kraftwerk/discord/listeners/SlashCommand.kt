@@ -3,11 +3,11 @@ package pink.mino.kraftwerk.discord.listeners
 import me.lucko.helper.Schedulers
 import me.lucko.helper.profiles.ProfileRepository
 import me.lucko.helper.promise.Promise
+import me.lucko.helper.utils.Log
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.entities.VoiceChannel
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
-import net.dv8tion.jda.api.interactions.commands.OptionMapping
 import net.dv8tion.jda.api.utils.MarkdownSanitizer
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
@@ -25,7 +25,7 @@ class SlashCommand : ListenerAdapter() {
         if (event.guild == null) return
         val member = event.member
         val guild = event.guild
-        print("Handling command ${event.name} for ${event.member!!.user.name}#${event.member!!.user.discriminator} in the Discord server.")
+        Log.info("Handling command ${event.name} for ${event.member!!.user.name}#${event.member!!.user.discriminator} in the Discord server.")
         when (event.name) {
             "online" -> {
                 val embed = EmbedBuilder()
