@@ -11,10 +11,7 @@ import pink.mino.kraftwerk.Kraftwerk
 import pink.mino.kraftwerk.features.SettingsFeature
 import pink.mino.kraftwerk.features.SpawnFeature
 import pink.mino.kraftwerk.features.SpecFeature
-import pink.mino.kraftwerk.utils.Chat
-import pink.mino.kraftwerk.utils.GameState
-import pink.mino.kraftwerk.utils.Scoreboard
-import pink.mino.kraftwerk.utils.StatsHandler
+import pink.mino.kraftwerk.utils.*
 
 import net.milkbowl.vault.chat.Chat as VaultChat
 
@@ -42,6 +39,10 @@ class PlayerJoinListener : Listener {
         if (GameState.currentState == GameState.LOBBY) {
             Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
                 SpawnFeature.instance.send(player)
+                if (PerkChecker.checkPerks(player).contains(Perk.SPAWN_FLY)) {
+                    player.allowFlight = true
+                    player.isFlying = true
+                }
             }, 1L)
         } else {
             if (!SettingsFeature.instance.data!!.getStringList("game.list").contains(player.name)) {

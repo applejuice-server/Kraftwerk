@@ -10,7 +10,8 @@ enum class Perk {
     RIDE_PLAYERS,
     MOB_EGGS,
     BODY_SPEC,
-    STATS_RESET
+    STATS_RESET,
+    SPAWN_FLY
 }
 
 class PerkChecker {
@@ -40,6 +41,9 @@ class PerkChecker {
             }
             if (player.hasPermission("uhc.donator.statsReset")) {
                 list.add(Perk.STATS_RESET)
+            }
+            if (player.hasPermission("uhc.donator.spawnFly")) {
+                list.add(Perk.SPAWN_FLY)
             }
             return list
         }

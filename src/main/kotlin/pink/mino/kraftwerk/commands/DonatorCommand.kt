@@ -67,7 +67,7 @@ class DonatorCommand : CommandExecutor {
                 }
                 Perk.PROJECTILE_PARTICLES -> {
                     val item = ItemBuilder(Material.ARROW)
-                        .name("&2&lMob Eggs")
+                        .name("&2&lArrow Trails")
                         .addLore("&7You may customize the arrow particles that are spawned when you shoot a bow!")
                         .addLore("&8Use /particles to see the available particles!")
                         .make()
@@ -110,6 +110,16 @@ class DonatorCommand : CommandExecutor {
                         .name("&2&lToggle Pickups")
                         .addLore("&7You may toggle your pickups for certain ores!")
                         .addLore("&8Toggle pickups using &c/redstone&8 & or &1/lapis&8!")
+                        .make()
+                    gui.item(index, item).onClick runnable@ {
+                        it.isCancelled = true
+                    }
+                }
+                Perk.SPAWN_FLY -> {
+                    val item = ItemBuilder(Material.FEATHER)
+                        .name("&2&lSpawn Fly")
+                        .addLore("&7You may fly in spawn!")
+                        .addLore("&8Fly in spawn using /fly")
                         .make()
                     gui.item(index, item).onClick runnable@ {
                         it.isCancelled = true
