@@ -206,32 +206,31 @@ class Kraftwerk : ExtendedJavaPlugin() {
         /* Discord */
         Discord.main()
 
-        if (discord) {
-            if (!SettingsFeature.instance.data!!.getBoolean("matchpost.posted")) SettingsFeature.instance.data!!.set("whitelist.requests", false)
-            SettingsFeature.instance.saveData()
-            if (!SettingsFeature.instance.data!!.getBoolean("matchpost.cancelled")) {
-                if (SettingsFeature.instance.data!!.getString("matchpost.opens") != null) {
-                    ScheduleBroadcast(SettingsFeature.instance.data!!.getString("matchpost.opens")).runTaskTimer(this, 0L, 300L)
-                    ScheduleOpening(SettingsFeature.instance.data!!.getString("matchpost.opens")).runTaskTimer(this, 0L, 300L)
-                }
-                if (SettingsFeature.instance.data!!.getString("matchpost.host") == null) {
-                    if (SettingsFeature.instance.data!!.getString("server.region") == "NA") {
-                        Discord.instance!!.presence.activity = Activity.playing("na.applejuice.bar")
-                    } else {
-                        Discord.instance!!.presence.activity = Activity.playing("eu.applejuice.bar")
-                    }
-                }
-                else Discord.instance!!.presence.activity = Activity.playing(SettingsFeature.instance.data!!.getString("matchpost.host"))
-            } else {
+        if (!SettingsFeature.instance.data!!.getBoolean("matchpost.posted")) SettingsFeature.instance.data!!.set("whitelist.requests", false)
+        SettingsFeature.instance.saveData()
+        if (!SettingsFeature.instance.data!!.getBoolean("matchpost.cancelled")) {
+            if (SettingsFeature.instance.data!!.getString("matchpost.opens") != null) {
+                ScheduleBroadcast(SettingsFeature.instance.data!!.getString("matchpost.opens")).runTaskTimer(this, 0L, 300L)
+                ScheduleOpening(SettingsFeature.instance.data!!.getString("matchpost.opens")).runTaskTimer(this, 0L, 300L)
+            }
+            if (SettingsFeature.instance.data!!.getString("matchpost.host") == null) {
                 if (SettingsFeature.instance.data!!.getString("server.region") == "NA") {
                     Discord.instance!!.presence.activity = Activity.playing("na.applejuice.bar")
                 } else {
                     Discord.instance!!.presence.activity = Activity.playing("eu.applejuice.bar")
                 }
-                SettingsFeature.instance.data!!.set("matchpost.cancelled", null)
-                SettingsFeature.instance.saveData()
             }
+            else Discord.instance!!.presence.activity = Activity.playing(SettingsFeature.instance.data!!.getString("matchpost.host"))
+        } else {
+            if (SettingsFeature.instance.data!!.getString("server.region") == "NA") {
+                Discord.instance!!.presence.activity = Activity.playing("na.applejuice.bar")
+            } else {
+                Discord.instance!!.presence.activity = Activity.playing("eu.applejuice.bar")
+            }
+            SettingsFeature.instance.data!!.set("matchpost.cancelled", null)
+            SettingsFeature.instance.saveData()
         }
+
 
         GameState.setState(GameState.LOBBY)
         Log.info("Game state set to Lobby.")
