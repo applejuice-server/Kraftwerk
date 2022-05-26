@@ -113,6 +113,8 @@ class EndGameCommand : CommandExecutor {
         }
         SettingsFeature.instance.data!!.set("pregen.world", null)
         SettingsFeature.instance.saveData()
+        SettingsFeature.instance.worlds!!.set(world.name, null)
+        SettingsFeature.instance.saveWorlds()
         Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "restart")
         }, 900L)

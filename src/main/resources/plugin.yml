@@ -264,6 +264,14 @@ commands:
     aliases:
       - gi
     description: Give scenario items to a player.
+  auction:
+    aliases:
+      - auc
+      - market
+      - sm
+    description: Auction Scenario Command.
+  bid:
+    description: Bid on an auction.
 depend:
   - ProtocolLib
   - Vault
