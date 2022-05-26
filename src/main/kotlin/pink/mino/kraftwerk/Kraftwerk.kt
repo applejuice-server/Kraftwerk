@@ -96,6 +96,7 @@ class Kraftwerk : ExtendedJavaPlugin() {
         Bukkit.getServer().pluginManager.registerEvents(PickupFeature.instance, this)
         Bukkit.getServer().pluginManager.registerEvents(ChunkPopulateListener(), this)
         Bukkit.getServer().pluginManager.registerEvents(OreLimiterListener(), this)
+        Bukkit.getServer().pluginManager.registerEvents(PregenListener(), this)
 
         /* Donator Listeners */
         Bukkit.getServer().pluginManager.registerEvents(MobEggsListener(), this)

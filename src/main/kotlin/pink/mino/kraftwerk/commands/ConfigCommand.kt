@@ -210,11 +210,17 @@ class ConfigCommand : CommandExecutor {
         gui.item(15, border).onClick runnable@ {
             it.isCancelled = true
         }
-        var oreRates = SettingsFeature.instance.worlds!!.get("${SettingsFeature.instance.data!!.get("pregen.world")}.orerates")
-        oreRates = if (oreRates == "0") {
+        var goldRates = SettingsFeature.instance.worlds!!.get("${SettingsFeature.instance.data!!.get("pregen.world")}.orerates.gold")
+        goldRates = if (goldRates == "0") {
             "&aVanilla"
         } else {
-            "&f${SettingsFeature.instance.worlds!!.get("${SettingsFeature.instance.data!!.get("pregen.world")}.orerates")}% Removed"
+            "&6${SettingsFeature.instance.worlds!!.get("${SettingsFeature.instance.data!!.get("pregen.world")}.orerates.gold")}% Removed"
+        }
+        var diaRates = SettingsFeature.instance.worlds!!.get("${SettingsFeature.instance.data!!.get("pregen.world")}.orerates.diamond")
+        diaRates = if (diaRates == "0") {
+            "&aVanilla"
+        } else {
+            "&b${SettingsFeature.instance.worlds!!.get("${SettingsFeature.instance.data!!.get("pregen.world")}.orerates.diamond")}% Removed"
         }
         val miningConfig = ItemBuilder(Material.DIAMOND_PICKAXE)
             .name(" &4&lMining Config ")
@@ -223,7 +229,8 @@ class ConfigCommand : CommandExecutor {
             .addLore(" &7Anti-Stone ${Chat.dash} &f${getOption("antistone")} ")
             .addLore(" &7Anti-Burn ${Chat.dash} &f${getOption("antiburn")} ")
             .addLore(" ")
-            .addLore(" &7Ore Rates ${Chat.dash} &f${oreRates} ")
+            .addLore(" &7Diamond Ore Rates ${Chat.dash} &f${diaRates} ")
+            .addLore(" &7Gold Ore Rates ${Chat.dash} &f${goldRates} ")
             .addLore(" ")
             .addLore(" &7Stripmining ${Chat.dash} &f${getRule("stripmining")} ")
             .addLore(" &7Rollercoastering ${Chat.dash} &f${getRule("rollarcoastering")} ")
