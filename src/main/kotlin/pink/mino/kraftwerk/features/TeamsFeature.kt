@@ -3,6 +3,7 @@ package pink.mino.kraftwerk.features
 import me.lucko.helper.utils.Log
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
+import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 import org.bukkit.scoreboard.Scoreboard
 import org.bukkit.scoreboard.Team
@@ -90,6 +91,10 @@ class TeamsFeature private constructor() {
      */
     fun getTeam(player: Player): Team? {
         return player.scoreboard.getPlayerTeam(player)
+    }
+
+    fun getTeam(offlinePlayer: OfflinePlayer): Team? {
+        return pink.mino.kraftwerk.utils.Scoreboard.sb.getPlayerTeam(offlinePlayer)
     }
 
     /**
