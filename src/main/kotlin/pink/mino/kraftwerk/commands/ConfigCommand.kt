@@ -210,12 +210,20 @@ class ConfigCommand : CommandExecutor {
         gui.item(15, border).onClick runnable@ {
             it.isCancelled = true
         }
+        var oreRates = SettingsFeature.instance.worlds!!.get("${SettingsFeature.instance.data!!.get("pregen.world")}.orerates")
+        oreRates = if (oreRates == "0") {
+            "&aVanilla"
+        } else {
+            "&f${SettingsFeature.instance.worlds!!.get("${SettingsFeature.instance.data!!.get("pregen.world")}.orerates")}% Removed"
+        }
         val miningConfig = ItemBuilder(Material.DIAMOND_PICKAXE)
             .name(" &4&lMining Config ")
             .noAttributes()
             .addLore(" ")
             .addLore(" &7Anti-Stone ${Chat.dash} &f${getOption("antistone")} ")
             .addLore(" &7Anti-Burn ${Chat.dash} &f${getOption("antiburn")} ")
+            .addLore(" ")
+            .addLore(" &7Ore Rates ${Chat.dash} &f${oreRates} ")
             .addLore(" ")
             .addLore(" &7Stripmining ${Chat.dash} &f${getRule("stripmining")} ")
             .addLore(" &7Rollercoastering ${Chat.dash} &f${getRule("rollarcoastering")} ")

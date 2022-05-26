@@ -10,6 +10,7 @@ import org.bukkit.command.CommandSender
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import pink.mino.kraftwerk.features.SettingsFeature
+import pink.mino.kraftwerk.features.SpawnFeature
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GuiBuilder
 import pink.mino.kraftwerk.utils.ItemBuilder
@@ -131,6 +132,11 @@ class WorldCommand : CommandExecutor {
                 Chat.sendMessage(sender, "&cThat world cannot be deleted.")
                 return false
             }
+
+            for (p in world.players) {
+                SpawnFeature.instance.send(p)
+            }
+
             Bukkit.getServer().unloadWorld(world.name, true)
             for (file in Bukkit.getServer().worldContainer.listFiles()!!) {
                 if (file.name.lowercase() == world.name.lowercase()) {
@@ -139,6 +145,8 @@ class WorldCommand : CommandExecutor {
                     Log.info("Deleted world file for ${world.name}.")
                 }
             }
+            SettingsFeature.instance.worlds!!.set(world.name, null)
+            SettingsFeature.instance.saveWorlds()
             Chat.sendMessage(sender, "${Chat.prefix} &7Successfully deleted &f${world.name}&7.")
         }
 

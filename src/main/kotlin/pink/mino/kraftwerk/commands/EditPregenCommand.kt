@@ -125,6 +125,14 @@ class EditPregenCommand : CommandExecutor {
                 .addLore("&8Left Click &7to toggle clearing water.")
                 .addLore(" ")
                 .make()
+            val oreRates = ItemBuilder(Material.DIAMOND_ORE)
+                .name("&7Ore Rates: &c${pregenConfig.orerates}% Removed")
+                .addLore("&7Click to change the ore rates.")
+                .addLore(" ")
+                .addLore("&8Left Click: &a+5")
+                .addLore("&8Right Click: &c-5")
+                .addLore(" ")
+                .make()
             gui.item(3, clearTrees).onClick {
                 it.isCancelled = true
                 pregenConfig.clearTrees = !pregenConfig.clearTrees
@@ -132,6 +140,20 @@ class EditPregenCommand : CommandExecutor {
                 meta.displayName = Chat.colored("&7Clear Trees: &c${pregenConfig.clearTrees}")
                 it.currentItem.itemMeta = meta
                 Chat.sendMessage(sender, "${Chat.prefix} &7Clear trees set to &c${pregenConfig.clearTrees}&7.")
+            }
+            gui.item(4, oreRates).onClick {
+                it.isCancelled = true
+                if (it.isLeftClick) {
+                    pregenConfig.orerates += 5
+                    val meta = it.currentItem.itemMeta
+                    meta.displayName = Chat.colored("&7Ore Rates: &c${pregenConfig.orerates}% Removed")
+                    it.currentItem.itemMeta = meta
+                } else {
+                    pregenConfig.orerates -= 5
+                    val meta = it.currentItem.itemMeta
+                    meta.displayName = Chat.colored("&7Ore Rates: &c${pregenConfig.orerates}% Removed")
+                    it.currentItem.itemMeta = meta
+                }
             }
             gui.item(5, clearWater).onClick {
                 it.isCancelled = true

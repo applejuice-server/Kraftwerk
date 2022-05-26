@@ -28,6 +28,7 @@ open class PregenConfig(val player: OfflinePlayer, val name: String) {
     var border: Int = 1000
     var clearTrees: Boolean = true
     var clearWater: Boolean = true
+    var orerates: Int = 0
 }
 
 class PregenConfigHandler {
@@ -77,6 +78,9 @@ class PregenCommand : CommandExecutor {
         world.difficulty = Difficulty.HARD
         print("Created world ${pregenConfig.name}.")
         SettingsFeature.instance.data!!.set("pregen.world", world.name)
+        SettingsFeature.instance.worlds!!.set("${world.name}.name", world.name)
+        SettingsFeature.instance.worlds!!.set("${world.name}.orerates", pregenConfig.orerates)
+        SettingsFeature.instance.saveWorlds()
 
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
             "wb shape rectangular"
@@ -91,7 +95,7 @@ class PregenCommand : CommandExecutor {
             border.setCenter(0.0, 0.0)
 
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
-                "wb ${pregenConfig.name} fill 200"
+                "wb ${pregenConfig.name} fill 250 208 true"
             )
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
                 "wb fill confirm"
@@ -168,6 +172,7 @@ class PregenCommand : CommandExecutor {
                     .addLore(" ")
                     .addLore("&7Clear Water: &c${if (pregenConfig.clearWater) "&aEnabled" else "&cDisabled"}")
                     .addLore("&7Clear Trees: &c${if (pregenConfig.clearTrees) "&aEnabled" else "&cDisabled"}")
+                    .addLore("&7Ore Rates: &c${pregenConfig.orerates}% Removed")
                     .addLore(Chat.guiLine)
                     .make()
                 val submit = ItemBuilder(Material.EMERALD)

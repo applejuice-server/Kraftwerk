@@ -1,5 +1,6 @@
 package pink.mino.kraftwerk.utils
 
+import com.google.common.collect.Lists
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.Sound
@@ -7,6 +8,9 @@ import org.bukkit.block.Block
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import java.util.*
+import java.util.function.Predicate
+import kotlin.collections.ArrayList
+import kotlin.math.max
 
 
 class BlockUtil {
@@ -58,4 +62,60 @@ class BlockUtil {
         item.durability = durability
         player.itemInHand = item
     }
+
+    companion object {
+        private val DEFAULT_VEIN_LIMIT = 100
+    }
+
+    fun getVein(start: Block): List<Block> {
+        var type = start.type
+        if (start.type == Material.GLOWING_REDSTONE_ORE) {
+            type = Material.REDSTONE_ORE
+        }
+        return getVein(start, DEFAULT_VEIN_LIMIT)
+    }
+
+    fun getNearby(block: Block): List<Block> {
+        val nearby: ArrayList<Block> = arrayListOf()
+
+        for (dx in -1..1) {
+            for (dy in -1..1) {
+                for (dz in -1..1) {
+                    if (dx == 0 && dy == 0 && dz == 0) {
+                        continue
+                    }
+                    nearby.add(block.getRelative(dx, dy, dz))
+                }
+            }
+        }
+        return nearby
+    }
+
+    fun getVein(start: Block, maxVeinSize: Int): List<Block> {
+        val toCheck: LinkedList<Block> = Lists.newLinkedList()
+        val vein: ArrayList<Block> = Lists.newArrayList()
+
+        toCheck.add(start)
+        vein.add(start)
+
+        while (!toCheck.isEmpty()) {
+            val check = toCheck.poll()
+
+            for (nearbyBlock in getNearby(check)) {
+                if (vein.contains(nearbyBlock)) continue
+                var type = nearbyBlock.type
+                if (type == Material.GLOWING_REDSTONE_ORE) type = Material.REDSTONE_ORE
+                if (type != start.type) continue
+
+                toCheck.add(nearbyBlock)
+                vein.add(nearbyBlock)
+
+                if (vein.size > maxVeinSize) {
+                    return vein
+                }
+            }
+        }
+        return vein
+    }
+
 }
