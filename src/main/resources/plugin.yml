@@ -266,7 +266,9 @@ commands:
     description: Give scenario items to a player.
   auction:
     aliases:
-      - [auc, market, sm]
+      - auc
+      - market
+      - sm
     description: Auction Scenario Command.
   bid:
     description: Bid on an auction.

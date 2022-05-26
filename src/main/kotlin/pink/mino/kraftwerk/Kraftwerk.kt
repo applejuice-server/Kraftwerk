@@ -27,6 +27,7 @@ import pink.mino.kraftwerk.listeners.donator.CowboyFeature
 import pink.mino.kraftwerk.listeners.donator.MobEggsListener
 import pink.mino.kraftwerk.listeners.lunar.PlayerRegisterListener
 import pink.mino.kraftwerk.scenarios.ScenarioHandler
+import pink.mino.kraftwerk.scenarios.list.AuctionScenario
 import pink.mino.kraftwerk.utils.GameState
 import pink.mino.kraftwerk.utils.ProfileService
 import pink.mino.kraftwerk.utils.Scoreboard
