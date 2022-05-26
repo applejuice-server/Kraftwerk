@@ -10,21 +10,17 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.scheduler.BukkitRunnable
-import org.bukkit.scoreboard.Team
 import pink.mino.kraftwerk.Kraftwerk
 import pink.mino.kraftwerk.features.SpawnFeature
 import pink.mino.kraftwerk.features.SpecFeature
 import pink.mino.kraftwerk.features.TeamsFeature
 import pink.mino.kraftwerk.scenarios.Scenario
-import pink.mino.kraftwerk.scenarios.ScenarioHandler
-import pink.mino.kraftwerk.utils.BlockUtil
+import pink.mino.kraftwerk.utils.ActionBar
 import pink.mino.kraftwerk.utils.Chat
-import pink.mino.kraftwerk.utils.GameState
 import pink.mino.kraftwerk.utils.PlayerUtils
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
-import kotlin.math.max
 
 class AuctionScenario : Scenario(
     "Auction",
@@ -32,9 +28,10 @@ class AuctionScenario : Scenario(
     "auction",
     Material.GOLD_BLOCK
 ), CommandExecutor {
-    val owners: MutableList<String> = mutableListOf()
-    val diamondAmount: HashMap<Player, Int> = hashMapOf() // stores owners and their diamonds
-    val prefix = "&8[&4Auction&8]&7"
+    var owners: MutableList<String> = mutableListOf()
+    var diamondAmount: HashMap<Player, Int> = hashMapOf() // stores owners and their diamonds
+    var ownerArea: HashMap<Player, Location> = hashMapOf()
+    val prefix = "&8[&4Auction&8]&7 "
     var maxDiamonds = 50
     var highestBid = -1
     var highestBidder: Player? = null
@@ -49,6 +46,15 @@ class AuctionScenario : Scenario(
     val playerBuying = Location(Bukkit.getWorld("Spawn"), -258.0, 96.0, 8.0)
 
     var task: BukkitRunnable? = null
+
+    init {
+        JavaPlugin.getPlugin(Kraftwerk::class.java).getCommand("auction").executor = this
+        JavaPlugin.getPlugin(Kraftwerk::class.java).getCommand("bid").executor = this
+    }
+
+    companion object {
+        val instance = AuctionScenario()
+    }
 
     override fun onStart() {
         if (enabled) {
@@ -100,9 +106,10 @@ class AuctionScenario : Scenario(
 
                     owners.add(player.name.lowercase())
                     player.teleport(areas[owners.size])
+                    ownerArea[player] = areas[owners.size]!!
                     diamondAmount[player] = maxDiamonds
                     TeamsFeature.manager.createTeam(player)
-                    Bukkit.broadcastMessage(prefix + "${TeamsFeature.manager.getTeam(player)!!.prefix}${player.name} &7has been made the bidder for ${TeamsFeature.manager.getTeam(player)!!.displayName}&7.")
+                    Bukkit.broadcastMessage(Chat.colored(prefix + "${TeamsFeature.manager.getTeam(player)!!.prefix}${player.name} &7has been made the bidder for ${TeamsFeature.manager.getTeam(player)!!.displayName}&7."))
                 }
                 "remove" -> {
                     if (args.size < 2) {
@@ -118,6 +125,9 @@ class AuctionScenario : Scenario(
                     Chat.sendMessage(sender, prefix + "&c${args[1]} &7is no longer an owner.")
                     val offlinePlayer = Bukkit.getOfflinePlayer(args[1])
                     TeamsFeature.manager.deleteTeam(TeamsFeature.manager.getTeam(offlinePlayer)!!)
+                    if (offlinePlayer.isOnline) {
+                        SpawnFeature.instance.send(offlinePlayer.player)
+                    }
                 }
                 "diamonds" -> {
                     if (args.size < 2) {
@@ -192,12 +202,19 @@ class AuctionScenario : Scenario(
                         Chat.sendMessage(sender, prefix + "&cBidding is already in progress..")
                         return false
                     }
+                    if (owners.isEmpty()) {
+                        Chat.sendMessage(sender, prefix + "&cThere are no owners.")
+                        return false
+                    }
+                    Bukkit.broadcastMessage(Chat.colored(prefix + "This auction will give a max of &c$maxDiamonds &7diamonds to &cbidders&7."))
+                    Bukkit.broadcastMessage(Chat.colored(prefix + "The timer will begin counting down once the first bidder bids."))
                     object : BukkitRunnable() {
                         var timeLeft = 3
                         override fun run() {
                             bidTime = -1
 
                             if (timeLeft == 0) {
+                                biddingInProgress = true
                                 task = object: BukkitRunnable() {
                                     override fun run() {
                                         if (highestBid >= 0) {
@@ -207,14 +224,14 @@ class AuctionScenario : Scenario(
                                             val winner = highestBidder
 
                                             if (winner == null) {
-                                                Bukkit.broadcastMessage(prefix + "&cNo one has bid on the auction, restarting...")
+                                                Bukkit.broadcastMessage(Chat.colored(prefix + "&cNo one has bid on the auction, restarting..."))
                                                 return
                                             }
 
                                             val slave = currentPlayer
 
                                             if (slave == null) {
-                                                Bukkit.broadcastMessage(prefix + "&cCouldn't find the player, restarting...")
+                                                Bukkit.broadcastMessage(Chat.colored(prefix + "&cCouldn't find the player, restarting..."))
                                                 return
                                             }
 
@@ -229,7 +246,24 @@ class AuctionScenario : Scenario(
                                             TeamsFeature.manager.joinTeam(TeamsFeature.manager.getTeam(winner)!!.name, slave)
                                             cost[slave.name.lowercase()] = highestBid
                                             purchasedBy[slave.name.lowercase()] = winner.name.lowercase()
+                                            slave.teleport(ownerArea[winner]!!)
+                                            Chat.sendMessage(sender, prefix + "You won the auction for &c${slave.name}&7! You have &c${diamondAmount[winner]!!} &7diamonds left.")
                                             return
+                                        }
+                                        if (bidTime >= 0) {
+                                            for (player in Bukkit.getOnlinePlayers()) {
+                                                if (highestBid == -1) {
+                                                    ActionBar.sendActionBarMessage(
+                                                        player,
+                                                        Chat.colored(prefix + "Current Player ${Chat.dash} &c${currentPlayer?.name} &8| &7Highest Bid ${Chat.dash} &cN/A &7from &4N/A &8(&7Time Left: &c${bidTime}s&8)")
+                                                    )
+                                                } else {
+                                                    ActionBar.sendActionBarMessage(
+                                                        player,
+                                                        Chat.colored(prefix + "Current Player ${Chat.dash} &c${currentPlayer?.name} &8| &7Highest Bid ${Chat.dash} &c${highestBid} &7from &4${highestBidder?.name} &8(&7Time Left: &c${bidTime}s&8)")
+                                                    )
+                                                }
+                                            }
                                         }
                                         if (bidTime == -1) {
                                             val list: ArrayList<Player> = arrayListOf()
@@ -253,6 +287,9 @@ class AuctionScenario : Scenario(
                                             highestBidder = null
                                             bidTime = 8
                                             Bukkit.broadcastMessage(Chat.colored(prefix + "&c${currentPlayer!!.name} &7is now up for auction! Use &c/bid&7."))
+                                            for (player in Bukkit.getOnlinePlayers()) {
+                                                ActionBar.sendActionBarMessage(player, Chat.colored(prefix + "&c${currentPlayer!!.name} &7is now up for auction! Use &c/bid&7."))
+                                            }
                                             currentPlayer!!.teleport(playerBuying)
                                             return
                                         }
@@ -268,7 +305,7 @@ class AuctionScenario : Scenario(
                             Bukkit.broadcastMessage(Chat.colored(prefix + "Bidding starts in &c${timeLeft} &7seconds."))
                             timeLeft--
                         }
-                    }.runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), 20)
+                    }.runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0, 20)
                 }
                 "stop" -> {
                     if (task == null || !Bukkit.getScheduler().isCurrentlyRunning(task!!.taskId)) {
