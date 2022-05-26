@@ -17,6 +17,9 @@ class SettingsFeature private constructor() {
     var data: FileConfiguration? = null
         private set
     private var dfile: File? = null
+    var worlds: FileConfiguration? = null
+        private set
+    private var wfile: File? = null
 
     /**
      * Sets the settings manager up and creates missing files.
@@ -35,6 +38,16 @@ class SettingsFeature private constructor() {
             }
         }
         data = YamlConfiguration.loadConfiguration(dfile)
+
+        wfile = File(p.dataFolder, "worlds.yml")
+        if (!wfile!!.exists()) {
+            try {
+                wfile!!.createNewFile()
+            } catch (ex: IOException) {
+                Bukkit.getServer().logger.severe(ChatColor.RED.toString() + "Could not create worlds.yml!")
+            }
+        }
+        worlds = YamlConfiguration.loadConfiguration(wfile)
     }
 
     /**
@@ -57,5 +70,17 @@ class SettingsFeature private constructor() {
 
     companion object {
         val instance = SettingsFeature()
+    }
+
+    fun saveWorlds() {
+        try {
+            worlds!!.save(wfile)
+        } catch (ex: IOException) {
+            Bukkit.getServer().logger.severe(ChatColor.RED.toString() + "Could not save worlds.yml!")
+        }
+    }
+
+    fun reloadWorlds() {
+        worlds = YamlConfiguration.loadConfiguration(wfile)
     }
 }
