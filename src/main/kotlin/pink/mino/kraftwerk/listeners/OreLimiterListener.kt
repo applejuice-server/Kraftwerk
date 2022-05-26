@@ -21,9 +21,8 @@ class OreLimiterListener : Listener {
 
         // Redstone removed 40% of the time (Just experimental, Inferno's is the same and gets no complaints)
         // Diamond/Gold removed from SettingsFeature
-        val oreRate = SettingsFeature.instance.worlds!!.getInt(chunk.world.name + ".orerates")
-
-        if (oreRate == 0) return // 0% removed, no need to continue
+        val goldRate = SettingsFeature.instance.worlds!!.getInt(chunk.world.name + ".orerates.gold")
+        val diamondRate = SettingsFeature.instance.worlds!!.getInt(chunk.world.name + ".orerates.diamond")
 
         for (x in 0..16) {
             for (y in 0..64) {
@@ -43,8 +42,12 @@ class OreLimiterListener : Listener {
                         if ((random.nextInt(99) + 1) <= 40) {
                             vein.forEach { it.type = Material.STONE }
                         }
+                    } else if (type == Material.GOLD_ORE){
+                        if ((random.nextInt(99) + 1) <= goldRate) {
+                            vein.forEach { it.type = Material.STONE }
+                        }
                     } else {
-                        if ((random.nextInt(99) + 1) <= oreRate) {
+                        if ((random.nextInt(99) + 1) <= diamondRate) {
                             vein.forEach { it.type = Material.STONE }
                         }
                     }

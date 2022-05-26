@@ -28,7 +28,8 @@ open class PregenConfig(val player: OfflinePlayer, val name: String) {
     var border: Int = 1000
     var clearTrees: Boolean = true
     var clearWater: Boolean = true
-    var orerates: Int = 0
+    var diamondore: Int = 0
+    var goldore: Int = 0
 }
 
 class PregenConfigHandler {
@@ -79,7 +80,8 @@ class PregenCommand : CommandExecutor {
         print("Created world ${pregenConfig.name}.")
         SettingsFeature.instance.data!!.set("pregen.world", world.name)
         SettingsFeature.instance.worlds!!.set("${world.name}.name", world.name)
-        SettingsFeature.instance.worlds!!.set("${world.name}.orerates", pregenConfig.orerates)
+        SettingsFeature.instance.worlds!!.set("${world.name}.orerates.gold", pregenConfig.goldore)
+        SettingsFeature.instance.worlds!!.set("${world.name}.orerates.diamond", pregenConfig.diamondore)
         SettingsFeature.instance.saveWorlds()
 
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
@@ -103,7 +105,7 @@ class PregenCommand : CommandExecutor {
         }, 5L)
 
         Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "${Chat.prefix} &7Pregeneration started in &8'&f${pregenConfig.name}&8'&7."))
-        PregenActionBarFeature().runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 20L)
+        //PregenActionBarFeature().runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 20L)
         val blocks = BlockUtil().getBlocks(Bukkit.getWorld(pregenConfig.name).spawnLocation.block, 100)
         if (blocks != null) {
             for (block in blocks) {
@@ -172,7 +174,9 @@ class PregenCommand : CommandExecutor {
                     .addLore(" ")
                     .addLore("&7Clear Water: &c${if (pregenConfig.clearWater) "&aEnabled" else "&cDisabled"}")
                     .addLore("&7Clear Trees: &c${if (pregenConfig.clearTrees) "&aEnabled" else "&cDisabled"}")
-                    .addLore("&7Ore Rates: &c${pregenConfig.orerates}% Removed")
+                    .addLore("&7Ore Rates: ")
+                    .addLore(" &6Gold Ore: &c${pregenConfig.goldore}% Removed")
+                    .addLore(" &bDiamond Ore: &c${pregenConfig.diamondore}% Removed")
                     .addLore(Chat.guiLine)
                     .make()
                 val submit = ItemBuilder(Material.EMERALD)
