@@ -7,6 +7,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.plugin.java.JavaPlugin
+import org.bukkit.potion.PotionEffectType
 import pink.mino.kraftwerk.Kraftwerk
 import pink.mino.kraftwerk.features.SettingsFeature
 import pink.mino.kraftwerk.features.SpawnFeature
@@ -31,11 +32,11 @@ class PlayerJoinListener : Listener {
                 StatsHandler.addStatsPlayer(player)
             }
         }
-        Scoreboard.setScore(Chat.colored("${Chat.dash} &7Playing..."), Bukkit.getServer().onlinePlayers.size)
+        Scoreboard.setScore(Chat.colored("${Chat.dash} &7Playing..."), PlayerUtils.getPlayingPlayers().size)
 
         val group: String = vaultChat!!.getPrimaryGroup(player)
         val prefix: String = if (vaultChat!!.getGroupPrefix(player.world, group) != "&7") Chat.colored(vaultChat!!.getGroupPrefix(player.world, group)) else Chat.colored("&a")
-        e.joinMessage = ChatColor.translateAlternateColorCodes('&', "&8(&2+&8) ${prefix}${player.displayName} &8[&2${Bukkit.getServer().onlinePlayers.size}&8/&2${Bukkit.getServer().maxPlayers}&8]")
+        e.joinMessage = ChatColor.translateAlternateColorCodes('&', "&8(&2+&8) ${prefix}${player.displayName} &8[&2${PlayerUtils.getPlayingPlayers().size}&8/&2${Bukkit.getServer().maxPlayers}&8]")
         if (GameState.currentState == GameState.LOBBY) {
             Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
                 SpawnFeature.instance.send(player)
@@ -52,5 +53,10 @@ class PlayerJoinListener : Listener {
                 SpecFeature.instance.specChat("&f${player.name}&7 hasn't been late-scattered, sending them to spawn.")
             }
         }
+        Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
+            if (JavaPlugin.getPlugin(Kraftwerk::class.java).fullbright.contains(e.player.name.lowercase())) {
+                player.addPotionEffect(PotionEffectType.NIGHT_VISION.createEffect(1028391820, 0))
+            }
+        }, 5L)
     }
 }
