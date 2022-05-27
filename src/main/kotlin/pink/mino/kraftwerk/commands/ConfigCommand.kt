@@ -26,6 +26,15 @@ class ConfigCommand : CommandExecutor {
         }
     }
 
+    private fun getFireWeapons(): String {
+        val op = SettingsFeature.instance.data!!.getString("game.options.fireweapons").toBoolean()
+        return if (op) {
+            "&aEnabled"
+        } else {
+            "&eFrom Books Only"
+        }
+    }
+
     private fun getNether(option: String): String {
         val op = SettingsFeature.instance.data!!.getString("game.nether.${option}").toBoolean()
         return if (op) {
@@ -188,7 +197,7 @@ class ConfigCommand : CommandExecutor {
             .addLore("")
             .addLore(" &7Split Enchants ${Chat.dash} ${getOption("splitenchants")} ")
             .addLore(" &7Bookshelves ${Chat.dash} ${getOption("bookshelves")} ")
-            .addLore(" &7Fire Weapons ${Chat.dash} ${getOption("fireweapons")} ")
+            .addLore(" &7Fire Weapons ${Chat.dash} ${getFireWeapons()} ")
             .addLore(" ")
             .make()
         gui.item(14, enchanting).onClick runnable@ {
@@ -210,14 +219,12 @@ class ConfigCommand : CommandExecutor {
         gui.item(15, border).onClick runnable@ {
             it.isCancelled = true
         }
-        var goldRates = SettingsFeature.instance.worlds!!.get("${SettingsFeature.instance.data!!.get("pregen.world")}.orerates.gold")
-        goldRates = if (goldRates == "0") {
+        val goldRates = if (SettingsFeature.instance.worlds!!.getInt("${SettingsFeature.instance.data!!.get("pregen.world")}.orerates.gold") <= 0) {
             "&aVanilla"
         } else {
             "&6${SettingsFeature.instance.worlds!!.get("${SettingsFeature.instance.data!!.get("pregen.world")}.orerates.gold")}% Removed"
         }
-        var diaRates = SettingsFeature.instance.worlds!!.get("${SettingsFeature.instance.data!!.get("pregen.world")}.orerates.diamond")
-        diaRates = if (diaRates == "0") {
+        val diaRates = if (SettingsFeature.instance.worlds!!.getInt("${SettingsFeature.instance.data!!.get("pregen.world")}.orerates.diamond") <= 0) {
             "&aVanilla"
         } else {
             "&b${SettingsFeature.instance.worlds!!.get("${SettingsFeature.instance.data!!.get("pregen.world")}.orerates.diamond")}% Removed"
