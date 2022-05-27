@@ -83,7 +83,7 @@ class UHCTask : BukkitRunnable() {
                 ActionBar.sendActionBarMessage(player, "&cMeetup is in ${Chat.dash} &f${timeToString((meetup - timer).toLong())}")
             }
             Events.MEETUP -> {
-                ActionBar.sendActionBarMessage(player, "&cIt is now Meetup! Head to 0,0! &8| &7Border: &f±${SettingsFeature.instance.data!!.getInt("pregen.border")}")
+                ActionBar.sendActionBarMessage(player, "&cIt is now Meetup! Head to 0,0! &8| &7Border: &f${SettingsFeature.instance.data!!.getInt("pregen.border")*2} (±${SettingsFeature.instance.data!!.getInt("pregen.border")})")
             }
         }
     }
@@ -118,7 +118,9 @@ class UHCTask : BukkitRunnable() {
                     player.playSound(player.location, Sound.ENDERDRAGON_GROWL, 10F, 1F)
                     player.sendTitle(Chat.colored("&a&lGO!"), Chat.colored("&7You may now play the game, do &c/helpop&7 for help!"))
                     if (!SpecFeature.instance.getSpecs().contains(player.name)) {
-                        player.inventory.setItem(0, ItemStack(Material.COOKED_BEEF, SettingsFeature.instance.data!!.getInt("game.starterfood")))
+                        if (SettingsFeature.instance.data!!.getInt("game.starterfood") > 0) {
+                            player.inventory.setItem(0, ItemStack(Material.COOKED_BEEF, SettingsFeature.instance.data!!.getInt("game.starterfood")))
+                        }
                         list.add(player.name)
                         if (!ConfigOptionHandler.getOption("statless")!!.enabled && JavaPlugin.getPlugin(Kraftwerk::class.java).database) Schedulers.async().run { StatsHandler.getStatsPlayer(player).add("games_played", 1) }
                     }
@@ -176,9 +178,9 @@ class UHCTask : BukkitRunnable() {
                     Chat.sendMessage(player, " ")
                     Chat.sendCenteredMessage(player, "&7It's now &cMeetup&7! Head to &a0,0&7!")
                     if (ScenarioHandler.getScenario("bigcrack")!!.enabled) {
-                        Chat.sendCenteredMessage(player, "&7The border will start shrinking until it's at &f75x75&7!")
+                        Chat.sendCenteredMessage(player, "&7The border will start shrinking until it's at &f150x150 (±75)&7!")
                     } else {
-                        Chat.sendCenteredMessage(player, "&7The border will start shrinking until it's at &f25x25&7!")
+                        Chat.sendCenteredMessage(player, "&7The border will start shrinking until it's at &f50x50 (±25)&7!")
                     }
                 }
                 for (scenario in ScenarioHandler.getActiveScenarios()) {
@@ -278,6 +280,10 @@ class UHCFeature : Listener {
     fun freeze() {
         for (player in Bukkit.getOnlinePlayers()) {
             if (!SpecFeature.instance.getSpecs().contains(player.name)) {
+                player.removePotionEffect(PotionEffectType.SLOW)
+                player.removePotionEffect(PotionEffectType.JUMP)
+                player.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE)
+                player.removePotionEffect(PotionEffectType.BLINDNESS)
                 player.addPotionEffect(PotionEffect(PotionEffectType.SLOW, 999999999, 10, true, false))
                 player.addPotionEffect(PotionEffect(PotionEffectType.BLINDNESS, 999999999, 100, true, false))
                 player.addPotionEffect(PotionEffect(PotionEffectType.JUMP, 999999999, -100, true, false))
@@ -307,25 +313,25 @@ class UHCFeature : Listener {
 
     fun scheduleShrink(newBorder: Int) {
         Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-            Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Shrinking to &f${newBorder}x${newBorder}&7 in &f10s&7."))
+            Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Shrinking to &f${newBorder*2}x${newBorder*2} (±${newBorder})&7 in &f10s&7."))
             Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Shrinking to &f${newBorder}x${newBorder}&7 in &f9s&7."))
+                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Shrinking to &f${newBorder*2}x${newBorder*2} (±${newBorder})&7 in &f9s&7."))
                 Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                    Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Shrinking to &f${newBorder}x${newBorder}&7 in &f8s&7."))
+                    Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Shrinking to &f${newBorder*2}x${newBorder*2} (±${newBorder})&7 in &f8s&7."))
                     Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                        Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Shrinking to &f${newBorder}x${newBorder}&7 in &f7s&7."))
+                        Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Shrinking to &f${newBorder*2}x${newBorder*2} (±${newBorder})&7 in &f7s&7."))
                         Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                            Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Shrinking to &f${newBorder}x${newBorder}&7 in &f6s&7."))
+                            Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Shrinking to &f${newBorder*2}x${newBorder*2} (±${newBorder})&7 in &f6s&7."))
                             Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Shrinking to &f${newBorder}x${newBorder}&7 in &f5s&7."))
+                                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Shrinking to &f${newBorder*2}x${newBorder*2} (±${newBorder})&7 in &f5s&7."))
                                 Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                                    Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Shrinking to &f${newBorder}x${newBorder}&7 in &f4s&7."))
+                                    Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Shrinking to &f${newBorder*2}x${newBorder*2} (±${newBorder})&7 in &f4s&7."))
                                     Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                                        Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Shrinking to &f${newBorder}x${newBorder}&7 in &f3s&7."))
+                                        Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Shrinking to &f${newBorder*2}x${newBorder*2} (±${newBorder})&7 in &f3s&7."))
                                         Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                                            Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Shrinking to &f${newBorder}x${newBorder}&7 in &f2s&7."))
+                                            Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Shrinking to &f${newBorder*2}x${newBorder*2} (±${newBorder})&7 in &f2s&7."))
                                             Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                                                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Shrinking to &f${newBorder}x${newBorder}&7 in &f1s&7."))
+                                                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Shrinking to &f${newBorder*2}x${newBorder*2} (±${newBorder})&7 in &f1s&7."))
                                                 Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
                                                     for (player in Bukkit.getOnlinePlayers()) {
                                                         if (!SpecFeature.instance.getSpecs().contains(player.name)) {
@@ -338,7 +344,7 @@ class UHCFeature : Listener {
                                                     }
                                                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "border $newBorder")
                                                     Bukkit.broadcastMessage(Chat.colored(Chat.line))
-                                                    Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} The border has shrunken to &f${newBorder}x${newBorder}&7."))
+                                                    Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} The border has shrunken to &f${newBorder*2}x${newBorder*2} (±${newBorder})&7."))
                                                     if (ScenarioHandler.getScenario("bigcrack")!!.enabled) {
                                                         if (newBorder != 75) {
                                                             Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Next border shrink in &f5 minutes."))
@@ -392,6 +398,12 @@ class UHCFeature : Listener {
     @EventHandler
     fun onPlayerDamage(e: EntityDamageEvent) {
         if (GameState.currentState == GameState.WAITING) {
+            e.isCancelled = true
+        }
+        if (e.entity !is Player) {
+            return
+        }
+        if (SpecFeature.instance.isSpec(e.entity as Player)) {
             e.isCancelled = true
         }
     }

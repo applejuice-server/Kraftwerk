@@ -161,11 +161,17 @@ class EditPregenCommand : CommandExecutor {
                 it.isCancelled = true
                 if (it.isLeftClick) {
                     pregenConfig.diamondore += 5
+                    if (pregenConfig.diamondore > 100) {
+                        pregenConfig.diamondore = 100
+                    }
                     val meta = it.currentItem.itemMeta
                     meta.displayName = Chat.colored("&7Diamond Ore Rates: &c${pregenConfig.diamondore}% Removed")
                     it.currentItem.itemMeta = meta
                 } else {
                     pregenConfig.diamondore -= 5
+                    if (pregenConfig.diamondore < 0) {
+                        pregenConfig.diamondore = 0
+                    }
                     val meta = it.currentItem.itemMeta
                     meta.displayName = Chat.colored("&7Diamond Ore Rates: &c${pregenConfig.diamondore}% Removed")
                     it.currentItem.itemMeta = meta
@@ -175,11 +181,17 @@ class EditPregenCommand : CommandExecutor {
                 it.isCancelled = true
                 if (it.isLeftClick) {
                     pregenConfig.goldore += 5
+                    if (pregenConfig.goldore > 100) {
+                        pregenConfig.goldore = 100
+                    }
                     val meta = it.currentItem.itemMeta
                     meta.displayName = Chat.colored("&7Gold Ore Rates: &c${pregenConfig.goldore}% Removed")
                     it.currentItem.itemMeta = meta
                 } else {
                     pregenConfig.goldore -= 5
+                    if (pregenConfig.goldore < 0) {
+                        pregenConfig.goldore = 0
+                    }
                     val meta = it.currentItem.itemMeta
                     meta.displayName = Chat.colored("&7Gold Ore Rates: &c${pregenConfig.goldore}% Removed")
                     it.currentItem.itemMeta = meta

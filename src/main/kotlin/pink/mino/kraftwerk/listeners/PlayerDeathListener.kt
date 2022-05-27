@@ -13,6 +13,7 @@ import pink.mino.kraftwerk.features.SettingsFeature
 import pink.mino.kraftwerk.features.TeamsFeature
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GameState
+import pink.mino.kraftwerk.utils.PlayerUtils
 import pink.mino.kraftwerk.utils.Scoreboard
 
 
@@ -51,6 +52,7 @@ class PlayerDeathListener : Listener {
                 }
                 Scoreboard.deleteScore(Chat.colored("${Chat.dash} ${color}${player.name}"))
                 if (kills > 0) Scoreboard.setScore(Chat.colored("${Chat.dash} ${color}&m${player.name}"), kills)
+                Scoreboard.setScore(Chat.colored("${Chat.dash} &7Playing..."), Math.max(PlayerUtils.getPlayingPlayers().size - 1, 0))
                 CombatLogFeature.instance.removeCombatLog(player.name)
                 if (!player.hasPermission("uhc.staff")) {
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wl remove ${player.name}")
