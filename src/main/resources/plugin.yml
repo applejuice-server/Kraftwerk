@@ -272,6 +272,12 @@ commands:
     description: Auction Scenario Command.
   bid:
     description: Bid on an auction.
+  invsee:
+    description: View a player's inventory.
+  fullbright:
+    aliases:
+      - fb
+    description: Toggles night vision.
 depend:
   - ProtocolLib
   - Vault
