@@ -112,7 +112,9 @@ class ScatterFeature : Listener {
                     Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Locations found, now scattering players."))
                     val players = ArrayList<Player>()
                     for (player in Bukkit.getOnlinePlayers()) {
-                        players.add(player)
+                        if (!SpecFeature.instance.getSpecs().contains(player.name)) {
+                            players.add(player)
+                        }
                     }
                     FFAScatterTask(players, scatteringHashmap).runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 5L)
                     scattering = false
@@ -172,7 +174,9 @@ class ScatterFeature : Listener {
                     Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Locations found, now scattering players."))
                     val players = ArrayList<Player>()
                     for (player in Bukkit.getOnlinePlayers()) {
-                        players.add(player)
+                        if (!SpecFeature.instance.getSpecs().contains(player.name)) {
+                            players.add(player)
+                        }
                     }
                     TeamScatterTask(players, solosLocations, teamLocations).runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 5L)
                     scattering = false

@@ -1,9 +1,11 @@
 package pink.mino.kraftwerk.utils
 
 import net.minecraft.server.v1_8_R3.EntityLiving
+import org.bukkit.Bukkit
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import pink.mino.kraftwerk.features.SpecFeature
 import pink.mino.kraftwerk.features.TeamsFeature
 import kotlin.math.floor
 
@@ -36,6 +38,24 @@ class PlayerUtils {
                     player.world.dropItemNaturally(player.location, item)
                 }
             }
+        }
+
+        fun getPlayingPlayers(): MutableCollection<out Player> {
+            val players: ArrayList<Player> = arrayListOf()
+            if (GameState.currentState == GameState.LOBBY) {
+                for (player in Bukkit.getOnlinePlayers()) {
+                    if (!SpecFeature.instance.isSpec(player)) {
+                        players.add(player)
+                    }
+                }
+            } else {
+                for (player in Bukkit.getOnlinePlayers()) {
+                    if (!SpecFeature.instance.isSpec(player) && player.world.name != "Spawn") {
+                        players.add(player)
+                    }
+                }
+            }
+            return players
         }
     }
 }

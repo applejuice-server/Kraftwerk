@@ -138,6 +138,7 @@ class SpecFeature : Listener {
         SettingsFeature.instance.saveData()
 
         specChat("&f${p.name}&7 has entered spectator mode.", p)
+        Scoreboard.setScore(Chat.colored("${Chat.dash} &7Playing..."), PlayerUtils.getPlayingPlayers().size)
 
         val teleportTo00 = ItemBuilder(Material.EYE_OF_ENDER)
             .name("&cTeleport to 0,0")
@@ -162,11 +163,13 @@ class SpecFeature : Listener {
         p.inventory.setItem(25, respawn)
 
         Chat.sendMessage(p, "${Chat.prefix} You are now in spectator mode.")
-        Chat.sendMessage(p, "${Chat.dash} &7Your &bLunar Client&7 staff modules have been enabled.")
 
-        if (LunarClientAPI.getInstance().isRunningLunarClient(p)) {
-            LunarClientAPI.getInstance().giveAllStaffModules(p)
-        }
+        Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
+            if (LunarClientAPI.getInstance().isRunningLunarClient(p)) {
+                Chat.sendMessage(p, "${Chat.dash} &7Your &bLunar Client&7 staff modules have been enabled.")
+                LunarClientAPI.getInstance().giveAllStaffModules(p)
+            }
+        }, 5L)
     }
 
     fun unspec(p: Player) {
@@ -191,12 +194,17 @@ class SpecFeature : Listener {
         SettingsFeature.instance.data!!.set("game.specs", list)
         SettingsFeature.instance.saveData()
 
-        if (LunarClientAPI.getInstance().isRunningLunarClient(p)) {
-            LunarClientAPI.getInstance().disableAllStaffModules(p)
-            Chat.sendMessage(p, "${Chat.dash} &7Your &bLunar Client&7 staff modules have been disabled.")
-        }
         specChat("&f${p.name}&7 has left spectator mode.", p)
         Chat.sendMessage(p, "${Chat.prefix} You are no longer in spectator mode.")
+        Scoreboard.setScore(Chat.colored("${Chat.dash} &7Playing..."), PlayerUtils.getPlayingPlayers().size)
+
+        Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
+            if (LunarClientAPI.getInstance().isRunningLunarClient(p)) {
+                LunarClientAPI.getInstance().disableAllStaffModules(p)
+                Chat.sendMessage(p, "${Chat.dash} &7Your &bLunar Client&7 staff modules have been disabled.")
+            }
+        }, 5L)
+
     }
 
     fun getSpecs(): List<String> {

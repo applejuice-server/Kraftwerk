@@ -53,6 +53,8 @@ class Kraftwerk : ExtendedJavaPlugin() {
     var database: Boolean = false
     var discord: Boolean = false
 
+    val fullbright: MutableSet<String> = mutableSetOf()
+
     lateinit var discordInstance: JDA
     lateinit var dataSource: DataSource
     lateinit var spark: Spark
@@ -172,6 +174,8 @@ class Kraftwerk : ExtendedJavaPlugin() {
         getCommand("donator").executor = DonatorCommand()
         getCommand("lapis").executor = LapisCommand()
         getCommand("redstone").executor = RedstoneCommand()
+        getCommand("invsee").executor = InvseeCommand()
+        getCommand("fullbright").executor = FullbrightCommand()
         //getCommand("hotbar").executor = HotbarCommand()
 
         /* ProtocolLib stuff */
