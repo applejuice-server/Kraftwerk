@@ -282,6 +282,9 @@ class MatchpostCommand : CommandExecutor {
                 } else if (map["teams"] as String == "random") {
                     teamsGame = true
                     team = "Random To${(map["size"] as Double).toInt()}"
+                } else if (map["teams"] as String == "market") {
+                    teamsGame = true
+                    team = "Auctions"
                 }
                 id = map["id"] as Double
                 scenarios = map["scenarios"] as List<*>
