@@ -5,6 +5,7 @@ import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
+import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 import pink.mino.kraftwerk.Kraftwerk
 import pink.mino.kraftwerk.utils.Chat
@@ -27,7 +28,7 @@ class FullbrightCommand : CommandExecutor {
             Chat.sendMessage(player, "${Chat.prefix} You have &cdisabled &7your fullbright.")
             JavaPlugin.getPlugin(Kraftwerk::class.java).fullbright.remove(player.name.lowercase())
         } else {
-            player.addPotionEffect(PotionEffectType.NIGHT_VISION.createEffect(1028391820, 0))
+            player.addPotionEffect(PotionEffect(PotionEffectType.NIGHT_VISION, 1028391820, 0, false, false))
             Chat.sendMessage(player, "${Chat.prefix} You have &aenabled &7your fullbright.")
             JavaPlugin.getPlugin(Kraftwerk::class.java).fullbright.add(player.name.lowercase())
         }
