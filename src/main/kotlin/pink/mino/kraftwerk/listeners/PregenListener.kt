@@ -41,6 +41,6 @@ class PregenListener : Listener {
     @EventHandler
     fun on(event: WorldBorderFillFinishedEvent) {
         Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Pregeneration in world '&c${event.world.name}&7' finished."))
-        Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Please wait for TPS to stabilize at 20 before restarting."))
+        Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Please wait for TPS to stabilize at &c20 &7before restarting."))
     }
 }
