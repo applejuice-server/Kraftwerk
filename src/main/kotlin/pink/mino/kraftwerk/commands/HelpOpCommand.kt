@@ -10,7 +10,6 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import pink.mino.kraftwerk.features.SpecFeature
 import pink.mino.kraftwerk.utils.Chat
-import pink.mino.kraftwerk.utils.GameState
 import pink.mino.kraftwerk.utils.HelpOp
 
 
@@ -39,8 +38,8 @@ class HelpOpCommand : CommandExecutor {
             sender.sendMessage("${ChatColor.RED}Usage: /helpop <message>")
             return true
         }
-        if (GameState.currentState != GameState.INGAME) {
-            Chat.sendMessage(sender, "&cYou can only use this command during a game.")
+        if (SpecFeature.instance.getSpecs().size == 0) {
+            Chat.sendMessage(sender, "&cThere are no spectators to read your message.")
             return false
         }
         val message = StringBuilder()
