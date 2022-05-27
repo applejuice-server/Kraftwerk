@@ -143,7 +143,7 @@ class ConfigCommand : CommandExecutor {
         val caneRates = if (SettingsFeature.instance.worlds!!.getInt("${SettingsFeature.instance.data!!.get("pregen.world")}.canerate") <= 0) {
             "Vanilla"
         } else {
-            "${SettingsFeature.instance.worlds!!.get("${SettingsFeature.instance.data!!.get("pregen.world")}.orerates.gold")}% Increased"
+            "${SettingsFeature.instance.worlds!!.get("${SettingsFeature.instance.data!!.get("pregen.world")}.canerate")}% Increased"
         }
         val ratesConfig = ItemBuilder(Material.FLINT)
             .name(" &4&lRates Config")
