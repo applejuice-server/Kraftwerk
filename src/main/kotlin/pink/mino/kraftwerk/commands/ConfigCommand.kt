@@ -140,11 +140,18 @@ class ConfigCommand : CommandExecutor {
                 Bukkit.dispatchCommand(sender, "editconfig options")
             }
         }
+        val caneRates = if (SettingsFeature.instance.worlds!!.getInt("${SettingsFeature.instance.data!!.get("pregen.world")}.canerate") <= 0) {
+            "Vanilla"
+        } else {
+            "${SettingsFeature.instance.worlds!!.get("${SettingsFeature.instance.data!!.get("pregen.world")}.orerates.gold")}% Increased"
+        }
         val ratesConfig = ItemBuilder(Material.FLINT)
             .name(" &4&lRates Config")
             .addLore(" ")
             .addLore(" &7Apple Rates ${Chat.dash} &a${SettingsFeature.instance.data!!.getInt("game.rates.apple")}% ")
             .addLore(" &7Flint Rates ${Chat.dash} &a${SettingsFeature.instance.data!!.getInt("game.rates.flint")}% ")
+            .addLore(" ")
+            .addLore(" &7Sugar Cane Rates ${Chat.dash} &a${caneRates} ")
             .addLore(" ")
             .make()
         gui.item(11, ratesConfig).onClick runnable@ {
@@ -212,8 +219,8 @@ class ConfigCommand : CommandExecutor {
             .addLore(" &7Size ${Chat.dash} &f${SettingsFeature.instance.data!!.getInt("pregen.border") * 2}x${SettingsFeature.instance.data!!.getInt("pregen.border") * 2} &8(&f±${SettingsFeature.instance.data!!.getInt("pregen.border")}&8) ")
             .addLore(" ")
             .addLore(" &7The border shrinks every &e5 minutes&7. ")
-            .addLore(" &7The first shrink will be &f500x500&7. ")
-            .addLore(" &7The last shrink will be &f${getFinalBorder()}x${getFinalBorder()}&7. ")
+            .addLore(" &7The first shrink will be &f1000x1000 (&f±500)&7. ")
+            .addLore(" &7The last shrink will be &f${getFinalBorder()*2}x${getFinalBorder()*2} (&f±${getFinalBorder()})&7. ")
             .addLore(" ")
             .make()
         gui.item(15, border).onClick runnable@ {
