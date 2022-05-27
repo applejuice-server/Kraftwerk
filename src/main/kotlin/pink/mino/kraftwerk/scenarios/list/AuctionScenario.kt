@@ -17,10 +17,9 @@ import pink.mino.kraftwerk.features.TeamsFeature
 import pink.mino.kraftwerk.scenarios.Scenario
 import pink.mino.kraftwerk.utils.ActionBar
 import pink.mino.kraftwerk.utils.Chat
+import pink.mino.kraftwerk.utils.GameState
 import pink.mino.kraftwerk.utils.PlayerUtils
 import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 class AuctionScenario : Scenario(
     "Auction",
@@ -60,6 +59,10 @@ class AuctionScenario : Scenario(
         if (enabled) {
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "auction diamonds give")
         }
+    }
+
+    override fun onToggle(to: Boolean) {
+        if (!to && GameState.currentState == GameState.WAITING) GameState.currentState = GameState.LOBBY
     }
 
     override fun onCommand(
@@ -208,6 +211,7 @@ class AuctionScenario : Scenario(
                     }
                     Bukkit.broadcastMessage(Chat.colored(prefix + "This auction will give a max of &c$maxDiamonds &7diamonds to &cbidders&7."))
                     Bukkit.broadcastMessage(Chat.colored(prefix + "The timer will begin counting down once the first bidder bids."))
+                    GameState.currentState = GameState.WAITING
                     object : BukkitRunnable() {
                         var timeLeft = 3
                         override fun run() {

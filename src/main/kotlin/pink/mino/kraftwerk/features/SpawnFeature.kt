@@ -16,6 +16,7 @@ import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerItemConsumeEvent
+import pink.mino.kraftwerk.scenarios.ScenarioHandler
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.ItemBuilder
 import pink.mino.kraftwerk.utils.Perk
@@ -85,8 +86,10 @@ class SpawnFeature : Listener {
         if (perks.contains(Perk.MOB_EGGS)) {
             p.inventory.setItem(7, mobEggs)
         }
-
-        val location = Location(Bukkit.getWorld("Spawn"), -221.5, 95.0, -140.5)
+        if (ScenarioHandler.getActiveScenarios().contains(ScenarioHandler.getScenario("auction"))) {
+            p.inventory.clear()
+        }
+        val location = if (!ScenarioHandler.getActiveScenarios().contains(ScenarioHandler.getScenario("auction"))) Location(Bukkit.getWorld("Spawn"), -221.5, 95.0, -140.5) else Location(Bukkit.getWorld("Spawn"), -278.0, 96.5, 7.0)
         p.teleport(location)
     }
 
