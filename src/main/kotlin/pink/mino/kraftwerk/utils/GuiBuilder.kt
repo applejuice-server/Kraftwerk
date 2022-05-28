@@ -1,18 +1,18 @@
 package pink.mino.kraftwerk.utils
 
-import java.util.HashMap
-import org.bukkit.event.inventory.InventoryClickEvent
-import org.bukkit.entity.Player
-import org.bukkit.event.inventory.InventoryCloseEvent
-import org.bukkit.event.HandlerList
-import org.bukkit.inventory.Inventory
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.Material
+import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
+import org.bukkit.event.HandlerList
 import org.bukkit.event.Listener
+import org.bukkit.event.inventory.InventoryClickEvent
+import org.bukkit.event.inventory.InventoryCloseEvent
+import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
-import ws.rlns.gui
+import org.bukkit.plugin.java.JavaPlugin
+import pink.mino.kraftwerk.Kraftwerk
 import java.util.function.Consumer
 
 class GuiBuilder : Listener {
@@ -33,20 +33,20 @@ class GuiBuilder : Listener {
     }
 
     fun item(slot: Int, item: ItemStack): GuiBuilder {
-        items.put(slot, item)
+        items[slot] = item
         this.slot = slot
         return this
     }
 
     fun item(slot: Int, item: ItemStack, consumer: Consumer<InventoryClickEvent>?): GuiBuilder {
-        items.put(slot, item)
+        items[slot] = item
         this.slot = slot
-        runnableHashMap.put(slot, consumer)
+        runnableHashMap[slot] = consumer
         return this
     }
 
     fun onClick(runnable: Consumer<InventoryClickEvent>?) {
-        runnableHashMap.put(slot, runnable)
+        runnableHashMap[slot] = runnable
     }
 
     @EventHandler
@@ -94,7 +94,7 @@ class GuiBuilder : Listener {
     }
 
     init {
-        Bukkit.getPluginManager().registerEvents(this, gui.getPlugin<gui>(gui::class.java))
+        Bukkit.getPluginManager().registerEvents(this, JavaPlugin.getPlugin(Kraftwerk::class.java))
         name = "Inventory"
         rows = 1
         items = HashMap()

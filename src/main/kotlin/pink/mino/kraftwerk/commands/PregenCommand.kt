@@ -8,7 +8,6 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 import pink.mino.kraftwerk.Kraftwerk
-import pink.mino.kraftwerk.features.PregenActionBarFeature
 import pink.mino.kraftwerk.features.SettingsFeature
 import pink.mino.kraftwerk.utils.BlockUtil
 import pink.mino.kraftwerk.utils.Chat
@@ -17,8 +16,6 @@ import pink.mino.kraftwerk.utils.ItemBuilder
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.*
-import kotlin.Comparator
-import kotlin.collections.ArrayList
 
 enum class PregenerationGenerationTypes {
     NONE,
@@ -207,27 +204,22 @@ class PregenCommand : CommandExecutor {
                 gui.item(3, changeGeneration).onClick {
                     it.isCancelled = true
                     Bukkit.dispatchCommand(sender, "ep generation")
-                    gui.close()
                 }
                 gui.item(4, changeBorder).onClick {
                     it.isCancelled = true
                     Bukkit.dispatchCommand(sender, "ep border")
-                    gui.close()
                 }
                 gui.item(5, changeVarious).onClick {
                     it.isCancelled = true
                     Bukkit.dispatchCommand(sender, "ep settings")
-                    gui.close()
                 }
                 gui.item(8, submit).onClick {
                     it.isCancelled = true
-                    gui.close()
                     sender.closeInventory()
                     createWorld(pregenConfig)
                 }
                 gui.item(0, config).onClick {
                     it.isCancelled = true
-                    gui.close()
                 }
                 sender.openInventory(gui.make())
             }
