@@ -15,6 +15,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 import pink.mino.kraftwerk.features.SettingsFeature
+import pink.mino.kraftwerk.features.SpecFeature
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GameState
 import pink.mino.kraftwerk.utils.GuiBuilder
@@ -125,6 +126,9 @@ class RespawnCommand : CommandExecutor {
             if (!RespawnFeature.instance.respawnablePlayers.contains(player)) {
                 Chat.sendMessage(sender, "&c${player.name} is not a respawnable player.")
                 return false
+            }
+            if (SpecFeature.instance.isSpec(player)) {
+                SpecFeature.instance.unspec(player)
             }
             player.playSound(player.location, Sound.WOOD_CLICK, 10F, 1F)
             player.health = 20.0
