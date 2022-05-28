@@ -16,6 +16,9 @@ import pink.mino.kraftwerk.utils.GuiBuilder
 import pink.mino.kraftwerk.utils.ItemBuilder
 import java.nio.file.Files
 import java.nio.file.Path
+import java.util.*
+import kotlin.Comparator
+import kotlin.collections.ArrayList
 
 enum class PregenerationGenerationTypes {
     NONE,
@@ -30,6 +33,7 @@ open class PregenConfig(val player: OfflinePlayer, val name: String) {
     var clearWater: Boolean = true
     var diamondore: Int = 0
     var goldore: Int = 0
+    var canerate: Int = 25
 }
 
 class PregenConfigHandler {
@@ -80,8 +84,11 @@ class PregenCommand : CommandExecutor {
         print("Created world ${pregenConfig.name}.")
         SettingsFeature.instance.data!!.set("pregen.world", world.name)
         SettingsFeature.instance.worlds!!.set("${world.name}.name", world.name)
+        SettingsFeature.instance.worlds!!.set("${world.name}.madeby", pregenConfig.player.uniqueId.toString())
+        SettingsFeature.instance.worlds!!.set("${world.name}.date", Date().toString())
         SettingsFeature.instance.worlds!!.set("${world.name}.orerates.gold", pregenConfig.goldore)
         SettingsFeature.instance.worlds!!.set("${world.name}.orerates.diamond", pregenConfig.diamondore)
+        SettingsFeature.instance.worlds!!.set("${world.name}.canerate", pregenConfig.canerate)
         SettingsFeature.instance.saveWorlds()
 
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
@@ -174,9 +181,10 @@ class PregenCommand : CommandExecutor {
                     .addLore(" ")
                     .addLore("&7Clear Water: &c${if (pregenConfig.clearWater) "&aEnabled" else "&cDisabled"}")
                     .addLore("&7Clear Trees: &c${if (pregenConfig.clearTrees) "&aEnabled" else "&cDisabled"}")
-                    .addLore("&7Ore Rates: ")
+                    .addLore("&7Rates: ")
                     .addLore(" &6Gold Ore: &c${pregenConfig.goldore}% Removed")
                     .addLore(" &bDiamond Ore: &c${pregenConfig.diamondore}% Removed")
+                    .addLore(" &aSugar Cane: &c${pregenConfig.canerate}% Increased")
                     .addLore(Chat.guiLine)
                     .make()
                 val submit = ItemBuilder(Material.EMERALD)

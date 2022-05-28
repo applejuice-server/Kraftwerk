@@ -1,6 +1,7 @@
 package pink.mino.kraftwerk.listeners
 
 import com.wimbli.WorldBorder.Config
+import com.wimbli.WorldBorder.Events.WorldBorderFillFinishedEvent
 import com.wimbli.WorldBorder.Events.WorldBorderFillStartEvent
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
@@ -35,5 +36,11 @@ class PregenListener : Listener {
                 }
             }
         }.runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0, 1)
+    }
+
+    @EventHandler
+    fun on(event: WorldBorderFillFinishedEvent) {
+        Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Pregeneration in world '&c${event.world.name}&7' finished."))
+        Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Please wait for TPS to stabilize at &c20 &7before restarting."))
     }
 }

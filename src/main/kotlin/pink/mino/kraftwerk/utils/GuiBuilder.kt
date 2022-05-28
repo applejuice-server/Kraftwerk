@@ -1,27 +1,27 @@
 package pink.mino.kraftwerk.utils
 
+import java.util.HashMap
+import org.bukkit.event.inventory.InventoryClickEvent
+import org.bukkit.entity.Player
+import org.bukkit.event.inventory.InventoryCloseEvent
+import org.bukkit.event.HandlerList
+import org.bukkit.inventory.Inventory
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.Material
 import org.bukkit.event.EventHandler
-import org.bukkit.event.HandlerList
 import org.bukkit.event.Listener
-import org.bukkit.event.inventory.InventoryClickEvent
-import org.bukkit.event.inventory.InventoryCloseEvent
-import org.bukkit.event.inventory.InventoryType
-import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
-import org.bukkit.plugin.java.JavaPlugin.getPlugin
-import pink.mino.kraftwerk.Kraftwerk
+import ws.rlns.gui
 import java.util.function.Consumer
 
 class GuiBuilder : Listener {
     private var name: String
     private var rows: Int
     private val items: HashMap<Int, ItemStack>
-    private val runnableHashMap: HashMap<Int, Consumer<InventoryClickEvent>>
+    private val runnableHashMap: HashMap<Int, Consumer<InventoryClickEvent>?>
+    private var owner: Player? = null
     private var slot = 0
-
     fun rows(newRows: Int): GuiBuilder {
         rows = newRows
         return this
@@ -33,55 +33,50 @@ class GuiBuilder : Listener {
     }
 
     fun item(slot: Int, item: ItemStack): GuiBuilder {
-        items[slot] = item
+        items.put(slot, item)
         this.slot = slot
         return this
     }
 
-    fun item(slot: Int, item: ItemStack, consumer: Consumer<InventoryClickEvent>): GuiBuilder {
-        items[slot] = item
+    fun item(slot: Int, item: ItemStack, consumer: Consumer<InventoryClickEvent>?): GuiBuilder {
+        items.put(slot, item)
         this.slot = slot
-        runnableHashMap[slot] = consumer
+        runnableHashMap.put(slot, consumer)
         return this
     }
 
-    fun onClick(runnable: Consumer<InventoryClickEvent>) {
-        runnableHashMap[slot] = runnable
+    fun onClick(runnable: Consumer<InventoryClickEvent>?) {
+        runnableHashMap.put(slot, runnable)
     }
 
     @EventHandler
     fun onInventoryClick(e: InventoryClickEvent) {
-        if (e.whoClicked.openInventory.type != InventoryType.CHEST || ChatColor.stripColor(e.inventory.name) == "Chest" || ChatColor.stripColor(e.inventory.name) == "Large Chest") return
-        if (e.clickedInventory == e.whoClicked.inventory) {
-            e.isCancelled = true
-            return
-        }
-        if (e.currentItem != null) {
-            if (e.currentItem.type != Material.AIR) {
-                if (ChatColor.stripColor(e.inventory.name)
-                        .equals(ChatColor.stripColor(name), ignoreCase = true)
-                ) {
-                    val slot = e.slot
-                    if (runnableHashMap[slot] != null) {
-                        runnableHashMap[slot]!!.accept(e)
+        if (e.whoClicked is Player) {
+            val clicker = e.whoClicked as Player
+            if (clicker.uniqueId.toString() == owner!!.uniqueId.toString()) {
+                if (e.currentItem != null) {
+                    if (e.currentItem.type != Material.AIR) {
+                        if (ChatColor.stripColor(e.inventory.name).equals(ChatColor.stripColor(name), ignoreCase = true)) {
+                            val slot = e.slot
+                            if (runnableHashMap[slot] != null) {
+                                runnableHashMap[slot]!!.accept(e)
+                            }
+                        }
                     }
+                    e.isCancelled = true
                 }
             }
         }
     }
 
-    fun close() {
-        try {
-            HandlerList.unregisterAll(this)
-        } catch (e: Error) { print(e) }
-    }
-
     @EventHandler
     fun onPlayerClose(event: InventoryCloseEvent) {
-        if (ChatColor.stripColor(event.inventory.name)
-                .equals(ChatColor.stripColor(name), ignoreCase = true)
-        ) {
-            HandlerList.unregisterAll(this)
+        if (event.player is Player) {
+            if (event.player.uniqueId.toString() == owner!!.uniqueId.toString()) {
+                if (ChatColor.stripColor(event.inventory.name).equals(ChatColor.stripColor(name), ignoreCase = true)) {
+                    HandlerList.unregisterAll(this)
+                }
+            }
         }
     }
 
@@ -94,8 +89,12 @@ class GuiBuilder : Listener {
         return inv
     }
 
+    fun setOwner(owner: Player?) {
+        this.owner = owner
+    }
+
     init {
-        Bukkit.getPluginManager().registerEvents(this, getPlugin(Kraftwerk::class.java))
+        Bukkit.getPluginManager().registerEvents(this, gui.getPlugin<gui>(gui::class.java))
         name = "Inventory"
         rows = 1
         items = HashMap()
