@@ -19,7 +19,10 @@ class InfoFeature : BukkitRunnable() {
         Chat.colored("$prefix View the health of other players using &f/health&7!"),
         Chat.colored("$prefix View the stats of other players using &f/stats <player>&7!"),
         Chat.colored("$prefix View the UHC Configuration using &f/config&7!"),
-        Chat.colored("$prefix Check which scenarios are active using &f/scenarios&7!")
+        Chat.colored("$prefix Check which scenarios are active using &f/scenarios&7!"),
+        Chat.colored("$prefix &6Gold&7 ranks and above can change their team color using &f/team color&7!"),
+        Chat.colored("$prefix &6Gold&7 ranks and above can toggle redstone/lapis pickups using &c/redstone&7 & &9/lapis&7!")
+
     )
     override fun run() {
         if (Bukkit.getOnlinePlayers().isNotEmpty()) {
