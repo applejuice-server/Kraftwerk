@@ -251,7 +251,7 @@ class AuctionScenario : Scenario(
                                             cost[slave.name.lowercase()] = highestBid
                                             purchasedBy[slave.name.lowercase()] = winner.name.lowercase()
                                             slave.teleport(ownerArea[winner]!!)
-                                            Chat.sendMessage(sender, prefix + "You won the auction for &c${slave.name}&7! You have &c${diamondAmount[winner]!!} &7diamonds left.")
+                                            Chat.sendMessage(winner, prefix + "You won the auction for &c${slave.name}&7! You have &c${diamondAmount[winner]!!} &7diamonds left.")
                                             return
                                         }
                                         if (bidTime >= 0) {
@@ -282,6 +282,7 @@ class AuctionScenario : Scenario(
                                                 task!!.cancel()
                                                 task = null
                                                 Bukkit.broadcastMessage(Chat.colored(prefix + "No more players to bid on."))
+                                                GameState.currentState = GameState.LOBBY
                                                 return
                                             }
                                             Collections.shuffle(list)
