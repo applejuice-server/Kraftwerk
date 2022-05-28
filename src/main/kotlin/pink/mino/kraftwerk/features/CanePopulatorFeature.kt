@@ -5,49 +5,52 @@ import org.bukkit.Material
 import org.bukkit.World
 import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
+import org.bukkit.event.EventHandler
+import org.bukkit.event.Listener
 import org.bukkit.generator.BlockPopulator
+import pink.mino.kraftwerk.events.ChunkModifiableEvent
 import java.util.*
 
-class CanePopulatorFeature : BlockPopulator() {
+class CanePopulatorFeature : Listener {
 
-    private var canePatchChance = 0
-    private var cane: Material? = null
+    private var cane: Material = Material.SUGAR_CANE_BLOCK
     private var faces: Array<BlockFace> = arrayOf(BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST)
 
-    init {
-        canePatchChance = 25
-        cane = Material.SUGAR_CANE_BLOCK
-    }
+    @EventHandler
+    fun on(event: ChunkModifiableEvent) {
+        val chunk = event.chunk
+        val rand = Random()
 
-    override fun populate(world: World?, random: Random, source: Chunk) {
-        if (random.nextInt(100) < canePatchChance) {
-            for (i in 0..15) {
-                var block: Block? = if (random.nextBoolean()) {
-                    getHighestBlock(source, random.nextInt(16), i)
+        if (chunk.world.environment != World.Environment.NORMAL) return
+
+        if (SettingsFeature.instance.worlds!!.getInt("${chunk.world!!.name}.canerate") == 0) return
+
+        if (rand.nextInt(100) <= SettingsFeature.instance.worlds!!.getInt("${chunk.world!!.name}.canerate")) {
+            for (x in 0..15) {
+                val block: Block? = if (rand.nextBoolean()) {
+                    getHighestBlock(chunk, rand.nextInt(16), x)
                 } else {
-                    getHighestBlock(source, i, random.nextInt(16))
+                    getHighestBlock(chunk, x, rand.nextInt(16))
                 }
-                if (block!!.type == Material.GRASS || block.type == Material.SAND) {
-                    createCane(block, random)
+                if (block == null) continue
+                if (block.type == Material.GRASS || block.type == Material.SAND) {
+                    createCane(block, rand)
                 }
             }
         }
     }
-
     private fun createCane(block: Block?, rand: Random) {
+
         var create = false
-        val var4 = faces
-        val var5 = var4.size
-        for (var6 in 0 until var5) {
-            val face = var4[var6]
+        for (face in faces) {
             if (block!!.getRelative(face).type.name.lowercase(Locale.getDefault()).contains("water")) {
                 create = true
+                break
             }
         }
-        if (create) {
-            for (i in 1 until rand.nextInt(4) + 3) {
-                block!!.getRelative(0, i, 0).type = cane
-            }
+        if (!create) return
+        for (i in 1..rand.nextInt(4)+3) {
+            block!!.getRelative(0, i, 0).type = this.cane
         }
     }
 

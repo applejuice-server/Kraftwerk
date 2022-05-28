@@ -589,8 +589,8 @@ class TeamCommand : CommandExecutor {
                 }
             }
             valid.shuffle()
-            val red = TeamsFeature.manager.getTeams()[0]
-            val blue = TeamsFeature.manager.getTeams()[1]
+            val red = TeamsFeature.manager.createTeam()
+            val blue = TeamsFeature.manager.createTeam()
             red.prefix = "${ChatColor.RED}"
             blue.prefix = "${ChatColor.BLUE}"
             for ((index, player) in valid.withIndex()) {
@@ -600,6 +600,7 @@ class TeamCommand : CommandExecutor {
                     blue.addPlayer(player)
                 }
             }
+            Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} &cRed&7 vs &9Blue&7 teams have been randomized."))
         } else if (args[0] == "color") {
             if (!PerkChecker.checkPerk(sender as Player, "uhc.donator.teamColors")) {
                 Chat.sendMessage(sender, "&cBuy &6Gold&c to use this perk. &eapplejuice.tebex.io")
