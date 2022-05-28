@@ -53,6 +53,7 @@ class TeamsFeature private constructor() {
         for (team in teams) {
             team.unregister()
         }
+        teamCount = 0
         teams.clear()
     }
 
