@@ -35,7 +35,7 @@ class EditPregenCommand : CommandExecutor {
             Chat.sendMessage(sender, "${Chat.prefix} &7You don't have a pregeneration configuration set up yet.")
             return false
         }
-        val gui = GuiBuilder().rows(1).name(ChatColor.translateAlternateColorCodes('&', "&4Edit Pregen Config"))
+        val gui = GuiBuilder().rows(1).name(ChatColor.translateAlternateColorCodes('&', "&4Edit Pregen Config")).owner(sender)
         if (args[0] == "border") {
             val border = ItemBuilder(Material.BEDROCK)
                 .name("&7Border: &c±${pregenConfig.border}")

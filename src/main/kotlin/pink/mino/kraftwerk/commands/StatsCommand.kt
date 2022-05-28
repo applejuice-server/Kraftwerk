@@ -31,7 +31,7 @@ class StatsCommand : CommandExecutor {
         if (!JavaPlugin.getPlugin(Kraftwerk::class.java).database) {
             Chat.sendMessage(sender, "&cThis command is unuseable as the database isn't functional.")
         }
-        val gui = GuiBuilder().rows(1).name(ChatColor.translateAlternateColorCodes('&', "&4Stats"))
+        val gui = GuiBuilder().rows(1).name(ChatColor.translateAlternateColorCodes('&', "&4Stats")).owner(sender)
         val target: OfflinePlayer = if (args.isEmpty()) {
             sender
         } else {
