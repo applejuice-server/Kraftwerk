@@ -37,7 +37,7 @@ class PlayerJoinListener : Listener {
 
         val group: String = vaultChat!!.getPrimaryGroup(player)
         val prefix: String = if (vaultChat!!.getGroupPrefix(player.world, group) != "&7") Chat.colored(vaultChat!!.getGroupPrefix(player.world, group)) else Chat.colored("&a")
-        e.joinMessage = ChatColor.translateAlternateColorCodes('&', "&8(&2+&8) ${prefix}${player.displayName} &8[&2${PlayerUtils.getPlayingPlayers().size}&8/&2${Bukkit.getServer().maxPlayers}&8]")
+        e.joinMessage = ChatColor.translateAlternateColorCodes('&', "&8(&2+&8) ${prefix}${player.displayName} &8[&2${Bukkit.getOnlinePlayers().size}&8/&2${Bukkit.getServer().maxPlayers}&8]")
         if (GameState.currentState == GameState.LOBBY) {
             Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
                 SpawnFeature.instance.send(player)
