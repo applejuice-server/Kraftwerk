@@ -282,6 +282,7 @@ class AuctionScenario : Scenario(
                                                 task!!.cancel()
                                                 task = null
                                                 Bukkit.broadcastMessage(Chat.colored(prefix + "No more players to bid on."))
+                                                GameState.currentState = GameState.LOBBY
                                                 return
                                             }
                                             Collections.shuffle(list)
@@ -328,6 +329,7 @@ class AuctionScenario : Scenario(
                     SpawnFeature.instance.send(currentPlayer!!)
                     currentPlayer = null
                     Bukkit.broadcastMessage(Chat.colored(prefix + "Bidding has been stopped!"))
+                    GameState.currentState = GameState.LOBBY
                 }
             }
             return true

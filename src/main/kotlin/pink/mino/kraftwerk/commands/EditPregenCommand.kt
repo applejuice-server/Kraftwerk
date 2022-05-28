@@ -141,6 +141,14 @@ class EditPregenCommand : CommandExecutor {
                 .addLore("&8Right Click: &c-5")
                 .addLore(" ")
                 .make()
+            val caneRates = ItemBuilder(Material.SUGAR_CANE)
+                .name("&7Cane Rates: &c${pregenConfig.canerate}% Increased")
+                .addLore("&7Click to change the cane rates.")
+                .addLore(" ")
+                .addLore("&8Left Click: &a+5")
+                .addLore("&8Right Click: &c-5")
+                .addLore(" ")
+                .make()
             gui.item(2, clearTrees).onClick {
                 it.isCancelled = true
                 pregenConfig.clearTrees = !pregenConfig.clearTrees
@@ -194,6 +202,26 @@ class EditPregenCommand : CommandExecutor {
                     }
                     val meta = it.currentItem.itemMeta
                     meta.displayName = Chat.colored("&7Gold Ore Rates: &c${pregenConfig.goldore}% Removed")
+                    it.currentItem.itemMeta = meta
+                }
+            }
+            gui.item(6, caneRates).onClick {
+                it.isCancelled = true
+                if (it.isLeftClick) {
+                    pregenConfig.canerate += 5
+                    if (pregenConfig.canerate > 100) {
+                        pregenConfig.canerate = 100
+                    }
+                    val meta = it.currentItem.itemMeta
+                    meta.displayName = Chat.colored("&7Cane Rates: &c${pregenConfig.canerate}% Increased")
+                    it.currentItem.itemMeta = meta
+                } else {
+                    pregenConfig.canerate -= 5
+                    if (pregenConfig.canerate < 0) {
+                        pregenConfig.canerate = 0
+                    }
+                    val meta = it.currentItem.itemMeta
+                    meta.displayName = Chat.colored("&7Cane Rates: &c${pregenConfig.canerate}% Increased")
                     it.currentItem.itemMeta = meta
                 }
             }
