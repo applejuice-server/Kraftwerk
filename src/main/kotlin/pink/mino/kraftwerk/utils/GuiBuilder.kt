@@ -22,6 +22,7 @@ class GuiBuilder : Listener {
     private val runnableHashMap: HashMap<Int, Consumer<InventoryClickEvent>?>
     private var owner: Player? = null
     private var slot = 0
+
     fun rows(newRows: Int): GuiBuilder {
         rows = newRows
         return this
@@ -42,6 +43,11 @@ class GuiBuilder : Listener {
         items[slot] = item
         this.slot = slot
         runnableHashMap[slot] = consumer
+        return this
+    }
+
+    fun owner(owner: Player?): GuiBuilder {
+        this.owner = owner
         return this
     }
 
@@ -87,10 +93,6 @@ class GuiBuilder : Listener {
             inv.setItem(f, items[f])
         }
         return inv
-    }
-
-    fun setOwner(owner: Player?) {
-        this.owner = owner
     }
 
     init {

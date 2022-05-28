@@ -43,7 +43,7 @@ class MoleKitCommand : CommandExecutor {
         }
         when {
             args.isEmpty() -> {
-                val gui = GuiBuilder().rows(1).name(ChatColor.translateAlternateColorCodes('&', "&4Mole Kits"))
+                val gui = GuiBuilder().rows(1).name(ChatColor.translateAlternateColorCodes('&', "&4Mole Kits")).owner(sender)
                 val troll = ItemBuilder(Material.WEB)
                     .name("&6Troll Kit")
                     .addLore(Chat.guiLine)

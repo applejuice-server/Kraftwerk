@@ -94,7 +94,7 @@ class RespawnCommand : CommandExecutor {
             } else if (RespawnFeature.instance.respawnablePlayers.size >= 45) {
                 size = 6
             }
-            val gui = GuiBuilder().rows(size).name(Chat.colored("&cRespawnable Players"))
+            val gui = GuiBuilder().rows(size).name(Chat.colored("&cRespawnable Players")).owner(sender as Player)
             for ((index, player) in RespawnFeature.instance.respawnablePlayers.withIndex()) {
                 val skull = ItemBuilder(Material.SKULL_ITEM)
                     .name("&d${player.name}")
@@ -110,13 +110,13 @@ class RespawnCommand : CommandExecutor {
                 gui.item(index, skull) {
                     it.isCancelled = true
                     if (it.isLeftClick) {
-                        (sender as Player).teleport(RespawnFeature.instance.locations[player.uniqueId]!!)
+                        sender.teleport(RespawnFeature.instance.locations[player.uniqueId]!!)
                     } else if (it.isRightClick) {
                         Bukkit.dispatchCommand(sender, "revive ${player.name}")
                     }
                 }
             }
-            (sender as Player).openInventory(gui.make())
+            sender.openInventory(gui.make())
         } else {
             val player = Bukkit.getPlayer(args[0])
             if (player == null) {

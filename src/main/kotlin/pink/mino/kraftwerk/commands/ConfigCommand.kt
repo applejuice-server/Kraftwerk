@@ -71,7 +71,7 @@ class ConfigCommand : CommandExecutor {
             sender.sendMessage("You can't use this command as you technically aren't a player.")
             return false
         }
-        val gui = GuiBuilder().rows(3).name(ChatColor.translateAlternateColorCodes('&', "&4UHC Config"))
+        val gui = GuiBuilder().rows(3).name(ChatColor.translateAlternateColorCodes('&', "&4UHC Config")).owner(sender)
 
         sender.sendMessage(Chat.colored("${Chat.prefix} Opening the UHC configuration..."))
         val options = ItemBuilder(Material.LAVA_BUCKET)

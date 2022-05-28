@@ -26,7 +26,7 @@ class DonatorCommand : CommandExecutor {
             pink.mino.kraftwerk.utils.Chat.sendMessage(sender, "&cYou do not have any perks, buy some on the store at &eapplejuice.tebex.io&7!")
             return true
         }
-        val gui = GuiBuilder().rows(perks.size / 9 + 1).name("&2&lDonator Perks")
+        val gui = GuiBuilder().rows(perks.size / 9 + 1).name("&2&lDonator Perks").owner(sender)
         for ((index, perk) in perks.withIndex()) {
             when (perk) {
                 Perk.BODY_SPEC -> {
