@@ -50,9 +50,8 @@ class PlayerUtils {
                 }
             } else {
                 for (player in Bukkit.getOnlinePlayers()) {
-                    if (!SpecFeature.instance.isSpec(player) && player.world.name != "Spawn") {
-                        players.add(player)
-                    }
+                    if (SpecFeature.instance.isSpec(player) || player.world.name == "Spawn") continue
+                    players.add(player)
                 }
             }
             return players
