@@ -329,6 +329,7 @@ class AuctionScenario : Scenario(
                     SpawnFeature.instance.send(currentPlayer!!)
                     currentPlayer = null
                     Bukkit.broadcastMessage(Chat.colored(prefix + "Bidding has been stopped!"))
+                    GameState.currentState = GameState.LOBBY
                 }
             }
             return true

@@ -42,7 +42,7 @@ class PlayerUtils {
 
         fun getPlayingPlayers(): MutableCollection<out Player> {
             val players: ArrayList<Player> = arrayListOf()
-            if (GameState.currentState == GameState.LOBBY) {
+            if (GameState.currentState == GameState.LOBBY || GameState.currentState == GameState.WAITING) {
                 for (player in Bukkit.getOnlinePlayers()) {
                     if (!SpecFeature.instance.isSpec(player)) {
                         players.add(player)
@@ -50,9 +50,8 @@ class PlayerUtils {
                 }
             } else {
                 for (player in Bukkit.getOnlinePlayers()) {
-                    if (!SpecFeature.instance.isSpec(player) && player.world.name != "Spawn") {
-                        players.add(player)
-                    }
+                    if (SpecFeature.instance.isSpec(player) || player.world.name == "Spawn") continue
+                    players.add(player)
                 }
             }
             return players
