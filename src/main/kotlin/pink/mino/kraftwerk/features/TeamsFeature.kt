@@ -46,6 +46,7 @@ class TeamsFeature private constructor() {
     fun deleteTeam(team: Team) {
         Log.info("Automatically deleted ${team.name} because it was empty.")
         teams.remove(team)
+        teamCount--
         team.unregister()
     }
 
