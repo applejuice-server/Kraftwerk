@@ -25,7 +25,7 @@ class PlayerQuitListener : Listener {
         val player = e.player
         val group: String = vaultChat!!.getPrimaryGroup(player)
         val prefix: String = if (vaultChat!!.getGroupPrefix(player.world, group) != "&7") Chat.colored(vaultChat!!.getGroupPrefix(player.world, group)) else Chat.colored("&c")
-        e.quitMessage = ChatColor.translateAlternateColorCodes('&', "&8(&4-&8) ${prefix}${player.displayName} &8[&4${Math.max(PlayerUtils.getPlayingPlayers().size - 1, 0)}&8/&4${Bukkit.getServer().maxPlayers}&8]")
+        e.quitMessage = ChatColor.translateAlternateColorCodes('&', "&8(&4-&8) ${prefix}${player.displayName} &8[&4${Bukkit.getOnlinePlayers().size - 1}&8/&4${Bukkit.getServer().maxPlayers}&8]")
         Scoreboard.setScore(Chat.colored("${Chat.dash} &7Playing..."), Math.max(PlayerUtils.getPlayingPlayers().size - 1, 0))
         if (JavaPlugin.getPlugin(Kraftwerk::class.java).database) {
             if (StatsHandler.statsPlayers[player.uniqueId] != null) {
