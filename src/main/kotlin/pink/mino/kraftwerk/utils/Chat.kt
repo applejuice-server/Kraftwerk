@@ -4,6 +4,7 @@ import DefaultFontInfo
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.command.CommandSender
+import pink.mino.kraftwerk.features.SpecFeature
 
 class Chat {
     companion object {
@@ -19,9 +20,12 @@ class Chat {
         }
 
         fun clear() {
-            for (i in 1..1000) {
-                Bukkit.broadcastMessage(" ")
-                Bukkit.broadcastMessage("  ")
+            for (player in Bukkit.getOnlinePlayers()) {
+                if (SpecFeature.instance.isSpec(player)) continue
+                for (i in 1..1000) {
+                    player.sendMessage(" ")
+                    player.sendMessage("  ")
+                }
             }
         }
 
