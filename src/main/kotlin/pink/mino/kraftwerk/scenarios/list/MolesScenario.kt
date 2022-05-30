@@ -3,6 +3,7 @@ package pink.mino.kraftwerk.scenarios.list
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
+import pink.mino.kraftwerk.features.SpecFeature
 import pink.mino.kraftwerk.features.TeamsFeature
 import pink.mino.kraftwerk.scenarios.Scenario
 import pink.mino.kraftwerk.utils.Chat
@@ -27,6 +28,12 @@ class MolesScenario : Scenario(
             val player = Bukkit.getOfflinePlayer(mole.key)
             if (player.isOnline) {
                 Chat.sendMessage(player as Player, "$prefix $message")
+            }
+        }
+        for (spec in SpecFeature.instance.getSpecs()) {
+            val specPlayer = Bukkit.getPlayer(spec)
+            if (specPlayer != null) {
+                Chat.sendMessage(specPlayer, "$prefix $message")
             }
         }
     }
