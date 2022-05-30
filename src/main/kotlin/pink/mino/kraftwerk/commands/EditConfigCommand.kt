@@ -159,8 +159,8 @@ class EditConfigCommand : CommandExecutor {
                 }
             }
         } else if (args[0].lowercase() == "rules") {
-            gui = GuiBuilder().rows(1).name(ChatColor.translateAlternateColorCodes('&', "&4Edit UHC Config")).owner(sender)
-            size = 8
+            gui = GuiBuilder().rows(2).name(ChatColor.translateAlternateColorCodes('&', "&4Edit UHC Config")).owner(sender)
+            size = 17
             var iterator = 0
             for (option in ConfigOptionHandler.configOptions) {
                 if (option.category === "rules") {
