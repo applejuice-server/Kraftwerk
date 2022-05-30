@@ -240,6 +240,7 @@ class ConfigCommand : CommandExecutor {
             .name(" &4&lMining Config ")
             .noAttributes()
             .addLore(" ")
+            .addLore(" &7F5 Abuse ${Chat.dash} ${getRule("f5abuse")} ")
             .addLore(" &7Anti-Stone ${Chat.dash} &f${getOption("antistone")} ")
             .addLore(" &7Anti-Burn ${Chat.dash} &f${getOption("antiburn")} ")
             .addLore(" ")

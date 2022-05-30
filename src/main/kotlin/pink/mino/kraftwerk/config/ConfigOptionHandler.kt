@@ -30,6 +30,7 @@ class ConfigOptionHandler {
             addOption(StealingOption())
             addOption(SkybasingOption())
             addOption(RunningAtMeetupOption())
+            addOption(F5AbuseOption())
 
             addOption(RollarcoasteringOption())
             addOption(StripminingOption())
