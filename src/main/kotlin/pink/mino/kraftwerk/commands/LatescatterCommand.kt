@@ -16,9 +16,7 @@ import pink.mino.kraftwerk.features.ScatterFeature
 import pink.mino.kraftwerk.features.SettingsFeature
 import pink.mino.kraftwerk.features.TeamsFeature
 import pink.mino.kraftwerk.scenarios.ScenarioHandler
-import pink.mino.kraftwerk.utils.Chat
-import pink.mino.kraftwerk.utils.GameState
-import pink.mino.kraftwerk.utils.StatsHandler
+import pink.mino.kraftwerk.utils.*
 
 class LatescatterCommand : CommandExecutor {
     override fun onCommand(
@@ -124,6 +122,7 @@ class LatescatterCommand : CommandExecutor {
         }
         SettingsFeature.instance.data!!.set("game.list", list)
         SettingsFeature.instance.saveData()
+        Scoreboard.setScore(Chat.colored("${Chat.dash} &7Playing..."), PlayerUtils.getPlayingPlayers().size)
         return true
     }
 
