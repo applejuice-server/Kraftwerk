@@ -57,7 +57,7 @@ class GuiBuilder : Listener {
 
     @EventHandler
     fun onInventoryClick(e: InventoryClickEvent) {
-        if (e.whoClicked is Player) {
+        if (e.whoClicked is Player && owner != null) {
             val clicker = e.whoClicked as Player
             if (clicker.uniqueId.toString() == owner!!.uniqueId.toString()) {
                 if (e.currentItem != null) {
@@ -77,7 +77,7 @@ class GuiBuilder : Listener {
 
     @EventHandler
     fun onPlayerClose(event: InventoryCloseEvent) {
-        if (event.player is Player) {
+        if (event.player is Player && owner != null) {
             if (event.player.uniqueId.toString() == owner!!.uniqueId.toString()) {
                 if (ChatColor.stripColor(event.inventory.name).equals(ChatColor.stripColor(name), ignoreCase = true)) {
                     HandlerList.unregisterAll(this)

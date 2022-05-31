@@ -278,6 +278,10 @@ commands:
     aliases:
       - fb
     description: Toggles night vision.
+  helpoplist:
+    aliases:
+      - hl
+    description: View the list of unanswered helpops.
 depend:
   - ProtocolLib
   - Vault

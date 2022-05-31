@@ -567,7 +567,7 @@ class TeamCommand : CommandExecutor {
                 for (player in list) {
                     templist.add(player)
                 }
-                val team: Team? = getEmptyTeam()
+                val team: Team = TeamsFeature.manager.createTeam();
                 for (player in templist) {
                     Chat.sendMessage(player, "${Chat.prefix} You've been added to ${team!!.prefix}${team.name}&7, check &f/team list&7 for the members of your team.")
                     team.addPlayer(player)

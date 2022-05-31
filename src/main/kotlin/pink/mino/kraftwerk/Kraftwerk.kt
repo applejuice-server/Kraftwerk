@@ -177,6 +177,7 @@ class Kraftwerk : ExtendedJavaPlugin() {
         getCommand("redstone").executor = RedstoneCommand()
         getCommand("invsee").executor = InvseeCommand()
         getCommand("fullbright").executor = FullbrightCommand()
+        getCommand("helpoplist").executor = HelpopListCommand()
         //getCommand("hotbar").executor = HotbarCommand()
 
         /* ProtocolLib stuff */
