@@ -191,7 +191,7 @@ class ScheduleOpening(private val opening: String) : BukkitRunnable() {
                 time = 300
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer 300 &cWhitelist is enabled in ${Chat.dash}&f")
             }
-            val host = Bukkit.getPlayer(SettingsFeature.instance.data!!.getString("game.host"))
+            val host = Bukkit.getOfflinePlayer(SettingsFeature.instance.data!!.getString("game.host"))
             val embed = EmbedBuilder()
             embed.addField("Matchpost", "https://hosts.uhc.gg/m/${SettingsFeature.instance.data!!.getInt("matchpost.id")}", false)
             embed.setColor(Color(255, 61, 61))
