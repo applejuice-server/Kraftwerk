@@ -19,9 +19,11 @@ class VillagerMadnessScenario : Scenario(
     override fun onStart() {
         for (player in Bukkit.getOnlinePlayers()) {
             if (!SpecFeature.instance.getSpecs().contains(player.name)) {
+                val spawnEgg = SpawnEgg(EntityType.VILLAGER).toItemStack()
+                spawnEgg.amount = 64
                 val list = arrayListOf(
                     ItemStack(Material.EMERALD_BLOCK, 64),
-                    SpawnEgg(EntityType.VILLAGER).toItemStack()
+                    spawnEgg
                 )
                 PlayerUtils.bulkItems(player, list)
             }
@@ -29,9 +31,11 @@ class VillagerMadnessScenario : Scenario(
     }
 
     override fun givePlayer(player: Player) {
+        val spawnEgg = SpawnEgg(EntityType.VILLAGER).toItemStack()
+        spawnEgg.amount = 64
         val list = arrayListOf(
             ItemStack(Material.EMERALD_BLOCK, 64),
-            SpawnEgg(EntityType.VILLAGER).toItemStack()
+            spawnEgg
         )
         PlayerUtils.bulkItems(player, list)
     }
