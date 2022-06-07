@@ -286,5 +286,4 @@ depend:
   - ProtocolLib
   - Vault
   - Citizens
-  - LiteBans
   - HolographicDisplays
