@@ -93,9 +93,6 @@ commands:
       - prac
     description: Joins the FFA arena.
   spawn:
-    aliases:
-      - lobby
-      - hub
     description: Joins the spawn.
   start:
     aliases:
@@ -282,6 +279,11 @@ commands:
     aliases:
       - hl
     description: View the list of unanswered helpops.
+  lobby:
+    aliases:
+      - hub
+      - l
+    description: Sends you to the server hub.
 depend:
   - ProtocolLib
   - Vault

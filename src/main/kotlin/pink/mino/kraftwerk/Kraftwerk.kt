@@ -27,7 +27,6 @@ import pink.mino.kraftwerk.listeners.donator.CowboyFeature
 import pink.mino.kraftwerk.listeners.donator.MobEggsListener
 import pink.mino.kraftwerk.listeners.lunar.PlayerRegisterListener
 import pink.mino.kraftwerk.scenarios.ScenarioHandler
-import pink.mino.kraftwerk.scenarios.list.AuctionScenario
 import pink.mino.kraftwerk.utils.GameState
 import pink.mino.kraftwerk.utils.ProfileService
 import pink.mino.kraftwerk.utils.Scoreboard
@@ -140,6 +139,8 @@ class Kraftwerk : ExtendedJavaPlugin() {
         getCommand("editpregen").executor = EditPregenCommand()
         getCommand("generate").executor = GenerateCommand()
         getCommand("giveitems").executor = GiveItemsCommand()
+        getCommand("invsee").executor = InvseeCommand()
+        getCommand("helpoplist").executor = HelpopListCommand()
 
         getCommand("gm").executor = GamemodeCommand()
         getCommand("gamemode").executor = GamemodeCommand()
@@ -175,9 +176,8 @@ class Kraftwerk : ExtendedJavaPlugin() {
         getCommand("donator").executor = DonatorCommand()
         getCommand("lapis").executor = LapisCommand()
         getCommand("redstone").executor = RedstoneCommand()
-        getCommand("invsee").executor = InvseeCommand()
         getCommand("fullbright").executor = FullbrightCommand()
-        getCommand("helpoplist").executor = HelpopListCommand()
+        getCommand("lobby").executor = LobbyCommand()
         //getCommand("hotbar").executor = HotbarCommand()
 
         /* ProtocolLib stuff */
@@ -193,6 +193,7 @@ class Kraftwerk : ExtendedJavaPlugin() {
         CustomPayloadFixerFeature(this)
 
         /* Sets up misc features */
+        server.messenger.registerOutgoingPluginChannel(this, "BungeeCord")
         SettingsFeature.instance.setup(this)
         if (SettingsFeature.instance.data!!.getString("server.region") == null) {
             SettingsFeature.instance.data!!.set("server.region", "NA")
