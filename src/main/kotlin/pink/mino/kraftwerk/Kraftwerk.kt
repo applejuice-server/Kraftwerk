@@ -2,8 +2,9 @@ package pink.mino.kraftwerk
 
 import com.comphenix.protocol.ProtocolLibrary
 import com.comphenix.protocol.ProtocolManager
-import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource
-import com.mysql.jdbc.jdbc2.optional.MysqlDataSource
+import com.mongodb.MongoClient
+import com.mongodb.MongoClientException
+import com.mongodb.MongoClientURI
 import me.lucko.helper.plugin.ExtendedJavaPlugin
 import me.lucko.helper.profiles.ProfileRepository
 import me.lucko.helper.utils.Log
@@ -30,10 +31,9 @@ import pink.mino.kraftwerk.scenarios.ScenarioHandler
 import pink.mino.kraftwerk.utils.GameState
 import pink.mino.kraftwerk.utils.ProfileService
 import pink.mino.kraftwerk.utils.Scoreboard
+import pink.mino.kraftwerk.utils.StatsHandler
 import java.nio.file.Files
 import java.nio.file.Path
-import java.sql.SQLException
-import javax.sql.DataSource
 
 
 /*
@@ -46,16 +46,14 @@ class Kraftwerk : ExtendedJavaPlugin() {
     private var protocolManager: ProtocolManager? = null
     var vote: Vote? = null
     var game: UHCTask? = null
-
-    var arena: Boolean = true
-
     var database: Boolean = false
     var discord: Boolean = false
 
     val fullbright: MutableSet<String> = mutableSetOf()
 
     lateinit var discordInstance: JDA
-    lateinit var dataSource: DataSource
+    lateinit var statsHandler: StatsHandler
+    lateinit var dataSource: MongoClient
     lateinit var spark: Spark
 
     companion object {
@@ -81,7 +79,6 @@ class Kraftwerk : ExtendedJavaPlugin() {
         Bukkit.getServer().pluginManager.registerEvents(EntityHealthRegainListener(), this)
         Bukkit.getServer().pluginManager.registerEvents(PlayerConnectListener(), this)
         Bukkit.getServer().pluginManager.registerEvents(PlayerConsumeListener(), this)
-        Bukkit.getServer().pluginManager.registerEvents(ArenaFeature.instance, this)
         Bukkit.getServer().pluginManager.registerEvents(SpawnFeature.instance, this)
         Bukkit.getServer().pluginManager.registerEvents(UHCFeature(), this)
         Bukkit.getServer().pluginManager.registerEvents(RatesFeature(), this)
@@ -155,7 +152,6 @@ class Kraftwerk : ExtendedJavaPlugin() {
         getCommand("health").executor = HealthCommand()
         getCommand("pm").executor = PMCommand()
         getCommand("pmc").executor = PMCCommand()
-        getCommand("arena").executor = ArenaCommand()
         getCommand("spawn").executor = SpawnCommand()
         getCommand("killtop").executor = KillTopCommand()
         getCommand("scenarios").executor = ScenarioCommand()
@@ -195,6 +191,7 @@ class Kraftwerk : ExtendedJavaPlugin() {
         /* Sets up misc features */
         server.messenger.registerOutgoingPluginChannel(this, "BungeeCord")
         SettingsFeature.instance.setup(this)
+        setupDataSource()
         if (SettingsFeature.instance.data!!.getString("server.region") == null) {
             SettingsFeature.instance.data!!.set("server.region", "NA")
             SettingsFeature.instance.saveData()
@@ -210,9 +207,9 @@ class Kraftwerk : ExtendedJavaPlugin() {
         ScenarioHandler.setup()
         addRecipes()
 
-        setupDataSource()
+        statsHandler = StatsHandler()
 
-        if (database) this.provideService(ProfileRepository::class.java, ProfileService())
+        this.provideService(ProfileRepository::class.java, ProfileService())
         val provider = Bukkit.getServicesManager().getRegistration(
             Spark::class.java
         )
@@ -268,46 +265,18 @@ class Kraftwerk : ExtendedJavaPlugin() {
     }
 
     fun setupDataSource() {
-        if (SettingsFeature.instance.data!!.getString("database.host") == null) {
-            Log.info("No database host found, disabling database features.")
-            this.database = false
-            return
-        }
-        val host = SettingsFeature.instance.data!!.getString("database.host")
-        val port = SettingsFeature.instance.data!!.getInt("database.port")
-        val database = SettingsFeature.instance.data!!.getString("database.database")
-        val user = SettingsFeature.instance.data!!.getString("database.user")
-        val password = SettingsFeature.instance.data!!.getString("database.password")
-
-        val dataSource: MysqlDataSource = MysqlConnectionPoolDataSource()
-
-        dataSource.serverName = host
-        dataSource.port = port
-        dataSource.databaseName = database
-        dataSource.user = user
-        dataSource.setPassword(password)
-
+        val uri = SettingsFeature.instance.data!!.getString("database.uri")
+        var client: MongoClient? = null
         try {
-            testDataSource(dataSource)
-            this.database = true
-        } catch (e: SQLException) {
-            Log.severe("Could not connect to database, database features will be disabled.")
-            this.database = false
+            client = MongoClient(MongoClientURI(uri))
+        } catch (e: MongoClientException) {
             e.printStackTrace()
-            return
         }
 
-        this.dataSource = dataSource
-    }
-
-    @Throws(SQLException::class)
-    private fun testDataSource(dataSource: DataSource) {
-        val conn = dataSource.connection
-        if (!conn.isValid(1)) {
-            throw SQLException("Could not establish database connection.")
+        if (client != null) {
+            this.dataSource = client
         }
     }
-
 
     override fun disable() {
         SettingsFeature.instance.data!!.set("game.winners", ArrayList<String>())

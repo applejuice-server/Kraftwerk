@@ -1,6 +1,5 @@
 package pink.mino.kraftwerk.listeners
 
-import me.lucko.helper.Schedulers
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.event.EventHandler
@@ -14,7 +13,6 @@ import pink.mino.kraftwerk.features.SettingsFeature
 import pink.mino.kraftwerk.features.SpawnFeature
 import pink.mino.kraftwerk.features.SpecFeature
 import pink.mino.kraftwerk.utils.*
-
 import net.milkbowl.vault.chat.Chat as VaultChat
 
 class PlayerJoinListener : Listener {
@@ -28,11 +26,6 @@ class PlayerJoinListener : Listener {
     @EventHandler
     fun onPlayerJoin(e: PlayerJoinEvent) {
         val player = e.player
-        if (JavaPlugin.getPlugin(Kraftwerk::class.java).database) {
-            Schedulers.async().run {
-                StatsHandler.addStatsPlayer(player)
-            }
-        }
         Scoreboard.setScore(Chat.colored("${Chat.dash} &7Playing..."), PlayerUtils.getPlayingPlayers().size)
 
         val group: String = vaultChat!!.getPrimaryGroup(player)

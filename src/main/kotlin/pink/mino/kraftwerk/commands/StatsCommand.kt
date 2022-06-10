@@ -14,7 +14,6 @@ import pink.mino.kraftwerk.Kraftwerk
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GuiBuilder
 import pink.mino.kraftwerk.utils.ItemBuilder
-import pink.mino.kraftwerk.utils.StatsHandler
 import kotlin.math.round
 
 class StatsCommand : CommandExecutor {
@@ -28,9 +27,6 @@ class StatsCommand : CommandExecutor {
             sender.sendMessage("You can't use this command as you technically aren't a player.")
             return false
         }
-        if (!JavaPlugin.getPlugin(Kraftwerk::class.java).database) {
-            Chat.sendMessage(sender, "&cThis command is unuseable as the database isn't functional.")
-        }
         val gui = GuiBuilder().rows(1).name(ChatColor.translateAlternateColorCodes('&', "&4Stats")).owner(sender)
         val target: OfflinePlayer = if (args.isEmpty()) {
             sender
@@ -42,7 +38,7 @@ class StatsCommand : CommandExecutor {
                 Chat.sendMessage(sender, "${Chat.prefix} &7Loading stats for &f${target.name}&7...")
             }
             .thenApplyAsync {
-                StatsHandler.getStatsPlayer(target)
+                JavaPlugin.getPlugin(Kraftwerk::class.java).statsHandler.getStatsPlayer(sender)!!
             }
             .thenAcceptSync { statsPlayer ->
                 val ores = ItemBuilder(Material.DIAMOND_ORE)
