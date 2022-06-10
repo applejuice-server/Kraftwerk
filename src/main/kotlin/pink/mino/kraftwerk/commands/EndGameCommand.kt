@@ -1,6 +1,5 @@
 package pink.mino.kraftwerk.commands
 
-import me.lucko.helper.Schedulers
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.entities.Activity
 import org.bukkit.Bukkit
@@ -18,7 +17,6 @@ import pink.mino.kraftwerk.features.SpecFeature
 import pink.mino.kraftwerk.features.TeamsFeature
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GameState
-import pink.mino.kraftwerk.utils.StatsHandler
 import java.awt.Color
 import java.io.File
 import java.nio.file.Files
@@ -49,7 +47,7 @@ class EndGameCommand : CommandExecutor {
         for (player in Bukkit.getOnlinePlayers()) {
             if (winners.contains(player.name)) {
                 player.sendTitle(Chat.colored("&6&lVICTORY!"), Chat.colored("&7Congratulations, you won the game!"))
-                if (!ConfigOptionHandler.getOption("statless")!!.enabled) Schedulers.async().run { StatsHandler.getStatsPlayer(player).add("wins", 1) }
+                if (!ConfigOptionHandler.getOption("statless")!!.enabled) JavaPlugin.getPlugin(Kraftwerk::class.java).statsHandler.getStatsPlayer(player)!!.wins++
             } else {
                 player.sendTitle(Chat.colored("&c&lGAME OVER!"), Chat.colored("&7The game has concluded!"))
             }

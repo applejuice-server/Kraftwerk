@@ -1,6 +1,5 @@
 package pink.mino.kraftwerk.commands
 
-import me.lucko.helper.Schedulers
 import org.bukkit.*
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
@@ -16,7 +15,10 @@ import pink.mino.kraftwerk.features.ScatterFeature
 import pink.mino.kraftwerk.features.SettingsFeature
 import pink.mino.kraftwerk.features.TeamsFeature
 import pink.mino.kraftwerk.scenarios.ScenarioHandler
-import pink.mino.kraftwerk.utils.*
+import pink.mino.kraftwerk.utils.Chat
+import pink.mino.kraftwerk.utils.GameState
+import pink.mino.kraftwerk.utils.PlayerUtils
+import pink.mino.kraftwerk.utils.Scoreboard
 
 class LatescatterCommand : CommandExecutor {
     override fun onCommand(
@@ -68,7 +70,7 @@ class LatescatterCommand : CommandExecutor {
             player.addPotionEffect(PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 300, 1000, true, false))
             ScatterFeature.scatterSolo(player, Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world")), SettingsFeature.instance.data!!.getInt("pregen.border"))
             player.inventory.setItem(0, ItemStack(Material.COOKED_BEEF, SettingsFeature.instance.data!!.getInt("game.starterfood")))
-            Schedulers.async().run { StatsHandler.getStatsPlayer(player).add("games_played",1) }
+            JavaPlugin.getPlugin(Kraftwerk::class.java).statsHandler.getStatsPlayer(player)!!.gamesPlayed++
             for (scenario in ScenarioHandler.getActiveScenarios()) {
                 scenario.givePlayer(player)
             }
@@ -110,7 +112,7 @@ class LatescatterCommand : CommandExecutor {
             player.addPotionEffect(PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 300, 1000, true, false))
             player.teleport(teammate.location)
             player.inventory.setItem(0, ItemStack(Material.COOKED_BEEF, SettingsFeature.instance.data!!.getInt("game.starterfood")))
-            Schedulers.async().run { StatsHandler.getStatsPlayer(player).add("games_played",1) }
+            JavaPlugin.getPlugin(Kraftwerk::class.java).statsHandler.getStatsPlayer(player)!!.gamesPlayed++
             for (scenario in ScenarioHandler.getActiveScenarios()) {
                 scenario.givePlayer(player)
             }

@@ -1,6 +1,9 @@
 package pink.mino.kraftwerk.utils
 
 import com.google.common.collect.Iterables
+import com.mongodb.MongoException
+import com.mongodb.client.model.Filters
+import com.mongodb.client.model.FindOneAndReplaceOptions
 import me.lucko.helper.Events
 import me.lucko.helper.Schedulers
 import me.lucko.helper.profiles.Profile
@@ -11,11 +14,11 @@ import me.lucko.helper.profiles.plugin.external.caffeine.cache.Caffeine
 import me.lucko.helper.promise.Promise
 import me.lucko.helper.utils.Log
 import me.lucko.helper.utils.UndashedUuids
+import org.bson.Document
 import org.bukkit.event.EventPriority
 import org.bukkit.event.player.PlayerLoginEvent
 import org.bukkit.plugin.java.JavaPlugin
 import pink.mino.kraftwerk.Kraftwerk
-import java.sql.SQLException
 import java.sql.Timestamp
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -23,71 +26,19 @@ import java.util.regex.Pattern
 
 
 class ProfileService : ProfileRepository {
-
     private val profilesMap: Cache<UUID, Profile> = Caffeine.newBuilder()
         .maximumSize(10_000)
         .expireAfterAccess(6, TimeUnit.HOURS)
         .build()
 
-    private val CREATE = "CREATE TABLE IF NOT EXISTS {table} (" +
-            "`uniqueid` BINARY(16) NOT NULL PRIMARY KEY, " +
-            "`name` VARCHAR(16) NOT NULL, " +
-            "`lastupdate` TIMESTAMP NOT NULL)"
-    private val INSERT =
-        "INSERT INTO {table} VALUES(UNHEX(?), ?, ?) ON DUPLICATE KEY UPDATE `name` = ?, `lastupdate` = ?"
-    private val SELECT_UID = "SELECT `name`, `lastupdate` FROM {table} WHERE `uniqueid` = UNHEX(?)"
-    private val SELECT_NAME =
-        "SELECT HEX(`uniqueid`) AS `canonicalid`, `name`, `lastupdate` FROM {table} WHERE `name` = ? ORDER BY `lastupdate` DESC LIMIT 1"
-    private val SELECT_ALL = "SELECT HEX(`uniqueid`) AS `canonicalid`, `name`, `lastupdate` FROM {table}"
-    private val SELECT_ALL_RECENT =
-        "SELECT HEX(`uniqueid`) AS `canonicalid`, `name`, `lastupdate` FROM {table} ORDER BY `lastupdate` DESC LIMIT ?"
-    private val SELECT_ALL_UIDS =
-        "SELECT HEX(`uniqueid`) AS `canonicalid`, `name`, `lastupdate` FROM {table} WHERE `uniqueid` IN %s"
-    private val SELECT_ALL_NAMES =
-        "SELECT HEX(`uniqueid`) AS `canonicalid`, `name`, `lastupdate` FROM {table} WHERE `name` IN %s GROUP BY `name` ORDER BY `lastupdate` DESC"
 
-
-    private fun preload(numEntries: Int): Int {
-        var i = 0
-        try {
-            with (JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection) {
-                val stmt = prepareStatement(replaceTableName(SELECT_ALL_RECENT))
-                stmt.setInt(1, numEntries)
-                stmt.executeQuery()
-                val result = stmt.resultSet
-                while (result.next()) {
-                    val name: String = result.getString("name")
-                    val lastUpdate: Timestamp = result.getTimestamp("lastupdate")
-                    val uuidString: String = result.getString("canonicalid")
-                    val uuid = UndashedUuids.fromString(uuidString)
-                    val p = ImmutableProfile(uuid, name, lastUpdate.time)
-                    updateCache(p)
-                    i++
-                }
-
-            }
-        } catch (e: SQLException) {
-            e.printStackTrace()
-        }
-        return i
+    private val MINECRAFT_USERNAME_PATTERN: Pattern = Pattern.compile("^\\w{3,16}$")
+    private fun isValidMcUsername(s: String): Boolean {
+        return MINECRAFT_USERNAME_PATTERN.matcher(s).matches()
     }
 
+
     init {
-        try {
-            with (JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection){
-                val statement = createStatement()
-                statement.execute(CREATE.replace("{table}", "kraftwerk_profiles"))
-            }
-        } catch (e: SQLException) {
-            e.printStackTrace()
-        }
-
-        Log.info("[Profiles] Preloading the most recent " + 100.toString() + " entries...")
-        val start = System.currentTimeMillis()
-        val found = preload(100)
-        val time = System.currentTimeMillis() - start
-        Log.info("[Profiles] Preloaded " + found + " profiles into the cache! - took " + time + "ms")
-
         Events.subscribe(PlayerLoginEvent::class.java, EventPriority.MONITOR)
             .filter { it.result == PlayerLoginEvent.Result.ALLOWED }
             .handler { event ->
@@ -95,32 +46,16 @@ class ProfileService : ProfileRepository {
                 updateCache(profile)
                 Schedulers.async().run { saveProfile(profile) }
             }
-    }
-
-    private fun updateCache(profile: Profile) {
-        val existing: Profile? = this.profilesMap.getIfPresent(profile.uniqueId)
-        if (existing == null || existing.timestamp < profile.timestamp) {
-            this.profilesMap.put(profile.uniqueId, profile)
-        }
-    }
-
-    private fun replaceTableName(s: String): String {
-        return s.replace("{table}", "kraftwerk_profiles")
+        Log.info("[Profile] Now monitoring for profile data.")
     }
 
     fun saveProfile(profile: Profile) {
-        try {
-            with (JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection) {
-                val statement = prepareStatement(replaceTableName(INSERT))
-                statement.setString(1, UndashedUuids.toString(profile.uniqueId))
-                statement.setString(2, profile.name.get())
-                statement.setTimestamp(3, Timestamp(profile.timestamp))
-                statement.setString(4, profile.name.get())
-                statement.setTimestamp(5, Timestamp(profile.timestamp))
-                statement.execute()
-            }
-        } catch (e: SQLException) {
-            e.printStackTrace()
+        with(JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.getDatabase("applejuice").getCollection("players")) {
+            val filter = Filters.eq("uuid", profile.uniqueId)
+            val document = Document("uuid", profile.uniqueId)
+                .append("name", profile.name.get())
+                .append("lastLogin", Timestamp(profile.timestamp))
+            this.findOneAndReplace(filter, document, FindOneAndReplaceOptions().upsert(true))
         }
     }
 
@@ -143,6 +78,13 @@ class ProfileService : ProfileRepository {
         return Optional.empty()
     }
 
+    private fun updateCache(profile: Profile) {
+        val existing: Profile? = this.profilesMap.getIfPresent(profile.uniqueId)
+        if (existing == null || existing.timestamp < profile.timestamp) {
+            this.profilesMap.put(profile.uniqueId, profile)
+        }
+    }
+
     override fun getKnownProfiles(): Collection<Profile> {
         return Collections.unmodifiableCollection(this.profilesMap.asMap().values)
     }
@@ -156,20 +98,14 @@ class ProfileService : ProfileRepository {
 
         return Schedulers.async().supply {
             try {
-                with (JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection) {
-                    val statement = prepareStatement(replaceTableName(SELECT_UID))
-                    statement.setString(1, UndashedUuids.toString(uniqueId))
-                    val rs = statement.executeQuery()
-                    if (rs.next()) {
-                        val name: String = rs.getString("name")
-                        val lastUpdate: Timestamp = rs.getTimestamp("lastupdate")
-                        val p = ImmutableProfile(uniqueId, name, lastUpdate.time)
-                        updateCache(p)
-                        return@supply p
-                    }
-
+                with (JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.getDatabase("applejuice").getCollection("players")) {
+                    val filter = Filters.eq("uuid", uniqueId)
+                    val document = this.find(filter).first()
+                    val p = ImmutableProfile(uniqueId, document!!["name"] as String, document["lastLogin"] as Long)
+                    updateCache(p)
+                    return@supply p
                 }
-            } catch (e: SQLException) {
+            } catch (e: MongoException) {
                 e.printStackTrace()
             }
             return@supply null
@@ -186,24 +122,17 @@ class ProfileService : ProfileRepository {
 
         return Schedulers.async().supply {
             try {
-                with (JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection) {
-                    val statement = prepareStatement(replaceTableName(SELECT_NAME))
-                    val result = statement.executeQuery()
-                    if (result.next()) {
-                        val remoteName: String = result.getString("name")
-                        val lastUpdate: Timestamp = result.getTimestamp("lastupdate")
-                        val uuidString: String = result.getString("canonicalid")
-                        val uuid = UndashedUuids.fromString(uuidString)
-                        val p = ImmutableProfile(uuid, remoteName, lastUpdate.time)
-                        updateCache(p)
-                        return@supply Optional.of(p)
-                    }
-
+                with (JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.getDatabase("applejuice").getCollection("players")) {
+                    val filter = Filters.eq("name", name)
+                    val document = this.find(filter).first()
+                    val p = ImmutableProfile(UUID.fromString(document!!["uuid"] as String), name, document["lastLogin"] as Long)
+                    updateCache(p)
+                    return@supply Optional.of(p)
                 }
-            } catch (e: SQLException) {
+            } catch (e: MongoException) {
                 e.printStackTrace()
             }
-            return@supply Optional.empty()
+            return@supply null
         }
     }
 
@@ -211,27 +140,23 @@ class ProfileService : ProfileRepository {
         return Schedulers.async().supply {
             val ret = ArrayList<Profile>()
             try {
-                with(JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection) {
-                    val statement = prepareStatement(replaceTableName(SELECT_ALL))
-                    val result = statement.executeQuery()
-                    while (result.next()) {
-                        val name: String = result.getString("name")
-                        val lastUpdate: Timestamp = result.getTimestamp("lastupdate")
-                        val uuidString: String = result.getString("canonicalid")
-                        val uuid = UndashedUuids.fromString(uuidString)
-                        val p = ImmutableProfile(uuid, name, lastUpdate.time)
+                with (JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.getDatabase("applejuice").getCollection("players")) {
+                    val documents = this.find().iterator()
+                    while (documents.hasNext()) {
+                        val document = documents.next()
+                        val p = ImmutableProfile(UUID.fromString(document["uuid"] as String), document["name"] as String, document["lastLogin"] as Long)
                         updateCache(p)
                         ret.add(p)
                     }
                 }
-            } catch (e: SQLException) {
+            } catch (e: MongoException) {
                 e.printStackTrace()
             }
             return@supply ret
         }
     }
 
-    override fun lookupProfiles(uniqueIds: MutableIterable<UUID>): Promise<Map<UUID, Profile>> {
+    override fun lookupProfiles(uniqueIds: MutableIterable<UUID>): Promise<MutableMap<UUID, Profile>> {
         val toFind: MutableSet<UUID> = HashSet()
         Iterables.addAll(toFind, uniqueIds)
         val ret: HashMap<UUID, Profile> = HashMap<UUID, Profile>()
@@ -263,33 +188,25 @@ class ProfileService : ProfileRepository {
         sb.append(")")
         return Schedulers.async().supply {
             try {
-                with(JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection) {
-                    val statement = prepareStatement(replaceTableName(String.format(SELECT_ALL_UIDS, sb.toString())))
-                    val rs = statement.executeQuery()
-                    while (rs.next()) {
-                        val name: String = rs.getString("name")
-                        val lastUpdate: Timestamp = rs.getTimestamp("lastupdate")
-                        val uuidString: String = rs.getString("canonicalid")
-                        val uuid = UndashedUuids.fromString(uuidString)
-                        val p = ImmutableProfile(uuid, name, lastUpdate.time)
+                with (JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.getDatabase("applejuice").getCollection("players")) {
+                    val filter = Filters.eq("uuid", sb.toString())
+                    val documents = this.find(filter).iterator()
+                    while (documents.hasNext()) {
+                        val document = documents.next()
+                        val uuid = UUID.fromString(document["uuid"] as String)
+                        val p = ImmutableProfile(uuid, document["name"] as String, document["lastLogin"] as Long)
                         updateCache(p)
                         ret[uuid] = p
                     }
                 }
-            } catch (e: SQLException) {
+            } catch (e: MongoException) {
                 e.printStackTrace()
             }
             return@supply ret
         }
     }
 
-    private val MINECRAFT_USERNAME_PATTERN: Pattern = Pattern.compile("^\\w{3,16}$")
-
-    private fun isValidMcUsername(s: String): Boolean {
-        return MINECRAFT_USERNAME_PATTERN.matcher(s).matches()
-    }
-
-    override fun lookupProfilesByName(names: MutableIterable<String>): Promise<Map<String, Profile>> {
+    override fun lookupProfilesByName(names: MutableIterable<String>): Promise<MutableMap<String, Profile>> {
         val toFind: MutableSet<String> = HashSet()
         Iterables.addAll(toFind, names)
         val ret: HashMap<String, Profile> = HashMap<String, Profile>()
@@ -298,7 +215,7 @@ class ProfileService : ProfileRepository {
             val u = iterator.next()
             val profile = getProfile(u)
             if (profile.isPresent) {
-                ret.put(u, profile.get())
+                ret[u] = profile.get()
                 iterator.remove()
             }
         }
@@ -321,23 +238,21 @@ class ProfileService : ProfileRepository {
         sb.append(")")
         return Schedulers.async().supply {
             try {
-                with(JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.connection) {
-                    val statement = prepareStatement(replaceTableName(String.format(SELECT_ALL_NAMES, sb.toString())))
-                    val rs = statement.executeQuery()
-                    while (rs.next()) {
-                        val name = rs.getString("name")
-                        val lastUpdate = rs.getTimestamp("lastupdate")
-                        val uuidString = rs.getString("canonicalid")
-                        val uuid = UndashedUuids.fromString(uuidString)
-                        val p = ImmutableProfile(uuid, name, lastUpdate.time)
+                with (JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.getDatabase("applejuice").getCollection("stats")) {
+                    val filter = Filters.eq("name", toFind)
+                    val documents = this.find(filter).iterator()
+                    while (documents.hasNext()) {
+                        val document = documents.next()
+                        val p = ImmutableProfile(UUID.fromString(document["uuid"] as String), document["name"] as String, document["lastLogin"] as Long)
                         updateCache(p)
-                        ret[name] = p
+                        ret[p.name.get()] = p
                     }
                 }
-            } catch (e: SQLException) {
+            } catch (e: MongoException) {
                 e.printStackTrace()
             }
             return@supply ret
         }
     }
+
 }

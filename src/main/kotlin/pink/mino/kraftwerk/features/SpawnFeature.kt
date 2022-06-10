@@ -19,8 +19,6 @@ import org.bukkit.event.player.PlayerItemConsumeEvent
 import pink.mino.kraftwerk.scenarios.ScenarioHandler
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.ItemBuilder
-import pink.mino.kraftwerk.utils.Perk
-import pink.mino.kraftwerk.utils.PerkChecker
 
 class SpawnFeature : Listener {
     val spawnLocation = Location(Bukkit.getWorld("Spawn"), -221.5, 95.0, -140.5)
@@ -44,12 +42,6 @@ class SpawnFeature : Listener {
         p.gameMode = GameMode.ADVENTURE
         p.exp = 0F
         p.level = 0
-        val arenaSword = ItemBuilder(Material.IRON_SWORD)
-            .name("&cFFA Arena &7(Right Click)")
-            .addLore("&7Right-click to send yourself into the FFA Arena.")
-            .noAttributes()
-            .make()
-        p.inventory.setItem(4, arenaSword)
 
         val stats = ItemBuilder(Material.WRITTEN_BOOK)
             .name("&cView Stats &7(Right Click)")
@@ -67,7 +59,7 @@ class SpawnFeature : Listener {
             .name("&cDonator Menu &7(Right Click)")
             .addLore("&7Right-click to view the Donator Menu.")
             .make()
-        p.inventory.setItem(0, donator)
+        p.inventory.setItem(4, donator)
 
         val scenarios = ItemBuilder(Material.CHEST)
             .name("&cActive Scenarios &7(Right Click)")
@@ -75,17 +67,6 @@ class SpawnFeature : Listener {
             .make()
         p.inventory.setItem(8, scenarios)
 
-        val mobEggs = ItemBuilder(Material.EGG)
-            .name("&2Mob Eggs &7(Throw)")
-            .addLore("&7Throw these eggs in the Spawn to spawn mobs!")
-            .addLore("&7&oMobs last for 10 seconds.")
-            .addLore("&7&oEggs replenish after 10 seconds of no eggs.")
-            .setAmount(5)
-            .make()
-        val perks = PerkChecker.checkPerks(p)
-        if (perks.contains(Perk.MOB_EGGS)) {
-            p.inventory.setItem(7, mobEggs)
-        }
         if (ScenarioHandler.getActiveScenarios().contains(ScenarioHandler.getScenario("auction"))) {
             p.inventory.clear()
         }
@@ -105,10 +86,6 @@ class SpawnFeature : Listener {
         if (e.player.world.name == "Spawn") {
             if (e.item !== null) {
                 when (e.item.itemMeta.displayName) {
-                    Chat.colored("&cFFA Arena &7(Right Click)") -> {
-                        e.isCancelled = true
-                        Bukkit.dispatchCommand(e.player, "a")
-                    }
                     Chat.colored("&cView Stats &7(Right Click)") -> {
                         e.isCancelled = true
                         Bukkit.dispatchCommand(e.player, "stats")
