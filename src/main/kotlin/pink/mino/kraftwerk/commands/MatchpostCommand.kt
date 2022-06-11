@@ -1,8 +1,11 @@
 package pink.mino.kraftwerk.commands
 
 import com.google.gson.Gson
+import com.mongodb.MongoException
+import com.mongodb.client.model.Filters
+import com.mongodb.client.model.FindOneAndReplaceOptions
 import net.dv8tion.jda.api.EmbedBuilder
-import net.dv8tion.jda.api.entities.Activity
+import org.bson.Document
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.command.Command
@@ -12,7 +15,6 @@ import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.scheduler.BukkitRunnable
 import pink.mino.kraftwerk.Kraftwerk
-import pink.mino.kraftwerk.discord.Discord
 import pink.mino.kraftwerk.features.SettingsFeature
 import pink.mino.kraftwerk.scenarios.ScenarioHandler
 import pink.mino.kraftwerk.utils.ActionBar
@@ -22,96 +24,9 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
+import java.time.OffsetDateTime
+import java.util.*
 import kotlin.math.floor
-
-class ScheduleBroadcast(private val opening: String) : BukkitRunnable() {
-    fun getTime(): String {
-        with(URL("https://hosts.uhc.gg/api/sync").openConnection() as HttpURLConnection) {
-            requestMethod = "GET"
-            setRequestProperty("User-Agent", "Mozilla/5.0")
-            BufferedReader(InputStreamReader(inputStream)).use {
-                val response = StringBuffer()
-
-                var inputLine = it.readLine()
-                while (inputLine != null) {
-                    response.append(inputLine)
-                    inputLine = it.readLine()
-                }
-                it.close()
-                return "${response.toString()[12]}${response.toString()[13]}:${response.toString()[15]}${response.toString()[16]}"
-            }
-        }
-    }
-
-    private fun removeFifteenMinutes(time: String): String {
-        val makeSureIsValid: List<String> = time.split(":")
-        var hours: Any = makeSureIsValid[0].toInt()
-        var minutes: Any
-        if (makeSureIsValid[1] == "15") {
-            minutes = 0
-        } else if (makeSureIsValid[1] == "30") {
-            minutes = 15
-        } else if (makeSureIsValid[1] == "45") {
-            minutes = 30
-        } else {
-            minutes = 45
-            hours = if (makeSureIsValid[0].toInt() == 0) {
-                23
-            } else {
-                makeSureIsValid[0].toInt() - 1
-            }
-        }
-        if (hours.toString().length == 1) {
-            hours = "0${hours}"
-        }
-        if (minutes.toString().length == 1) {
-            minutes = "00"
-        }
-        return "${hours}:${minutes}"
-    }
-
-    override fun run() {
-        print("Checking if the time corresponds with the broadcast time... ${removeFifteenMinutes(opening)} & ${getTime()}")
-        if (SettingsFeature.instance.data!!.getString("matchpost.opens") == null) {
-            cancel()
-        }
-        if (SettingsFeature.instance.data!!.getBoolean("matchpost.cancelled") == true) {
-            cancel()
-        }
-        if (getTime() == removeFifteenMinutes(opening)) {
-            val host = Bukkit.getOfflinePlayer(SettingsFeature.instance.data!!.getString("game.host"))
-            var embed = EmbedBuilder()
-            embed.setColor(Color(255, 61, 61))
-            embed.setTitle(SettingsFeature.instance.data!!.getString("matchpost.host"))
-            embed.setThumbnail("https://visage.surgeplay.com/bust/512/${host.uniqueId}")
-            val scenarios = SettingsFeature.instance.data!!.getStringList("matchpost.scenarios")
-            val opening = (System.currentTimeMillis() / 1000L) + (900000L) / 1000L
-            embed.addField("Teams", SettingsFeature.instance.data!!.getString("matchpost.team"), true)
-            embed.addField("Opening", "<t:${opening}:t> (<t:${opening}:R>)", true)
-            embed.addField("Scenarios", scenarios.joinToString(", "), true)
-            var flag = ":checkered_flag:"
-            if (SettingsFeature.instance.data!!.getString("server.region") == "EU") {
-                flag = ":flag_de:"
-            } else if (SettingsFeature.instance.data!!.getString("server.region") == "NA") {
-                flag = ":flag_ca:"
-            }
-            embed.addField("IP", "$flag - `${SettingsFeature.instance.data!!.getString("server.region").lowercase()}.applejuice.bar`", true)
-            embed.addField("Matchpost", "https://hosts.uhc.gg/m/${SettingsFeature.instance.data!!.getInt("matchpost.id")}", true)
-            Discord.instance!!.getTextChannelById(937811305102999573)!!.sendMessage("<@&793406242013839381> (Use /togglematches to toggle matchpost alerts)").queue()
-            Discord.instance!!.getTextChannelById(937811305102999573)!!.sendMessageEmbeds(embed.build()).queue()
-            embed = EmbedBuilder()
-            embed.setColor(Color(255, 61, 61))
-            embed.setTitle(SettingsFeature.instance.data!!.getString("matchpost.host"))
-            embed.setThumbnail("https://visage.surgeplay.com/bust/512/${host.uniqueId}")
-            embed.addField("Pre-whitelists are on!", "You are now allowed to use the command `/wl` to request to pre-whitelist yourself in the server!", false)
-            Discord.instance!!.getTextChannelById(937812061948346398)!!.sendMessageEmbeds(embed.build()).queue()
-            SettingsFeature.instance.data!!.set("whitelist.requests", true)
-            SettingsFeature.instance.data!!.set("matchpost.posted", true)
-            SettingsFeature.instance.saveData()
-            cancel()
-        }
-    }
-}
 
 class Opening(private val closing: Long) : BukkitRunnable() {
     var timer = 0
@@ -185,11 +100,11 @@ class ScheduleOpening(private val opening: String) : BukkitRunnable() {
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer cancel")
             val time: Long
             if (SettingsFeature.instance.data!!.getBoolean("matchpost.teamsGame")) {
-                time = 600
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer 600 &cWhitelist is enabled in ${Chat.dash}&f")
+                time = 360
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer 360 &cWhitelist is enabled in ${Chat.dash}&f")
             } else {
-                time = 300
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer 300 &cWhitelist is enabled in ${Chat.dash}&f")
+                time = 180
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer 180 &cWhitelist is enabled in ${Chat.dash}&f")
             }
             val host = Bukkit.getOfflinePlayer(SettingsFeature.instance.data!!.getString("game.host"))
             val embed = EmbedBuilder()
@@ -197,12 +112,6 @@ class ScheduleOpening(private val opening: String) : BukkitRunnable() {
             embed.setColor(Color(255, 61, 61))
             embed.setTitle(SettingsFeature.instance.data!!.getString("matchpost.host"))
             embed.setThumbnail("https://visage.surgeplay.com/bust/512/${host.uniqueId}")
-            if (SettingsFeature.instance.data!!.getString("server.region") == "EU") {
-                embed.addField("Game Open!", "The game is now open @ :beverage_box: `eu.applejuice.bar`.", false)
-            } else if (SettingsFeature.instance.data!!.getString("server.region") == "NA") {
-                embed.addField("Game Open!", "The game is now open @ :beverage_box: `na.applejuice.bar`.", false)
-            }
-            Discord.instance!!.getTextChannelById(937811678735765554)!!.sendMessageEmbeds(embed.build()).queue()
             Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} The whitelist has been turned off automatically @ &c${opening}&7."))
             cancel()
             Opening(time).runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 20L)
@@ -288,6 +197,36 @@ class MatchpostCommand : CommandExecutor {
                 }
                 id = map["id"] as Double
                 scenarios = map["scenarios"] as List<*>
+                opening = "${(map["opens"] as String)[11]}${(map["opens"] as String)[12]}:${(map["opens"] as String)[14]}${(map["opens"] as String)[15]}"
+                try {
+                    with (JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.getDatabase("applejuice").getCollection("upcoming_matches")) {
+                        val filter = Filters.eq("id", id)
+                        val document = Document("id", id)
+                        document.append("host", host)
+                        document.append("hostingName", if (map["hostingName"] != null) {
+                            map["hostingName"] as String
+                        } else {
+                            map["author"] as String
+                        })
+                        document.append("teams", team)
+                        document.append("scenarios", scenarios)
+                        document.append("friendlyOpening", opening)
+                        document.append("opening", Date(OffsetDateTime.parse(map["opens"] as String).toInstant().toEpochMilli()))
+                        document.append("border", (map["mapSize"] as Double).toInt())
+                        if ((map["address"] as String) == "na2.applejuice.bar") {
+                            document.append("server", "uhc2")
+                        } else if ((map["address"] as String) == "na1.applejuice.bar") {
+                            document.append("server", "uhc1")
+                        } else {
+                            document.append("server", "other")
+                        }
+                        this.findOneAndReplace(filter, document, FindOneAndReplaceOptions().upsert(true))
+                        Chat.sendMessage(sender, "${Chat.prefix} Successfully submitted your matchpost to the upcoming matchpost database.")
+                    }
+                } catch (e: MongoException) {
+                    e.printStackTrace()
+                    Chat.sendMessage(sender, "${Chat.prefix} An error occurred while submitting your matchpost to the upcoming matchpost database.")
+                }
                 for (scenario in ScenarioHandler.getActiveScenarios()){
                     scenario.toggle()
                 }
@@ -296,7 +235,6 @@ class MatchpostCommand : CommandExecutor {
                     try { ScenarioHandler.getScenario(scenario.lowercase().replace(" ", ""))!!.toggle()
                     } catch (_: Exception) {}
                 }
-                opening = "${(map["opens"] as String)[11]}${(map["opens"] as String)[12]}:${(map["opens"] as String)[14]}${(map["opens"] as String)[15]}"
             }
         }
         SettingsFeature.instance.data!!.set("matchpost.team", team)
@@ -307,8 +245,6 @@ class MatchpostCommand : CommandExecutor {
         SettingsFeature.instance.data!!.set("matchpost.scenarios", scenarios)
         SettingsFeature.instance.data!!.set("matchpost.opens", opening)
         ScheduleOpening(opening).runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 300L)
-        ScheduleBroadcast(opening).runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 300L)
-        if (JavaPlugin.getPlugin(Kraftwerk::class.java).discord) JavaPlugin.getPlugin(Kraftwerk::class.java).discordInstance.presence.activity = Activity.playing(host)
         Chat.sendMessage(sender, "${Chat.prefix} Set the matchpost to &chttps://hosts.uhc.gg/m/${id.toInt()}")
         SettingsFeature.instance.saveData()
         return true

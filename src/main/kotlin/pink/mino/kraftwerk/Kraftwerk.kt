@@ -10,7 +10,6 @@ import me.lucko.helper.profiles.ProfileRepository
 import me.lucko.helper.utils.Log
 import me.lucko.spark.api.Spark
 import net.dv8tion.jda.api.JDA
-import net.dv8tion.jda.api.entities.Activity
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.Material
@@ -220,27 +219,11 @@ class Kraftwerk : ExtendedJavaPlugin() {
         /* Discord */
         Discord.main()
 
-        if (!SettingsFeature.instance.data!!.getBoolean("matchpost.posted")) SettingsFeature.instance.data!!.set("whitelist.requests", false)
-        SettingsFeature.instance.saveData()
         if (!SettingsFeature.instance.data!!.getBoolean("matchpost.cancelled")) {
             if (SettingsFeature.instance.data!!.getString("matchpost.opens") != null) {
-                ScheduleBroadcast(SettingsFeature.instance.data!!.getString("matchpost.opens")).runTaskTimer(this, 0L, 300L)
                 ScheduleOpening(SettingsFeature.instance.data!!.getString("matchpost.opens")).runTaskTimer(this, 0L, 300L)
             }
-            if (SettingsFeature.instance.data!!.getString("matchpost.host") == null) {
-                if (SettingsFeature.instance.data!!.getString("server.region") == "NA") {
-                    Discord.instance!!.presence.activity = Activity.playing("na.applejuice.bar")
-                } else {
-                    Discord.instance!!.presence.activity = Activity.playing("eu.applejuice.bar")
-                }
-            }
-            else Discord.instance!!.presence.activity = Activity.playing(SettingsFeature.instance.data!!.getString("matchpost.host"))
         } else {
-            if (SettingsFeature.instance.data!!.getString("server.region") == "NA") {
-                Discord.instance!!.presence.activity = Activity.playing("na.applejuice.bar")
-            } else {
-                Discord.instance!!.presence.activity = Activity.playing("eu.applejuice.bar")
-            }
             SettingsFeature.instance.data!!.set("matchpost.cancelled", null)
             SettingsFeature.instance.saveData()
         }

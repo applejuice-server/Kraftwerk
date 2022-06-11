@@ -16,8 +16,8 @@ repositories {
     maven { url = 'https://maven.elmakers.com/repository/' }
     maven { url = 'https://repo.citizensnpcs.co/' }
     maven { url = 'https://jitpack.io/' }
-    maven { url("https://repo.lucko.me/") }
-    maven { url "https://repo.codemc.io/repository/maven-public/" }
+    maven { url = 'https://repo.lucko.me/' }
+    maven { url = 'https://repo.codemc.io/repository/maven-public/' }
     mavenLocal()
 }
 
