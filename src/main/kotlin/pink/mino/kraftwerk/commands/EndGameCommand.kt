@@ -1,7 +1,5 @@
 package pink.mino.kraftwerk.commands
 
-import net.dv8tion.jda.api.EmbedBuilder
-import net.dv8tion.jda.api.entities.Activity
 import org.bukkit.Bukkit
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
@@ -17,7 +15,6 @@ import pink.mino.kraftwerk.features.SpecFeature
 import pink.mino.kraftwerk.features.TeamsFeature
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GameState
-import java.awt.Color
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
@@ -52,30 +49,11 @@ class EndGameCommand : CommandExecutor {
                 player.sendTitle(Chat.colored("&c&lGAME OVER!"), Chat.colored("&7The game has concluded!"))
             }
         }
-        val host = Bukkit.getOfflinePlayer(SettingsFeature.instance.data!!.getString("game.host"))
         val gameTitle = SettingsFeature.instance.data!!.getString("matchpost.host")
-        val embed = EmbedBuilder()
-        embed.setColor(Color(255, 61, 61))
-        embed.setTitle(SettingsFeature.instance.data!!.getString("matchpost.host"))
-        embed.setThumbnail("https://visage.surgeplay.com/bust/512/${host.uniqueId}")
-        embed.addField("Winners", winners.joinToString(", ", "", "", -1, "...") {
-            "**$it** [${
-                SettingsFeature.instance.data!!.getInt(
-                    "game.kills.${Bukkit.getOfflinePlayer(it).name}"
-                )
-            }]"
-        }, false)
         for (team in TeamsFeature.manager.getTeams()) {
             for (player in team.players) {
                 team.removePlayer(player)
             }
-        }
-        embed.addField("Matchpost", "https://hosts.uhc.gg/m/${SettingsFeature.instance.data!!.getInt("matchpost.id")}", false)
-        Discord.instance!!.getTextChannelById(937811334106583040)!!.sendMessageEmbeds(embed.build()).queue()
-        if (SettingsFeature.instance.data!!.getString("server.region") == "NA") {
-            Discord.instance!!.presence.activity = Activity.playing("na.applejuice.bar")
-        } else {
-            Discord.instance!!.presence.activity = Activity.playing("eu.applejuice.bar")
         }
 
         SettingsFeature.instance.data!!.set("game.winners", ArrayList<String>())
