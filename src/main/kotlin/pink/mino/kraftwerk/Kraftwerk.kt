@@ -249,6 +249,10 @@ class Kraftwerk : ExtendedJavaPlugin() {
 
     fun setupDataSource() {
         val uri = SettingsFeature.instance.data!!.getString("database.uri")
+        if (uri == null) {
+            Log.severe("No database URI set. Please set it in the config.")
+            return
+        }
         var client: MongoClient? = null
         try {
             client = MongoClient(MongoClientURI(uri))
