@@ -38,6 +38,10 @@ commands:
       - coords
       - tl
     description: Sends your coordinates to your team.
+  pmores:
+    description: Sends a message to your team with your current ore count.
+  pmminedores:
+    description: Sends a message to your team with your current mined ore count.
   team:
     description: General team commands.
   health:

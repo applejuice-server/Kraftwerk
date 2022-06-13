@@ -151,6 +151,8 @@ class Kraftwerk : ExtendedJavaPlugin() {
         getCommand("health").executor = HealthCommand()
         getCommand("pm").executor = PMCommand()
         getCommand("pmc").executor = PMCCommand()
+        getCommand("pmores").executor = PMOresCommand()
+        getCommand("pmminedores").executor = PMMOresCommand()
         getCommand("spawn").executor = SpawnCommand()
         getCommand("killtop").executor = KillTopCommand()
         getCommand("scenarios").executor = ScenarioCommand()
