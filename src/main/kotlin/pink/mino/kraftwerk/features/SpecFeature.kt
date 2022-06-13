@@ -273,7 +273,8 @@ class SpecFeature : Listener {
                     e.isCancelled = true
                     val list = ArrayList<Player>()
                     for (player in Bukkit.getOnlinePlayers()) {
-                        if (!getSpecs().contains(player.name)) list.add(player)
+                        if (getSpecs().contains(player.name) || player.world.name == "Spawn") continue
+                        list.add(player)
                     }
                     if (list.isEmpty()) {
                         Chat.sendMessage(e.player, "&cNo players to teleport to!")
