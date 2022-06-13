@@ -114,7 +114,6 @@ class StatsHandler : Listener {
     }
 
     private fun updateCache(statsPlayer: StatsPlayer) {
-        val existing: StatsPlayer? = this.statsPlayerMap.getIfPresent(statsPlayer.player.uniqueId)
-        if (existing == null) this.statsPlayerMap.put(statsPlayer.player.uniqueId, statsPlayer)
+        this.statsPlayerMap.put(statsPlayer.player.uniqueId, statsPlayer)
     }
 }
