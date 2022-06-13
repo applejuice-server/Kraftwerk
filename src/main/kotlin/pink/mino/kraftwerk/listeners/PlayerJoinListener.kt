@@ -38,8 +38,15 @@ class PlayerJoinListener : Listener {
                     player.allowFlight = true
                     player.isFlying = true
                 }
+                if (SpecFeature.instance.getSpecs().contains(player.name)) {
+                    SpecFeature.instance.spec(player)
+                }
             }, 1L)
         } else {
+            if (SpecFeature.instance.getSpecs().contains(player.name)) {
+                SpecFeature.instance.joinSpec(player)
+                return
+            }
             if (!SettingsFeature.instance.data!!.getStringList("game.list").contains(player.name)) {
                 Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
                     SpawnFeature.instance.send(player)

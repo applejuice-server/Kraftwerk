@@ -114,6 +114,62 @@ class SpecFeature : Listener {
     }
     val prefix = "&8[&4Spec&8]&7"
 
+    fun joinSpec(p: Player) {
+        p.health = 20.0
+        p.foodLevel = 20
+        p.saturation = 20F
+        p.exp = 0F
+        p.level = 0
+        val effects = p.activePotionEffects
+        for (effect in effects) {
+            p.removePotionEffect(effect.type)
+        }
+        p.inventory.clear()
+        p.inventory.armorContents = null
+        p.gameMode = GameMode.SPECTATOR
+
+        var list = SettingsFeature.instance.data!!.getStringList("game.list")
+        if (list.contains(p.name)) list.remove(p.name)
+        SettingsFeature.instance.data!!.set("game.list", list)
+        list = SettingsFeature.instance.data!!.getStringList("game.specs")
+        if (!list.contains(p.name)) list.add(p.name)
+        SettingsFeature.instance.data!!.set("game.specs", list)
+        SettingsFeature.instance.saveData()
+
+        specChat("&f${p.name}&7 has entered spectator mode.", p)
+        Scoreboard.setScore(Chat.colored("${Chat.dash} &7Playing..."), PlayerUtils.getPlayingPlayers().size)
+
+        val teleportTo00 = ItemBuilder(Material.EYE_OF_ENDER)
+            .name("&cTeleport to 0,0")
+            .addLore("&7Click the item to teleport yourself to &c0,0&7.")
+            .make()
+        val nearby = ItemBuilder(Material.COMPASS)
+            .name("&cNearby Players")
+            .addLore("&7Click the item to see a list of nearby players.")
+            .make()
+        val locations = ItemBuilder(Material.MAP)
+            .name("&cPlayer Locations")
+            .addLore("&7Click the item to see a list of player locations.")
+            .make()
+        val respawn = ItemBuilder(Material.BONE)
+            .name("&cRespawn Players")
+            .addLore("&7Click to view a list of dead players that can be respawned.")
+            .make()
+
+        p.inventory.setItem(19, teleportTo00)
+        p.inventory.setItem(21, nearby)
+        p.inventory.setItem(23, locations)
+        p.inventory.setItem(25, respawn)
+
+        Chat.sendMessage(p, "${Chat.prefix} You are now in spectator mode.")
+
+        Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
+            if (LunarClientAPI.getInstance().isRunningLunarClient(p)) {
+                Chat.sendMessage(p, "${Chat.dash} &7Your &bLunar Client&7 staff modules have been enabled.")
+                LunarClientAPI.getInstance().giveAllStaffModules(p)
+            }
+        }, 5L)
+    }
     fun spec(p: Player) {
         SpawnFeature.instance.send(p)
         p.health = 20.0
@@ -273,7 +329,8 @@ class SpecFeature : Listener {
                     e.isCancelled = true
                     val list = ArrayList<Player>()
                     for (player in Bukkit.getOnlinePlayers()) {
-                        if (!getSpecs().contains(player.name)) list.add(player)
+                        if (getSpecs().contains(player.name) || player.world.name == "Spawn") continue
+                        list.add(player)
                     }
                     if (list.isEmpty()) {
                         Chat.sendMessage(e.player, "&cNo players to teleport to!")
@@ -300,15 +357,6 @@ class SpecFeature : Listener {
                 Chat.sendMessage(e.player, "&cYou aren't right clicking anyone.")
                 return
             }
-        }
-    }
-
-    @EventHandler
-    fun onPlayerJoin(e: PlayerJoinEvent) {
-        if (getSpecs().contains(e.player.name)) {
-            Schedulers.sync().runLater(runnable@ {
-                spec(e.player)
-            }, 5L)
         }
     }
 
