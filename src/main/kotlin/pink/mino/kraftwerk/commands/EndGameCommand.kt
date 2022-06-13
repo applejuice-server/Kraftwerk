@@ -1,5 +1,9 @@
 package pink.mino.kraftwerk.commands
 
+import com.mongodb.client.model.Filters
+import com.mongodb.client.model.FindOneAndReplaceOptions
+import net.dv8tion.jda.api.EmbedBuilder
+import org.bson.Document
 import org.bukkit.Bukkit
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
@@ -18,6 +22,7 @@ import pink.mino.kraftwerk.utils.GameState
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
+import java.util.*
 
 class EndGameCommand : CommandExecutor {
     override fun onCommand(
@@ -41,20 +46,62 @@ class EndGameCommand : CommandExecutor {
             Chat.sendMessage(sender, "&cYou have no winners set! You need to set them using /winner <player>!")
             return false
         }
+        val winnersList = arrayListOf<String>()
+        val kills = hashMapOf<String, Int>()
+        val host = Bukkit.getOfflinePlayer(SettingsFeature.instance.data!!.getString("game.host"))
         for (player in Bukkit.getOnlinePlayers()) {
             if (winners.contains(player.name)) {
+                winnersList.add(player.uniqueId.toString())
+                kills[player.uniqueId.toString()] = SettingsFeature.instance.data!!.getInt("game.kills." + player.name)
                 player.sendTitle(Chat.colored("&6&lVICTORY!"), Chat.colored("&7Congratulations, you won the game!"))
                 if (!ConfigOptionHandler.getOption("statless")!!.enabled) JavaPlugin.getPlugin(Kraftwerk::class.java).statsHandler.getStatsPlayer(player)!!.wins++
             } else {
                 player.sendTitle(Chat.colored("&c&lGAME OVER!"), Chat.colored("&7The game has concluded!"))
             }
         }
+        JavaPlugin.getPlugin(Kraftwerk::class.java).game!!.winners = winnersList
         val gameTitle = SettingsFeature.instance.data!!.getString("matchpost.host")
         for (team in TeamsFeature.manager.getTeams()) {
             for (player in team.players) {
                 team.removePlayer(player)
             }
         }
+        val game = JavaPlugin.getPlugin(Kraftwerk::class.java).game!!
+        game.endTime = Date().time
+        with (JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.getDatabase("applejuice").getCollection("matches")) {
+            val filter = Filters.eq("id", game.id)
+            val document = Document("id", game.id)
+                .append("host", host.uniqueId.toString())
+                .append("title", gameTitle)
+                .append("winners", winnersList)
+                .append("winnerKills", kills)
+                .append("scenarios", game.scenarios)
+                .append("teams", game.team)
+                .append("endTime", game.endTime)
+                .append("startTime", game.startTime)
+                .append("fill", game.fill)
+                .append("milliseconds", game.endTime!! - game.startTime)
+
+            this.findOneAndReplace(filter, document, FindOneAndReplaceOptions().upsert(true))
+        }
+        val embed = EmbedBuilder()
+        embed.setColor(java.awt.Color(255, 61, 61))
+        embed.setTitle(SettingsFeature.instance.data!!.getString("matchpost.host"))
+        embed.setThumbnail("https://visage.surgeplay.com/bust/512/${host.uniqueId}")
+        embed.addField("Winners", winners.joinToString(", ", "", "", -1, "...") {
+            "**$it** [${
+                SettingsFeature.instance.data!!.getInt(
+                    "game.kills.${Bukkit.getOfflinePlayer(it).name}"
+                )
+            }]"
+        }, false)
+        for (team in TeamsFeature.manager.getTeams()) {
+            for (player in team.players) {
+                team.removePlayer(player)
+            }
+        }
+        embed.addField("Matchpost", "https://hosts.uhc.gg/m/${SettingsFeature.instance.data!!.getInt("matchpost.id")}", false)
+        Discord.instance!!.getTextChannelById(937811334106583040)!!.sendMessageEmbeds(embed.build()).queue()
 
         SettingsFeature.instance.data!!.set("game.winners", ArrayList<String>())
         SettingsFeature.instance.data!!.set("game.list", ArrayList<String>())

@@ -23,6 +23,7 @@ import pink.mino.kraftwerk.scenarios.ScenarioHandler
 import pink.mino.kraftwerk.utils.ActionBar
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GameState
+import java.util.*
 import kotlin.math.floor
 
 // https://github.com/LeonTG/Timer/blob/main/src/main/java/com/leontg77/timer/runnable/TimerRunnable.java#L157
@@ -65,6 +66,16 @@ class UHCTask : BukkitRunnable() {
 
     var timer = 0
     var currentEvent: Events = Events.PRE_START
+
+    var host = SettingsFeature.instance.data!!.getString("game.host")
+    var scenarios = SettingsFeature.instance.data!!.getStringList("matchpost.scenarios")
+    var id = SettingsFeature.instance.data!!.getInt("matchpost.id")
+    var team = SettingsFeature.instance.data!!.getString("matchpost.team")
+    var winners: Any? = null
+    var fill = Bukkit.getOnlinePlayers().size
+
+    var startTime: Long = Date().time
+    var endTime: Long? = null
 
     private fun displayTimer(player: Player) {
         when (currentEvent) {
