@@ -155,6 +155,15 @@ class MatchpostCommand : CommandExecutor {
         var team: String? = null
         var teamsGame: Boolean = false
         val scenarioList = ArrayList<String>()
+        try {
+            with (JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.getDatabase("applejuice").getCollection("upcoming_matches")) {
+                val filter = Filters.eq("id", SettingsFeature.instance.data!!.getInt("matchpost.id"))
+                this.deleteOne(filter)
+            }
+        } catch (e: MongoException) {
+            Chat.sendMessage(sender, "${Chat.prefix} ${ChatColor.RED}An error occurred deleting the old matchpost. Don't worry too much about this unless your game didn't setup.")
+            e.printStackTrace()
+        }
         with(URL("https://hosts.uhc.gg/api/matches/${args[0]}").openConnection() as HttpURLConnection) {
             requestMethod = "GET"
             setRequestProperty("User-Agent", "Mozilla/5.0")
