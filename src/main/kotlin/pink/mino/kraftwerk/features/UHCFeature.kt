@@ -20,9 +20,7 @@ import pink.mino.kraftwerk.Kraftwerk
 import pink.mino.kraftwerk.commands.SendTeamView
 import pink.mino.kraftwerk.config.ConfigOptionHandler
 import pink.mino.kraftwerk.scenarios.ScenarioHandler
-import pink.mino.kraftwerk.utils.ActionBar
-import pink.mino.kraftwerk.utils.Chat
-import pink.mino.kraftwerk.utils.GameState
+import pink.mino.kraftwerk.utils.*
 import java.util.*
 import kotlin.math.floor
 
@@ -216,6 +214,7 @@ class UHCTask : BukkitRunnable() {
                 }, 6000)
             }
         }
+        Scoreboard.setScore(Chat.colored("${Chat.dash} &7Playing..."), PlayerUtils.getPlayingPlayers().size)
         for (player in Bukkit.getOnlinePlayers()) {
             displayTimer(player)
         }
