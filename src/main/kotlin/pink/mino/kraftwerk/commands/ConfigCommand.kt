@@ -170,10 +170,14 @@ class ConfigCommand : CommandExecutor {
             .name(" &4&lTeam Config")
             .noAttributes()
             .addLore("")
-        if (SettingsFeature.instance.data!!.getInt("game.teamSize") == 1) {
-            teamConfig.addLore(" &7Team Size ${Chat.dash} &fFFA ")
+        if (SettingsFeature.instance.data!!.getString("matchpost.team") == "Auctions") {
+            teamConfig.addLore(" &7Team Size ${Chat.dash} &fAuctions ")
         } else {
-            teamConfig.addLore(" &7Team Size ${Chat.dash} &fTo${SettingsFeature.instance.data!!.getInt("game.teamSize")} ")
+            if (SettingsFeature.instance.data!!.getInt("game.teamSize") == 1) {
+                teamConfig.addLore(" &7Team Size ${Chat.dash} &fFFA ")
+            } else {
+                teamConfig.addLore(" &7Team Size ${Chat.dash} &fTo${SettingsFeature.instance.data!!.getInt("game.teamSize")} ")
+            }
         }
         teamConfig.addLore(" &7Team Management ${Chat.dash} &f${ffa} ").addLore(" ")
         val teamConf = teamConfig.make()
