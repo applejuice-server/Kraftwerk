@@ -1,5 +1,7 @@
 package pink.mino.kraftwerk.commands
 
+import com.mongodb.MongoException
+import com.mongodb.client.model.Filters
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.command.Command
@@ -23,6 +25,15 @@ class CancelCommand : CommandExecutor {
                 Chat.sendMessage(sender, "${Chat.prefix} ${ChatColor.RED}You don't have permission to use this command.")
                 return false
             }
+        }
+        try {
+            with (JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.getDatabase("applejuice").getCollection("upcoming_matches")) {
+                val filter = Filters.eq("id", SettingsFeature.instance.data!!.getInt("matchpost.id"))
+                this.deleteOne(filter)
+            }
+        } catch (e: MongoException) {
+            Chat.sendMessage(sender, "${Chat.prefix} ${ChatColor.RED}An error occurred while cancelling the matchpost.")
+            e.printStackTrace()
         }
         SettingsFeature.instance.data!!.set("matchpost", null)
         SettingsFeature.instance.data!!.set("matchpost.cancelled", true)
