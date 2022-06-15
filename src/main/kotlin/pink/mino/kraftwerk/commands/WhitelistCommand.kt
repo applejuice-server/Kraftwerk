@@ -18,8 +18,8 @@ class WhitelistCommand : CommandExecutor {
         } else {
             list = SettingsFeature.instance.data!!.getList("whitelist.list") as ArrayList<String>
         }
-        if (!list.contains(p)) {
-            list.add(p)
+        if (!list.contains(p.lowercase())) {
+            list.add(p.lowercase())
         }
         SettingsFeature.instance.data!!.set("whitelist.list", list)
         SettingsFeature.instance.saveData()
@@ -32,9 +32,29 @@ class WhitelistCommand : CommandExecutor {
         } else {
             list = SettingsFeature.instance.data!!.getList("whitelist.list") as ArrayList<String>
         }
-        list.remove(p)
+        list.remove(p.lowercase())
         SettingsFeature.instance.data!!.set("whitelist.list", list)
         SettingsFeature.instance.saveData()
+    }
+
+    fun isWhitelisted(p: String): Boolean {
+        var list = ArrayList<String>()
+        if (SettingsFeature.instance.data!!.getList("whitelist.list") == null) {
+            SettingsFeature.instance.data!!.set("whitelist.list", list)
+        } else {
+            list = SettingsFeature.instance.data!!.getList("whitelist.list") as ArrayList<String>
+        }
+        return list.contains(p.lowercase())
+    }
+
+    fun getWhitelisted(): ArrayList<String> {
+        var list = ArrayList<String>()
+        if (SettingsFeature.instance.data!!.getList("whitelist.list") == null) {
+            SettingsFeature.instance.data!!.set("whitelist.list", list)
+        } else {
+            list = SettingsFeature.instance.data!!.getList("whitelist.list") as ArrayList<String>
+        }
+        return list
     }
 
     override fun onCommand(sender: CommandSender, cmd: Command, lbl: String, args: Array<String>): Boolean {
