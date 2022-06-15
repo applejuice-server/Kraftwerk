@@ -10,10 +10,7 @@ import me.lucko.helper.profiles.ProfileRepository
 import me.lucko.helper.utils.Log
 import me.lucko.spark.api.Spark
 import net.dv8tion.jda.api.JDA
-import org.bukkit.Bukkit
-import org.bukkit.ChatColor
-import org.bukkit.Material
-import org.bukkit.WorldCreator
+import org.bukkit.*
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.ShapedRecipe
 import org.bukkit.inventory.meta.ItemMeta
@@ -33,6 +30,7 @@ import pink.mino.kraftwerk.utils.Scoreboard
 import pink.mino.kraftwerk.utils.StatsHandler
 import java.nio.file.Files
 import java.nio.file.Path
+import java.util.HashMap
 
 
 /*
@@ -49,6 +47,8 @@ class Kraftwerk : ExtendedJavaPlugin() {
     var discord: Boolean = false
 
     val fullbright: MutableSet<String> = mutableSetOf()
+
+    var scatterLocs: HashMap<String, Location> = HashMap()
 
     lateinit var discordInstance: JDA
     lateinit var statsHandler: StatsHandler

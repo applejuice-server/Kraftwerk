@@ -1,7 +1,9 @@
 package pink.mino.kraftwerk.features
 
+import org.apache.logging.log4j.core.pattern.AbstractStyleNameConverter.White
 import org.bukkit.Bukkit
 import org.bukkit.GameMode
+import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.entity.Player
@@ -18,6 +20,7 @@ import org.bukkit.potion.PotionEffectType
 import org.bukkit.scheduler.BukkitRunnable
 import pink.mino.kraftwerk.Kraftwerk
 import pink.mino.kraftwerk.commands.SendTeamView
+import pink.mino.kraftwerk.commands.WhitelistCommand
 import pink.mino.kraftwerk.config.ConfigOptionHandler
 import pink.mino.kraftwerk.scenarios.ScenarioHandler
 import pink.mino.kraftwerk.utils.*
@@ -223,6 +226,8 @@ class UHCTask : BukkitRunnable() {
 }
 
 class UHCFeature : Listener {
+    var scattering = false
+
     fun start(mode: String) {
         GameState.setState(GameState.WAITING)
         Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world")).time = 1000
@@ -275,14 +280,117 @@ class UHCFeature : Listener {
         SettingsFeature.instance.saveData()
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wl all")
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wl on")
-        if (mode == "ffa") {
-            ScatterFeature.scatter("ffa", Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world")), SettingsFeature.instance.data!!.getInt("pregen.border"), true)
-        } else if (mode == "teams") {
-            ScatterFeature.scatter("teams", Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world")), SettingsFeature.instance.data!!.getInt("pregen.border"), true)
+
+        val teams = mode != "ffa"
+        val world = Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world"))
+        val radius = SettingsFeature.instance.data!!.getInt("pregen.border")
+
+        if (teams) {
+            Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Attempting to start &cteam &7scatter..."))
+        } else {
+            Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Attempting to start &csolo &7scatter..."))
         }
-        freeze()
-        JavaPlugin.getPlugin(Kraftwerk::class.java).game = UHCTask()
-        JavaPlugin.getPlugin(Kraftwerk::class.java).game!!.runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 20L)
+        Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Standby, this might take a bit."))
+        scattering = true
+        object: BukkitRunnable() {
+            override fun run() {
+                val loc: List<Location> = ScatterUtils().getScatterLocations(world, radius, WhitelistCommand().getWhitelisted().size)
+                if (teams) {
+                    for ((index, team) in TeamsFeature.manager.getTeams().withIndex()) {
+                        for (player in team.entries) {
+                            JavaPlugin.getPlugin(Kraftwerk::class.java).scatterLocs[player.lowercase()] = loc[index]
+                            WhitelistCommand().addWhitelist(player)
+                        }
+                    }
+
+                    for ((index, online) in WhitelistCommand().getWhitelisted().withIndex()) {
+                        if (SpecFeature.instance.getSpecs().contains(online)) {
+                            continue
+                        }
+                        if (TeamsFeature.manager.getTeam(Bukkit.getOfflinePlayer(online)) != null) {
+                            continue
+                        }
+                        JavaPlugin.getPlugin(Kraftwerk::class.java).scatterLocs[online.lowercase()] = loc[index]
+                    }
+                } else {
+                    for ((index, online) in WhitelistCommand().getWhitelisted().withIndex()) {
+                        if (SpecFeature.instance.getSpecs().contains(online)) {
+                            continue
+                        }
+                        JavaPlugin.getPlugin(Kraftwerk::class.java).scatterLocs[online.lowercase()] = loc[index]
+                    }
+                }
+            }
+        }.runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), 30L)
+
+        object: BukkitRunnable() {
+            override fun run() {
+                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} All locations &cfound&7, starting to load chunks..."))
+
+                val locs = JavaPlugin.getPlugin(Kraftwerk::class.java).scatterLocs.values.toMutableList()
+                val names = JavaPlugin.getPlugin(Kraftwerk::class.java).scatterLocs.keys.toMutableList()
+
+                object: BukkitRunnable() {
+                    var i = 0
+                    override fun run() {
+                        if (i < locs.size) {
+                            locs[i].chunk.load()
+                            i++
+                        } else {
+                            cancel()
+                            locs.clear()
+                            Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} All chunks &cloaded&7, starting to scatter players..."))
+
+                            object: BukkitRunnable() {
+                                var i = 0
+                                override fun run() {
+                                    if (i < names.size) {
+                                        val scatter = Bukkit.getOfflinePlayer(names[i])
+                                        if (!scatter.isOnline) {
+                                            val team = TeamsFeature.manager.getTeam(scatter)
+                                            if (team == null) {
+                                                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Scheduled Scattered for &f${names[i]} &8(&c${i + 1}&8/&c${names.size}&8)"))
+                                            } else {
+                                                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Scheduled Scattered for ${team.prefix}${names[i]} &8(&c${i + 1}&8/&c${names.size}&8)"))
+                                            }
+                                        } else {
+                                            val scatterP = scatter as Player
+                                            scatterP.teleport(JavaPlugin.getPlugin(Kraftwerk::class.java).scatterLocs[names[i]])
+                                            scatterP.gameMode = GameMode.SURVIVAL
+                                            scatterP.isFlying = false
+                                            scatterP.allowFlight = false
+                                            val team = TeamsFeature.manager.getTeam(Bukkit.getOfflinePlayer(names[i]))
+                                            if (team == null) {
+                                                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Scattered &f${scatterP.name} &8(&c${i + 1}&8/&c${names.size}&8)"))
+                                            } else {
+                                                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Scattered ${team.prefix}${scatterP.name} &8(&c${i + 1}&8/&c${names.size}&8)"))
+                                            }
+                                            JavaPlugin.getPlugin(Kraftwerk::class.java).scatterLocs.remove(names[i])
+                                            freeze()
+                                            list.add(names[i])
+                                        }
+                                        i++
+                                    } else {
+                                        scattering = false
+                                        Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} &7Successfully scattered all players!"))
+                                        SettingsFeature.instance.data!!.set("game.list", list)
+                                        SettingsFeature.instance.saveData()
+                                        Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
+                                            freeze()
+                                            JavaPlugin.getPlugin(Kraftwerk::class.java).game = UHCTask()
+                                            JavaPlugin.getPlugin(Kraftwerk::class.java).game!!.runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 20L)
+                                        }, 20L)
+                                        names.clear()
+                                        cancel()
+
+                                    }
+                                }
+                            }.runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 20L, 5L)
+                        }
+                    }
+                }.runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 5L, 5L)
+            }
+        }.runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), 40L)
     }
 
     fun freeze() {
