@@ -1,10 +1,6 @@
 package pink.mino.kraftwerk.utils
 
-import org.bukkit.Location
-import org.bukkit.Material
-import org.bukkit.TravelAgent
-import org.bukkit.World
-import org.bukkit.WorldBorder
+import org.bukkit.*
 import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
 import kotlin.math.abs
@@ -86,5 +82,27 @@ object LocationUtils {
             }
         }
         return loc
+    }
+
+    fun highestTeleportableYAtLocation(location: Location): Double {
+        val startingLocation = location.clone()
+        startingLocation.y = location.world.maxHeight.toDouble()
+        var above2WasAir = false
+        var aboveWasAir = false
+        var currentBlock = startingLocation.block
+        while (currentBlock.y >= 0) {
+            if (currentBlock.type != Material.AIR) {
+                if (above2WasAir && aboveWasAir) {
+                    return currentBlock.y.toDouble()
+                }
+                above2WasAir = aboveWasAir
+                aboveWasAir = false
+            } else {
+                above2WasAir = aboveWasAir
+                aboveWasAir = true
+            }
+            currentBlock = currentBlock.getRelative(BlockFace.DOWN)
+        }
+        return -1.0
     }
 }
