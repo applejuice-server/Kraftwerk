@@ -245,6 +245,9 @@ class Kraftwerk : ExtendedJavaPlugin() {
         InfoFeature().runTaskTimerAsynchronously(this, 0L, 6000L)
         TabFeature().runTaskTimer(this, 0L, 20L)
 
+        SettingsFeature.instance.data!!.set("whitelist.enabled", true)
+        SettingsFeature.instance.saveData()
+
         Bukkit.getLogger().info("Kraftwerk enabled.")
     }
 
