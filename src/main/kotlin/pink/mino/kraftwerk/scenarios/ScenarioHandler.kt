@@ -53,6 +53,7 @@ class ScenarioHandler {
             addScenario(SkyOresScenario())
             addScenario(EggsScenario())
             addScenario(AuctionScenario())
+            //addScenario(ChampionsScenario())
 
             scenarios.sortWith(Comparator.comparing(Scenario::name))
         }

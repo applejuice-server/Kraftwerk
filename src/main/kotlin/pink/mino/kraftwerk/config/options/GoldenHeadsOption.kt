@@ -12,6 +12,7 @@ import org.bukkit.potion.PotionEffectType
 import pink.mino.kraftwerk.config.ConfigOption
 import pink.mino.kraftwerk.scenarios.ScenarioHandler
 import pink.mino.kraftwerk.utils.BlockRotation
+import pink.mino.kraftwerk.utils.ItemBuilder
 
 class GoldenHeadsOption : ConfigOption(
   "Golden Heads",
@@ -38,7 +39,7 @@ class GoldenHeadsOption : ConfigOption(
     }
     val player = e.entity
     if (player.world.name != "Arena") {
-      if (ScenarioHandler.getScenario("goldenretriever")!!.enabled || ScenarioHandler.getScenario("barebones")!!.enabled || ScenarioHandler.getScenario("graverobbers")!!.enabled || ScenarioHandler.getScenario("timebomb")!!.enabled) return
+      if (ScenarioHandler.getScenario("goldenretriever")!!.enabled || ScenarioHandler.getScenario("barebones")!!.enabled || ScenarioHandler.getScenario("graverobbers")!!.enabled || ScenarioHandler.getScenario("timebomb")!!.enabled || ScenarioHandler.getScenario("champions")!!.enabled) return
       player.location.block.type = Material.NETHER_FENCE
       player.location.add(0.0, 1.0, 0.0).block.type = Material.SKULL
 
@@ -50,6 +51,13 @@ class GoldenHeadsOption : ConfigOption(
 
       val b: Block = player.location.add(0.0, 1.0, 0.0).block
       b.setData(0x1.toByte(), true)
+    }
+    if (ScenarioHandler.getScenario("champions")!!.enabled) {
+      val skull = ItemBuilder(Material.SKULL_ITEM)
+        .name("${player.name}'s Head")
+        .addLore("&7Gives you 9 seconds of speed upon consuming the head.")
+        .make()
+      e.drops.add(skull)
     }
   }
 }

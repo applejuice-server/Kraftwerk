@@ -46,6 +46,7 @@ class ScenarioCommand : CommandExecutor {
             item.itemMeta = meta
             gui.item(index, item).onClick runnable@ {
                 it.isCancelled = true
+                scenario.onGuiClick(sender)
             }
         }
         sender.openInventory(gui.make())

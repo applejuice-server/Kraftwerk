@@ -66,9 +66,16 @@ class SpawnFeature : Listener {
             .addLore("&7Right-click to view active scenarios.")
             .make()
         p.inventory.setItem(8, scenarios)
+        val championsKit = ItemBuilder(Material.NETHER_STAR)
+            .name("&cChampions Kit &7(Right Click)")
+            .addLore("&7Right-click to view the Champions kit selector.")
+            .make()
 
         if (ScenarioHandler.getActiveScenarios().contains(ScenarioHandler.getScenario("auction"))) {
             p.inventory.clear()
+        }
+        if (ScenarioHandler.getActiveScenarios().contains(ScenarioHandler.getScenario("champions"))) {
+            p.inventory.setItem(0, championsKit)
         }
         val location = if (!ScenarioHandler.getActiveScenarios().contains(ScenarioHandler.getScenario("auction"))) Location(Bukkit.getWorld("Spawn"), -221.5, 95.0, -140.5) else Location(Bukkit.getWorld("Spawn"), -278.0, 96.5, 7.0)
         p.teleport(location)
@@ -101,6 +108,10 @@ class SpawnFeature : Listener {
                     Chat.colored("&cDonator Menu &7(Right Click)") -> {
                         e.isCancelled = true
                         Bukkit.dispatchCommand(e.player, "donator")
+                    }
+                    Chat.colored("&cChampions Kit &7(Right Click)") -> {
+                        e.isCancelled = true
+                        Bukkit.dispatchCommand(e.player, "ckit")
                     }
                 }
             }
