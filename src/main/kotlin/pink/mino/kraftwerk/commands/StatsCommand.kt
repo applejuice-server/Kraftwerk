@@ -38,7 +38,7 @@ class StatsCommand : CommandExecutor {
                 Chat.sendMessage(sender, "${Chat.prefix} &7Loading stats for &f${target.name}&7...")
             }
             .thenApplyAsync {
-                JavaPlugin.getPlugin(Kraftwerk::class.java).statsHandler.getStatsPlayer(sender)!!
+                JavaPlugin.getPlugin(Kraftwerk::class.java).statsHandler.lookupStatsPlayer(target)!!
             }
             .thenAcceptSync { statsPlayer ->
                 val ores = ItemBuilder(Material.DIAMOND_ORE)
