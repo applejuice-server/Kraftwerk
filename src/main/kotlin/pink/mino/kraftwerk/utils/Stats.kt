@@ -86,6 +86,14 @@ class StatsHandler : Listener {
         return statsPlayerMap.getIfPresent(player.uniqueId)
     }
 
+    fun lookupStatsPlayer(player: OfflinePlayer): StatsPlayer? {
+        Objects.requireNonNull(player, "player")
+        val sPlayer = StatsPlayer(player)
+        updateCache(sPlayer)
+        loadPlayerData(sPlayer)
+        return sPlayer
+    }
+
     fun loadPlayerData(statsPlayer: StatsPlayer) {
         try {
             with (JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.getDatabase("applejuice").getCollection("stats")) {

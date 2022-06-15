@@ -172,7 +172,7 @@ class UHCTask : BukkitRunnable() {
                     Chat.sendCenteredMessage(player, "&c&lUHC")
                     Chat.sendMessage(player, " ")
                     Chat.sendCenteredMessage(player, "&7PvP has been &aenabled&7.")
-                    Chat.sendCenteredMessage(player, "&cMeetup&7 is enabled in &c${rawMeetup / 60} minutes&7.")
+                    Chat.sendCenteredMessage(player, "&cMeetup&7 will start in &c${rawMeetup / 60} minutes&7.")
                     Chat.sendMessage(player, Chat.line)
                     player.playSound(player.location, Sound.ANVIL_LAND, 10F, 1F)
                 }
