@@ -57,6 +57,7 @@ abstract class Scenario(
     open fun onMeetup() {}
     open fun givePlayer(player: Player) {}
     open fun handleBlock(block: Block) {}
+    open fun onGuiClick(player: Player) {}
 
     open fun onToggle(to: Boolean) {}
 }

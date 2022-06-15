@@ -174,7 +174,6 @@ class Kraftwerk : ExtendedJavaPlugin() {
         getCommand("lapis").executor = LapisCommand()
         getCommand("redstone").executor = RedstoneCommand()
         getCommand("fullbright").executor = FullbrightCommand()
-        getCommand("lobby").executor = LobbyCommand()
         //getCommand("hotbar").executor = HotbarCommand()
 
         /* ProtocolLib stuff */
