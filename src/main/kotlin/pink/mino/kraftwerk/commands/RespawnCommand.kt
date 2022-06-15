@@ -169,7 +169,7 @@ class RespawnCommand : CommandExecutor {
             list.add(player.name)
             SettingsFeature.instance.data!!.set("game.list", list)
             SettingsFeature.instance.saveData()
-            WhitelistCommand().addWhitelist(player.name)
+            WhitelistCommand().addWhitelist(player.name.lowercase())
             player.addPotionEffect(PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 300, 1000, true, false))
             Chat.sendMessage(player, "${Chat.prefix} You have been respawned by &f${sender.name}&7.")
             Chat.sendMessage(sender, "${Chat.prefix} &f${player.name}&7 has been respawned.")
