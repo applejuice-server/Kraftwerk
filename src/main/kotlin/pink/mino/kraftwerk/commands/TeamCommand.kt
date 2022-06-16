@@ -36,24 +36,29 @@ class SendTeamView(val team: Team) : BukkitRunnable() {
         if (!TeamsFeature.manager.getTeams().contains(team)) {
             cancel()
         }
-        if (team.size == 0) {
-            cancel()
-        }
-        if (ScenarioHandler.getActiveScenarios().contains(ScenarioHandler.getScenario("moles"))) {
-            cancel()
-        }
-        val list: ArrayList<Player> = arrayListOf()
-        for (player in team.players) {
-            if (player.isOnline) {
-                list.add(player as Player)
+
+        try {
+            if (team.size == 0) {
+                cancel()
             }
-        }
-        for (player in team.players) {
-            if (player.isOnline) {
-                if (LunarClientAPI.getInstance().isRunningLunarClient(player as Player)) {
-                    TeamCommand().addTeamInfo(player, list)
+            if (ScenarioHandler.getActiveScenarios().contains(ScenarioHandler.getScenario("moles"))) {
+                cancel()
+            }
+            val list: ArrayList<Player> = arrayListOf()
+            for (player in team.players) {
+                if (player.isOnline) {
+                    list.add(player as Player)
                 }
             }
+            for (player in team.players) {
+                if (player.isOnline) {
+                    if (LunarClientAPI.getInstance().isRunningLunarClient(player as Player)) {
+                        TeamCommand().addTeamInfo(player, list)
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            cancel()
         }
     }
 }
@@ -486,10 +491,10 @@ class TeamCommand : CommandExecutor {
                 return false
             }
             team.removePlayer(target)
+            Chat.sendMessage(sender, "${Chat.prefix} Successfully removed &f${target.name}&7 from &f${team.name}&7's team")
             if (team.size == 0) {
                 TeamsFeature.manager.deleteTeam(team)
             }
-            Chat.sendMessage(sender, "${Chat.prefix} Successfully removed &f${target.name}&7 from &f${team.name}&7's team")
         } else if (args[0] == "friendlyfire") {
             if (sender is Player) {
                 if (!sender.hasPermission("uhc.staff.team")) {
@@ -621,8 +626,11 @@ class TeamCommand : CommandExecutor {
             val colors = arrayListOf<ChatColor>()
             for ((index, arg) in args.withIndex()) {
                 if (index == 0) continue
-                if (ChatColor.valueOf(arg.uppercase()) == null) {
-                    Chat.sendMessage(sender, "${Chat.prefix} Invalid color: &f/team color <color> [bold] [italic] [underline]&7.")
+                try {
+                    colors.add(ChatColor.valueOf(arg.uppercase()))
+                } catch (e: Exception) {
+                    Chat.sendMessage(sender, "${Chat.prefix} Invalid color: &f$arg&7.")
+                    Chat.sendMessage(sender, "${Chat.prefix} Valid colors: &0black&7, &1dark_blue&7, &2dark_green&7, &3dark_aqua&7, &4dark_red&7, &5dark_purple&7, &6gold&7, &7gray&7, &8dark_gray&7, &9blue&7, &agreen&7, &baqua&7, &cred&7, &dlight_purple&7, &eyellow&7, &fwhite&7.")
                     return false
                 }
                 colors.add(ChatColor.valueOf(arg.uppercase()))
