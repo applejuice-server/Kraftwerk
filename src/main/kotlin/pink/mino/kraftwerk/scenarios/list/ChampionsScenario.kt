@@ -866,11 +866,12 @@ class ChampionsScenario : Scenario(
 
     @EventHandler
     fun onFenrirSpawn(event: PlayerInteractEvent) {
+        if (!enabled) return
         val player: Player = event.player
 
         val action: Action = event.action
-        var item: ItemStack = event.item
-        if (!action.equals(Action.RIGHT_CLICK_BLOCK)) {
+        var item = event.item
+        if (action != Action.RIGHT_CLICK_BLOCK) {
             return
         }
         if (item == null) {
