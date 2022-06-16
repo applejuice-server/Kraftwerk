@@ -253,7 +253,7 @@ class MatchpostCommand : CommandExecutor {
         SettingsFeature.instance.data!!.set("matchpost.scenarioIds", scenarioList)
         SettingsFeature.instance.data!!.set("matchpost.scenarios", scenarios)
         SettingsFeature.instance.data!!.set("matchpost.opens", opening)
-        ScheduleOpening(opening).runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 300L)
+        ScheduleOpening(opening).runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, (5 * 20).toLong())
         Chat.sendMessage(sender, "${Chat.prefix} Set the matchpost to &chttps://hosts.uhc.gg/m/${id.toInt()}")
         SettingsFeature.instance.saveData()
         return true
