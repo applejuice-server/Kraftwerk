@@ -11,7 +11,8 @@ class Chat {
         private const val CENTER_PX = 154
 
         const val prefix = "&8[&4UHC&8]&7"
-        const val dash = "§8»"
+        const val dash = "§8»&7"
+        const val dot = "§8●§7"
         const val line = "§8§m-----------------------------------------------------"
         const val guiLine = "§8§m-------------------------------"
 
