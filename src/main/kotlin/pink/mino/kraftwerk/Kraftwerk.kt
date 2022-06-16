@@ -48,6 +48,7 @@ class Kraftwerk : ExtendedJavaPlugin() {
     val fullbright: MutableSet<String> = mutableSetOf()
 
     var scatterLocs: HashMap<String, Location> = HashMap()
+    var scattering = false
 
     lateinit var discordInstance: JDA
     lateinit var statsHandler: StatsHandler

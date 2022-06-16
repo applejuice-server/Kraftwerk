@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.mongodb.MongoException
 import com.mongodb.client.model.Filters
 import com.mongodb.client.model.FindOneAndReplaceOptions
+import me.lucko.helper.utils.Log
 import net.dv8tion.jda.api.EmbedBuilder
 import org.bson.Document
 import org.bukkit.Bukkit
@@ -118,6 +119,19 @@ class ScheduleOpening(private val opening: String) : BukkitRunnable() {
             SettingsFeature.instance.data!!.set("whitelist.requests", false)
             SettingsFeature.instance.data!!.set("matchpost.opens", null)
             SettingsFeature.instance.saveData()
+            with (JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.getDatabase("applejuice").getCollection("opened_matches")) {
+                val filter = Filters.eq("id", SettingsFeature.instance.data!!.getInt("matchpost.id"))
+                val document = Document("id", SettingsFeature.instance.data!!.getInt("matchpost.id"))
+                    .append("server", SettingsFeature.instance.data!!.getString("matchpost.server"))
+                    .append("title", SettingsFeature.instance.data!!.getString("matchpost.host"))
+                    .append("teams", SettingsFeature.instance.data!!.getString("matchpost.team"))
+                    .append("scenarios", SettingsFeature.instance.data!!.get("matchpost.scenarios") as List<*>)
+                    .append("whitelist", SettingsFeature.instance.data!!.getBoolean("whitelist.enabled"))
+                    .append("pvp", false)
+                    .append("needsDelete", false)
+
+                this.findOneAndReplace(filter, document, FindOneAndReplaceOptions().upsert(true))
+            }
         }
     }
 }
@@ -155,6 +169,7 @@ class MatchpostCommand : CommandExecutor {
         var team: String? = null
         var teamsGame: Boolean = false
         val scenarioList = ArrayList<String>()
+        var server: String? = null
         try {
             with (JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.getDatabase("applejuice").getCollection("upcoming_matches")) {
                 val filter = Filters.eq("id", SettingsFeature.instance.data!!.getInt("matchpost.id"))
@@ -207,6 +222,13 @@ class MatchpostCommand : CommandExecutor {
                 id = map["id"] as Double
                 scenarios = map["scenarios"] as List<*>
                 opening = "${(map["opens"] as String)[11]}${(map["opens"] as String)[12]}:${(map["opens"] as String)[14]}${(map["opens"] as String)[15]}"
+                server = if ((map["address"] as String) == "na2.applejuice.bar") {
+                    "uhc2"
+                } else if ((map["address"] as String) == "na1.applejuice.bar") {
+                    "uhc1"
+                } else {
+                    "other"
+                }
                 try {
                     with (JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.getDatabase("applejuice").getCollection("upcoming_matches")) {
                         val filter = Filters.eq("id", id)
@@ -253,6 +275,7 @@ class MatchpostCommand : CommandExecutor {
         SettingsFeature.instance.data!!.set("matchpost.scenarioIds", scenarioList)
         SettingsFeature.instance.data!!.set("matchpost.scenarios", scenarios)
         SettingsFeature.instance.data!!.set("matchpost.opens", opening)
+        SettingsFeature.instance.data!!.set("matchpost.server", server)
         ScheduleOpening(opening).runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, (5 * 20).toLong())
         Chat.sendMessage(sender, "${Chat.prefix} Set the matchpost to &chttps://hosts.uhc.gg/m/${id.toInt()}")
         SettingsFeature.instance.saveData()
