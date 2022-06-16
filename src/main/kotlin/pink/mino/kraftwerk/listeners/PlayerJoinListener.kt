@@ -55,6 +55,9 @@ class PlayerJoinListener : Listener {
         } else {
             val scatter = JavaPlugin.getPlugin(Kraftwerk::class.java).scatterLocs
             if (scatter.contains(player.name.lowercase())) {
+                if (JavaPlugin.getPlugin(Kraftwerk::class.java).scattering) {
+                    return
+                }
                 if (SpecFeature.instance.getSpecs().contains(player.name)) {
                     SpecFeature.instance.joinSpec(player)
                     return
