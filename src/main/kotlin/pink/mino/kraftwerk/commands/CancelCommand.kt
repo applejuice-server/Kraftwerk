@@ -2,6 +2,7 @@ package pink.mino.kraftwerk.commands
 
 import com.mongodb.MongoException
 import com.mongodb.client.model.Filters
+import com.mongodb.client.model.FindOneAndReplaceOptions
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.command.Command
@@ -32,7 +33,20 @@ class CancelCommand : CommandExecutor {
                 this.deleteOne(filter)
             }
         } catch (e: MongoException) {
-            Chat.sendMessage(sender, "${Chat.prefix} ${ChatColor.RED}An error occurred while cancelling the matchpost.")
+            Chat.sendMessage(sender, "${Chat.prefix} ${ChatColor.RED}An error occurred while cancelling the matchpost (upcoming).")
+            e.printStackTrace()
+        }
+        try {
+            with (JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.getDatabase("applejuice").getCollection("opened_matches")) {
+                val filter = Filters.eq("id", SettingsFeature.instance.data!!.getInt("matchpost.id"))
+                val document = this.find(filter).first()
+                if (document != null) {
+                    document["needsDelete"] = true
+                    this.findOneAndReplace(filter, document, FindOneAndReplaceOptions().upsert(true))
+                }
+            }
+        } catch (e: MongoException) {
+            Chat.sendMessage(sender, "${Chat.prefix} ${ChatColor.RED}An error occurred while cancelling the matchpost (opened).")
             e.printStackTrace()
         }
         SettingsFeature.instance.data!!.set("matchpost", null)
