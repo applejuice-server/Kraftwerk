@@ -38,7 +38,7 @@ class RespawnFeature : Listener {
     val chestplate: HashMap<UUID, ItemStack> = hashMapOf()
     val leggings: HashMap<UUID, ItemStack> = hashMapOf()
     val boots: HashMap<UUID, ItemStack> = hashMapOf()
-    val respawnablePlayers: ArrayList<OfflinePlayer> = arrayListOf()
+    val respawnablePlayers: ArrayList<UUID> = arrayListOf()
 
     @EventHandler
     fun onPlayerDeath(e: PlayerDeathEvent) {
@@ -54,7 +54,7 @@ class RespawnFeature : Listener {
         if (player.inventory.chestplate != null) chestplate[player.uniqueId] = player.inventory.chestplate
         if (player.inventory.leggings != null) leggings[player.uniqueId] = player.inventory.leggings
         if (player.inventory.boots != null) boots[player.uniqueId] = player.inventory.boots
-        respawnablePlayers.add(player)
+        respawnablePlayers.add(player.uniqueId)
         Log.info("Saved ${player.name}'s death.")
     }
 }
@@ -97,22 +97,22 @@ class RespawnCommand : CommandExecutor {
             val gui = GuiBuilder().rows(size).name(Chat.colored("&cRespawnable Players")).owner(sender as Player)
             for ((index, player) in RespawnFeature.instance.respawnablePlayers.withIndex()) {
                 val skull = ItemBuilder(Material.SKULL_ITEM)
-                    .name("&d${player.name}")
-                    .addLore("&7Location: &c${floor(RespawnFeature.instance.locations[player.uniqueId]!!.x)}&7, &c${floor(RespawnFeature.instance.locations[player.uniqueId]!!.y)}&7, &c${floor(RespawnFeature.instance.locations[player.uniqueId]!!.z)}")
-                    .addLore("&7Cause: &c${RespawnFeature.instance.causes[player.uniqueId].toString()
+                    .name("&d${Bukkit.getOfflinePlayer(player).name}")
+                    .addLore("&7Location: &c${floor(RespawnFeature.instance.locations[player]!!.x)}&7, &c${floor(RespawnFeature.instance.locations[player]!!.y)}&7, &c${floor(RespawnFeature.instance.locations[player]!!.z)}")
+                    .addLore("&7Cause: &c${RespawnFeature.instance.causes[player].toString()
                         .uppercase(Locale.getDefault())}")
                     .addLore(" ")
                     .addLore("&cLeft Click&7 to teleport to the player's death location.")
                     .addLore("&aRight Click&7 to respawn the player.")
                     .toSkull()
-                    .setOwner(player.name)
+                    .setOwner(Bukkit.getOfflinePlayer(player).name)
                     .make()
                 gui.item(index, skull) {
                     it.isCancelled = true
                     if (it.isLeftClick) {
-                        sender.teleport(RespawnFeature.instance.locations[player.uniqueId]!!)
+                        sender.teleport(RespawnFeature.instance.locations[player]!!)
                     } else if (it.isRightClick) {
-                        Bukkit.dispatchCommand(sender, "revive ${player.name}")
+                        Bukkit.dispatchCommand(sender, "revive ${Bukkit.getOfflinePlayer(player).name}")
                     }
                 }
             }
@@ -123,7 +123,7 @@ class RespawnCommand : CommandExecutor {
                 Chat.sendMessage(sender, "&cYou must insert a valid player to respawn.")
                 return false
             }
-            if (!RespawnFeature.instance.respawnablePlayers.contains(player)) {
+            if (!RespawnFeature.instance.respawnablePlayers.contains(player.uniqueId)) {
                 Chat.sendMessage(sender, "&c${player.name} is not a respawnable player.")
                 return false
             }
@@ -159,7 +159,7 @@ class RespawnCommand : CommandExecutor {
             if (RespawnFeature.instance.chestplate[player.uniqueId] != null) player.inventory.chestplate = RespawnFeature.instance.chestplate[player.uniqueId]!!
             if (RespawnFeature.instance.leggings[player.uniqueId] != null) player.inventory.leggings = RespawnFeature.instance.leggings[player.uniqueId]!!
             if (RespawnFeature.instance.boots[player.uniqueId] != null) player.inventory.boots = RespawnFeature.instance.boots[player.uniqueId]!!
-            RespawnFeature.instance.respawnablePlayers.remove(player)
+            RespawnFeature.instance.respawnablePlayers.remove(player.uniqueId)
 
             player.exp = RespawnFeature.instance.xp[player.uniqueId]!!
             player.level = RespawnFeature.instance.level[player.uniqueId]!!
