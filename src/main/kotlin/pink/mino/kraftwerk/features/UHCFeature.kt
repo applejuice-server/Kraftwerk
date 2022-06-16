@@ -291,7 +291,7 @@ class UHCFeature : Listener {
             Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Attempting to start &csolo &7scatter..."))
         }
         Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Standby, this might take a bit."))
-        scattering = true
+        JavaPlugin.getPlugin(Kraftwerk::class.java).scattering = true
         object: BukkitRunnable() {
             override fun run() {
                 val loc: List<Location> = ScatterUtils().getScatterLocations(world, radius, WhitelistCommand().getWhitelisted().size)
@@ -334,7 +334,7 @@ class UHCFeature : Listener {
                     var i = 0
                     override fun run() {
                         if (i < locs.size) {
-                            locs[i].chunk.load()
+                            locs[i].chunk.load(true)
                             i++
                         } else {
                             cancel()
@@ -346,6 +346,14 @@ class UHCFeature : Listener {
                                 override fun run() {
                                     if (i < names.size) {
                                         val scatter = Bukkit.getOfflinePlayer(names[i])
+                                        if (JavaPlugin.getPlugin(Kraftwerk::class.java).scatterLocs[names[i]] == null) {
+                                            for (player in Bukkit.getOnlinePlayers()) {
+                                                if (SpecFeature.instance.getSpecs().contains(player.name)) {
+                                                    Chat.sendMessage(player, "&cCould not find a scatter location for ${scatter.name}&c. Perhaps they were already scattered?")
+                                                }
+                                            }
+                                            return
+                                        }
                                         if (!scatter.isOnline) {
                                             val team = TeamsFeature.manager.getTeam(scatter)
                                             if (team == null) {
@@ -371,7 +379,7 @@ class UHCFeature : Listener {
                                         }
                                         i++
                                     } else {
-                                        scattering = false
+                                        JavaPlugin.getPlugin(Kraftwerk::class.java).scattering = false
                                         Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} &7Successfully scattered all players!"))
                                         SettingsFeature.instance.data!!.set("game.list", list)
                                         SettingsFeature.instance.saveData()
@@ -385,7 +393,7 @@ class UHCFeature : Listener {
 
                                     }
                                 }
-                            }.runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 20L, 5L)
+                            }.runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 40L, 5L)
                         }
                     }
                 }.runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 5L, 5L)
