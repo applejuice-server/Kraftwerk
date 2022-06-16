@@ -30,7 +30,6 @@ import pink.mino.kraftwerk.utils.Scoreboard
 import pink.mino.kraftwerk.utils.StatsHandler
 import java.nio.file.Files
 import java.nio.file.Path
-import java.util.HashMap
 
 
 /*
@@ -222,7 +221,7 @@ class Kraftwerk : ExtendedJavaPlugin() {
 
         if (!SettingsFeature.instance.data!!.getBoolean("matchpost.cancelled")) {
             if (SettingsFeature.instance.data!!.getString("matchpost.opens") != null) {
-                ScheduleOpening(SettingsFeature.instance.data!!.getString("matchpost.opens")).runTaskTimer(this, 0L, 300L)
+                ScheduleOpening(SettingsFeature.instance.data!!.getString("matchpost.opens")).runTaskTimer(this, 0L, (5 * 20).toLong())
             }
         } else {
             SettingsFeature.instance.data!!.set("matchpost.cancelled", null)

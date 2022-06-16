@@ -55,7 +55,7 @@ class GoldenHeadsOption : ConfigOption(
     if (ScenarioHandler.getScenario("champions")!!.enabled) {
       val skull = ItemBuilder(Material.SKULL_ITEM)
         .name("${player.name}'s Head")
-        .addLore("&7Gives you 9 seconds of speed upon consuming the head.")
+        .addLore("&7Gives you beneficial effects...")
         .make()
       e.drops.add(skull)
     }

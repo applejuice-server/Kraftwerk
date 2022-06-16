@@ -13,6 +13,25 @@ import java.util.*
 import kotlin.math.floor
 
 
+class BookBuilder {
+    companion object {
+        /**
+         * Create an enchanted book itemstack with the given enchantment.
+         *
+         * @param ench The enchantment to give it.
+         * @param level The level of the enchantment.
+         *
+         * @return The enchanted book itemstack.
+         */
+        fun createEnchantedBook(ench: Enchantment?, level: Int): ItemStack? {
+            val item = ItemStack(Material.ENCHANTED_BOOK, 1)
+            val meta = item.itemMeta as EnchantmentStorageMeta
+            meta.addStoredEnchant(ench, level, true)
+            item.itemMeta = meta
+            return item
+        }
+    }
+}
 class PotionBuilder {
     companion object {
         private fun getPotionName(type: PotionEffectType): String? {
