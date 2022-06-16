@@ -1,10 +1,12 @@
 package pink.mino.kraftwerk.commands
 
+import com.mongodb.MongoException
 import com.mongodb.client.model.Filters
 import com.mongodb.client.model.FindOneAndReplaceOptions
 import net.dv8tion.jda.api.EmbedBuilder
 import org.bson.Document
 import org.bukkit.Bukkit
+import org.bukkit.ChatColor
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
@@ -93,6 +95,19 @@ class EndGameCommand : CommandExecutor {
                 .append("milliseconds", game.endTime!! - game.startTime)
 
             this.findOneAndReplace(filter, document, FindOneAndReplaceOptions().upsert(true))
+        }
+        try {
+            with (JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.getDatabase("applejuice").getCollection("opened_matches")) {
+                val filter = Filters.eq("id", SettingsFeature.instance.data!!.getInt("matchpost.id"))
+                val document = this.find(filter).first()
+                if (document != null) {
+                    document["needsDelete"] = true
+                    this.findOneAndReplace(filter, document, FindOneAndReplaceOptions().upsert(true))
+                }
+            }
+        } catch (e: MongoException) {
+            Chat.sendMessage(sender, "${Chat.prefix} ${ChatColor.RED}An error occurred while ending the game and updating the matchpost (opened).")
+            e.printStackTrace()
         }
         val embed = EmbedBuilder()
         embed.setColor(java.awt.Color(255, 61, 61))

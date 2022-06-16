@@ -6,6 +6,7 @@ import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
+import pink.mino.kraftwerk.events.WhitelistStateChangeEvent
 import pink.mino.kraftwerk.features.SettingsFeature
 import pink.mino.kraftwerk.utils.Chat
 
@@ -122,11 +123,13 @@ class WhitelistCommand : CommandExecutor {
                 SettingsFeature.instance.data!!.set("whitelist.enabled", false)
                 SettingsFeature.instance.saveData()
                 Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} The whitelist is now ${ChatColor.RED}disabled${ChatColor.WHITE}."))
+                Bukkit.getPluginManager().callEvent(WhitelistStateChangeEvent(false))
             }
             args[0] == "on" -> {
                 SettingsFeature.instance.data!!.set("whitelist.enabled", true)
                 SettingsFeature.instance.saveData()
                 Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} The whitelist is now ${ChatColor.GREEN}enabled${ChatColor.WHITE}."))
+                Bukkit.getPluginManager().callEvent(WhitelistStateChangeEvent(true))
             }
         }
 
