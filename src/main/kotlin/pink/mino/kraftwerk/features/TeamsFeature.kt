@@ -47,6 +47,7 @@ class TeamsFeature private constructor() {
         Log.info("Automatically deleted ${team.name} because it was empty.")
         teams.remove(team)
         team.unregister()
+        teamCount--
     }
 
     fun resetTeams() {
@@ -60,8 +61,21 @@ class TeamsFeature private constructor() {
     fun createTeam(player: Player? = null): Team {
         // Create a new team with name.
         teamCount++
-        val name = "UHC${teamCount}"
-        val team = sb.registerNewTeam(name)
+        var name = "UHC${teamCount}"
+        var team: Team? = null
+        try {
+            team = sb.registerNewTeam(name)
+        } catch (e: Exception) {
+            while (team == null) {
+                teamCount++
+                name = "UHC${teamCount}"
+                try {
+                    team = sb.registerNewTeam(name)
+                } catch (e: Exception) {
+                    continue
+                }
+            }
+        }
 
         // Remove randomly selected color.
         if (colors.isEmpty()) setupColors()
@@ -69,7 +83,7 @@ class TeamsFeature private constructor() {
         colors.remove(color)
 
         // Set up color & misc.
-        team.prefix = color
+        team!!.prefix = color
         team.suffix = "§r"
         team.displayName = color + "Team #${teamCount}"
         team.setAllowFriendlyFire(true)

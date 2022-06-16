@@ -31,6 +31,7 @@ import pink.mino.kraftwerk.Kraftwerk
 import pink.mino.kraftwerk.utils.*
 import java.util.*
 import kotlin.math.floor
+import kotlin.math.round
 
 class InvSeeFeature(private val player: Player, private val target: Player, ) : BukkitRunnable() {
     override fun run() {
@@ -54,6 +55,33 @@ class InvSeeFeature(private val player: Player, private val target: Player, ) : 
         if (target.inventory.chestplate != null) player.openInventory.topInventory.setItem(39, target.inventory.chestplate)
         if (target.inventory.leggings != null) player.openInventory.topInventory.setItem(41, target.inventory.leggings)
         if (target.inventory.boots != null) player.openInventory.topInventory.setItem(42, target.inventory.boots)
+
+        val info = ItemBuilder(Material.BOOK)
+            .name("&cPlayer Info")
+            .addLore(" ")
+            .addLore("&cStatistics: ")
+            .addLore(" ${Chat.dot} Health ${Chat.dash} ${PlayerUtils.getHealth(target)}")
+            .addLore(" ${Chat.dot} Hunger ${Chat.dash} &c${target.foodLevel / 2}")
+            .addLore(" ${Chat.dot} XP Level ${Chat.dash} &c${target.level} &8(&c${round(target.exp * 100)}%&8)")
+            .addLore(" ${Chat.dot} Kills ${Chat.dash} &c${SettingsFeature.instance.data!!.getInt("game.kills." + target.name)}")
+            .addLore(" ${Chat.dot} Location ${Chat.dash} &c${target.location.blockX}, ${target.location.blockY}, ${target.location.blockZ}")
+            .addLore(" ${Chat.dot} World ${Chat.dash} &c${target.location.world.name}")
+            .addLore(" ")
+            .addLore("&cMining: ")
+            .addLore(" ${Chat.dot} Diamond ${Chat.dash} &b${SpecFeature.instance.diamondsMined[target.uniqueId] ?: 0}")
+            .addLore(" ${Chat.dot} Gold ${Chat.dash} &6${SpecFeature.instance.goldMined[target.uniqueId] ?: 0}")
+            .addLore(" ")
+            .addLore("&cPotion Effects: ")
+        if (target.activePotionEffects.isEmpty()) {
+            info.addLore(" ${Chat.dot} &cNone.")
+        } else {
+            for (eff in target.activePotionEffects) {
+                info.addLore(" ${Chat.dot} &c${InvseeUtils().getPotionName(eff.type).uppercase()} ${InvseeUtils().integerToRoman(eff.amplifier + 1)} &8(&c${InvseeUtils().potionDurationToString(eff.duration / 20)}&8)")
+            }
+        }
+        info.addLore(" ")
+        val actualBook = info.make()
+        player.openInventory.topInventory.setItem(40, actualBook)
     }
 }
 
@@ -432,10 +460,12 @@ class SpecFeature : Listener {
             for (player in Bukkit.getOnlinePlayers()) {
                 if (getSpecs().contains(player.name)) {
                     Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                        Chat.sendMessage(
-                            player,
-                            "$prefix ${PlayerUtils.getPrefix(p)}${p.name}&7 has mined &bDiamond Ore&7. &8(&7T: &b${diamondsMined[p.uniqueId]} &8| &7V: &b${diamonds}&8)"
+                        val comp = TextComponent(Chat.colored("$prefix ${PlayerUtils.getPrefix(p)}${p.name}&7 has mined &bDiamond Ore&7. &8(&7T: &b${diamondsMined[p.uniqueId]} &8| &7V: &b${diamonds}&8)"))
+                        comp.clickEvent = ClickEvent(
+                            ClickEvent.Action.RUN_COMMAND,
+                            "/tp ${p.name}"
                         )
+                        player.spigot().sendMessage(comp)
                     }, 1L)
                 }
             }

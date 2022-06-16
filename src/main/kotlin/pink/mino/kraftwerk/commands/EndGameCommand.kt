@@ -49,16 +49,26 @@ class EndGameCommand : CommandExecutor {
         val winnersList = arrayListOf<String>()
         val kills = hashMapOf<String, Int>()
         val host = Bukkit.getOfflinePlayer(SettingsFeature.instance.data!!.getString("game.host"))
+
         for (player in Bukkit.getOnlinePlayers()) {
             if (winners.contains(player.name)) {
-                winnersList.add(player.uniqueId.toString())
-                kills[player.uniqueId.toString()] = SettingsFeature.instance.data!!.getInt("game.kills." + player.name)
                 player.sendTitle(Chat.colored("&6&lVICTORY!"), Chat.colored("&7Congratulations, you won the game!"))
-                if (!ConfigOptionHandler.getOption("statless")!!.enabled) JavaPlugin.getPlugin(Kraftwerk::class.java).statsHandler.getStatsPlayer(player)!!.wins++
             } else {
                 player.sendTitle(Chat.colored("&c&lGAME OVER!"), Chat.colored("&7The game has concluded!"))
             }
         }
+
+        for (winner in winners) {
+            val player = Bukkit.getOfflinePlayer(winner)
+            if (player == null) {
+                Chat.sendMessage(sender, "&cInvalid player '${winner}', not adding to winner's list.")
+            } else {
+                winnersList.add(player.uniqueId.toString())
+                kills[player.uniqueId.toString()] = SettingsFeature.instance.data!!.getInt("game.kills." + player.name)
+                if (!ConfigOptionHandler.getOption("statless")!!.enabled) JavaPlugin.getPlugin(Kraftwerk::class.java).statsHandler.lookupStatsPlayer(player)!!.wins++
+            }
+        }
+
         JavaPlugin.getPlugin(Kraftwerk::class.java).game!!.winners = winnersList
         val gameTitle = SettingsFeature.instance.data!!.getString("matchpost.host")
         for (team in TeamsFeature.manager.getTeams()) {
