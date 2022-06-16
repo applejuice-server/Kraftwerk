@@ -11,6 +11,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.scheduler.BukkitRunnable
 import pink.mino.kraftwerk.Kraftwerk
+import pink.mino.kraftwerk.commands.WhitelistCommand
 import pink.mino.kraftwerk.features.SpawnFeature
 import pink.mino.kraftwerk.features.SpecFeature
 import pink.mino.kraftwerk.features.TeamsFeature
@@ -125,7 +126,7 @@ class AuctionScenario : Scenario(
                     }
                     owners.remove(args[1].lowercase())
                     diamondAmount.remove(Bukkit.getPlayer(args[1]))
-                    Chat.sendMessage(sender, prefix + "&c${args[1]} &7is no longer an owner.")
+                    Bukkit.broadcastMessage(Chat.colored(prefix + "&c${args[1]} &7is no longer an owner."))
                     val offlinePlayer = Bukkit.getOfflinePlayer(args[1])
                     TeamsFeature.manager.deleteTeam(TeamsFeature.manager.getTeam(offlinePlayer)!!)
                     if (offlinePlayer.isOnline) {
@@ -250,6 +251,7 @@ class AuctionScenario : Scenario(
                                             TeamsFeature.manager.joinTeam(TeamsFeature.manager.getTeam(winner)!!.name, slave)
                                             cost[slave.name.lowercase()] = highestBid
                                             purchasedBy[slave.name.lowercase()] = winner.name.lowercase()
+                                            WhitelistCommand().addWhitelist(slave.name)
                                             slave.teleport(ownerArea[winner]!!)
                                             Chat.sendMessage(winner, prefix + "You won the auction for &c${slave.name}&7! You have &c${diamondAmount[winner]!!} &7diamonds left.")
                                             return
@@ -293,6 +295,9 @@ class AuctionScenario : Scenario(
                                             bidTime = 8
                                             Bukkit.broadcastMessage(Chat.colored(prefix + "&c${currentPlayer!!.name} &7is now up for auction! Use &c/bid&7."))
                                             for (player in Bukkit.getOnlinePlayers()) {
+                                                if (owners.contains(player.name.lowercase())) {
+                                                    player.sendMessage(Chat.colored(prefix + "You currently have &c${diamondAmount[player]!!} &7diamonds to bid with."))
+                                                }
                                                 ActionBar.sendActionBarMessage(player, Chat.colored(prefix + "&c${currentPlayer!!.name} &7is now up for auction! Use &c/bid&7."))
                                             }
                                             currentPlayer!!.teleport(playerBuying)
