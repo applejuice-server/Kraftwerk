@@ -42,7 +42,7 @@ class WinnerCommand : CommandExecutor {
         for (argument in args) {
             val player = Bukkit.getOfflinePlayer(argument)
             if (player == null) {
-                Chat.sendMessage(sender, "&cInvalid player, please provide a valid player.")
+                Chat.sendMessage(sender, "&cInvalid player '${argument}', please provide a valid player.")
                 return false
             }
             if (winners.contains(player.name)) {
