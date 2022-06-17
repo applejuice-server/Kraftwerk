@@ -348,6 +348,11 @@ class UHCFeature : Listener {
                                 override fun run() {
                                     if (i < names.size) {
                                         val scatter = Bukkit.getOfflinePlayer(names[i])
+
+                                        if (SpecFeature.instance.getSpecs().contains(scatter.name)) {
+                                            return
+                                        }
+
                                         if (JavaPlugin.getPlugin(Kraftwerk::class.java).scatterLocs[names[i]] == null) {
                                             for (player in Bukkit.getOnlinePlayers()) {
                                                 if (SpecFeature.instance.getSpecs().contains(player.name)) {
@@ -359,9 +364,9 @@ class UHCFeature : Listener {
                                         if (!scatter.isOnline) {
                                             val team = TeamsFeature.manager.getTeam(scatter)
                                             if (team == null) {
-                                                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Scheduled Scattered for &f${names[i]} &8(&c${i + 1}&8/&c${names.size}&8)"))
+                                                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Scheduled Scatter for &f${names[i]} &8(&c${i + 1}&8/&c${names.size}&8)"))
                                             } else {
-                                                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Scheduled Scattered for ${team.prefix}${names[i]} &8(&c${i + 1}&8/&c${names.size}&8)"))
+                                                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Scheduled Scatter for ${team.prefix}${names[i]} &8(&c${i + 1}&8/&c${names.size}&8)"))
                                             }
                                         } else {
                                             val scatterP = scatter as Player
