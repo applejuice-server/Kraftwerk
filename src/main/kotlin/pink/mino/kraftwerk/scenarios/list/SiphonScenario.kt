@@ -28,7 +28,6 @@ class SiphonScenario : Scenario(
         Enchantment.DURABILITY,
         Enchantment.PROTECTION_PROJECTILE,
         Enchantment.PROTECTION_ENVIRONMENTAL,
-        Enchantment.FIRE_ASPECT,
         Enchantment.DAMAGE_ALL
     )
 
