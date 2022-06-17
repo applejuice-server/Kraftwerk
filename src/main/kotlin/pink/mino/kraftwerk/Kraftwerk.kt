@@ -35,6 +35,8 @@ import java.nio.file.Path
 /*
 Dear weird person:
 Only I and God know how this plugin works.
+
+not anymore :)))))))))
  */
 
 class Kraftwerk : ExtendedJavaPlugin() {
