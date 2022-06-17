@@ -10,6 +10,7 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import pink.mino.kraftwerk.features.SpecFeature
 import pink.mino.kraftwerk.utils.Chat
+import pink.mino.kraftwerk.utils.GameState
 import pink.mino.kraftwerk.utils.HelpOp
 
 
@@ -38,10 +39,6 @@ class HelpOpCommand : CommandExecutor {
             sender.sendMessage("${ChatColor.RED}Usage: /helpop <message>")
             return true
         }
-        if (SpecFeature.instance.getSpecs().size == 0) {
-            Chat.sendMessage(sender, "&cThere are no spectators to read your message.")
-            return false
-        }
         val message = StringBuilder()
         for (element in args) {
             message.append("${ChatColor.GRAY}${element}").append(" " + ChatColor.GRAY)
@@ -54,9 +51,18 @@ class HelpOpCommand : CommandExecutor {
             ClickEvent.Action.SUGGEST_COMMAND,
             "/hr $id "
         )
-        for (name in SpecFeature.instance.getSpecs()) {
-            val player = Bukkit.getPlayer(name)
-            player?.spigot()?.sendMessage(text)
+
+        if (GameState.currentState != GameState.INGAME) {
+            for (player in Bukkit.getOnlinePlayers()) {
+                if (player.hasPermission("uhc.staff")) {
+                    player?.spigot()?.sendMessage(text)
+                }
+            }
+        } else {
+            for (name in SpecFeature.instance.getSpecs()) {
+                val player = Bukkit.getPlayer(name)
+                player?.spigot()?.sendMessage(text)
+            }
         }
         cooldowns[sender.name] = System.currentTimeMillis()
         return true
