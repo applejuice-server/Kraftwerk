@@ -95,6 +95,7 @@ class Kraftwerk : ExtendedJavaPlugin() {
         Bukkit.getServer().pluginManager.registerEvents(OreLimiterListener(), this)
         Bukkit.getServer().pluginManager.registerEvents(PregenListener(), this)
         Bukkit.getServer().pluginManager.registerEvents(CanePopulatorFeature(), this)
+        Bukkit.getServer().pluginManager.registerEvents(OpenedMatchesListener(), this)
 
         /* Donator Listeners */
         Bukkit.getServer().pluginManager.registerEvents(MobEggsListener(), this)
