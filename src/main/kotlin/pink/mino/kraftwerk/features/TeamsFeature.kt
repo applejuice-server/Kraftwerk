@@ -112,6 +112,13 @@ class TeamsFeature private constructor() {
         return pink.mino.kraftwerk.utils.Scoreboard.sb.getPlayerTeam(offlinePlayer)
     }
 
+    fun getTeam(team: String): Team? {
+        for (t in teams) {
+            if (t.name.lowercase() == team.lowercase()) return t
+        }
+        return null
+    }
+
     /**
      * Sets up all the teams.
      */
