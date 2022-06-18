@@ -201,8 +201,6 @@ class UHCTask : BukkitRunnable() {
                     scenario.onStart()
                 }
                 Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world")).setGameRuleValue("doDaylightCycle", true.toString())
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer cancel")
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer ${SettingsFeature.instance.data!!.getInt("game.events.final-heal") * 60} &cFinal Heal is in ${Chat.dash}&f")
                 for (player in Bukkit.getOnlinePlayers()) {
                     player.addPotionEffect(PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 300, 100, true, true))
                 }
@@ -379,7 +377,8 @@ class UHCFeature : Listener {
                     }
 
                     for ((index, online) in WhitelistCommand().getWhitelisted().withIndex()) {
-                        if (SpecFeature.instance.getSpecs().contains(online)) {
+                        val player = Bukkit.getOfflinePlayer(online)
+                        if (SpecFeature.instance.getSpecs().contains(player.name)) {
                             continue
                         }
                         if (TeamsFeature.manager.getTeam(Bukkit.getOfflinePlayer(online)) != null) {
@@ -389,7 +388,8 @@ class UHCFeature : Listener {
                     }
                 } else {
                     for ((index, online) in WhitelistCommand().getWhitelisted().withIndex()) {
-                        if (SpecFeature.instance.getSpecs().contains(online)) {
+                        val player = Bukkit.getOfflinePlayer(online)
+                        if (SpecFeature.instance.getSpecs().contains(player.name)) {
                             continue
                         }
                         JavaPlugin.getPlugin(Kraftwerk::class.java).scatterLocs[online.lowercase()] = loc[index]
