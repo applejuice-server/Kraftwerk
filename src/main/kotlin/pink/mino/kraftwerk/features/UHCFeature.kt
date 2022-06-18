@@ -1,11 +1,6 @@
 package pink.mino.kraftwerk.features
 
-import org.apache.logging.log4j.core.pattern.AbstractStyleNameConverter.White
-import org.bukkit.Bukkit
-import org.bukkit.GameMode
-import org.bukkit.Location
-import org.bukkit.Material
-import org.bukkit.Sound
+import org.bukkit.*
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -55,7 +50,14 @@ enum class Events {
     START,
     FINAL_HEAL,
     PVP,
-    MEETUP
+    MEETUP,
+
+    BORDER_SHRINK_ONE,
+    BORDER_SHRINK_TWO,
+    BORDER_SHRINK_THREE,
+    BORDER_SHRINK_FOUR,
+    BORDER_SHRINK_FIVE,
+    BORDER_SHRINK_SIX
 }
 
 class UHCTask : BukkitRunnable() {
@@ -79,6 +81,8 @@ class UHCTask : BukkitRunnable() {
     var startTime: Long = Date().time
     var endTime: Long? = null
 
+    var paused = false
+
     private fun displayTimer(player: Player) {
         when (currentEvent) {
             Events.PRE_START -> {
@@ -93,9 +97,55 @@ class UHCTask : BukkitRunnable() {
             Events.PVP -> {
                 ActionBar.sendActionBarMessage(player, "&cMeetup is in ${Chat.dash} &f${timeToString((meetup - timer).toLong())}")
             }
-            Events.MEETUP -> {
-                ActionBar.sendActionBarMessage(player, "&cIt is now Meetup! Head to 0,0! &8| &7Border: &f${SettingsFeature.instance.data!!.getInt("pregen.border")*2} (±${SettingsFeature.instance.data!!.getInt("pregen.border")})")
+            Events.BORDER_SHRINK_ONE -> {
+                ActionBar.sendActionBarMessage(
+                    player,
+                    "&cIt is now Meetup! Head to 0,0! &8| &7Border: &f${SettingsFeature.instance.data!!.getInt("pregen.border") * 2} (±${
+                        SettingsFeature.instance.data!!.getInt("pregen.border")
+                    }) &8| &f${timeToString((meetup + 300) - timer.toLong())}"
+                )
             }
+            Events.BORDER_SHRINK_TWO -> {
+                ActionBar.sendActionBarMessage(
+                    player,
+                    "&cIt is now Meetup! Head to 0,0! &8| &7Border: &f${SettingsFeature.instance.data!!.getInt("pregen.border") * 3} (±${
+                        SettingsFeature.instance.data!!.getInt("pregen.border")
+                    }) &8| &f${timeToString((meetup + 600) - timer.toLong())}"
+                )
+            }
+            Events.BORDER_SHRINK_THREE -> {
+                ActionBar.sendActionBarMessage(
+                    player,
+                    "&cIt is now Meetup! Head to 0,0! &8| &7Border: &f${SettingsFeature.instance.data!!.getInt("pregen.border") * 4} (±${
+                        SettingsFeature.instance.data!!.getInt("pregen.border")
+                    }) &8| &f${timeToString((meetup + 900) - timer.toLong())}"
+                )
+            }
+            Events.BORDER_SHRINK_FOUR -> {
+                ActionBar.sendActionBarMessage(
+                    player,
+                    "&cIt is now Meetup! Head to 0,0! &8| &7Border: &f${SettingsFeature.instance.data!!.getInt("pregen.border") * 5} (±${
+                        SettingsFeature.instance.data!!.getInt("pregen.border")
+                    }) &8| &f${timeToString((meetup + 1200) - timer.toLong())}"
+                )
+            }
+            Events.BORDER_SHRINK_FIVE -> {
+                ActionBar.sendActionBarMessage(
+                    player,
+                    "&cIt is now Meetup! Head to 0,0! &8| &7Border: &f${SettingsFeature.instance.data!!.getInt("pregen.border") * 6} (±${
+                        SettingsFeature.instance.data!!.getInt("pregen.border")
+                    }) &8| &f${timeToString((meetup + 1500) - timer.toLong())}"
+                )
+            }
+            Events.BORDER_SHRINK_SIX -> {
+                ActionBar.sendActionBarMessage(
+                    player,
+                    "&cIt is now Meetup! Head to 0,0! &8| &7Border: &f${SettingsFeature.instance.data!!.getInt("pregen.border") * 7} (±${
+                        SettingsFeature.instance.data!!.getInt("pregen.border")
+                    })"
+                )
+            }
+
         }
     }
 
@@ -154,6 +204,7 @@ class UHCTask : BukkitRunnable() {
                     player.health = player.maxHealth
                     player.foodLevel = 20
                     player.saturation = 20F
+                    player.fireTicks = 0
                     Chat.sendMessage(player, Chat.line)
                     Chat.sendCenteredMessage(player, "&c&lUHC")
                     Chat.sendMessage(player, " ")
@@ -200,30 +251,34 @@ class UHCTask : BukkitRunnable() {
                 }
                 Bukkit.broadcastMessage(Chat.colored(Chat.line))
                 UHCFeature().scheduleShrink(500)
-                Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                    UHCFeature().scheduleShrink(250)
-                    Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                        UHCFeature().scheduleShrink(100)
-                        Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                            UHCFeature().scheduleShrink(75)
-                            if (!ScenarioHandler.getScenario("bigcrack")!!.enabled) {
-                                Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                                    UHCFeature().scheduleShrink(50)
-                                    Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                                        UHCFeature().scheduleShrink(25)
-                                    }, 6000)
-                                }, 6000)
-                            }
-                        }, 6000)
-                    }, 6000)
-                }, 6000)
+                currentEvent = Events.BORDER_SHRINK_ONE
+            }
+            meetup + 300 -> {
+                UHCFeature().scheduleShrink(250)
+                currentEvent = Events.BORDER_SHRINK_TWO
+            }
+            meetup + 600 -> {
+                UHCFeature().scheduleShrink(100)
+                currentEvent = Events.BORDER_SHRINK_THREE
+            }
+            meetup + 900 -> {
+                UHCFeature().scheduleShrink(75)
+                currentEvent = Events.BORDER_SHRINK_FOUR
+            }
+            meetup + 1200 -> {
+                UHCFeature().scheduleShrink(50)
+                currentEvent = Events.BORDER_SHRINK_FIVE
+            }
+            meetup + 1500 -> {
+                UHCFeature().scheduleShrink(25)
+                currentEvent = Events.BORDER_SHRINK_SIX
             }
         }
         Scoreboard.setScore(Chat.colored("${Chat.dash} &7Playing..."), PlayerUtils.getPlayingPlayers().size)
         for (player in Bukkit.getOnlinePlayers()) {
             displayTimer(player)
         }
-        timer++
+        if (!paused) timer++
     }
 }
 
