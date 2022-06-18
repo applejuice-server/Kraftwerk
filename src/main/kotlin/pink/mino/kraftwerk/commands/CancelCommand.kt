@@ -52,6 +52,8 @@ class CancelCommand : CommandExecutor {
         SettingsFeature.instance.data!!.set("matchpost", null)
         SettingsFeature.instance.data!!.set("matchpost.cancelled", true)
         SettingsFeature.instance.data!!.set("whitelist.enabled", true)
+        SettingsFeature.instance.data!!.set("whitelist.list", ArrayList<String>())
+        SettingsFeature.instance.saveData()
         Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "restart")
         }, 900L)
