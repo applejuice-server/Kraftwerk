@@ -122,12 +122,21 @@ class UHCTask : BukkitRunnable() {
                 )
             }
             Events.BORDER_SHRINK_FOUR -> {
-                ActionBar.sendActionBarMessage(
-                    player,
-                    "&cIt is now Meetup! Head to 0,0! &8| &7Border: &f${SettingsFeature.instance.data!!.getInt("pregen.border") * 5} (±${
-                        SettingsFeature.instance.data!!.getInt("pregen.border")
-                    }) &8| &f${timeToString((meetup + 1200) - timer.toLong())}"
-                )
+                if (ScenarioHandler.getScenario("bigcrack")!!.enabled) {
+                    ActionBar.sendActionBarMessage(
+                        player,
+                        "&cIt is now Meetup! Head to 0,0! &8| &7Border: &f${SettingsFeature.instance.data!!.getInt("pregen.border") * 5} (±${
+                            SettingsFeature.instance.data!!.getInt("pregen.border")
+                        })"
+                    )
+                } else {
+                    ActionBar.sendActionBarMessage(
+                        player,
+                        "&cIt is now Meetup! Head to 0,0! &8| &7Border: &f${SettingsFeature.instance.data!!.getInt("pregen.border") * 5} (±${
+                            SettingsFeature.instance.data!!.getInt("pregen.border")
+                        }) &8| &f${timeToString((meetup + 1200) - timer.toLong())}"
+                    )
+                }
             }
             Events.BORDER_SHRINK_FIVE -> {
                 ActionBar.sendActionBarMessage(
@@ -266,10 +275,16 @@ class UHCTask : BukkitRunnable() {
                 currentEvent = Events.BORDER_SHRINK_FOUR
             }
             meetup + 1200 -> {
+                if (ScenarioHandler.getScenario("bigcrack")!!.enabled) {
+                    return
+                }
                 UHCFeature().scheduleShrink(50)
                 currentEvent = Events.BORDER_SHRINK_FIVE
             }
             meetup + 1500 -> {
+                if (ScenarioHandler.getScenario("bigcrack")!!.enabled) {
+                    return
+                }
                 UHCFeature().scheduleShrink(25)
                 currentEvent = Events.BORDER_SHRINK_SIX
             }
