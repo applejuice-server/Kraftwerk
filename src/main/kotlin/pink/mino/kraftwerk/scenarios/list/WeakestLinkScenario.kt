@@ -40,6 +40,7 @@ class WeakestLinkScenario : Scenario(
             return p0!!.health.compareTo(p1!!.health)
         }
     }
+    var task: WeakestLinkLogic? = null
 
     fun getLowestHealth() : Player {
         val players = arrayListOf<Player>()
@@ -49,6 +50,11 @@ class WeakestLinkScenario : Scenario(
             }
         }
         return byHealth.min(players)
+    }
+
+    override fun returnTimer(): Int? {
+        if (this.task == null) return null
+        return this.task!!.timer
     }
 
     fun isAllSameHealth() : Boolean {
@@ -69,6 +75,7 @@ class WeakestLinkScenario : Scenario(
     }
 
     override fun onStart() {
-        WeakestLinkLogic().runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 20L)
+        task = WeakestLinkLogic()
+        task!!.runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 20L)
     }
 }
