@@ -108,7 +108,7 @@ class UHCTask : BukkitRunnable() {
             Events.BORDER_SHRINK_TWO -> {
                 ActionBar.sendActionBarMessage(
                     player,
-                    "&cIt is now Meetup! Head to 0,0! &8| &7Border: &f${SettingsFeature.instance.data!!.getInt("pregen.border") * 3} (±${
+                    "&cIt is now Meetup! Head to 0,0! &8| &7Border: &f${SettingsFeature.instance.data!!.getInt("pregen.border") * 2} (±${
                         SettingsFeature.instance.data!!.getInt("pregen.border")
                     }) &8| &f${timeToString((meetup + 600) - timer.toLong())}"
                 )
@@ -116,7 +116,7 @@ class UHCTask : BukkitRunnable() {
             Events.BORDER_SHRINK_THREE -> {
                 ActionBar.sendActionBarMessage(
                     player,
-                    "&cIt is now Meetup! Head to 0,0! &8| &7Border: &f${SettingsFeature.instance.data!!.getInt("pregen.border") * 4} (±${
+                    "&cIt is now Meetup! Head to 0,0! &8| &7Border: &f${SettingsFeature.instance.data!!.getInt("pregen.border") * 2} (±${
                         SettingsFeature.instance.data!!.getInt("pregen.border")
                     }) &8| &f${timeToString((meetup + 900) - timer.toLong())}"
                 )
@@ -141,7 +141,7 @@ class UHCTask : BukkitRunnable() {
             Events.BORDER_SHRINK_FIVE -> {
                 ActionBar.sendActionBarMessage(
                     player,
-                    "&cIt is now Meetup! Head to 0,0! &8| &7Border: &f${SettingsFeature.instance.data!!.getInt("pregen.border") * 6} (±${
+                    "&cIt is now Meetup! Head to 0,0! &8| &7Border: &f${SettingsFeature.instance.data!!.getInt("pregen.border") * 2} (±${
                         SettingsFeature.instance.data!!.getInt("pregen.border")
                     }) &8| &f${timeToString((meetup + 1500) - timer.toLong())}"
                 )
@@ -149,7 +149,7 @@ class UHCTask : BukkitRunnable() {
             Events.BORDER_SHRINK_SIX -> {
                 ActionBar.sendActionBarMessage(
                     player,
-                    "&cIt is now Meetup! Head to 0,0! &8| &7Border: &f${SettingsFeature.instance.data!!.getInt("pregen.border") * 7} (±${
+                    "&cIt is now Meetup! Head to 0,0! &8| &7Border: &f${SettingsFeature.instance.data!!.getInt("pregen.border") * 2} (±${
                         SettingsFeature.instance.data!!.getInt("pregen.border")
                     })"
                 )
@@ -209,6 +209,9 @@ class UHCTask : BukkitRunnable() {
             }
             finalHeal -> {
                 currentEvent = Events.FINAL_HEAL
+                for (scenario in ScenarioHandler.getActiveScenarios()) {
+                    scenario.onFinalHeal()
+                }
                 for (player in Bukkit.getOnlinePlayers()) {
                     player.health = player.maxHealth
                     player.foodLevel = 20

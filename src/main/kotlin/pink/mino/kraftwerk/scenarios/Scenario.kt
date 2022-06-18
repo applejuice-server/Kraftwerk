@@ -53,6 +53,7 @@ abstract class Scenario(
     }
 
     open fun onPvP() {}
+    open fun onFinalHeal() {}
     open fun onStart() {}
     open fun onMeetup() {}
     open fun givePlayer(player: Player) {}

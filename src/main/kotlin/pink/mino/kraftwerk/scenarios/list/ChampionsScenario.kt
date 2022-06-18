@@ -17,15 +17,14 @@ import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack
 import org.bukkit.enchantments.Enchantment
-import org.bukkit.entity.EntityType
-import org.bukkit.entity.Player
-import org.bukkit.entity.Wolf
+import org.bukkit.entity.*
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.block.Action
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.entity.EntityDamageEvent
+import org.bukkit.event.entity.EntityShootBowEvent
 import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.inventory.CraftItemEvent
 import org.bukkit.event.inventory.InventoryClickEvent
@@ -38,13 +37,16 @@ import org.bukkit.material.SpawnEgg
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
+import org.bukkit.scheduler.BukkitRunnable
+import org.bukkit.util.Vector
 import pink.mino.kraftwerk.Kraftwerk
+import pink.mino.kraftwerk.features.Events
 import pink.mino.kraftwerk.features.SpecFeature
 import pink.mino.kraftwerk.scenarios.Scenario
 import pink.mino.kraftwerk.utils.*
 import java.util.*
 import kotlin.math.floor
-
+import kotlin.math.sqrt
 
 class ChampionsScenario : Scenario(
     "Champions",
@@ -1107,6 +1109,48 @@ class ChampionsScenario : Scenario(
     }
 
     @EventHandler
+    fun onShootEvent(e: EntityShootBowEvent) {
+        if (!enabled) return
+        if (e.entity is Player && e.bow != null && e.bow.hasItemMeta() && e.bow.itemMeta.displayName == Chat.colored("&eArtemis' Bow")) {
+            val arrow = e.projectile as Arrow
+            val target = e.entity.getNearbyEntities(200.0, 200.0, 200.0).firstOrNull { it is LivingEntity } as? LivingEntity
+                ?: return
+            val velocity = arrow.velocity
+            val speed = sqrt(velocity.x * velocity.x + velocity.y + velocity.y + velocity.z + velocity.z)
+            object : BukkitRunnable() {
+                override fun run() {
+                    if (arrow.isOnGround || arrow.isDead || target.isDead) {
+                        cancel()
+                        return
+                    }
+                    val location = arrow.location
+                    val targetLocation = target.location
+                    val distance: Double = location.distance(targetLocation)
+                    val locX = location.x.toFloat()
+                    val locY = location.y.toFloat()
+                    val locZ = location.z.toFloat()
+                    val targetX: Double = targetLocation.x
+                    val targetY: Double = targetLocation.y
+                    val targetZ: Double = targetLocation.z
+                    val diffX = targetX - locX
+                    val diffZ = targetZ - locZ
+                    val plainDistance = sqrt(diffX * diffX + diffZ * diffZ)
+                    val heightDistance = targetY - locY
+                    val plainRatio = plainDistance / distance
+                    val heightRatio = heightDistance / distance
+                    val plainMotion: Double = plainRatio / speed
+                    val xRatio = diffX / plainDistance
+                    val zRatio = diffZ / plainDistance
+                    val motionX = xRatio / plainMotion
+                    val motionY: Double = heightRatio / speed
+                    val motionZ = zRatio / plainMotion
+                    arrow.velocity = Vector(motionX, motionY, motionZ)
+                }
+            }.runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 1L)
+        }
+    }
+
+    @EventHandler
     fun onForgeBreak(e: BlockBreakEvent) {
         if (!enabled) return
         if (e.block.type == Material.FURNACE || e.block.type == Material.BURNING_FURNACE) {
@@ -1117,8 +1161,8 @@ class ChampionsScenario : Scenario(
                     .addLore("&7Instantly smelts items. Breaks after 10 uses.")
                     .make()
                 for (item in (e.block.state as Furnace).inventory.contents) {
-                    if (item.hasItemMeta() && item.itemMeta.displayName == Chat.colored("&5Forgium")) continue
                     if (item == null) continue
+                    if (item.hasItemMeta() && item.itemMeta.displayName == Chat.colored("&5Forgium")) continue
                     e.block.world.dropItemNaturally(e.block.location, item)
                 }
                 e.block.type = Material.AIR
@@ -1126,13 +1170,107 @@ class ChampionsScenario : Scenario(
             }
         }
     }
+
+    override fun onFinalHeal() {
+        for (player in Bukkit.getOnlinePlayers()) {
+            if (SpecFeature.instance.isSpec(player)) continue
+            for (item in player.inventory.contents) {
+                if (item == null) continue
+                if (!item.hasItemMeta()) continue
+                if (item.itemMeta.displayName == Chat.colored("&5Apprentice Bow")) {
+                    val bow = ItemBuilder(Material.BOW)
+                        .name("&5Apprentice Bow")
+                        .addLore("&7Gains &fPower I&7 at Final Heal&7.")
+                        .addLore("&7Gains &fPower II&7 at PvP&7.")
+                        .addLore("&7Gains &fPower III&7 at Meetup&7.")
+                        .addEnchantment(Enchantment.ARROW_DAMAGE, 1)
+                        .make()
+                    item.itemMeta = bow.itemMeta
+                }
+                if (item.itemMeta.displayName == Chat.colored("&5Apprentice Sword")) {
+                    val sword = ItemBuilder(Material.IRON_SWORD)
+                        .name("&5Apprentice Sword")
+                        .addEnchantment(Enchantment.DAMAGE_ALL, 1)
+                        .addLore("&7Gains &fSharpness I&7 at Final Heal&7.")
+                        .addLore("&7Gains &fSharpness II&7 at PvP&7.")
+                        .addLore("&7Gains &fSharpness III&7 at Meetup&7.")
+                        .make()
+                    item.itemMeta = sword.itemMeta
+                }
+            }
+        }
+    }
+
+    override fun onMeetup() {
+        for (player in Bukkit.getOnlinePlayers()) {
+            if (SpecFeature.instance.isSpec(player)) continue
+            for (item in player.inventory.contents) {
+                if (item == null) continue
+                if (!item.hasItemMeta()) continue
+                if (item.itemMeta.displayName == Chat.colored("&5Apprentice Bow")) {
+                    val bow = ItemBuilder(Material.BOW)
+                        .name("&5Apprentice Bow")
+                        .addLore("&7Gains &fPower I&7 at Final Heal&7.")
+                        .addLore("&7Gains &fPower II&7 at PvP&7.")
+                        .addLore("&7Gains &fPower III&7 at Meetup&7.")
+                        .addEnchantment(Enchantment.ARROW_DAMAGE, 3)
+                        .make()
+                    item.itemMeta = bow.itemMeta
+                }
+                if (item.itemMeta.displayName == Chat.colored("&5Apprentice Sword")) {
+                    val sword = ItemBuilder(Material.IRON_SWORD)
+                        .name("&5Apprentice Sword")
+                        .addEnchantment(Enchantment.DAMAGE_ALL, 3)
+                        .addLore("&7Gains &fSharpness I&7 at Final Heal&7.")
+                        .addLore("&7Gains &fSharpness II&7 at PvP&7.")
+                        .addLore("&7Gains &fSharpness III&7 at Meetup&7.")
+                        .make()
+                    item.itemMeta = sword.itemMeta
+                }
+            }
+        }
+    }
+
+    override fun onPvP() {
+        for (player in Bukkit.getOnlinePlayers()) {
+            if (SpecFeature.instance.isSpec(player)) continue
+            for (item in player.inventory.contents) {
+                if (item == null) continue
+                if (!item.hasItemMeta()) continue
+                if (item.itemMeta.displayName == Chat.colored("&5Apprentice Bow")) {
+                    val bow = ItemBuilder(Material.BOW)
+                        .name("&5Apprentice Bow")
+                        .addLore("&7Gains &fPower I&7 at Final Heal&7.")
+                        .addLore("&7Gains &fPower II&7 at PvP&7.")
+                        .addLore("&7Gains &fPower III&7 at Meetup&7.")
+                        .addEnchantment(Enchantment.ARROW_DAMAGE, 2)
+                        .make()
+                    item.itemMeta = bow.itemMeta
+                }
+                if (item.itemMeta.displayName == Chat.colored("&5Apprentice Sword")) {
+                    val sword = ItemBuilder(Material.IRON_SWORD)
+                        .name("&5Apprentice Sword")
+                        .addEnchantment(Enchantment.DAMAGE_ALL, 2)
+                        .addLore("&7Gains &fSharpness I&7 at Final Heal&7.")
+                        .addLore("&7Gains &fSharpness II&7 at PvP&7.")
+                        .addLore("&7Gains &fSharpness III&7 at Meetup&7.")
+                        .make()
+                    item.itemMeta = sword.itemMeta
+                }
+            }
+        }
+    }
+
     @EventHandler
     fun onForgeSmelt(e: InventoryClickEvent) {
         if (!enabled) return
         if (e.inventory.type != InventoryType.FURNACE) return
         if (e.inventory.title != Chat.colored("&5Forge")) return
         if (e.clickedInventory == null) return
-        if (e.cursor.type == Material.LAVA_BUCKET && e.cursor.hasItemMeta() && e.cursor.itemMeta.displayName == Chat.colored("&5Forgium")) e.isCancelled = true
+        if (e.currentItem.type == Material.LAVA_BUCKET && e.currentItem.hasItemMeta() && e.currentItem.itemMeta.displayName == Chat.colored("&5Forgium")) {
+            e.isCancelled = true
+            return
+        }
         Schedulers.sync().runLater(runnable@ {
             val furnace = e.inventory.holder as Furnace
             var result: ItemStack? = null
@@ -1155,6 +1293,7 @@ class ChampionsScenario : Scenario(
                 if (forgeMap[e.whoClicked.uniqueId] == null) forgeMap[e.whoClicked.uniqueId] = 0
                 forgeMap[e.whoClicked.uniqueId] = forgeMap[e.whoClicked.uniqueId]!! + 1
                 if (forgeMap[e.whoClicked.uniqueId]!! >= 10) {
+                    furnace.inventory.fuel = ItemStack(Material.AIR)
                     furnace.block.type = Material.AIR
                     forgeMap.remove(e.whoClicked.uniqueId)
                     Chat.sendMessage(e.whoClicked, "&aYour forge has broken from reaching its limit.")
@@ -1189,6 +1328,25 @@ class ChampionsScenario : Scenario(
             val chest: Chest = block.state as Chest
             chest.inventory.setItem(13, randomReward())
         }
+        if (name == Chat.colored("&5Fusion Armor")) {
+            val helmet = ItemBuilder(Material.DIAMOND_HELMET)
+                .name("&5Fusion Helmet")
+                .addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 4)
+                .make()
+            val chestplate = ItemBuilder(Material.DIAMOND_CHESTPLATE)
+                .name("&5Fusion Chestplate")
+                .addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 4)
+                .make()
+            val leggings = ItemBuilder(Material.DIAMOND_LEGGINGS)
+                .name("&5Fusion Leggings")
+                .addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 4)
+                .make()
+            val boots = ItemBuilder(Material.DIAMOND_BOOTS)
+                .name("&5Fusion Boots")
+                .addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 4)
+                .make()
+            inv.result = arrayListOf(helmet, chestplate, leggings, boots).random()
+        }
         if (name == Chat.colored("&eDice of God")) {
             val block: Block? = player.getTargetBlock(null as Set<Material?>?, 10)
             if (block == null || block.type !== Material.WORKBENCH) {
@@ -1209,6 +1367,61 @@ class ChampionsScenario : Scenario(
                 }
             }
             event.currentItem = extraUltimates[rand.nextInt(extraUltimates.size)]
+        }
+        if (name == Chat.colored("&5Apprentice Sword")) {
+            when (JavaPlugin.getPlugin(Kraftwerk::class.java).game!!.currentEvent) {
+                Events.FINAL_HEAL -> {
+                    val sword = ItemBuilder(Material.IRON_SWORD)
+                        .name("&5Apprentice Sword")
+                        .addEnchantment(Enchantment.DAMAGE_ALL, 1)
+                        .addLore("&7Gains &fSharpness I&7 at Final Heal&7.")
+                        .addLore("&7Gains &fSharpness II&7 at PvP&7.")
+                        .addLore("&7Gains &fSharpness III&7 at Meetup&7.")
+                        .make()
+                    inv.result = sword
+                }
+                Events.PVP -> {
+                    val sword = ItemBuilder(Material.IRON_SWORD)
+                        .name("&5Apprentice Sword")
+                        .addEnchantment(Enchantment.DAMAGE_ALL, 2)
+                        .addLore("&7Gains &fSharpness I&7 at Final Heal&7.")
+                        .addLore("&7Gains &fSharpness II&7 at PvP&7.")
+                        .addLore("&7Gains &fSharpness III&7 at Meetup&7.")
+                        .make()
+                    inv.result = sword
+                }
+                Events.MEETUP, Events.BORDER_SHRINK_ONE, Events.BORDER_SHRINK_TWO, Events.BORDER_SHRINK_THREE, Events.BORDER_SHRINK_FOUR, Events.BORDER_SHRINK_FIVE, Events.BORDER_SHRINK_SIX -> {
+                    val sword = ItemBuilder(Material.IRON_SWORD)
+                        .name("&5Apprentice Sword")
+                        .addEnchantment(Enchantment.DAMAGE_ALL, 3)
+                        .addLore("&7Gains &fSharpness I&7 at Final Heal&7.")
+                        .addLore("&7Gains &fSharpness II&7 at PvP&7.")
+                        .addLore("&7Gains &fSharpness III&7 at Meetup&7.")
+                        .make()
+                    inv.result = sword
+                }
+            }
+        }
+        if (name == Chat.colored("&5Apprentice Bow")) {
+            val bow = ItemBuilder(Material.BOW)
+                .name("&5Apprentice Bow")
+                .addLore("&7Gains &fPower I&7 at Final Heal&7.")
+                .addLore("&7Gains &fPower II&7 at PvP&7.")
+                .addLore("&7Gains &fPower III&7 at Meetup&7.")
+            when (JavaPlugin.getPlugin(Kraftwerk::class.java).game!!.currentEvent) {
+                Events.FINAL_HEAL -> {
+                    bow.addEnchantment(Enchantment.ARROW_DAMAGE, 1)
+                    inv.result = bow.make()
+                }
+                Events.PVP -> {
+                    bow.addEnchantment(Enchantment.ARROW_DAMAGE, 2)
+                    inv.result = bow.make()
+                }
+                Events.MEETUP, Events.BORDER_SHRINK_ONE, Events.BORDER_SHRINK_TWO, Events.BORDER_SHRINK_THREE, Events.BORDER_SHRINK_FOUR, Events.BORDER_SHRINK_FIVE, Events.BORDER_SHRINK_SIX -> {
+                    bow.addEnchantment(Enchantment.ARROW_DAMAGE, 3)
+                    inv.result = bow.make()
+                }
+            }
         }
     }
 
