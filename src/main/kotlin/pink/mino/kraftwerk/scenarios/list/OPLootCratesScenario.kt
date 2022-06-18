@@ -4,6 +4,7 @@ import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.enchantments.Enchantment
+import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.block.Action
 import org.bukkit.event.block.BlockPlaceEvent
@@ -26,7 +27,7 @@ class OPLootCratesScenario : Scenario(
     "oplootcrates",
     Material.ENDER_CHEST
 ) {
-
+    var task: GiveLootCrates? = null
     fun generateTier1(): ArrayList<ItemStack> {
         val list = arrayListOf<ItemStack>(
             ItemStack(Material.DIAMOND_HELMET),
@@ -138,6 +139,14 @@ class OPLootCratesScenario : Scenario(
         return list
     }
 
+    override fun returnTimer(): Int? {
+        return if (task != null) {
+            task!!.timer
+        } else {
+            null
+        }
+    }
+
     @EventHandler
     fun onClick(e: PlayerInteractEvent) {
         if (!enabled) return
@@ -176,6 +185,32 @@ class OPLootCratesScenario : Scenario(
                 Chat.sendMessage(p, "${Chat.prefix} You have received &c${stack.amount} ${stack.type.name}&7 from your lootcrate!")
             }
         }
+    }
+
+    override fun givePlayer(player: Player) {
+        val tier1Chest = ItemStack(Material.CHEST)
+        var meta = tier1Chest.itemMeta
+        meta.displayName = Chat.colored("&cTier I Loot Crate")
+        meta.lore = listOf(
+            "&7Right-click to redeem a Tier I item!"
+        )
+        tier1Chest.itemMeta = meta
+        val tier2Chest = ItemStack(Material.ENDER_CHEST)
+        meta = tier2Chest.itemMeta
+        meta.displayName = Chat.colored("&cTier II Loot Crate")
+        meta.lore = listOf(
+            "&7Right-click to redeem a Tier II item!"
+        )
+        tier2Chest.itemMeta = meta
+        val chance = Random.nextInt(2)
+        if (chance == 1) {
+            player.inventory.addItem(tier1Chest)
+            Chat.sendMessage(player, "${Chat.prefix} You've been given a &cTier I&7 Loot Crate.")
+        } else {
+            player.inventory.addItem(tier2Chest)
+            Chat.sendMessage(player, "${Chat.prefix} You've been given a &cTier II&7 Loot Crate.")
+        }
+        player.playSound(player.location, Sound.NOTE_PLING, 10F, 1F)
     }
 
     @EventHandler
@@ -231,6 +266,7 @@ class OPLootCratesScenario : Scenario(
             }
             player.playSound(player.location, Sound.NOTE_PLING, 10F, 1F)
         }
-        GiveLootCrates().runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 20L, 20L)
+        task = GiveLootCrates()
+        task!!.runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 20L, 20L)
     }
 }

@@ -140,6 +140,7 @@ class Kraftwerk : ExtendedJavaPlugin() {
         getCommand("giveitems").executor = GiveItemsCommand()
         getCommand("invsee").executor = InvseeCommand()
         getCommand("helpoplist").executor = HelpopListCommand()
+        getCommand("game").executor = GameCommand()
 
         getCommand("gm").executor = GamemodeCommand()
         getCommand("gamemode").executor = GamemodeCommand()
@@ -177,6 +178,7 @@ class Kraftwerk : ExtendedJavaPlugin() {
         getCommand("lapis").executor = LapisCommand()
         getCommand("redstone").executor = RedstoneCommand()
         getCommand("fullbright").executor = FullbrightCommand()
+        getCommand("timers").executor = TimersCommand()
         //getCommand("hotbar").executor = HotbarCommand()
 
         /* ProtocolLib stuff */

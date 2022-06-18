@@ -45,8 +45,17 @@ class ExtremeSkyHighScenario : Scenario(
     "extremeskyhigh",
     Material.FEATHER
 ) {
+    var task: ExtremeSkyHighIterator? = null
+    override fun returnTimer(): Int? {
+        return if (task != null) {
+            task!!.timer
+        } else {
+            null
+        }
+    }
     override fun onPvP() {
-        ExtremeSkyHighIterator().runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 20L)
+        task = ExtremeSkyHighIterator()
+        task!!.runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 20L)
         Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} The damage tick for &fExtreme SkyHigh&7 has started, the damage tick happen every 45 seconds."))
     }
 
