@@ -58,6 +58,9 @@ abstract class Scenario(
     open fun givePlayer(player: Player) {}
     open fun handleBlock(block: Block) {}
     open fun onGuiClick(player: Player) {}
+    open fun returnTimer(): Int? {
+        return null
+    }
 
     open fun onToggle(to: Boolean) {}
 }

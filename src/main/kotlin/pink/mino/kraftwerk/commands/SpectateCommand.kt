@@ -24,10 +24,20 @@ class SpectateCommand : CommandExecutor {
             sender.sendMessage("You can't use this command as you aren't technically a player.")
             return false
         }
-        if (SpecFeature.instance.getSpecs().contains(sender.name)) {
-            SpecFeature.instance.unspec(sender)
+        if (args.size == 1) {
+            val player = sender.server.getPlayer(args[0])
+            if (player == null) {
+                Chat.sendMessage(sender, "&cPlayer not found.")
+                return false
+            }
+            SpecFeature.instance.spec(player)
+            Chat.sendMessage(sender, "${Chat.prefix} Set &f${player.name}&7 has been set to Spectator mode.")
         } else {
-            SpecFeature.instance.spec(sender)
+            if (SpecFeature.instance.getSpecs().contains(sender.name)) {
+                SpecFeature.instance.unspec(sender)
+            } else {
+                SpecFeature.instance.spec(sender)
+            }
         }
 
         return true
