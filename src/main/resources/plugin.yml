@@ -287,6 +287,15 @@ commands:
     aliases:
       - ckit
     description: View the champions kit selector.
+  game:
+    aliases:
+      - g
+    description: Opens a GUI to manage the current game.
+  timers:
+    aliases:
+      - t
+      - timer
+    description: For scenarios that require timers, this command will list said timers.
 depend:
   - ProtocolLib
   - Vault
