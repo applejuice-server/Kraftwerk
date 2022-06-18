@@ -1,6 +1,7 @@
 package pink.mino.kraftwerk.scenarios.list
 
 import com.google.common.collect.Lists
+import me.lucko.helper.Schedulers
 import net.minecraft.server.v1_8_R3.NBTTagCompound
 import net.minecraft.server.v1_8_R3.NBTTagInt
 import net.minecraft.server.v1_8_R3.NBTTagList
@@ -27,7 +28,8 @@ import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.inventory.CraftItemEvent
-import org.bukkit.event.inventory.FurnaceBurnEvent
+import org.bukkit.event.inventory.InventoryClickEvent
+import org.bukkit.event.inventory.InventoryType
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.*
 import org.bukkit.inventory.meta.ItemMeta
@@ -1097,29 +1099,45 @@ class ChampionsScenario : Scenario(
     fun onForgePlace(e: BlockPlaceEvent) {
         if (!enabled) return
         if (e.block.type == Material.FURNACE && (e.block.state as Furnace).inventory.title == Chat.colored("&5Forge")) {
-            (e.block.state as Furnace).inventory.fuel = ItemStack(Material.LAVA_BUCKET)
+            val lava = ItemBuilder(Material.LAVA_BUCKET)
+                .name("&5Forgium")
+                .make()
+            (e.block.state as Furnace).inventory.fuel = lava
         }
     }
 
     @EventHandler
     fun onForgeBreak(e: BlockBreakEvent) {
         if (!enabled) return
-        if (e.block.type == Material.FURNACE && (e.block.state as Furnace).inventory.title == Chat.colored("&5Forge")) {
-            e.isCancelled = true
-            val forge = ItemBuilder(Material.FURNACE)
-                .name(ChatColor.DARK_PURPLE.toString() + "Forge")
-                .addLore("&7Instantly smelts items. Breaks after 10 uses.")
-                .make()
-            e.block.world.dropItemNaturally(e.block.location, forge)
+        if (e.block.type == Material.FURNACE || e.block.type == Material.BURNING_FURNACE) {
+            if ((e.block.state as Furnace).inventory.title == Chat.colored("&5Forge")) {
+                e.isCancelled = true
+                val forge = ItemBuilder(Material.FURNACE)
+                    .name(ChatColor.DARK_PURPLE.toString() + "Forge")
+                    .addLore("&7Instantly smelts items. Breaks after 10 uses.")
+                    .make()
+                for (item in (e.block.state as Furnace).inventory.contents) {
+                    if (item.hasItemMeta() && item.itemMeta.displayName == Chat.colored("&5Forgium")) continue
+                    if (item == null) continue
+                    e.block.world.dropItemNaturally(e.block.location, item)
+                }
+                e.block.type = Material.AIR
+                e.block.world.dropItemNaturally(e.block.location, forge)
+            }
         }
     }
     @EventHandler
-    fun onForgeSmelt(e: FurnaceBurnEvent) {
+    fun onForgeSmelt(e: InventoryClickEvent) {
         if (!enabled) return
-        if (e.block.type == Material.FURNACE && (e.block.state as Furnace).inventory.title == Chat.colored("&5Forge")) {
+        if (e.inventory.type != InventoryType.FURNACE) return
+        if (e.inventory.title != Chat.colored("&5Forge")) return
+        if (e.clickedInventory == null) return
+        if (e.cursor.type == Material.LAVA_BUCKET && e.cursor.hasItemMeta() && e.cursor.itemMeta.displayName == Chat.colored("&5Forgium")) e.isCancelled = true
+        Schedulers.sync().runLater(runnable@ {
+            val furnace = e.inventory.holder as Furnace
             var result: ItemStack? = null
             val iter: Iterator<Recipe> = Bukkit.recipeIterator()
-            val item = (e.block.state as Furnace).inventory.smelting
+            val item = furnace.inventory.smelting
             while (iter.hasNext()) {
                 val recipe = iter.next()
                 if (recipe !is FurnaceRecipe) continue
@@ -1127,16 +1145,23 @@ class ChampionsScenario : Scenario(
                 result = recipe.result
                 break
             }
-            if (result == null) return
-            for (i in 0 until (e.block.state as Furnace).inventory.smelting.amount) {
-                e.block.world.dropItemNaturally(e.block.location, result)
-                forgeMap[(e.block.state as Furnace).inventory.viewers[0].uniqueId] = forgeMap[(e.block.state as Furnace).inventory.viewers[0].uniqueId]!! + 1
-                if (forgeMap[(e.block.state as Furnace).inventory.viewers[0].uniqueId]!! >= 10) {
-                    e.block.type = Material.AIR
-                    forgeMap.remove((e.block.state as Furnace).inventory.viewers[0].uniqueId)
+            if (result == null) return@runnable
+            val amount = furnace.inventory.smelting.amount
+            for (i in 0 until amount) {
+                furnace.block.world.dropItemNaturally(furnace.block.location, result)
+                val smelting = furnace.inventory.smelting
+                smelting.amount--
+                furnace.inventory.smelting = smelting
+                if (forgeMap[e.whoClicked.uniqueId] == null) forgeMap[e.whoClicked.uniqueId] = 0
+                forgeMap[e.whoClicked.uniqueId] = forgeMap[e.whoClicked.uniqueId]!! + 1
+                if (forgeMap[e.whoClicked.uniqueId]!! >= 10) {
+                    furnace.block.type = Material.AIR
+                    forgeMap.remove(e.whoClicked.uniqueId)
+                    Chat.sendMessage(e.whoClicked, "&aYour forge has broken from reaching its limit.")
+                    return@runnable
                 }
             }
-        }
+        }, 1L)
     }
 
     private val rand = Random()
@@ -1164,7 +1189,7 @@ class ChampionsScenario : Scenario(
             val chest: Chest = block.state as Chest
             chest.inventory.setItem(13, randomReward())
         }
-        if (name == Chat.colored("&5Dice of God")) {
+        if (name == Chat.colored("&eDice of God")) {
             val block: Block? = player.getTargetBlock(null as Set<Material?>?, 10)
             if (block == null || block.type !== Material.WORKBENCH) {
                 player.sendMessage("$prefix You are not looking at a crafting table.")
