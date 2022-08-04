@@ -6,9 +6,7 @@ import net.minecraft.server.v1_8_R3.NBTTagCompound
 import net.minecraft.server.v1_8_R3.NBTTagInt
 import net.minecraft.server.v1_8_R3.NBTTagList
 import net.minecraft.server.v1_8_R3.NBTTagString
-import org.bukkit.Bukkit
-import org.bukkit.ChatColor
-import org.bukkit.Material
+import org.bukkit.*
 import org.bukkit.block.Block
 import org.bukkit.block.Chest
 import org.bukkit.block.Furnace
@@ -17,12 +15,16 @@ import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack
 import org.bukkit.enchantments.Enchantment
-import org.bukkit.entity.*
+import org.bukkit.entity.Arrow
+import org.bukkit.entity.EntityType
+import org.bukkit.entity.Player
+import org.bukkit.entity.Wolf
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.block.Action
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockPlaceEvent
+import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.EntityShootBowEvent
 import org.bukkit.event.entity.PlayerDeathEvent
@@ -38,15 +40,15 @@ import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 import org.bukkit.scheduler.BukkitRunnable
-import org.bukkit.util.Vector
 import pink.mino.kraftwerk.Kraftwerk
 import pink.mino.kraftwerk.features.Events
 import pink.mino.kraftwerk.features.SpecFeature
+import pink.mino.kraftwerk.features.TeamsFeature
 import pink.mino.kraftwerk.scenarios.Scenario
 import pink.mino.kraftwerk.utils.*
 import java.util.*
 import kotlin.math.floor
-import kotlin.math.sqrt
+
 
 class ChampionsScenario : Scenario(
     "Champions",
@@ -821,14 +823,65 @@ class ChampionsScenario : Scenario(
     }
 
     @EventHandler
+    fun onLumberjackAxe(e: BlockBreakEvent) {
+        if (!enabled) return
+        if (GameState.currentState != GameState.INGAME) return
+        if (
+            e.player.inventory.itemInHand != null &&
+            e.player.inventory.itemInHand.hasItemMeta() &&
+            e.player.inventory.itemInHand.itemMeta.displayName == Chat.colored("&5Lumberjack Axe")
+        ) {
+            timberTree(e.block.location, e.block.type, e.player)
+        }
+    }
+
+    private fun timberTree(loc: Location, material: Material, player: Player) {
+        for (x in loc.blockX - 1..loc.blockX + 1) {
+            for (y in loc.blockY - 1..loc.blockY + 1) {
+                for (z in loc.blockZ - 1..loc.blockZ + 1) {
+                    val newLoc = Location(loc.world, x.toDouble(), y.toDouble(), z.toDouble())
+                    if (loc.world.getBlockAt(x, y, z).type == material) {
+                        loc.world.getBlockAt(x, y, z).breakNaturally()
+                        loc.world.playSound(newLoc, Sound.DIG_WOOD, 1f, 1f)
+                        BlockUtil().degradeDurability(player)
+                        timberTree(newLoc, material, player)
+                    }
+                }
+            }
+        }
+    }
+
+    private val perunCooldownsMap = hashMapOf<Player, Long>()
+    @EventHandler
+    fun onPvP(e: EntityDamageByEntityEvent) {
+        if (!enabled) return
+        if (GameState.currentState != GameState.INGAME) return
+        if (e.damager is Player && e.entity is Player) {
+            if ((e.damager as Player).inventory.helmet != null && (e.damager as Player).inventory.helmet.hasItemMeta() && (e.damager as Player).inventory.helmet.itemMeta.displayName == Chat.colored("&eExodus")) {
+                if (!(e.damager as Player).hasPotionEffect(PotionEffectType.REGENERATION)) {
+                    (e.damager as Player).addPotionEffect(PotionEffect(PotionEffectType.REGENERATION, 50, 0))
+                }
+            }
+            if ((e.damager as Player).inventory.itemInHand != null && (e.damager as Player).inventory.itemInHand.hasItemMeta() && (e.damager as Player).inventory.itemInHand.itemMeta.displayName == Chat.colored("&eAxe of Perun")) {
+                if (perunCooldownsMap[e.damager as Player] == null || perunCooldownsMap[e.damager as Player]!! < System.currentTimeMillis()) {
+                    (e.damager as Player).world.strikeLightning((e.damager as Player).location)
+                    perunCooldownsMap[e.damager as Player] = System.currentTimeMillis() + 8000
+                } else {
+                    return
+                }
+            }
+        }
+    }
+
+    @EventHandler
     fun onPlayerDeath(e: PlayerDeathEvent) {
         if (!enabled) return
         if (e.entity.killer == null) return
         if (e.entity.killer !is Player) return
-        e.drops.add(ItemStack(Material.GOLD_NUGGET, 5))
-        e.droppedExp = (e.droppedExp + floor((e.droppedExp * 0.20))).toInt()
-        e.entity.killer.addPotionEffect(PotionEffect(PotionEffectType.INCREASE_DAMAGE, 20 * 2, 0, false, true))
-        e.entity.killer.addPotionEffect(PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 20 * 2, 0, false, true))
+        e.drops.add(ItemStack(Material.GOLD_NUGGET, 10))
+        e.droppedExp = (e.droppedExp + floor((e.droppedExp * 0.50))).toInt()
+        e.entity.killer.addPotionEffect(PotionEffect(PotionEffectType.INCREASE_DAMAGE, 20 * 5, 0, false, true))
+        e.entity.killer.addPotionEffect(PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 20 * 10, 0, false, true))
     }
 
     @EventHandler
@@ -840,12 +893,25 @@ class ChampionsScenario : Scenario(
             val item = e.item.clone()
             item.amount = 1
             e.player.inventory.removeItem(item)
-            Chat.sendMessage(
-                e.player,
-                "$prefix You ate a &6Golden Head&7 and gained 10 seconds of Regeneration III & 2 minutes of Absorption."
-            )
-            e.player.addPotionEffect(PotionEffect(PotionEffectType.REGENERATION, 20 * 10, 0, false, true))
-            e.player.addPotionEffect(PotionEffect(PotionEffectType.ABSORPTION, 20 * 120, 0, false, true))
+            if (TeamsFeature.manager.getTeam(e.player) == null) {
+                Chat.sendMessage(
+                    e.player,
+                    "$prefix You ate a &6Golden Head&7 and gained 15 seconds of Regeneration II & 2 minutes of Absorption."
+                )
+                e.player.addPotionEffect(PotionEffect(PotionEffectType.REGENERATION, 20 * 10, 1, false, true))
+                e.player.addPotionEffect(PotionEffect(PotionEffectType.ABSORPTION, 20 * 120, 1, false, true))
+            } else {
+                for (teammate in TeamsFeature.manager.getTeam(e.player)!!.players) {
+                    if (teammate.isOnline && teammate != null) {
+                        Chat.sendMessage(
+                            teammate as Player,
+                            "$prefix &6${e.player.name}&7 ate a &6Golden Head&7 and you gained gained 5 seconds of Regeneration II & 1 minute of Absorption."
+                        )
+                        teammate.addPotionEffect(PotionEffect(PotionEffectType.REGENERATION, 20 * 5, 1, false, true))
+                        teammate.addPotionEffect(PotionEffect(PotionEffectType.ABSORPTION, 20 * 60, 1, false, true))
+                    }
+                }
+            }
         } else if (e.item.type == Material.SKULL_ITEM) {
             e.isCancelled = true
             e.item.amount = e.item.amount - 1
@@ -920,7 +986,7 @@ class ChampionsScenario : Scenario(
             e.cause == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION ||
             e.cause == EntityDamageEvent.DamageCause.MAGIC
         ) {
-            e.damage = e.damage - (e.damage * 0.16)
+            e.damage = e.damage - (e.damage * 0.8)
         }
     }
 
@@ -928,16 +994,16 @@ class ChampionsScenario : Scenario(
     fun onBlockBreak(e: BlockBreakEvent) {
         if (!enabled) return
         if (e.player !is Player) return
-        e.player.addPotionEffect(PotionEffect(PotionEffectType.FAST_DIGGING, 400, 0, false, false))
+        e.player.addPotionEffect(PotionEffect(PotionEffectType.FAST_DIGGING, 20 * 100, 0, false, false))
         if (e.block.type == Material.GOLD_ORE || e.block.type == Material.IRON_ORE) {
             val chance = (0..100).random()
-            if (chance <= 8) {
+            if (chance <= 14) {
                 e.player.location.world.dropItem(e.player.location, ItemBuilder(e.block.type).make())
             }
         }
         if (e.block.type == Material.SAND || e.block.type == Material.GRAVEL || e.block.type == Material.OBSIDIAN) {
             val chance = (0..100).random()
-            if (chance <= 20) {
+            if (chance <= 50) {
                 e.player.location.world.dropItem(e.player.location, ItemBuilder(e.block.type).make())
             }
         }
@@ -948,8 +1014,8 @@ class ChampionsScenario : Scenario(
             if (SpecFeature.instance.isSpec(player)) continue
             player.maxHealth = 40.0
             player.health = 40.0
-            player.addPotionEffect(PotionEffect(PotionEffectType.SATURATION, 4800, 0, false, false))
-            player.addPotionEffect(PotionEffect(PotionEffectType.ABSORPTION, 240 * 20, 0, false, false))
+            player.addPotionEffect(PotionEffect(PotionEffectType.SATURATION, 6000, 0, false, false))
+            player.addPotionEffect(PotionEffect(PotionEffectType.ABSORPTION, 6000, 0, false, false))
             if (kits[player.uniqueId] == null) {
                 kits[player.uniqueId] = "leather"
             }
@@ -1093,6 +1159,16 @@ class ChampionsScenario : Scenario(
                 )
             )
         }
+        object : BukkitRunnable() {
+            override fun run() {
+                for (player in Bukkit.getOnlinePlayers()) {
+                    if (player.inventory.itemInHand != null && player.inventory.itemInHand.hasItemMeta() && player.inventory.itemInHand.itemMeta.displayName == Chat.colored("&eAndūril")) {
+                        player.addPotionEffect(PotionEffect(PotionEffectType.SPEED, 20, 0, false, true))
+                        player.addPotionEffect(PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 20, 0, false, true))
+                    }
+                }
+            }
+        }.runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 20L)
     }
 
     val forgeMap = hashMapOf<UUID, Int>()
@@ -1111,42 +1187,19 @@ class ChampionsScenario : Scenario(
     @EventHandler
     fun onShootEvent(e: EntityShootBowEvent) {
         if (!enabled) return
-        if (e.entity is Player && e.bow != null && e.bow.hasItemMeta() && e.bow.itemMeta.displayName == Chat.colored("&eArtemis' Bow")) {
+        if (e.entity is Player && e.bow != null && e.bow.hasItemMeta() && e.bow.itemMeta.displayName == Chat.colored("&eArtemis' Bow") && Random().nextInt(100) <= 25) {
             val arrow = e.projectile as Arrow
-            val target = e.entity.getNearbyEntities(200.0, 200.0, 200.0).firstOrNull { it is LivingEntity } as? LivingEntity
-                ?: return
-            val velocity = arrow.velocity
-            val speed = sqrt(velocity.x * velocity.x + velocity.y + velocity.y + velocity.z + velocity.z)
+            (e.entity as Player).playSound(e.entity.location, Sound.LEVEL_UP, 1f, 1f)
             object : BukkitRunnable() {
                 override fun run() {
-                    if (arrow.isOnGround || arrow.isDead || target.isDead) {
+                    val target = e.entity.getNearbyEntities(200.0, 200.0, 200.0).firstOrNull { it is Player && it != ((e.projectile as Arrow).shooter as Player) } as? Player
+                    if (arrow.isOnGround || arrow.isDead || target == null || target.isDead) {
                         cancel()
                         return
                     }
-                    val location = arrow.location
-                    val targetLocation = target.location
-                    val distance: Double = location.distance(targetLocation)
-                    val locX = location.x.toFloat()
-                    val locY = location.y.toFloat()
-                    val locZ = location.z.toFloat()
-                    val targetX: Double = targetLocation.x
-                    val targetY: Double = targetLocation.y
-                    val targetZ: Double = targetLocation.z
-                    val diffX = targetX - locX
-                    val diffZ = targetZ - locZ
-                    val plainDistance = sqrt(diffX * diffX + diffZ * diffZ)
-                    val heightDistance = targetY - locY
-                    val plainRatio = plainDistance / distance
-                    val heightRatio = heightDistance / distance
-                    val plainMotion: Double = plainRatio / speed
-                    val xRatio = diffX / plainDistance
-                    val zRatio = diffZ / plainDistance
-                    val motionX = xRatio / plainMotion
-                    val motionY: Double = heightRatio / speed
-                    val motionZ = zRatio / plainMotion
-                    arrow.velocity = Vector(motionX, motionY, motionZ)
+                    arrow.velocity = target.location.toVector().subtract(arrow.location.toVector()).normalize()
                 }
-            }.runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 1L)
+            }.runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 5L, 1L)
         }
     }
 

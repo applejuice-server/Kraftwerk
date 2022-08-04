@@ -93,9 +93,14 @@ class ConfigCommand : CommandExecutor {
                 Bukkit.dispatchCommand(sender, "editconfig options")
             }
         }
+        val ign = if (SettingsFeature.instance.data!!.getString("game.host") == null) {
+            "minota"
+        } else {
+            SettingsFeature.instance.data!!.getString("game.host")
+        }
         val host = ItemBuilder(Material.SKULL_ITEM)
             .toSkull()
-            .setOwner(SettingsFeature.instance.data!!.getString("game.host"))
+            .setOwner(ign)
             .name(" &4&lHost ")
             .addLore(" ")
             .addLore(" &7Host ${Chat.dash} &f${SettingsFeature.instance.data!!.getString("game.host")} ")

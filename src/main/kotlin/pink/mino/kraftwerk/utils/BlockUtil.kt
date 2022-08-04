@@ -8,13 +8,10 @@ import org.bukkit.block.Block
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import java.util.*
-import java.util.function.Predicate
-import kotlin.collections.ArrayList
-import kotlin.math.max
 
 
 class BlockUtil {
-    fun getBlocks(start: Block, radius: Int): ArrayList<Block>? {
+    fun getBlocks(start: Block, radius: Int): ArrayList<Block> {
         val blocks = ArrayList<Block>()
         var x = start.location.x - radius
         while (x <= start.location.x + radius) {
@@ -47,10 +44,10 @@ class BlockUtil {
             val chance = (100 / (item.getEnchantmentLevel(Enchantment.DURABILITY) + 1))
 
             if (rand.nextDouble() <= (chance / 100)) {
-                durability++
+                durability--
             }
         } else {
-            durability++
+            durability--
         }
 
         if (durability >= item.type.maxDurability) {

@@ -296,6 +296,10 @@ commands:
       - t
       - timer
     description: For scenarios that require timers, this command will list said timers.
+  setspawn:
+    aliases:
+      - ss
+    description: Sets the spawn point.
 depend:
   - ProtocolLib
   - Vault
