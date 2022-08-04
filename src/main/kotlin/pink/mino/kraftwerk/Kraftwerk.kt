@@ -30,6 +30,7 @@ import pink.mino.kraftwerk.utils.Scoreboard
 import pink.mino.kraftwerk.utils.StatsHandler
 import java.nio.file.Files
 import java.nio.file.Path
+import javax.security.auth.login.LoginException
 
 
 /*
@@ -141,6 +142,7 @@ class Kraftwerk : ExtendedJavaPlugin() {
         getCommand("invsee").executor = InvseeCommand()
         getCommand("helpoplist").executor = HelpopListCommand()
         getCommand("game").executor = GameCommand()
+        getCommand("setspawn").executor = SetSpawnCommand()
 
         getCommand("gm").executor = GamemodeCommand()
         getCommand("gamemode").executor = GamemodeCommand()
@@ -194,14 +196,8 @@ class Kraftwerk : ExtendedJavaPlugin() {
         CustomPayloadFixerFeature(this)
 
         /* Sets up misc features */
-        server.messenger.registerOutgoingPluginChannel(this, "BungeeCord")
         SettingsFeature.instance.setup(this)
         setupDataSource()
-        if (SettingsFeature.instance.data!!.getString("server.region") == null) {
-            SettingsFeature.instance.data!!.set("server.region", "NA")
-            SettingsFeature.instance.saveData()
-            Log.warn("Server region not set. Defaulting to NA.")
-        }
         TeamsFeature.manager.setupColors()
         Scoreboard.setup()
         if (Scoreboard.sb.getObjective("killboard") != null) {
@@ -223,7 +219,11 @@ class Kraftwerk : ExtendedJavaPlugin() {
         }
 
         /* Discord */
-        Discord.main()
+        try {
+            Discord.main()
+        } catch (e: LoginException) {
+            Log.severe("Failed to login to discord: " + e.message)
+        }
 
         if (!SettingsFeature.instance.data!!.getBoolean("matchpost.cancelled")) {
             if (SettingsFeature.instance.data!!.getString("matchpost.opens") != null) {
@@ -247,7 +247,7 @@ class Kraftwerk : ExtendedJavaPlugin() {
 
         //Discord.instance!!.getTextChannelById(756953696038027425)!!.sendMessage("test")
         //UpdateLeaderboards().runTaskTimer(this, 0L, 20L)
-        InfoFeature().runTaskTimerAsynchronously(this, 0L, 6000L)
+        //InfoFeature().runTaskTimerAsynchronously(this, 0L, 6000L)
         TabFeature().runTaskTimer(this, 0L, 20L)
 
         SettingsFeature.instance.data!!.set("whitelist.enabled", true)

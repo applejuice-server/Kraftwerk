@@ -54,7 +54,7 @@ class ScenarioHandler {
             addScenario(EggsScenario())
             addScenario(AuctionScenario())
             addScenario(ChampionsScenario())
-
+            addScenario(DoNotDisturbScenario())
             scenarios.sortWith(Comparator.comparing(Scenario::name))
         }
 

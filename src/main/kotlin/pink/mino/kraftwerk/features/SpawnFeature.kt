@@ -47,25 +47,19 @@ class SpawnFeature : Listener {
             .name("&cView Stats &7(Right Click)")
             .addLore("&7Right-click to view your stats.")
             .make()
-        p.inventory.setItem(5, stats)
+        p.inventory.setItem(3, stats)
 
         val config = ItemBuilder(Material.GOLDEN_APPLE)
             .name("&cUHC Configuration &7(Right Click)")
             .addLore("&7Right-click to view the UHC Configuration.")
             .make()
-        p.inventory.setItem(3, config)
-
-        val donator = ItemBuilder(Material.EMERALD)
-            .name("&cDonator Menu &7(Right Click)")
-            .addLore("&7Right-click to view the Donator Menu.")
-            .make()
-        p.inventory.setItem(4, donator)
+        p.inventory.setItem(4, config)
 
         val scenarios = ItemBuilder(Material.CHEST)
             .name("&cActive Scenarios &7(Right Click)")
             .addLore("&7Right-click to view active scenarios.")
             .make()
-        p.inventory.setItem(8, scenarios)
+        p.inventory.setItem(5, scenarios)
         val championsKit = ItemBuilder(Material.NETHER_STAR)
             .name("&cChampions Kit &7(Right Click)")
             .addLore("&7Right-click to view the Champions kit selector.")
@@ -77,7 +71,11 @@ class SpawnFeature : Listener {
         if (ScenarioHandler.getActiveScenarios().contains(ScenarioHandler.getScenario("champions"))) {
             p.inventory.setItem(0, championsKit)
         }
-        val location = if (!ScenarioHandler.getActiveScenarios().contains(ScenarioHandler.getScenario("auction"))) Location(Bukkit.getWorld("Spawn"), -221.5, 95.0, -140.5) else Location(Bukkit.getWorld("Spawn"), -278.0, 96.5, 7.0)
+        val location = if (SettingsFeature.instance.data!!.getDouble("config.location.x") == null) {
+            Location(Bukkit.getWorlds().random(), 0.5, 95.0, 0.5)
+        } else {
+            Location(Bukkit.getWorld(SettingsFeature.instance.data!!.getString("config.location.world")), SettingsFeature.instance.data!!.getDouble("config.location.x"), SettingsFeature.instance.data!!.getDouble("config.location.y"), SettingsFeature.instance.data!!.getDouble("config.location.z"))
+        }
         p.teleport(location)
     }
 
