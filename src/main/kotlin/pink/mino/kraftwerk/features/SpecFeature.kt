@@ -5,7 +5,6 @@ import com.comphenix.protocol.events.ListenerPriority
 import com.comphenix.protocol.events.PacketAdapter
 import com.comphenix.protocol.events.PacketEvent
 import com.lunarclient.bukkitapi.LunarClientAPI
-import me.lucko.helper.Schedulers
 import net.md_5.bungee.api.chat.ClickEvent
 import net.md_5.bungee.api.chat.TextComponent
 import org.bukkit.*
@@ -23,7 +22,10 @@ import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.inventory.InventoryClickEvent
-import org.bukkit.event.player.*
+import org.bukkit.event.player.PlayerDropItemEvent
+import org.bukkit.event.player.PlayerInteractEntityEvent
+import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.event.player.PlayerPickupItemEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.scheduler.BukkitRunnable
@@ -94,7 +96,7 @@ class SpecClickFeature : PacketAdapter(JavaPlugin.getPlugin(Kraftwerk::class.jav
                 when (packet.integers.read(1)) {
                     19 -> {
                         p.teleport(Location(p.world, 0.0, 100.0, 0.0))
-                        Chat.sendMessage(p, "${Chat.prefix} You have been teleported to 0,0.")
+                        Chat.sendMessage(p, "${Chat.dash} You have been teleported to 0,0.")
                     }
                     21 -> {
                         Bukkit.dispatchCommand(p, "nearby")
@@ -107,7 +109,7 @@ class SpecClickFeature : PacketAdapter(JavaPlugin.getPlugin(Kraftwerk::class.jav
                             }
                         }
                         if (list.isEmpty()) {
-                            Chat.sendMessage(p, "${Chat.prefix} There are no players nearby.")
+                            Chat.sendMessage(p, "${Chat.dash} There are no players nearby.")
                             return
                         }
                         Chat.sendMessage(p, Chat.line)
@@ -115,7 +117,7 @@ class SpecClickFeature : PacketAdapter(JavaPlugin.getPlugin(Kraftwerk::class.jav
                         for (player in list) {
                             Chat.sendMessage(
                                 p,
-                                "${Chat.prefix} &7${player.name} &7is at &b${floor(player.location.x)}&7, &b${floor(player.location.y)}&7, &b${
+                                "${Chat.dash} &7${player.name} &7is at &b${floor(player.location.x)}&7, &b${floor(player.location.y)}&7, &b${
                                     floor(player.location.z)
                                 }"
                             )
@@ -189,7 +191,7 @@ class SpecFeature : Listener {
         p.inventory.setItem(23, locations)
         p.inventory.setItem(25, respawn)
 
-        Chat.sendMessage(p, "${Chat.prefix} You are now in spectator mode.")
+        Chat.sendMessage(p, "${Chat.dash} You are now in spectator mode.")
 
         Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
             if (LunarClientAPI.getInstance().isRunningLunarClient(p)) {
@@ -246,7 +248,7 @@ class SpecFeature : Listener {
         p.inventory.setItem(23, locations)
         p.inventory.setItem(25, respawn)
 
-        Chat.sendMessage(p, "${Chat.prefix} You are now in spectator mode.")
+        Chat.sendMessage(p, "${Chat.dash} You are now in spectator mode.")
 
         Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
             if (LunarClientAPI.getInstance().isRunningLunarClient(p)) {
@@ -279,7 +281,7 @@ class SpecFeature : Listener {
         SettingsFeature.instance.saveData()
 
         specChat("&f${p.name}&7 has left spectator mode.", p)
-        Chat.sendMessage(p, "${Chat.prefix} You are no longer in spectator mode.")
+        Chat.sendMessage(p, "${Chat.dash} You are no longer in spectator mode.")
         Scoreboard.setScore(Chat.colored("${Chat.dash} &7Playing..."), PlayerUtils.getPlayingPlayers().size)
 
         Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
@@ -305,7 +307,7 @@ class SpecFeature : Listener {
                 if (p != null && p == player) {
                     continue
                 }
-                Chat.sendMessage(player, "${Chat.prefix} $chat")
+                Chat.sendMessage(player, "${Chat.dash} $chat")
             }
         }
     }
@@ -319,7 +321,7 @@ class SpecFeature : Listener {
                 when (e.currentItem.itemMeta.displayName) {
                     "&cTeleport to 0,0" -> {
                         p.teleport(Location(p.world, 0.0, 100.0, 0.0))
-                        Chat.sendMessage(p, "${Chat.prefix} You have been teleported to 0,0.")
+                        Chat.sendMessage(p, "${Chat.dash} You have been teleported to 0,0.")
                     }
                     "&cNearby Players" -> {
                         Bukkit.dispatchCommand(p, "nearby")
@@ -332,12 +334,12 @@ class SpecFeature : Listener {
                             }
                         }
                         if (list.isEmpty()) {
-                            Chat.sendMessage(p, "${Chat.prefix} There are no players online.")
+                            Chat.sendMessage(p, "${Chat.dash} There are no players online.")
                         }
                         Chat.sendMessage(p, Chat.line)
                         Chat.sendCenteredMessage(p, "&c&lPlayer Locations")
                         for (player in list) {
-                            Chat.sendMessage(p, "${Chat.prefix} &7${player.name} &7is at &b${floor(player.location.x)}, &7${floor(player.location.y)}, &7${floor(player.location.z)}")
+                            Chat.sendMessage(p, "${Chat.dash} &7${player.name} &7is at &b${floor(player.location.x)}, &7${floor(player.location.y)}, &7${floor(player.location.z)}")
                         }
                         Chat.sendMessage(p, Chat.line)
                     }
@@ -366,7 +368,7 @@ class SpecFeature : Listener {
                     }
                     val target = list.random()
                     e.player.teleport(target.location)
-                    Chat.sendMessage(e.player, "${Chat.prefix} Teleported to &f${target.name}&7!")
+                    Chat.sendMessage(e.player, "${Chat.dash} Teleported to &f${target.name}&7!")
                 }
             }
         }

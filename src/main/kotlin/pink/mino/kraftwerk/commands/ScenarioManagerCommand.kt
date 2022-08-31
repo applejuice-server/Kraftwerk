@@ -135,7 +135,7 @@ class ScenarioManagerCommand : CommandExecutor {
             }
         }
         sender.openInventory(gui.make())
-        sender.sendMessage(Chat.colored("${Chat.prefix} Opening scenario manager menu..."))
+        sender.sendMessage(Chat.colored("${Chat.dash} Opening scenario manager menu..."))
         sender.playSound(sender.location, Sound.CLICK, 10.toFloat(), 10.toFloat())
         return true
     }

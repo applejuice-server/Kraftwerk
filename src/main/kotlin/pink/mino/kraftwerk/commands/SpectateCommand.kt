@@ -30,8 +30,13 @@ class SpectateCommand : CommandExecutor {
                 Chat.sendMessage(sender, "&cPlayer not found.")
                 return false
             }
-            SpecFeature.instance.spec(player)
-            Chat.sendMessage(sender, "${Chat.prefix} Set &f${player.name}&7 has been set to Spectator mode.")
+            if (SpecFeature.instance.getSpecs().contains(player.name)) {
+                SpecFeature.instance.unspec(player)
+                Chat.sendMessage(sender, "${Chat.dash} Set &f${player.name}&7 has removed from Spectator mode.")
+            } else {
+                SpecFeature.instance.spec(player)
+                Chat.sendMessage(sender, "${Chat.dash} Set &f${player.name}&7 has been set to Spectator mode.")
+            }
         } else {
             if (SpecFeature.instance.getSpecs().contains(sender.name)) {
                 SpecFeature.instance.unspec(sender)

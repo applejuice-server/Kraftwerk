@@ -26,7 +26,7 @@ class EditConfigCommand : CommandExecutor {
     ): Boolean {
         if (sender is Player) {
             if (!sender.hasPermission("uhc.staff")) {
-                Chat.sendMessage(sender, "${Chat.prefix} &cYou don't have permission to use this command.")
+                Chat.sendMessage(sender, "&cYou don't have permission to use this command.")
                 return false
             }
         }

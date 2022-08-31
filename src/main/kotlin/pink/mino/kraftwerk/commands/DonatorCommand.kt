@@ -55,16 +55,6 @@ class DonatorCommand : CommandExecutor {
                         it.isCancelled = true
                     }
                 }
-                Perk.MOB_EGGS -> {
-                    val item = ItemBuilder(Material.EGG)
-                        .name("&2&lMob Eggs")
-                        .addLore("&7You are provided with an egg that spawns a random mob when tossed, how fun!")
-                        .addLore("&8Automatic")
-                        .make()
-                    gui.item(index, item).onClick runnable@ {
-                        it.isCancelled = true
-                    }
-                }
                 Perk.PROJECTILE_PARTICLES -> {
                     val item = ItemBuilder(Material.ARROW)
                         .name("&2&lArrow Trails")

@@ -47,23 +47,28 @@ class SpawnFeature : Listener {
             .name("&cView Stats &7(Right Click)")
             .addLore("&7Right-click to view your stats.")
             .make()
-        p.inventory.setItem(3, stats)
+        p.inventory.setItem(5, stats)
 
         val config = ItemBuilder(Material.GOLDEN_APPLE)
             .name("&cUHC Configuration &7(Right Click)")
             .addLore("&7Right-click to view the UHC Configuration.")
             .make()
-        p.inventory.setItem(4, config)
+        p.inventory.setItem(3, config)
 
         val scenarios = ItemBuilder(Material.CHEST)
             .name("&cActive Scenarios &7(Right Click)")
             .addLore("&7Right-click to view active scenarios.")
             .make()
-        p.inventory.setItem(5, scenarios)
+        p.inventory.setItem(8, scenarios)
         val championsKit = ItemBuilder(Material.NETHER_STAR)
             .name("&cChampions Kit &7(Right Click)")
             .addLore("&7Right-click to view the Champions kit selector.")
             .make()
+        val arenaSword = ItemBuilder(Material.IRON_SWORD)
+            .name("&cFFA Arena &7(Right Click)")
+            .addLore("&7Right-click to join the FFA Arena.")
+            .make()
+        p.inventory.setItem(4, arenaSword)
 
         if (ScenarioHandler.getActiveScenarios().contains(ScenarioHandler.getScenario("auction"))) {
             p.inventory.clear()
@@ -74,7 +79,14 @@ class SpawnFeature : Listener {
         val location = if (SettingsFeature.instance.data!!.getDouble("config.location.x") == null) {
             Location(Bukkit.getWorlds().random(), 0.5, 95.0, 0.5)
         } else {
-            Location(Bukkit.getWorld(SettingsFeature.instance.data!!.getString("config.location.world")), SettingsFeature.instance.data!!.getDouble("config.location.x"), SettingsFeature.instance.data!!.getDouble("config.location.y"), SettingsFeature.instance.data!!.getDouble("config.location.z"))
+            Location(
+                Bukkit.getWorld(SettingsFeature.instance.data!!.getString("config.spawn.world")),
+                SettingsFeature.instance.data!!.getDouble("config.spawn.x"),
+                SettingsFeature.instance.data!!.getDouble("config.spawn.y"),
+                SettingsFeature.instance.data!!.getDouble("config.spawn.z"),
+                SettingsFeature.instance.data!!.getDouble("config.spawn.yaw").toFloat(),
+                SettingsFeature.instance.data!!.getDouble("config.spawn.pitch").toFloat()
+            )
         }
         p.teleport(location)
     }
@@ -102,6 +114,10 @@ class SpawnFeature : Listener {
                     Chat.colored("&cActive Scenarios &7(Right Click)") -> {
                         e.isCancelled = true
                         Bukkit.dispatchCommand(e.player, "scen")
+                    }
+                    Chat.colored("&cFFA Arena &7(Right Click)") -> {
+                        e.isCancelled = true
+                        Bukkit.dispatchCommand(e.player, "a")
                     }
                     Chat.colored("&cDonator Menu &7(Right Click)") -> {
                         e.isCancelled = true

@@ -34,7 +34,7 @@ class VoteYesCommand : CommandExecutor {
         }
         JavaPlugin.getPlugin(Kraftwerk::class.java).vote!!.yes += 1
         JavaPlugin.getPlugin(Kraftwerk::class.java).vote!!.voted.add(player)
-        Chat.sendMessage(sender, "${Chat.prefix} Successfully voted &ayes&7 on the current poll.")
+        Chat.sendMessage(sender, "${Chat.dash} Successfully voted &ayes&7 on the current poll.")
         return true
     }
 }

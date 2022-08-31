@@ -22,18 +22,18 @@ class MolesListCommand : CommandExecutor {
             return false
         }
         if (!ScenarioHandler.getActiveScenarios().contains(ScenarioHandler.getScenario("moles"))) {
-            Chat.sendMessage(sender, "${Chat.prefix} &cMoles&7 isn't enabled!")
+            Chat.sendMessage(sender, "${Chat.dash} &cMoles&7 isn't enabled!")
             return false
         }
         if (GameState.currentState != GameState.INGAME) {
-            Chat.sendMessage(sender, "${Chat.prefix} &cMoles&7 isn't available right now!")
+            Chat.sendMessage(sender, "${Chat.dash} &cMoles&7 isn't available right now!")
             return false
         }
         if (MolesScenario.instance.moles[sender.uniqueId] == null && !SpecFeature.instance.getSpecs().contains(sender.name)) {
-            Chat.sendMessage(sender, "${Chat.prefix} &7You aren't a mole or a Spectator!")
+            Chat.sendMessage(sender, "${Chat.dash} &7You aren't a mole or a Spectator!")
             return false
         }
-        Chat.sendMessage(sender, "${Chat.prefix} Moles list: ${MolesScenario.instance.getMoles().joinToString(", ")}")
+        Chat.sendMessage(sender, "${Chat.dash} Moles list: ${MolesScenario.instance.getMoles().joinToString(", ")}")
         return true
     }
 }

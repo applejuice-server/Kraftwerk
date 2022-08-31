@@ -27,23 +27,23 @@ class ForceCommand : CommandExecutor {
             return false
         }
         if (args.isEmpty()) {
-            Chat.sendMessage(sender, "${Chat.prefix} Invalid usage: &f/force <start/fh/pvp/meetup>&7.")
+            Chat.sendMessage(sender, "${Chat.dash} Invalid usage: &f/force <start/fh/pvp/meetup>&7.")
             return false
         }
         if (args[0] == "start") {
             JavaPlugin.getPlugin(Kraftwerk::class.java).game!!.timer = 45
-            Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} &f${sender.name}&7 has forced &eGame Start&7."))
+            Bukkit.broadcastMessage(Chat.colored("${Chat.dash} &f${sender.name}&7 has forced &eGame Start&7."))
         } else if (args[0] == "fh") {
             JavaPlugin.getPlugin(Kraftwerk::class.java).game!!.timer = JavaPlugin.getPlugin(Kraftwerk::class.java).game!!.finalHeal
-            Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} &f${sender.name}&7 has forced &eFinal Heal&7."))
+            Bukkit.broadcastMessage(Chat.colored("${Chat.dash} &f${sender.name}&7 has forced &eFinal Heal&7."))
         } else if (args[0] == "pvp") {
             JavaPlugin.getPlugin(Kraftwerk::class.java).game!!.timer = JavaPlugin.getPlugin(Kraftwerk::class.java).game!!.pvp
-            Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} &f${sender.name}&7 has forced &ePvP&7."))
+            Bukkit.broadcastMessage(Chat.colored("${Chat.dash} &f${sender.name}&7 has forced &ePvP&7."))
         } else if (args[0] == "meetup") {
             JavaPlugin.getPlugin(Kraftwerk::class.java).game!!.timer = JavaPlugin.getPlugin(Kraftwerk::class.java).game!!.meetup
-            Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} &f${sender.name}&7 has forced &eMeetup&7."))
+            Bukkit.broadcastMessage(Chat.colored("${Chat.dash} &f${sender.name}&7 has forced &eMeetup&7."))
         } else {
-            Chat.sendMessage(sender, "${Chat.prefix} Invalid usage: &f/force <start/fh/pvp/meetup>&7.")
+            Chat.sendMessage(sender, "${Chat.dash} Invalid usage: &f/force <start/fh/pvp/meetup>&7.")
             return false
         }
         return true

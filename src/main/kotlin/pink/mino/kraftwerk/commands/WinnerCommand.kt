@@ -18,7 +18,7 @@ class WinnerCommand : CommandExecutor {
     ): Boolean {
         if (sender is Player) {
             if (!sender.hasPermission("uhc.staff.winner")) {
-                Chat.sendMessage(sender, "${Chat.prefix} &cYou don't have permission to use this command.")
+                Chat.sendMessage(sender, "&cYou don't have permission to use this command.")
                 return false
             }
         }
@@ -33,9 +33,9 @@ class WinnerCommand : CommandExecutor {
         }
         if (args.isEmpty()) {
             if (winners.isEmpty()) {
-                Chat.sendMessage(sender, "${Chat.prefix} There's no winners at the moment.")
+                Chat.sendMessage(sender, "${Chat.dash} There's no winners at the moment.")
             } else {
-                Chat.sendMessage(sender, "${Chat.prefix} Winners: &f${winners.joinToString(", ")}")
+                Chat.sendMessage(sender, "${Chat.dash} Winners: &f${winners.joinToString(", ")}")
             }
             return false
         }
@@ -50,7 +50,7 @@ class WinnerCommand : CommandExecutor {
                 SettingsFeature.instance.data!!.set("game.winners", winners)
                 Chat.sendMessage(
                     sender,
-                    "${Chat.prefix} &f${player.name}&7 has been removed from the winner list.\n&7New list: &f${
+                    "${Chat.dash} &f${player.name}&7 has been removed from the winner list.\n&7New list: &f${
                         winners.joinToString(", ")
                     }"
                 )
@@ -59,7 +59,7 @@ class WinnerCommand : CommandExecutor {
                 SettingsFeature.instance.data!!.set("game.winners", winners)
                 Chat.sendMessage(
                     sender,
-                    "${Chat.prefix} &f${player.name}&7 has been added to the winner list.\n&7New list: &f${
+                    "${Chat.dash} &f${player.name}&7 has been added to the winner list.\n&7New list: &f${
                         winners.joinToString(", ")
                     }"
                 )

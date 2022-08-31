@@ -10,6 +10,7 @@ import me.lucko.helper.profiles.ProfileRepository
 import me.lucko.helper.utils.Log
 import me.lucko.spark.api.Spark
 import net.dv8tion.jda.api.JDA
+import net.dv8tion.jda.api.entities.Activity
 import org.bukkit.*
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.ShapedRecipe
@@ -47,6 +48,7 @@ class Kraftwerk : ExtendedJavaPlugin() {
     var game: UHCTask? = null
     var database: Boolean = false
     var discord: Boolean = false
+    var arena: Boolean = true
 
     val fullbright: MutableSet<String> = mutableSetOf()
 
@@ -103,7 +105,7 @@ class Kraftwerk : ExtendedJavaPlugin() {
         /* Donator Listeners */
         Bukkit.getServer().pluginManager.registerEvents(MobEggsListener(), this)
         Bukkit.getServer().pluginManager.registerEvents(CowboyFeature(), this)
-        //Bukkit.getServer().pluginManager.registerEvents(PregenFeature(), this)
+        Bukkit.getServer().pluginManager.registerEvents(ArenaFeature(), this)
 
         /* Registering commands */
         getCommand("clear").executor = ClearInventoryCommand()
@@ -176,11 +178,12 @@ class Kraftwerk : ExtendedJavaPlugin() {
         getCommand("ping").executor = PingCommand()
         getCommand("voteyes").executor = VoteYesCommand()
         getCommand("voteno").executor = VoteNoCommand()
-        getCommand("donator").executor = DonatorCommand()
+        //getCommand("donator").executor = DonatorCommand()
         getCommand("lapis").executor = LapisCommand()
         getCommand("redstone").executor = RedstoneCommand()
         getCommand("fullbright").executor = FullbrightCommand()
         getCommand("timers").executor = TimersCommand()
+        getCommand("arena").executor = ArenaCommand()
         //getCommand("hotbar").executor = HotbarCommand()
 
         /* ProtocolLib stuff */
@@ -225,11 +228,19 @@ class Kraftwerk : ExtendedJavaPlugin() {
             Log.severe("Failed to login to discord: " + e.message)
         }
 
+        if (!SettingsFeature.instance.data!!.getBoolean("matchpost.posted")) SettingsFeature.instance.data!!.set("whitelist.requests", false)
+        SettingsFeature.instance.saveData()
         if (!SettingsFeature.instance.data!!.getBoolean("matchpost.cancelled")) {
             if (SettingsFeature.instance.data!!.getString("matchpost.opens") != null) {
-                ScheduleOpening(SettingsFeature.instance.data!!.getString("matchpost.opens")).runTaskTimer(this, 0L, (5 * 20).toLong())
+                ScheduleBroadcast(SettingsFeature.instance.data!!.getString("matchpost.opens")).runTaskTimer(this, 0L, 300L)
+                ScheduleOpening(SettingsFeature.instance.data!!.getString("matchpost.opens")).runTaskTimer(this, 0L, 300L)
             }
+            if (SettingsFeature.instance.data!!.getString("matchpost.host") == null) {
+                Discord.instance!!.presence.activity = Activity.playing("uhc.applejuice.bar")
+            }
+            else Discord.instance!!.presence.activity = Activity.playing(SettingsFeature.instance.data!!.getString("matchpost.host"))
         } else {
+            Discord.instance!!.presence.activity = Activity.playing("uhc.applejuice.bar")
             SettingsFeature.instance.data!!.set("matchpost.cancelled", null)
             SettingsFeature.instance.saveData()
         }

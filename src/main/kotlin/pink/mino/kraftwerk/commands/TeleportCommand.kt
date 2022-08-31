@@ -21,23 +21,23 @@ class TeleportCommand : CommandExecutor {
             }
         }
         if (args.isEmpty()) {
-            Chat.sendMessage(sender, "${Chat.prefix} Invalid usage: &f/tp <player> [player]")
+            Chat.sendMessage(sender, "${Chat.dash} Invalid usage: &f/tp <player> [player]")
             return false
         }
         val target = Bukkit.getPlayer(args[0])
         if (target == null) {
-            Chat.sendMessage(sender, "${Chat.prefix} Invalid usage: &f/tp <player> [player]")
+            Chat.sendMessage(sender, "${Chat.dash} Invalid usage: &f/tp <player> [player]")
             return false
         }
         when (args.size) {
             2 -> {
                 val destination = Bukkit.getPlayer(args[1])
                 if (destination == null) {
-                    Chat.sendMessage(sender, "${Chat.prefix} Invalid usage: &f/tp <player> [player]")
+                    Chat.sendMessage(sender, "${Chat.dash} Invalid usage: &f/tp <player> [player]")
                     return false
                 }
                 target.teleport(destination.location)
-                Chat.sendMessage(target, "${Chat.prefix} Teleported to &f${destination.name}&7.")
+                Chat.sendMessage(target, "${Chat.dash} Teleported to &f${destination.name}&7.")
             }
             1 -> {
                 if (sender !is Player) {
@@ -45,7 +45,7 @@ class TeleportCommand : CommandExecutor {
                     return false
                 }
                 sender.teleport(target.location)
-                Chat.sendMessage(sender, "${Chat.prefix} Teleported to &f${target.name}&7.")
+                Chat.sendMessage(sender, "${Chat.dash} Teleported to &f${target.name}&7.")
             }
             else -> {
                 Chat.sendMessage(sender, "&c???")

@@ -17,7 +17,7 @@ class PregenActionBarFeature : BukkitRunnable() {
                 ActionBar.sendActionBarMessage(player, ChatColor.translateAlternateColorCodes('&', "${Chat.prefix} &7Progress: &c${rounded}% &8| &7World: &8'&c${Config.fillTask.refWorld()}&8'"))
             }
         } else {
-            Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "${Chat.prefix} &7Pregeneration is now finished."))
+            Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "${Chat.dash} &7Pregeneration is now finished."))
             cancel()
         }
     }

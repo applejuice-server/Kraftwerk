@@ -3,6 +3,7 @@ package pink.mino.kraftwerk.commands
 import com.mongodb.MongoException
 import com.mongodb.client.model.Filters
 import com.mongodb.client.model.FindOneAndReplaceOptions
+import me.lucko.helper.utils.Log
 import net.dv8tion.jda.api.EmbedBuilder
 import org.bson.Document
 import org.bukkit.Bukkit
@@ -35,12 +36,12 @@ class EndGameCommand : CommandExecutor {
     ): Boolean {
         if (sender is Player) {
             if (!sender.hasPermission("uhc.staff")) {
-                Chat.sendMessage(sender, "${Chat.prefix} &cYou don't have permission to use this command.")
+                Chat.sendMessage(sender, "&cYou don't have permission to use this command.")
                 return false
             }
         }
         if (GameState.currentState != GameState.INGAME) {
-            Chat.sendMessage(sender, "&cYou can't do this right now.")
+            Chat.sendMessage(sender, "&cYou can't do this right now, there isn't a game started.")
             return false
         }
         val winners = SettingsFeature.instance.data!!.getStringList("game.winners")
@@ -106,7 +107,7 @@ class EndGameCommand : CommandExecutor {
                 }
             }
         } catch (e: MongoException) {
-            Chat.sendMessage(sender, "${Chat.prefix} ${ChatColor.RED}An error occurred while ending the game and updating the matchpost (opened).")
+            Chat.sendMessage(sender, "${ChatColor.RED}An error occurred while ending the game and updating the matchpost (opened).")
             e.printStackTrace()
         }
         val embed = EmbedBuilder()
@@ -156,7 +157,7 @@ class EndGameCommand : CommandExecutor {
             if (file.name.lowercase() == world.name.lowercase()) {
                 Files.walk(file.toPath()).sorted(Comparator.reverseOrder()).map(Path::toFile).forEach { it.delete() }
                 file.delete()
-                print("Deleted world file for ${world.name}.")
+                Log.info("Deleted world file for ${world.name}.")
             }
         }
         SettingsFeature.instance.data!!.set("pregen.world", null)

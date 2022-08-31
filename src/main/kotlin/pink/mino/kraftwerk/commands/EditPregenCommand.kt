@@ -19,20 +19,20 @@ class EditPregenCommand : CommandExecutor {
     ): Boolean {
         if (sender is Player) {
             if (!sender.hasPermission("uhc.staff.pregen")) {
-                Chat.sendMessage(sender, "${Chat.prefix} ${ChatColor.RED}You don't have permission to use this command.")
+                Chat.sendMessage(sender, "${ChatColor.RED}You don't have permission to use this command.")
                 return false
             }
         } else {
-            Chat.sendMessage(sender, "${Chat.prefix} ${ChatColor.RED}You must be a player to use this command.")
+            Chat.sendMessage(sender, "${ChatColor.RED}You must be a player to use this command.")
             return false
         }
         if (args.isEmpty()) {
-            Chat.sendMessage(sender, "${Chat.prefix} &7Usage: &f/editpregen <border/generation/settings>&7.")
+            Chat.sendMessage(sender, "${Chat.dash} &7Usage: &f/editpregen <border/generation/settings>&7.")
             return false
         }
         val pregenConfig = PregenConfigHandler.getConfig(sender as OfflinePlayer)
         if (pregenConfig == null) {
-            Chat.sendMessage(sender, "${Chat.prefix} &7You don't have a pregeneration configuration set up yet.")
+            Chat.sendMessage(sender, "${Chat.dash} &7You don't have a pregeneration configuration set up yet.")
             return false
         }
         val gui = GuiBuilder().rows(1).name(ChatColor.translateAlternateColorCodes('&', "&4Edit Pregen Config")).owner(sender)
@@ -86,7 +86,7 @@ class EditPregenCommand : CommandExecutor {
                 val meta = it.currentItem.itemMeta
                 meta.displayName = Chat.colored("&7World Environment: &c${pregenConfig.type}")
                 it.currentItem.itemMeta = meta
-                Chat.sendMessage(sender, "${Chat.prefix} &7World environment set to &c${pregenConfig.type.name.uppercase()}&7.")
+                Chat.sendMessage(sender, "${Chat.dash} &7World environment set to &c${pregenConfig.type.name.uppercase()}&7.")
             }
             val generator = ItemBuilder(Material.DIAMOND_BLOCK)
                 .name("&7Generator: &c${pregenConfig.generator}")
@@ -108,7 +108,7 @@ class EditPregenCommand : CommandExecutor {
                 val meta = it.currentItem.itemMeta
                 meta.displayName = Chat.colored("&7Generator: &c${pregenConfig.generator}")
                 it.currentItem.itemMeta = meta
-                Chat.sendMessage(sender, "${Chat.prefix} &7Generator set to &c${pregenConfig.generator.name.uppercase()}&7.")
+                Chat.sendMessage(sender, "${Chat.dash} &7Generator set to &c${pregenConfig.generator.name.uppercase()}&7.")
             }
         } else if (args[0] == "settings") {
             val clearTrees = ItemBuilder(Material.LEAVES)
@@ -155,7 +155,7 @@ class EditPregenCommand : CommandExecutor {
                 val meta = it.currentItem.itemMeta
                 meta.displayName = Chat.colored("&7Clear Trees: &c${pregenConfig.clearTrees}")
                 it.currentItem.itemMeta = meta
-                Chat.sendMessage(sender, "${Chat.prefix} &7Clear trees set to &c${pregenConfig.clearTrees}&7.")
+                Chat.sendMessage(sender, "${Chat.dash} &7Clear trees set to &c${pregenConfig.clearTrees}&7.")
             }
             gui.item(3, clearWater).onClick {
                 it.isCancelled = true
@@ -163,7 +163,7 @@ class EditPregenCommand : CommandExecutor {
                 val meta = it.currentItem.itemMeta
                 meta.displayName = Chat.colored("&7Clear Water: &c${pregenConfig.clearWater}")
                 it.currentItem.itemMeta = meta
-                Chat.sendMessage(sender, "${Chat.prefix} &7Clear water set to &c${pregenConfig.clearWater}&7.")
+                Chat.sendMessage(sender, "${Chat.dash} &7Clear water set to &c${pregenConfig.clearWater}&7.")
             }
             gui.item(4, diaRates).onClick {
                 it.isCancelled = true

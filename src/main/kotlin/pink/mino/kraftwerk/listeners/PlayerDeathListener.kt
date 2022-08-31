@@ -24,7 +24,7 @@ class PlayerDeathListener : Listener {
             val player = e.entity as Player
             val old = e.deathMessage
             player.world.strikeLightningEffect(player.location)
-            e.deathMessage = ChatColor.translateAlternateColorCodes('&', "&8»&f $old &8«")
+            e.deathMessage = ChatColor.translateAlternateColorCodes('&', "&8»&f $old")
             if (player.world.name == "Arena") {
                 e.deathMessage = null
             }
@@ -68,7 +68,7 @@ class PlayerDeathListener : Listener {
                 val killer = e.entity.killer
                 val npc = CitizensAPI.getNPCRegistry().getNPC(e.entity)
                 e.deathMessage =
-                    ChatColor.translateAlternateColorCodes('&', "&8»&f ${killer.name} has killed ${npc.name} &8«")
+                    ChatColor.translateAlternateColorCodes('&', "&8»&f ${killer.name} has killed ${npc.name}")
                 if (killer != null) {
                     val o = SettingsFeature.instance.data!!.getInt("game.kills.${killer.name}")
                     SettingsFeature.instance.data!!.set("game.kills.${killer.name}", o + 1)

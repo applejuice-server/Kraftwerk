@@ -23,34 +23,34 @@ class TeamInventoryCommand : CommandExecutor {
             return false
         }
         if (!ScenarioHandler.getScenario("teaminventory")!!.enabled) {
-            Chat.sendMessage(sender, "${Chat.prefix} &cTeam Inventory&7 isn't enabled at the moment.")
+            Chat.sendMessage(sender, "${Chat.dash} &cTeam Inventory&7 isn't enabled at the moment.")
             return false
         }
         if (GameState.currentState != GameState.INGAME) {
-            Chat.sendMessage(sender, "${Chat.prefix} &cTeam Inventory&7 cannot be used at the moment.")
+            Chat.sendMessage(sender, "${Chat.dash} &cTeam Inventory&7 cannot be used at the moment.")
             return false
         }
 
         val team = TeamsFeature.manager.getTeam(sender)
         if (team == null) { // Solo
             if (TeamInventoryScenario.instance.soloInventories!!.containsKey(sender.uniqueId)) {
-                Chat.sendMessage(sender, "${Chat.prefix} Opening your team inventory...")
+                Chat.sendMessage(sender, "${Chat.dash} Opening your team inventory...")
                 sender.openInventory(TeamInventoryScenario.instance.soloInventories!![sender.uniqueId])
                 return true
             }
             TeamInventoryScenario.instance.soloInventories!![sender.uniqueId] = Bukkit.createInventory(null, 27, "${sender.name}'s Inventory")
-            Chat.sendMessage(sender, "${Chat.prefix} Opening your team inventory...")
+            Chat.sendMessage(sender, "${Chat.dash} Opening your team inventory...")
             sender.openInventory(TeamInventoryScenario.instance.soloInventories!![sender.uniqueId])
             return true
         } else { // In a team
             if (TeamInventoryScenario.instance.teamInventories!!.containsKey(team)) {
-                Chat.sendMessage(sender, "${Chat.prefix} Opening your team inventory...")
+                Chat.sendMessage(sender, "${Chat.dash} Opening your team inventory...")
                 sender.openInventory(TeamInventoryScenario.instance.teamInventories!![team])
                 return true
             }
 
             TeamInventoryScenario.instance.teamInventories!![team] = Bukkit.createInventory(null, 27, "${team.prefix}${team.name}'s Inventory")
-            Chat.sendMessage(sender, "${Chat.prefix} Opening your team inventory...")
+            Chat.sendMessage(sender, "${Chat.dash} Opening your team inventory...")
             sender.openInventory(TeamInventoryScenario.instance.soloInventories!![sender.uniqueId])
             return true
         }
