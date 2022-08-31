@@ -25,11 +25,11 @@ class BorderCommand : CommandExecutor {
             }
         }
         if (args.isEmpty()) {
-            Chat.sendMessage(sender, "${Chat.prefix} Invalid usage: &f/border <radius>&7.")
+            Chat.sendMessage(sender, "${Chat.dash} Invalid usage: &f/border <radius>&7.")
             return false
         }
         if (args[0].toIntOrNull() == null) {
-            Chat.sendMessage(sender, "${Chat.prefix} Invalid border size: &f/border <radius>&7.")
+            Chat.sendMessage(sender, "${Chat.dash} Invalid border size: &f/border <radius>&7.")
             return false
         }
         Bukkit.dispatchCommand(
@@ -44,7 +44,7 @@ class BorderCommand : CommandExecutor {
         SettingsFeature.instance.data!!.set("pregen.border", args[0].toInt())
         SettingsFeature.instance.saveData()
         if (sender !is ConsoleCommandSender) {
-            Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} The world border has been set to &f${args[0]}x${args[0]}&7."))
+            Bukkit.broadcastMessage(Chat.colored("${Chat.dash} The world border has been set to &f${args[0]}x${args[0]}&7."))
         }
         return true
     }

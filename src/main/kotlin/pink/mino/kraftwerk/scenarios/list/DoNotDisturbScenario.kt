@@ -9,6 +9,7 @@ import org.bukkit.scheduler.BukkitRunnable
 import pink.mino.kraftwerk.Kraftwerk
 import pink.mino.kraftwerk.scenarios.Scenario
 import pink.mino.kraftwerk.utils.Chat
+import pink.mino.kraftwerk.utils.GameState
 import java.util.*
 
 
@@ -22,6 +23,8 @@ class DoNotDisturbScenario : Scenario(
 
     @EventHandler
     fun onEntityDamageByEntity(event: EntityDamageByEntityEvent) {
+        if (!enabled) return
+        if (GameState.currentState != GameState.INGAME) return
         if (event.entity !is Player) return
         if (event.damager !is Player) return
         val player = event.entity as Player

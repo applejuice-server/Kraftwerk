@@ -73,7 +73,7 @@ class ConfigCommand : CommandExecutor {
         }
         val gui = GuiBuilder().rows(3).name(ChatColor.translateAlternateColorCodes('&', "&4UHC Config")).owner(sender)
 
-        sender.sendMessage(Chat.colored("${Chat.prefix} Opening the UHC configuration..."))
+        sender.sendMessage(Chat.colored("${Chat.dash} Opening the UHC configuration..."))
         val options = ItemBuilder(Material.LAVA_BUCKET)
             .name(" &4&lGeneral Settings ")
             .addLore(" ")

@@ -28,7 +28,7 @@ class PingCommand : CommandExecutor {
             Chat.sendMessage(sender, "&cInvalid player!")
         }
         val ping = (player as CraftPlayer).handle.ping
-        Chat.sendMessage(sender, "${Chat.prefix} &f${player.name}'s&7 ping is &f${ping}ms&7.")
+        Chat.sendMessage(sender, "${Chat.dash} &f${player.name}'s&7 ping is &f${ping}ms&7.")
         return true
     }
 }

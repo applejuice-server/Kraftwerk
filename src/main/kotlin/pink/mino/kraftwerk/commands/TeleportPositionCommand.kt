@@ -23,11 +23,11 @@ class TeleportPositionCommand : CommandExecutor {
             return false
         }
         if (args.isEmpty()) {
-            Chat.sendMessage(sender, "${Chat.prefix} Invalid usage: &f/tppos <x> <y> <z>&7.")
+            Chat.sendMessage(sender, "${Chat.dash} Invalid usage: &f/tppos <x> <y> <z>&7.")
             return false
         }
         if (args.size != 3) {
-            Chat.sendMessage(sender, "${Chat.prefix} Invalid usage: &f/tppos <x> <y> <z>&7.")
+            Chat.sendMessage(sender, "${Chat.dash} Invalid usage: &f/tppos <x> <y> <z>&7.")
             return false
         }
         if (
@@ -35,12 +35,12 @@ class TeleportPositionCommand : CommandExecutor {
             args[1].toDoubleOrNull() == null ||
             args[2].toDoubleOrNull() == null
         ) {
-            Chat.sendMessage(sender, "${Chat.prefix} Invalid usage: &f/tppos <x> <y> <z>&7.")
+            Chat.sendMessage(sender, "${Chat.dash} Invalid usage: &f/tppos <x> <y> <z>&7.")
             return false
         }
         val location = Location(sender.world, args[0].toDouble(), args[1].toDouble(), args[2].toDouble())
         sender.teleport(location)
-        Chat.sendMessage(sender, "${Chat.prefix} Teleported to &f${args[0]}&7, &f${args[1]}&7, &f${args[2]}&7.")
+        Chat.sendMessage(sender, "${Chat.dash} Teleported to &f${args[0]}&7, &f${args[1]}&7, &f${args[2]}&7.")
         return true
     }
 }

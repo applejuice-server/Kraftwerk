@@ -12,7 +12,7 @@ class DiscordCommand : CommandExecutor {
         label: String?,
         args: Array<String>
     ): Boolean {
-        sender.sendMessage(Chat.colored("${Chat.prefix} The discord URL is: &chttps://discord.gg/X7ujJThANP"))
+        sender.sendMessage(Chat.colored("${Chat.dash} The discord URL is: &chttps://discord.gg/X7ujJThANP"))
         return false
     }
 }

@@ -49,7 +49,7 @@ class GenerateCommand : CommandExecutor {
     ): Boolean {
         if (sender is Player) {
             if (!sender.hasPermission("uhc.staff.generate")) {
-                Chat.sendMessage(sender, "${Chat.prefix} &cYou don't have permission to use this command.")
+                Chat.sendMessage(sender, "&cYou don't have permission to use this command.")
                 return false
             }
         }
@@ -61,7 +61,7 @@ class GenerateCommand : CommandExecutor {
             Chat.sendMessage(sender, "&cThere are no generation-based scenarios currently enabled.")
             return false
         }
-        Chat.sendMessage(sender, "${Chat.prefix} Starting generate task...")
+        Chat.sendMessage(sender, "${Chat.dash} Starting generate task...")
         val world = (sender as Player).world
         if (world.name == "Spawn" || world.name == "Arena") {
             Chat.sendMessage(sender, "&cYou cannot use this command in spawn or arena.")
@@ -75,7 +75,7 @@ class GenerateCommand : CommandExecutor {
                 chunks.add(location)
             }
         }
-        Chat.sendMessage(sender, "${Chat.prefix} &7Generating &f${chunks.size}&7 chunks...")
+        Chat.sendMessage(sender, "${Chat.dash} &7Generating &f${chunks.size}&7 chunks...")
         GenerateTask(world, chunks).runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 1L)
         return true
     }

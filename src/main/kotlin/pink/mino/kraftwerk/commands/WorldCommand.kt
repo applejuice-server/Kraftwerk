@@ -26,7 +26,7 @@ class WorldCommand : CommandExecutor {
     ): Boolean {
         if (sender is Player) {
             if (!sender.hasPermission("uhc.staff.whitelist")) {
-                sender.sendMessage(Chat.colored("${Chat.prefix} You do not have permission to use this command."))
+                sender.sendMessage(Chat.colored("${Chat.dash} You do not have permission to use this command."))
                 return false
             }
         }
@@ -34,10 +34,10 @@ class WorldCommand : CommandExecutor {
         if (args.isEmpty()) {
             Chat.sendMessage(player, Chat.line)
             Chat.sendCenteredMessage(player, "&c&lWorld Help")
-            Chat.sendMessage(player, "${Chat.prefix} &f/world tp <world> &8- &7Teleport to the provided world.")
-            Chat.sendMessage(player, "${Chat.prefix} &f/world list &8- &7List all worlds.")
-            Chat.sendMessage(player, "${Chat.prefix} &f/world worlds &8- &7List all UHC worlds.")
-            Chat.sendMessage(player, "${Chat.prefix} &f/world delete <world> &8- &7Deletes the provided world.")
+            Chat.sendMessage(player, "${Chat.dash} &f/world tp <world> &8- &7Teleport to the provided world.")
+            Chat.sendMessage(player, "${Chat.dash} &f/world list &8- &7List all worlds.")
+            Chat.sendMessage(player, "${Chat.dash} &f/world worlds &8- &7List all UHC worlds.")
+            Chat.sendMessage(player, "${Chat.dash} &f/world delete <world> &8- &7Deletes the provided world.")
             Chat.sendMessage(player, Chat.line)
             return false
         } else if (args[0].lowercase() == "list") {
@@ -68,7 +68,7 @@ class WorldCommand : CommandExecutor {
             }
             val world = Bukkit.getWorld(args[1])
             player.teleport(world.spawnLocation)
-            Chat.sendMessage(player, "${Chat.prefix} Teleported to &c${world.name}&7's spawn.")
+            Chat.sendMessage(player, "${Chat.dash} Teleported to &c${world.name}&7's spawn.")
         } else if (args[0].lowercase() == "worlds") {
             val gui = GuiBuilder().name("&c&lWorlds").rows(4)
             for ((index, world) in Bukkit.getServer().worlds.withIndex()) {
@@ -108,11 +108,11 @@ class WorldCommand : CommandExecutor {
                     it.isCancelled = true
                     if (it.isLeftClick) {
                         sender.teleport(world.spawnLocation)
-                        Chat.sendMessage(sender, "${Chat.prefix} Teleported to &c${world.name}&7's spawn.")
+                        Chat.sendMessage(sender, "${Chat.dash} Teleported to &c${world.name}&7's spawn.")
                     } else if (it.isRightClick) {
                         SettingsFeature.instance.data!!.set("pregen.world", world.name)
                         SettingsFeature.instance.data!!.set("pregen.border", world.worldBorder.size / 2)
-                        Chat.sendMessage(sender, "${Chat.prefix} Set &c${world.name}&7 as the current UHC world.")
+                        Chat.sendMessage(sender, "${Chat.dash} Set &c${world.name}&7 as the current UHC world.")
                     }
                     SettingsFeature.instance.saveData()
                 }
@@ -120,7 +120,7 @@ class WorldCommand : CommandExecutor {
             sender.openInventory(gui.make())
         } else if (args[0] == "delete") {
             if (args.size < 2) {
-                Chat.sendMessage(sender, "${Chat.prefix} &7Usage: &f/world delete <world>")
+                Chat.sendMessage(sender, "${Chat.dash} &7Usage: &f/world delete <world>")
                 return false
             }
             val world = Bukkit.getWorld(args[1])
@@ -147,7 +147,7 @@ class WorldCommand : CommandExecutor {
             }
             SettingsFeature.instance.worlds!!.set(world.name, null)
             SettingsFeature.instance.saveWorlds()
-            Chat.sendMessage(sender, "${Chat.prefix} &7Successfully deleted &f${world.name}&7.")
+            Chat.sendMessage(sender, "${Chat.dash} &7Successfully deleted &f${world.name}&7.")
         }
 
         return true

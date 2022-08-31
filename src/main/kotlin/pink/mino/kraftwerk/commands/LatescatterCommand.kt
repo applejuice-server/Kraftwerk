@@ -29,7 +29,7 @@ class LatescatterCommand : CommandExecutor {
     ): Boolean {
         if (sender is Player) {
             if (!sender.hasPermission("uhc.staff.ls")) {
-                Chat.sendMessage(sender, "${Chat.prefix} ${ChatColor.RED}You don't have permission to use this command.")
+                Chat.sendMessage(sender, "${ChatColor.RED}You don't have permission to use this command.")
                 return false
             }
         }
@@ -38,7 +38,7 @@ class LatescatterCommand : CommandExecutor {
             return false
         }
         if (args.isEmpty()) {
-            Chat.sendMessage(sender, "${Chat.prefix} Invalid usage: &f/ls <player> [teammate]")
+            Chat.sendMessage(sender, "${Chat.dash} Invalid usage: &f/ls <player> [teammate]")
             return false
         }
         val player: Player
@@ -76,8 +76,8 @@ class LatescatterCommand : CommandExecutor {
             }
             WhitelistCommand().addWhitelist(player.name.lowercase())
             list.add(player.name)
-            Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} &f${player.name}&7 has been late-scattered&7."))
-            Chat.sendMessage(player, "${Chat.prefix} You've successfully been added to the game.")
+            Bukkit.broadcastMessage(Chat.colored("${Chat.dash} &f${player.name}&7 has been late-scattered&7."))
+            Chat.sendMessage(player, "${Chat.dash} You've successfully been added to the game.")
         } else if (args.size == 2) {
             player = Bukkit.getPlayer(args[0])
             teammate = Bukkit.getPlayer(args[1])
@@ -119,8 +119,8 @@ class LatescatterCommand : CommandExecutor {
             WhitelistCommand().addWhitelist(player.name.lowercase())
             list.add(player.name)
 
-            Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} &f${player.name}&7 has been late-scattered to their teammate &f${teammate.name}&7."))
-            Chat.sendMessage(player, "${Chat.prefix} You've successfully been added to the game, you've also been teamed with &f${teammate.name}&7")
+            Bukkit.broadcastMessage(Chat.colored("${Chat.dash} &f${player.name}&7 has been late-scattered to their teammate &f${teammate.name}&7."))
+            Chat.sendMessage(player, "${Chat.dash} You've successfully been added to the game, you've also been teamed with &f${teammate.name}&7")
         }
         SettingsFeature.instance.data!!.set("game.list", list)
         SettingsFeature.instance.saveData()

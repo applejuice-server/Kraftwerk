@@ -24,10 +24,10 @@ class HelpopListCommand : CommandExecutor {
                 return false
             }
         }
-        Chat.sendMessage(sender, "${Chat.prefix} &cUnanswered Helpops:")
+        Chat.sendMessage(sender, "&cUnanswered Help-Ops:")
         val count = HelpOp.getHelpops()
         if (count == 0) {
-            Chat.sendMessage(sender, "${Chat.prefix} &cThere are no unanswered Helpops.")
+            Chat.sendMessage(sender, "&cThere are no unanswered Help-Ops.")
             return false
         }
         for (i in 1..count) {

@@ -29,7 +29,7 @@ class SetSpawnCommand : CommandExecutor {
         SettingsFeature.instance.data!!.set("config.spawn.pitch", sender.location.pitch)
         SettingsFeature.instance.data!!.set("config.spawn.world", sender.location.world.name)
         SettingsFeature.instance.saveData()
-        Chat.sendMessage(sender, "${Chat.prefix} The spawn has been set to your location, use &c/spawn&7 to teleport to the new location.")
+        Chat.sendMessage(sender, "${Chat.dash} The spawn has been set to your location, use &c/spawn&7 to teleport to the new location.")
         return true
     }
 }

@@ -55,10 +55,10 @@ class GameCommand : CommandExecutor {
             it.isCancelled = true
             if (JavaPlugin.getPlugin(Kraftwerk::class.java).game!!.paused) {
                 JavaPlugin.getPlugin(Kraftwerk::class.java).game!!.paused = false
-                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} The game has been &aunpaused&7."))
+                Bukkit.broadcastMessage(Chat.colored("${Chat.dash} The game has been &aunpaused&7."))
             } else {
                 JavaPlugin.getPlugin(Kraftwerk::class.java).game!!.paused = true
-                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} The game has been &cpaused&7."))
+                Bukkit.broadcastMessage(Chat.colored("${Chat.dash} The game has been &cpaused&7."))
             }
         }
         gui.item(16, cancel).onClick runnable@ {
@@ -66,12 +66,12 @@ class GameCommand : CommandExecutor {
             sender.closeInventory()
             JavaPlugin.getPlugin(Kraftwerk::class.java).game!!.cancel()
             JavaPlugin.getPlugin(Kraftwerk::class.java).game = null
-            Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} The game has been &ccancelled&7."))
+            Bukkit.broadcastMessage(Chat.colored("${Chat.dash} The game has been &ccancelled&7."))
         }
         gui.item(13, timer.make()).onClick runnable@ {
             it.isCancelled = true
         }
-        Chat.sendMessage(sender, "${Chat.prefix} Opening the game manager...")
+        Chat.sendMessage(sender, "${Chat.dash} Opening the game manager...")
         sender.openInventory(gui.make())
         object : BukkitRunnable() {
             override fun run() {
