@@ -25,10 +25,7 @@ import pink.mino.kraftwerk.listeners.donator.CowboyFeature
 import pink.mino.kraftwerk.listeners.donator.MobEggsListener
 import pink.mino.kraftwerk.listeners.lunar.PlayerRegisterListener
 import pink.mino.kraftwerk.scenarios.ScenarioHandler
-import pink.mino.kraftwerk.utils.GameState
-import pink.mino.kraftwerk.utils.ProfileService
-import pink.mino.kraftwerk.utils.Scoreboard
-import pink.mino.kraftwerk.utils.StatsHandler
+import pink.mino.kraftwerk.utils.*
 import java.nio.file.Files
 import java.nio.file.Path
 import javax.security.auth.login.LoginException
@@ -263,6 +260,7 @@ class Kraftwerk : ExtendedJavaPlugin() {
 
         SettingsFeature.instance.data!!.set("whitelist.enabled", true)
         SettingsFeature.instance.saveData()
+        Leaderboards().runTaskTimer(this, 0L, 20L)
 
         Bukkit.getLogger().info("Kraftwerk enabled.")
     }
