@@ -33,8 +33,6 @@ class FlowerPowerScenario : Scenario(
         Material.COMMAND_MINECART,
         Material.HOPPER_MINECART,
         Material.COMMAND,
-        Material.GLOWSTONE,
-        Material.GLOWSTONE_DUST,
         Material.BARRIER,
         Material.BEDROCK,
         Material.BED,

@@ -2,23 +2,19 @@ package pink.mino.kraftwerk.scenarios.list
 
 import com.google.common.collect.Lists
 import me.lucko.helper.Schedulers
-import net.minecraft.server.v1_8_R3.NBTTagCompound
-import net.minecraft.server.v1_8_R3.NBTTagInt
-import net.minecraft.server.v1_8_R3.NBTTagList
-import net.minecraft.server.v1_8_R3.NBTTagString
+import net.minecraft.server.v1_8_R3.*
 import org.bukkit.*
+import org.bukkit.Material
 import org.bukkit.block.Block
 import org.bukkit.block.Chest
 import org.bukkit.block.Furnace
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity
 import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack
 import org.bukkit.enchantments.Enchantment
-import org.bukkit.entity.Arrow
-import org.bukkit.entity.EntityType
-import org.bukkit.entity.Player
-import org.bukkit.entity.Wolf
+import org.bukkit.entity.*
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.block.Action
@@ -33,6 +29,7 @@ import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryType
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.*
+import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.material.MaterialData
 import org.bukkit.material.SpawnEgg
@@ -42,6 +39,7 @@ import org.bukkit.potion.PotionEffectType
 import org.bukkit.scheduler.BukkitRunnable
 import pink.mino.kraftwerk.Kraftwerk
 import pink.mino.kraftwerk.features.Events
+import pink.mino.kraftwerk.features.SettingsFeature
 import pink.mino.kraftwerk.features.SpecFeature
 import pink.mino.kraftwerk.features.TeamsFeature
 import pink.mino.kraftwerk.scenarios.Scenario
@@ -478,7 +476,7 @@ class ChampionsScenario : Scenario(
                 ShapedRecipe(apprenticeBow).shape(" RS", "R S", " RS")
                     .setIngredient('R', Material.REDSTONE_TORCH_ON)
 
-                    .setIngredient('S', Material.STICK)
+                    .setIngredient('S', Material.STRING)
             )
             Bukkit.getServer().addRecipe(
                 ShapedRecipe(ItemStack(Material.GOLD_INGOT, 10))
@@ -656,6 +654,9 @@ class ChampionsScenario : Scenario(
                     .setIngredient('W', Material.WATER_BUCKET)
             )
             val daredevil = SpawnEgg(EntityType.HORSE).toItemStack(1)
+            val daredevilMeta = daredevil.itemMeta
+            daredevilMeta.displayName = ChatColor.YELLOW.toString() + "Daredevil"
+            daredevil.itemMeta = daredevilMeta
             Bukkit.getServer().addRecipe(
                 ShapedRecipe(daredevil).shape("HS ", "BBB", "B B")
                     .setIngredient('H', Material.SKULL_ITEM, 3)
@@ -671,14 +672,6 @@ class ChampionsScenario : Scenario(
                     .setIngredient('S', Material.SOUL_SAND)
                     .setIngredient('T', Material.TNT)
                     .setIngredient('D', Material.DIAMOND_SWORD)
-            )
-            val flaskOfCleansing =
-                PotionBuilder.createPotion(PotionEffect(PotionEffectType.WEAKNESS, 20 * 20, 1, false, true))
-            Bukkit.getServer().addRecipe(
-                ShapedRecipe(flaskOfCleansing).shape(" S ", " M ", " B")
-                    .setIngredient('S', Material.SKULL_ITEM, 0)
-                    .setIngredient('M', Material.MILK_BUCKET)
-                    .setIngredient('B', Material.GLASS_BOTTLE)
             )
             val shoesOfVidar = ItemBuilder(Material.DIAMOND_BOOTS)
                 .name(ChatColor.YELLOW.toString() + "Shoes of Vidar")
@@ -705,18 +698,6 @@ class ChampionsScenario : Scenario(
                     .setIngredient('S', Material.SKULL_ITEM, 0)
                     .setIngredient('N', Material.NETHER_WARTS)
                     .setIngredient('B', Material.GLASS_BOTTLE)
-            )
-            val minersBlessing = ItemBuilder(Material.DIAMOND_PICKAXE)
-                .name("&eMiner's Blessing")
-                .addLore("&7While Holding: Gives Saturation III Every 100 durability used gives Regeneration I for 5 seconds")
-                .addLore("")
-                .addLore("&7Every 250 durability used adds 1 level of Sharpness and Efficiency")
-                .make()
-            Bukkit.getServer().addRecipe(ShapedRecipe(minersBlessing).shape("XIX", "XDX", "BBB")
-                .setIngredient('X', Material.EXP_BOTTLE)
-                .setIngredient('I', Material.IRON_SWORD)
-                .setIngredient('D', Material.DIAMOND_PICKAXE)
-                .setIngredient('B', Material.BOOKSHELF)
             )
             val ambrosia = ItemBuilder(Material.GLOWSTONE_DUST)
                 .name(ChatColor.YELLOW.toString() + "Ambrosia")
@@ -755,17 +736,6 @@ class ChampionsScenario : Scenario(
                 .setIngredient('B', Material.BOW)
                 .setIngredient('S', Material.SLIME_BALL)
             )
-            val expertSeal = ItemBuilder(Material.NETHER_STAR)
-                .name(ChatColor.YELLOW.toString() + "Expert Seal")
-                .addLore("&7Using this item on top of another item in your inventory will upgrade all enchantments of that item by 1 level.")
-                .setAmount(6)
-                .make()
-            Bukkit.getServer().addRecipe(ShapedRecipe(expertSeal).shape("XIX", "GDG", "XIX")
-                .setIngredient('X', Material.EXP_BOTTLE)
-                .setIngredient('I', Material.IRON_BLOCK)
-                .setIngredient('G', Material.GOLD_BLOCK)
-                .setIngredient('D', Material.DIAMOND_BLOCK)
-            )
             val hermesBoots = ItemBuilder(Material.DIAMOND_BOOTS)
                 .name(ChatColor.YELLOW.toString() + "Hermes Boots")
                 .addEnchantment(Enchantment.PROTECTION_FALL, 1)
@@ -790,34 +760,6 @@ class ChampionsScenario : Scenario(
                 .setIngredient('C', Material.DIAMOND_CHESTPLATE)
                 .setIngredient('I', Material.IRON_BLOCK)
                 .setIngredient('S', Material.POTION, 5)
-            )
-            val fatesCall = ItemBuilder(Material.FLOWER_POT_ITEM)
-                .name(ChatColor.YELLOW.toString() + "Fate's Call")
-                .addLore("&7Spawns a chest with random crafting materials based on your unlocked recipes.")
-                .make()
-            Bukkit.getServer().addRecipe(ShapedRecipe(fatesCall).shape(" L ", "LFL", " L ")
-                .setIngredient('L', Material.REDSTONE_LAMP_OFF)
-                .setIngredient('F', Material.FIREWORK_CHARGE)
-            )
-            val theMark = ItemBuilder(Material.SNOW_BALL)
-                .name("&eThe Mark")
-                .addLore("&7Hit an enemy with this snowball to apply The Mark to them. You (and only you) deal +5% damage against this player for each Mark on them.")
-                .addLore("&7Max effect stacks: 5 &8| &7Cooldown: 5 seconds ")
-                .make()
-            Bukkit.getServer().addRecipe(ShapedRecipe(theMark).shape("SBS", "DWD", "SBS")
-                .setIngredient('S', Material.SNOW_BLOCK)
-                .setIngredient('B', Material.BLAZE_POWDER)
-                .setIngredient('D', Material.DIAMOND)
-                .setIngredient('W', Material.WATCH)
-            )
-            val warlockPants = ItemBuilder(Material.CHAINMAIL_LEGGINGS)
-                .name(ChatColor.YELLOW.toString() + "Warlock Pants")
-                .addLore("&7Reduce damages by 0.5% for each missing heart, up to 25%.")
-                .make()
-            Bukkit.getServer().addRecipe(ShapedRecipe(warlockPants).shape("BBB", "BDB", "P P")
-                .setIngredient('B', Material.IRON_FENCE)
-                .setIngredient('D', Material.DIAMOND)
-                .setIngredient('P', Material.BLAZE_POWDER)
             )
         }
     }
@@ -857,6 +799,9 @@ class ChampionsScenario : Scenario(
         if (!enabled) return
         if (GameState.currentState != GameState.INGAME) return
         if (e.damager is Player && e.entity is Player) {
+            if ((e.damager as Player).inventory.itemInHand != null && (e.damager as Player).inventory.itemInHand.hasItemMeta() && (e.damager as Player).inventory.itemInHand.itemMeta.displayName == Chat.colored("&eDeath's Scythe")) {
+                (e.entity as Player).damage((e.entity as Player).health * .2)
+            }
             if ((e.damager as Player).inventory.helmet != null && (e.damager as Player).inventory.helmet.hasItemMeta() && (e.damager as Player).inventory.helmet.itemMeta.displayName == Chat.colored("&eExodus")) {
                 if (!(e.damager as Player).hasPotionEffect(PotionEffectType.REGENERATION)) {
                     (e.damager as Player).addPotionEffect(PotionEffect(PotionEffectType.REGENERATION, 50, 0))
@@ -864,7 +809,7 @@ class ChampionsScenario : Scenario(
             }
             if ((e.damager as Player).inventory.itemInHand != null && (e.damager as Player).inventory.itemInHand.hasItemMeta() && (e.damager as Player).inventory.itemInHand.itemMeta.displayName == Chat.colored("&eAxe of Perun")) {
                 if (perunCooldownsMap[e.damager as Player] == null || perunCooldownsMap[e.damager as Player]!! < System.currentTimeMillis()) {
-                    (e.damager as Player).world.strikeLightning((e.damager as Player).location)
+                    (e.damager as Player).world.strikeLightning((e.entity as Player).location)
                     perunCooldownsMap[e.damager as Player] = System.currentTimeMillis() + 8000
                 } else {
                     return
@@ -880,6 +825,17 @@ class ChampionsScenario : Scenario(
         if (e.entity.killer !is Player) return
         e.drops.add(ItemStack(Material.GOLD_NUGGET, 10))
         e.droppedExp = (e.droppedExp + floor((e.droppedExp * 0.50))).toInt()
+        if (e.entity.killer.itemInHand != null && e.entity.killer.itemInHand.hasItemMeta() && e.entity.killer.itemInHand.itemMeta.displayName == Chat.colored("&eBloodlust")) {
+            if (SettingsFeature.instance.data!!.getInt("game.kills.${e.entity.killer.name}") == 1) {
+                e.entity.killer.itemInHand.addEnchantment(Enchantment.DAMAGE_ALL, 2)
+            } else if (SettingsFeature.instance.data!!.getInt("game.kills.${e.entity.killer.name}") == 3) {
+                e.entity.killer.itemInHand.addEnchantment(Enchantment.DAMAGE_ALL, 3)
+            } else if (SettingsFeature.instance.data!!.getInt("game.kills.${e.entity.killer.name}") == 6) {
+                e.entity.killer.itemInHand.addEnchantment(Enchantment.DAMAGE_ALL, 4)
+            } else if (SettingsFeature.instance.data!!.getInt("game.kills.${e.entity.killer.name}") == 10) {
+                e.entity.killer.itemInHand.addEnchantment(Enchantment.DAMAGE_ALL, 5)
+            }
+        }
         e.entity.killer.addPotionEffect(PotionEffect(PotionEffectType.INCREASE_DAMAGE, 20 * 5, 0, false, true))
         e.entity.killer.addPotionEffect(PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 20 * 10, 0, false, true))
     }
@@ -931,6 +887,30 @@ class ChampionsScenario : Scenario(
                 e.player,
                 "$prefix View the crafting recipes for &cChampions&7 here: &chttps://hypixel.fandom.com/wiki/UHC_Champions#Recipes"
             )
+        }
+        if (e.item.type == Material.BOW && e.item.itemMeta.displayName == Chat.colored("&eModular Bow")) {
+            val bow = ItemBuilder(Material.BOW).name(Chat.colored("&eModular Bow (Punch)"))
+                .addEnchantment(Enchantment.ARROW_KNOCKBACK, 1).make()
+            e.player.itemInHand = bow
+            Chat.sendMessage(e.player, "&eModular Bow: Mode switched to Punch.")
+        }
+        if (e.action == Action.LEFT_CLICK_AIR || e.action == Action.LEFT_CLICK_BLOCK) {
+            if (e.item.type == Material.BOW && e.item.itemMeta.displayName == Chat.colored("&eModular Bow (Punch)")) {
+                val bow = ItemBuilder(Material.BOW).name(Chat.colored("&eModular Bow (Poison I)")).make()
+                e.player.itemInHand = bow
+                Chat.sendMessage(e.player, "&eModular Bow: Mode switched to Poison I.")
+            }
+            if (e.item.type == Material.BOW && e.item.itemMeta.displayName == Chat.colored("&eModular Bow (Poison I)")) {
+                val bow = ItemBuilder(Material.BOW).name(Chat.colored("&eModular Bow (Lightning)")).make()
+                e.player.itemInHand = bow
+                Chat.sendMessage(e.player, "&eModular Bow: Mode switched to Lightning.")
+            }
+            if (e.item.type == Material.BOW && e.item.itemMeta.displayName == Chat.colored("&eModular Bow (Lightning)")) {
+                val bow = ItemBuilder(Material.BOW).name(Chat.colored("&eModular Bow (Punch)"))
+                    .addEnchantment(Enchantment.ARROW_KNOCKBACK, 1).make()
+                e.player.itemInHand = bow
+                Chat.sendMessage(e.player, "&eModular Bow: Mode switched to Punch.")
+            }
         }
     }
 
@@ -1009,6 +989,167 @@ class ChampionsScenario : Scenario(
         }
     }
 
+    @EventHandler
+    fun onModularBowShot(e: EntityDamageByEntityEvent) {
+        if (!enabled) return
+        if (e.damager.type == EntityType.ARROW && ((e.damager as Arrow).shooter) is Player && e.entity.type == EntityType.PLAYER) {
+            if (((e.damager as Arrow).shooter as Player).itemInHand.type == Material.BOW && ((e.damager as Arrow).shooter as Player).itemInHand.itemMeta.displayName == Chat.colored("&eModular Bow (Poison I)")) {
+                (e.entity as Player).addPotionEffect(PotionEffect(PotionEffectType.POISON, 20 * 33, 0, false, true))
+            }
+            if (((e.damager as Arrow).shooter as Player).itemInHand.type == Material.BOW && ((e.damager as Arrow).shooter as Player).itemInHand.itemMeta.displayName == Chat.colored("&eModular Bow (Lightning)")) {
+                e.damager.world.strikeLightning(e.entity.location)
+            }
+        }
+    }
+
+    override fun givePlayer(player: Player) {
+        player.maxHealth = 40.0
+        player.health = 40.0
+        player.addPotionEffect(PotionEffect(PotionEffectType.SATURATION, 6000, 0, false, false))
+        player.addPotionEffect(PotionEffect(PotionEffectType.ABSORPTION, 6000, 0, false, false))
+        if (kits[player.uniqueId] == null) {
+            kits[player.uniqueId] = "leather"
+        }
+        if (kits[player.uniqueId] == "leather") {
+            val helmet = ItemBuilder(Material.LEATHER_HELMET)
+                .addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 3)
+                .make()
+            val chestplate = ItemBuilder(Material.LEATHER_CHESTPLATE)
+                .addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 3)
+                .make()
+            val leggings = ItemBuilder(Material.LEATHER_LEGGINGS)
+                .addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 3)
+                .make()
+            val boots = ItemBuilder(Material.LEATHER_BOOTS)
+                .addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 3)
+                .make()
+            player.inventory.helmet = helmet
+            player.inventory.chestplate = chestplate
+            player.inventory.leggings = leggings
+            player.inventory.boots = boots
+        } else if (kits[player.uniqueId] == "enchanter") {
+            val pickaxe = ItemBuilder(Material.STONE_PICKAXE)
+                .addEnchantment(Enchantment.DIG_SPEED, 3)
+                .addEnchantment(Enchantment.DURABILITY, 1)
+                .make()
+            PlayerUtils.bulkItems(
+                player, arrayListOf(
+                    ItemStack(Material.BOOK, 4),
+                    ItemStack(Material.EXP_BOTTLE, 15),
+                    ItemStack(Material.INK_SACK, 18, 4),
+                    pickaxe
+                )
+            )
+        } else if (kits[player.uniqueId] == "archer") {
+            val shovel = ItemBuilder(Material.STONE_SPADE)
+                .addEnchantment(Enchantment.DIG_SPEED, 3)
+                .addEnchantment(Enchantment.DURABILITY, 1)
+                .make()
+            PlayerUtils.bulkItems(
+                player, arrayListOf(
+                    ItemStack(Material.STRING, 6),
+                    ItemStack(Material.FEATHER, 9),
+                    shovel
+                )
+            )
+        } else if (kits[player.uniqueId] == "stoneGear") {
+            val shovel = ItemBuilder(Material.STONE_SPADE)
+                .addEnchantment(Enchantment.DIG_SPEED, 3)
+                .addEnchantment(Enchantment.DURABILITY, 1)
+                .make()
+            val pickaxe = ItemBuilder(Material.STONE_PICKAXE)
+                .addEnchantment(Enchantment.DIG_SPEED, 3)
+                .addEnchantment(Enchantment.DURABILITY, 1)
+                .make()
+            val axe = ItemBuilder(Material.STONE_AXE)
+                .addEnchantment(Enchantment.DIG_SPEED, 3)
+                .addEnchantment(Enchantment.DURABILITY, 1)
+                .make()
+            val sword = ItemBuilder(Material.STONE_SWORD)
+                .make()
+            PlayerUtils.bulkItems(
+                player, arrayListOf(
+                    shovel,
+                    pickaxe,
+                    axe,
+                    sword
+                )
+            )
+        } else if (kits[player.uniqueId] == "lunchBox") {
+            PlayerUtils.bulkItems(
+                player, arrayListOf(
+                    ItemStack(Material.COOKED_BEEF, 9),
+                    ItemStack(Material.CARROT, 12),
+                    ItemStack(Material.MELON, 2),
+                    ItemStack(Material.APPLE, 3),
+                    ItemStack(Material.GOLD_INGOT, 3),
+                )
+            )
+        } else if (kits[player.uniqueId] == "looter") {
+            val sword = ItemBuilder(Material.STONE_SWORD)
+                .addEnchantment(Enchantment.LOOT_BONUS_MOBS, 1)
+                .make()
+            PlayerUtils.bulkItems(
+                player, arrayListOf(
+                    ItemStack(Material.BONE, 3),
+                    ItemStack(Material.SLIME_BALL, 3),
+                    ItemStack(Material.SULPHUR, 2),
+                    ItemStack(Material.SPIDER_EYE, 2),
+                    sword
+                )
+            )
+        } else if (kits[player.uniqueId] == "ecologist") {
+            val pickaxe = ItemBuilder(Material.STONE_PICKAXE)
+                .addEnchantment(Enchantment.DIG_SPEED, 3)
+                .addEnchantment(Enchantment.DURABILITY, 1)
+                .make()
+            PlayerUtils.bulkItems(
+                player, arrayListOf(
+                    ItemStack(Material.VINE, 21),
+                    ItemStack(Material.WATER_LILY, 64),
+                    ItemStack(Material.SUGAR_CANE, 12),
+                    pickaxe
+                )
+            )
+        } else if (kits[player.uniqueId] == "farmer") {
+            PlayerUtils.bulkItems(
+                player, arrayListOf(
+                    ItemStack(Material.IRON_HOE),
+                    ItemStack(Material.MELON, 3),
+                    ItemStack(Material.CARROT, 3),
+                    ItemStack(Material.INK_SACK, 15),
+                )
+            )
+        } else if (kits[player.uniqueId] == "horseman") {
+            PlayerUtils.bulkItems(
+                player, arrayListOf(
+                    ItemStack(Material.LEATHER, 12),
+                    ItemStack(Material.HAY_BLOCK, 1),
+                    ItemStack(Material.STRING, 4),
+                    ItemStack(Material.IRON_BARDING),
+                    SpawnEgg(EntityType.HORSE).toItemStack(1)
+                )
+            )
+        } else if (kits[player.uniqueId] == "trapper") {
+            PlayerUtils.bulkItems(
+                player, arrayListOf(
+                    ItemStack(Material.PISTON_BASE, 8),
+                    ItemStack(Material.PISTON_STICKY_BASE, 8),
+                    ItemStack(Material.REDSTONE, 25),
+                    ItemStack(Material.LOG, 16)
+                )
+            )
+        }
+        val book = ItemBuilder(Material.ENCHANTED_BOOK)
+            .name("&cCrafting Recipes")
+            .addLore("&7Click to open & view a list of crafting recipes.")
+            .make()
+        PlayerUtils.bulkItems(
+            player, arrayListOf(
+                book
+            )
+        )
+    }
     override fun onStart() {
         for (player in Bukkit.getOnlinePlayers()) {
             if (SpecFeature.instance.isSpec(player)) continue
@@ -1165,6 +1306,15 @@ class ChampionsScenario : Scenario(
                     if (player.inventory.itemInHand != null && player.inventory.itemInHand.hasItemMeta() && player.inventory.itemInHand.itemMeta.displayName == Chat.colored("&eAndūril")) {
                         player.addPotionEffect(PotionEffect(PotionEffectType.SPEED, 20, 0, false, true))
                         player.addPotionEffect(PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 20, 0, false, true))
+                    }
+                    if (player.inventory.chestplate != null && player.inventory.chestplate.hasItemMeta() && player.inventory.chestplate.itemMeta.displayName == Chat.colored("&eBarbarian Chestplate")) {
+                        player.addPotionEffect(PotionEffect(PotionEffectType.INCREASE_DAMAGE, 20, 0, false, true))
+                        player.addPotionEffect(PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 20, 0, false, true))
+                    }
+                    if (player.inventory.boots != null && player.inventory.boots.hasItemMeta() && player.inventory.boots.itemMeta.displayName == Chat.colored("&eHermes' Boots")) {
+                        player.walkSpeed = 0.2F + 0.02F
+                    } else {
+                        player.walkSpeed = 0.2F
                     }
                 }
             }
@@ -1361,7 +1511,7 @@ class ChampionsScenario : Scenario(
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     fun on(event: CraftItemEvent) {
         if (!enabled) return
-        val player = event.whoClicked
+        val player = event.whoClicked as Player
         val inv = event.inventory
         val item = inv.result
         if (!item.hasItemMeta() || !item.itemMeta.hasDisplayName()) {
@@ -1380,6 +1530,49 @@ class ChampionsScenario : Scenario(
             block.type = Material.CHEST
             val chest: Chest = block.state as Chest
             chest.inventory.setItem(13, randomReward())
+        }
+        if (name == Chat.colored("&eEssence of Yggdrasil")) {
+            inv.result = null
+            if (TeamsFeature.manager.getTeam(player) == null) {
+                player.level += 30
+                Chat.sendMessage(player, "&eYou've been blessed by the Essence of Yggdrasil.")
+            } else {
+                for (member in TeamsFeature.manager.getTeam(player)!!.players) {
+                    if (member.uniqueId == player.uniqueId) continue
+                    if (member.isOnline) member.player.level += 8
+                    Chat.sendMessage(member.player, "&eYou've been blessed by the Essence of Yggdrasil.")
+                }
+                player.level += 15
+                Chat.sendMessage(player, "&eYou've been blessed by the Essence of Yggdrasil.")
+            }
+        }
+        if (name == Chat.colored("&eDeus Ex Machina")) {
+            player.health = player.health / 2
+            Chat.sendMessage(player, "&eYour health has been siphoned to create a Deus Ex Machina.")
+        }
+        if (name == Chat.colored("&eDaredevil")) {
+            val block: Block? = player.getTargetBlock(null as Set<Material?>?, 10)
+            if (block == null || block.type !== Material.WORKBENCH) {
+                player.sendMessage("$prefix You are not looking at a crafting table.")
+                event.isCancelled = true
+                return
+            }
+            event.isCancelled = true
+            event.view.topInventory.clear()
+            block.type = Material.AIR
+            val h = player.world.spawn(block.location, Horse::class.java)
+            h.customName = Chat.colored("&eDaredevil")
+            h.variant = Horse.Variant.SKELETON_HORSE
+            h.maxHealth = 50.0
+            h.health = 50.0
+            h.inventory.saddle = ItemBuilder(Material.SADDLE).make()
+            h.isTamed = true
+            h.owner = player
+            h.jumpStrength = 1.0
+            val speed: AttributeInstance = ((h as CraftEntity).handle as EntityLiving)
+                .getAttributeInstance(GenericAttributes.MOVEMENT_SPEED)
+            speed.value = 0.5
+
         }
         if (name == Chat.colored("&5Fusion Armor")) {
             val helmet = ItemBuilder(Material.DIAMOND_HELMET)
@@ -1552,10 +1745,6 @@ class ChampionsScenario : Scenario(
         }
         if (!enabled) {
             sender.sendMessage("$prefix Champions is not enabled.")
-            return true
-        }
-        if (GameState.currentState != GameState.LOBBY) {
-            sender.sendMessage("$prefix You can only use this command in the lobby.")
             return true
         }
         val gui = GuiBuilder().rows(2).name("&cChampions Kit Selector").owner(sender)

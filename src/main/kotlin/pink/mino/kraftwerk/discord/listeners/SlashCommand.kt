@@ -62,11 +62,7 @@ class SlashCommand : ListenerAdapter() {
                     Schedulers.async().run runnable@ {
                         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wl add $player")
                     }
-                    if (SettingsFeature.instance.data!!.getString("server.region") == "EU") {
-                        event.reply("**${MarkdownSanitizer.escape(player)}** has been whitelisted on the server, connect using `eu.applejuice.bar`.").queue()
-                    } else if (SettingsFeature.instance.data!!.getString("server.region") == "NA") {
-                        event.reply("**${MarkdownSanitizer.escape(player)}** has been whitelisted on the server, connect using `na.applejuice.bar`.").queue()
-                    }
+                    event.reply("**${MarkdownSanitizer.escape(player)}** has been whitelisted on the server, connect using `uhc.applejuice.bar`.").queue()
                 } else {
                     event.reply("Sorry, but whitelists are not available at this time!").setEphemeral(true).queue()
                 }

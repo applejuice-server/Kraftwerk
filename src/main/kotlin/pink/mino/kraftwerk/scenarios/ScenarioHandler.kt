@@ -55,6 +55,7 @@ class ScenarioHandler {
             addScenario(AuctionScenario())
             addScenario(ChampionsScenario())
             addScenario(DoNotDisturbScenario())
+            addScenario(CreeperPongScenario())
             scenarios.sortWith(Comparator.comparing(Scenario::name))
         }
 
