@@ -1,14 +1,19 @@
 package pink.mino.kraftwerk.utils
 
+import com.gmail.filoghost.holographicdisplays.api.HologramsAPI
 import com.mongodb.MongoException
 import com.mongodb.client.model.Filters
 import com.mongodb.client.model.FindOneAndReplaceOptions
+import com.mongodb.client.model.Sorts.descending
 import me.lucko.helper.Events
 import me.lucko.helper.Schedulers
+import me.lucko.helper.profiles.ProfileRepository
 import me.lucko.helper.profiles.plugin.external.caffeine.cache.Cache
 import me.lucko.helper.profiles.plugin.external.caffeine.cache.Caffeine
 import me.lucko.helper.utils.Log
 import org.bson.Document
+import org.bukkit.Bukkit
+import org.bukkit.Location
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 import org.bukkit.event.EventPriority
@@ -16,6 +21,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerLoginEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.plugin.java.JavaPlugin
+import org.bukkit.scheduler.BukkitRunnable
 import pink.mino.kraftwerk.Kraftwerk
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -34,6 +40,123 @@ class StatsPlayer(val player: OfflinePlayer) : Listener {
     var timesEnchanted = 0
 }
 
+class Leaderboards : BukkitRunnable() {
+    var timer = 1
+    val plugin = JavaPlugin.getPlugin(Kraftwerk::class.java)
+    val gamesPlayed =
+        HologramsAPI.createHologram(plugin, Location(Bukkit.getWorld("Spawn"), -697.5, 108.5, 278.5))
+    val wins =
+        HologramsAPI.createHologram(plugin, Location(Bukkit.getWorld("Spawn"), -696.5, 108.5, 281.5))
+    val kills =
+        HologramsAPI.createHologram(plugin, Location(Bukkit.getWorld("Spawn"), -695.5, 108.5, 284.5))
+    val diamondsMined =
+        HologramsAPI.createHologram(plugin, Location(Bukkit.getWorld("Spawn"), -695.5, 108.5, 287.5))
+    val goldMined = HologramsAPI.createHologram(
+        plugin,
+        Location(Bukkit.getWorld("Spawn"), -695.5, 108.5, 290.5)
+    )
+    val gapplesEaten = HologramsAPI.createHologram(
+        plugin,
+        Location(Bukkit.getWorld("Spawn"), -696.5, 108.5, 293.5)
+    )
+    val timesEnchanted = HologramsAPI.createHologram(
+        plugin,
+        Location(Bukkit.getWorld("Spawn"), -697.5, 108.5, 296.5)
+    )
+
+    override fun run() {
+        timer -= 1
+        if (timer == 0) {
+            try {
+                for (hologram in HologramsAPI.getHolograms(plugin)) {
+                    hologram.clearLines()
+                }
+                gamesPlayed.appendTextLine(Chat.colored("&c&lGames Played"))
+                gamesPlayed.appendTextLine(Chat.guiLine)
+                wins.appendTextLine(Chat.colored("&c&lWins"))
+                wins.appendTextLine(Chat.guiLine)
+                kills.appendTextLine(Chat.colored("&c&lKills"))
+                kills.appendTextLine(Chat.guiLine)
+                diamondsMined.appendTextLine(Chat.colored("&c&lDiamonds Mined"))
+                diamondsMined.appendTextLine(Chat.guiLine)
+                goldMined.appendTextLine(Chat.colored("&c&lGold Mined"))
+                goldMined.appendTextLine(Chat.guiLine)
+                gapplesEaten.appendTextLine(Chat.colored("&c&lGapples Eaten"))
+                gapplesEaten.appendTextLine(Chat.guiLine)
+                timesEnchanted.appendTextLine(Chat.colored("&c&lTimes Enchanted"))
+                timesEnchanted.appendTextLine(Chat.guiLine)
+                with (JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.getDatabase("applejuice").getCollection("stats")) {
+                    val gp = this.find().sort(descending("gamesPlayed")).limit(10)
+                    for ((index, document) in gp.withIndex()) {
+                        val profile = JavaPlugin.getPlugin(Kraftwerk::class.java).getService(ProfileRepository::class.java).lookupProfile(document["uuid"] as UUID).get()
+                        if (document["gamesPlayed"] as Int != 0) gamesPlayed.appendTextLine(Chat.colored("&e${index + 1}. &f${profile.name.get()} &8- &b${document["gamesPlayed"] as Int}"))
+                    }
+                    if (gamesPlayed.size() == 2) {
+                        gamesPlayed.appendTextLine(Chat.colored("&7No data yet x_x"))
+                    }
+                    val w = this.find().sort(descending("wins")).limit(10)
+                    for ((index, document) in w.withIndex()) {
+                        val profile = JavaPlugin.getPlugin(Kraftwerk::class.java).getService(ProfileRepository::class.java).lookupProfile(document["uuid"] as UUID).get()
+                        if (document["wins"] as Int != 0) wins.appendTextLine(Chat.colored("&e${index + 1}. &f${profile.name.get()} &8- &b${document["wins"] as Int}"))
+                    }
+                    if (wins.size() == 2) {
+                        wins.appendTextLine(Chat.colored("&7No data yet x_x"))
+                    }
+                    val k = this.find().sort(descending("kills")).limit(10)
+                    for ((index, document) in k.withIndex()) {
+                        val profile = JavaPlugin.getPlugin(Kraftwerk::class.java).getService(ProfileRepository::class.java).lookupProfile(document["uuid"] as UUID).get()
+                        if (document["kills"] as Int != 0) kills.appendTextLine(Chat.colored("&e${index + 1}. &f${profile.name.get()} &8- &b${document["kills"] as Int}"))
+                    }
+                    if (kills.size() == 2) {
+                        kills.appendTextLine(Chat.colored("&7No data yet x_x"))
+                    }
+                    val d = this.find().sort(descending("diamondsMined")).limit(10)
+                    for ((index, document) in d.withIndex()) {
+                        val profile = JavaPlugin.getPlugin(Kraftwerk::class.java).getService(ProfileRepository::class.java).lookupProfile(document["uuid"] as UUID).get()
+                        if (document["diamondsMined"] as Int != 0) diamondsMined.appendTextLine(Chat.colored("&e${index + 1}. &f${profile.name.get()} &8- &b${document["diamondsMined"] as Int}"))
+                    }
+                    if (diamondsMined.size() == 2) {
+                        diamondsMined.appendTextLine(Chat.colored("&7No data yet x_x"))
+                    }
+                    val g = this.find().sort(descending("gapplesEaten")).limit(10)
+                    for ((index, document) in g.withIndex()) {
+                        val profile = JavaPlugin.getPlugin(Kraftwerk::class.java).getService(ProfileRepository::class.java).lookupProfile(document["uuid"] as UUID).get()
+                        if (document["gapplesEaten"] as Int != 0) gapplesEaten.appendTextLine(Chat.colored("&e${index + 1}. &f${profile.name.get()} &8- &b${document["gapplesEaten"] as Int}"))
+                    }
+                    if (gapplesEaten.size() == 2) {
+                        gapplesEaten.appendTextLine(Chat.colored("&7No data yet x_x"))
+                    }
+                    val t = this.find().sort(descending("timesEnchanted")).limit(10)
+                    for ((index, document) in t.withIndex()) {
+                        val profile = JavaPlugin.getPlugin(Kraftwerk::class.java).getService(ProfileRepository::class.java).lookupProfile(document["uuid"] as UUID).get()
+                        if (document["timesEnchanted"] as Int != 0) timesEnchanted.appendTextLine(Chat.colored("&e${index + 1}. &f${profile.name.get()} &8- &b${document["timesEnchanted"] as Int}"))
+                    }
+                    if (timesEnchanted.size() == 2) {
+                        timesEnchanted.appendTextLine(Chat.colored("&7No data yet x_x"))
+                    }
+                    val gm = this.find().sort(descending("goldMined")).limit(10)
+                    for ((index, document) in gm.withIndex()) {
+                        val profile = JavaPlugin.getPlugin(Kraftwerk::class.java).getService(ProfileRepository::class.java).lookupProfile(document["uuid"] as UUID).get()
+                        if (document["goldMined"] as Int != 0) goldMined.appendTextLine(Chat.colored("&e${index + 1}. &f${profile.name.get()} &8- &b${document["goldMined"] as Int}"))
+                    }
+                    if (goldMined.size() == 2) {
+                        goldMined.appendTextLine(Chat.colored("&7No data yet x_x"))
+                    }
+                }
+                gamesPlayed.appendTextLine(Chat.guiLine)
+                wins.appendTextLine(Chat.guiLine)
+                kills.appendTextLine(Chat.guiLine)
+                diamondsMined.appendTextLine(Chat.guiLine)
+                goldMined.appendTextLine(Chat.guiLine)
+                gapplesEaten.appendTextLine(Chat.guiLine)
+                timesEnchanted.appendTextLine(Chat.guiLine)
+            } catch (e: MongoException) {
+                e.printStackTrace()
+            }
+            timer = 300
+        }
+    }
+}
 class StatsHandler : Listener {
     private val statsPlayerMap: Cache<UUID, StatsPlayer> = Caffeine.newBuilder()
         .maximumSize(10_000)
@@ -86,7 +209,7 @@ class StatsHandler : Listener {
         return statsPlayerMap.getIfPresent(player.uniqueId)
     }
 
-    fun lookupStatsPlayer(player: OfflinePlayer): StatsPlayer? {
+    fun lookupStatsPlayer(player: OfflinePlayer): StatsPlayer {
         Objects.requireNonNull(player, "player")
         val sPlayer = StatsPlayer(player)
         updateCache(sPlayer)
