@@ -1,5 +1,7 @@
 package pink.mino.kraftwerk.features
 
+import com.mongodb.client.model.Filters
+import me.lucko.helper.Schedulers
 import net.minecraft.server.v1_8_R3.EntityLiving
 import org.bukkit.Bukkit
 import org.bukkit.GameMode
@@ -44,6 +46,45 @@ class ArenaFeature : Listener {
         return item
     }
 
+    fun alias(value: String?): ItemStack {
+        when (value) {
+            "SWORD" -> {
+                return unbreakableItem(Material.DIAMOND_SWORD)
+            }
+            "BOW" -> {
+                return unbreakableItem(Material.BOW)
+            }
+            "ROD" -> {
+                return unbreakableItem(Material.FISHING_ROD)
+            }
+            "BLOCKS" -> {
+                return ItemStack(Material.COBBLESTONE, 64)
+            }
+            "WATER" -> {
+                return ItemStack(Material.WATER_BUCKET)
+            }
+            "LAVA" -> {
+                return ItemStack(Material.LAVA_BUCKET)
+            }
+            "FOOD" -> {
+                return ItemStack(Material.GOLDEN_CARROT, 16)
+            }
+            "GAPPLES" -> {
+                return ItemStack(Material.GOLDEN_APPLE, 5)
+            }
+            "HEADS" -> {
+                val goldenHeads = ItemStack(Material.GOLDEN_APPLE, 3)
+                val meta = goldenHeads.itemMeta
+                meta.displayName = Chat.colored("&6Golden Head")
+                goldenHeads.itemMeta = meta
+                return goldenHeads
+            }
+            else -> {
+                return ItemStack(Material.AIR)
+            }
+        }
+    }
+
     fun send(p: Player) {
         if (SpecFeature.instance.getSpecs().contains(p.name)) {
             SpecFeature.instance.unspec(p)
@@ -61,28 +102,53 @@ class ArenaFeature : Listener {
         p.inventory.clear()
         p.inventory.armorContents = null
         p.gameMode = GameMode.SURVIVAL
-        Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-            p.inventory.setItem(0, unbreakableItem(Material.DIAMOND_SWORD))
-            p.inventory.setItem(1, unbreakableItem(Material.FISHING_ROD))
-            p.inventory.setItem(2, unbreakableItem(Material.BOW))
-            p.inventory.setItem(3, ItemStack(Material.COBBLESTONE, 64))
-            p.inventory.setItem(4, ItemStack(Material.WATER_BUCKET))
-            p.inventory.setItem(5, ItemStack(Material.LAVA_BUCKET))
-            p.inventory.setItem(6, ItemStack(Material.GOLDEN_CARROT, 16))
-            p.inventory.setItem(7, ItemStack(Material.GOLDEN_APPLE, 5))
-            val goldenHeads = ItemStack(Material.GOLDEN_APPLE, 3)
-            val meta = goldenHeads.itemMeta
-            meta.displayName = Chat.colored("&6Golden Head")
-            goldenHeads.itemMeta = meta
-            p.inventory.setItem(8, goldenHeads)
-            p.inventory.setItem(9, ItemStack(Material.ARROW, 64))
 
-            p.inventory.helmet = unbreakableItem(Material.IRON_HELMET)
-            p.inventory.chestplate = unbreakableItem(Material.IRON_CHESTPLATE)
-            p.inventory.leggings = unbreakableItem(Material.IRON_LEGGINGS)
-            p.inventory.boots = unbreakableItem(Material.DIAMOND_BOOTS)
-        }, 1L)
+        Schedulers.async().run {
+            with (JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.getDatabase("applejuice").getCollection("kits")) {
+                try {
+                    val document = find(Filters.eq("uuid", p.uniqueId)).first()!!
+                    Schedulers.sync().run {
+                        p.inventory.setItem(0, alias(document.getEmbedded(listOf("kit", "slot1"), String::class.java)))
+                        p.inventory.setItem(1, alias(document.getEmbedded(listOf("kit", "slot2"), String::class.java)))
+                        p.inventory.setItem(2, alias(document.getEmbedded(listOf("kit", "slot3"), String::class.java)))
+                        p.inventory.setItem(3, alias(document.getEmbedded(listOf("kit", "slot4"), String::class.java)))
+                        p.inventory.setItem(4, alias(document.getEmbedded(listOf("kit", "slot5"), String::class.java)))
+                        p.inventory.setItem(5, alias(document.getEmbedded(listOf("kit", "slot6"), String::class.java)))
+                        p.inventory.setItem(6, alias(document.getEmbedded(listOf("kit", "slot7"), String::class.java)))
+                        p.inventory.setItem(7, alias(document.getEmbedded(listOf("kit", "slot8"), String::class.java)))
+                        p.inventory.setItem(8, alias(document.getEmbedded(listOf("kit", "slot9"), String::class.java)))
+                        p.inventory.setItem(9, ItemStack(Material.ARROW, 64))
 
+                        p.inventory.helmet = unbreakableItem(Material.IRON_HELMET)
+                        p.inventory.chestplate = unbreakableItem(Material.IRON_CHESTPLATE)
+                        p.inventory.leggings = unbreakableItem(Material.IRON_LEGGINGS)
+                        p.inventory.boots = unbreakableItem(Material.DIAMOND_BOOTS)
+                    }
+                } catch (e: NullPointerException) {
+                    Schedulers.sync().run {
+                        p.inventory.setItem(0, unbreakableItem(Material.DIAMOND_SWORD))
+                        p.inventory.setItem(1, unbreakableItem(Material.FISHING_ROD))
+                        p.inventory.setItem(2, unbreakableItem(Material.BOW))
+                        p.inventory.setItem(3, ItemStack(Material.COBBLESTONE, 64))
+                        p.inventory.setItem(4, ItemStack(Material.WATER_BUCKET))
+                        p.inventory.setItem(5, ItemStack(Material.LAVA_BUCKET))
+                        p.inventory.setItem(6, ItemStack(Material.GOLDEN_CARROT, 16))
+                        p.inventory.setItem(7, ItemStack(Material.GOLDEN_APPLE, 5))
+                        val goldenHeads = ItemStack(Material.GOLDEN_APPLE, 3)
+                        val meta = goldenHeads.itemMeta
+                        meta.displayName = Chat.colored("&6Golden Head")
+                        goldenHeads.itemMeta = meta
+                        p.inventory.setItem(8, goldenHeads)
+                        p.inventory.setItem(9, ItemStack(Material.ARROW, 64))
+
+                        p.inventory.helmet = unbreakableItem(Material.IRON_HELMET)
+                        p.inventory.chestplate = unbreakableItem(Material.IRON_CHESTPLATE)
+                        p.inventory.leggings = unbreakableItem(Material.IRON_LEGGINGS)
+                        p.inventory.boots = unbreakableItem(Material.DIAMOND_BOOTS)
+                    }
+                }
+            }
+        }
         ScatterFeature.scatterSolo(p, Bukkit.getWorld("Arena"), 100)
         p.addPotionEffect(PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 60, 100, true, false))
         p.addPotionEffect(PotionEffect(PotionEffectType.WEAKNESS, 60, 100, true, false))
