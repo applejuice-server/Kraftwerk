@@ -14,7 +14,7 @@ class Chat {
         const val dash = "§8»&7"
         const val dot = "§8●§7"
         const val line = "§8§m-----------------------------------------------------"
-        const val guiLine = "§8§m-------------------------------"
+        const val guiLine = "§8§m-------------------"
 
         fun colored(message: String): String {
             return (ChatColor.translateAlternateColorCodes('&', message))

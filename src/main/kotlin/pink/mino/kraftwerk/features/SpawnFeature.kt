@@ -1,30 +1,134 @@
 package pink.mino.kraftwerk.features
 
-import org.bukkit.Bukkit
-import org.bukkit.GameMode
-import org.bukkit.Location
-import org.bukkit.Material
+import com.mongodb.MongoException
+import com.mongodb.client.model.Filters
+import com.mongodb.client.model.FindOneAndReplaceOptions
+import me.lucko.helper.Schedulers
+import me.lucko.helper.profiles.ProfileRepository
+import org.bson.Document
+import org.bukkit.*
+import org.bukkit.block.Sign
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.event.block.Action
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.FoodLevelChangeEvent
 import org.bukkit.event.inventory.InventoryClickEvent
-import org.bukkit.event.player.PlayerDropItemEvent
-import org.bukkit.event.player.PlayerInteractEvent
-import org.bukkit.event.player.PlayerItemConsumeEvent
+import org.bukkit.event.player.*
+import org.bukkit.plugin.java.JavaPlugin
+import pink.mino.kraftwerk.Kraftwerk
 import pink.mino.kraftwerk.scenarios.ScenarioHandler
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.ItemBuilder
+import java.sql.Timestamp
+import java.util.*
 
 class SpawnFeature : Listener {
     val spawnLocation = Location(Bukkit.getWorld("Spawn"), -221.5, 95.0, -140.5)
+    val editorList = ArrayList<UUID>()
 
     companion object {
         val instance = SpawnFeature()
+    }
+
+    fun sendEditor(p: Player) {
+        editorList.add(p.uniqueId)
+        p.teleport(Location(Bukkit.getWorld("Spawn"), -733.5,134.5, 254.0))
+        p.inventory.clear()
+        p.inventory.armorContents = null
+
+        val sword = ItemBuilder(Material.DIAMOND_SWORD).name(Chat.colored("&aSword")).make()
+        val fishingRod = ItemBuilder(Material.FISHING_ROD).name(Chat.colored("&aRod")).make()
+        val bow = ItemBuilder(Material.BOW).name(Chat.colored("&aBow")).make()
+        val cobblestone = ItemBuilder(Material.COBBLESTONE).name(Chat.colored("&aBlocks")).make()
+        val waterBucket = ItemBuilder(Material.WATER_BUCKET).name(Chat.colored("&aWater")).make()
+        val lavaBucket = ItemBuilder(Material.LAVA_BUCKET).name(Chat.colored("&aLava")).make()
+        val goldenCarrot = ItemBuilder(Material.GOLDEN_CARROT).name(Chat.colored("&aFood")).make()
+        val goldenApples = ItemBuilder(Material.GOLDEN_APPLE).name(Chat.colored("&aGapples")).make()
+        val gHeads = ItemBuilder(Material.GOLDEN_APPLE).name(Chat.colored("&aHeads")).make()
+
+        p.inventory.setItem(0, sword)
+        p.inventory.setItem(1, fishingRod)
+        p.inventory.setItem(2, bow)
+        p.inventory.setItem(3, cobblestone)
+        p.inventory.setItem(4, waterBucket)
+        p.inventory.setItem(5, lavaBucket)
+        p.inventory.setItem(6, goldenCarrot)
+        p.inventory.setItem(7, goldenApples)
+        p.inventory.setItem(8, gHeads)
+
+        Chat.sendMessage(p, "${Chat.dash} Entered the arena kit editor, right click the signs in front of you for more actions.")
+        Chat.sendMessage(p, "&cWarning: Try not to move items outside of your hotbar, it will not be placed in your inventory when you enter the arena.")
+    }
+
+    @EventHandler
+    fun onPlayerInteract(e: PlayerInteractEvent) {
+        if (e.action != Action.RIGHT_CLICK_BLOCK) return
+        if (e.clickedBlock.type == Material.SIGN_POST || e.clickedBlock.type == Material.WALL_SIGN || e.clickedBlock.type == Material.SIGN) {
+            val sign = e.clickedBlock.state as Sign
+            if (sign.getLine(1).toString() == "[Exit]") {
+                exitEditor(e.player)
+            }
+            if (sign.getLine(1).toString() == "[Save Kit]") {
+                Chat.sendMessage(e.player, "${Chat.dash} Saving your kit...")
+                saveKit(e.player)
+            }
+        }
+    }
+
+    fun saveKit(p: Player) {
+        Schedulers.async().run {
+            try {
+                with (JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.getDatabase("applejuice").getCollection("kits")) {
+                    val filter = Filters.eq("uuid", p.uniqueId)
+                    val profile = JavaPlugin.getPlugin(Kraftwerk::class.java).getService(ProfileRepository::class.java).lookupProfile(p.uniqueId).get()
+
+                    val slot1 = if (p.inventory.getItem(0) != null) ChatColor.stripColor(p.inventory.getItem(0).itemMeta.displayName).uppercase() else "NONE"
+                    val slot2 = if (p.inventory.getItem(1) != null) ChatColor.stripColor(p.inventory.getItem(1).itemMeta.displayName).uppercase() else "NONE"
+                    val slot3 = if (p.inventory.getItem(2) != null) ChatColor.stripColor(p.inventory.getItem(2).itemMeta.displayName).uppercase() else "NONE"
+                    val slot4 = if (p.inventory.getItem(3) != null) ChatColor.stripColor(p.inventory.getItem(3).itemMeta.displayName).uppercase() else "NONE"
+                    val slot5 = if (p.inventory.getItem(4) != null) ChatColor.stripColor(p.inventory.getItem(4).itemMeta.displayName).uppercase() else "NONE"
+                    val slot6 = if (p.inventory.getItem(5) != null) ChatColor.stripColor(p.inventory.getItem(5).itemMeta.displayName).uppercase() else "NONE"
+                    val slot7 = if (p.inventory.getItem(6) != null) ChatColor.stripColor(p.inventory.getItem(6).itemMeta.displayName).uppercase() else "NONE"
+                    val slot8 = if (p.inventory.getItem(7) != null) ChatColor.stripColor(p.inventory.getItem(7).itemMeta.displayName).uppercase() else "NONE"
+                    val slot9 = if (p.inventory.getItem(8) != null) ChatColor.stripColor(p.inventory.getItem(8).itemMeta.displayName).uppercase() else "NONE"
+
+                    val document = Document("uuid", profile.uniqueId)
+                        .append("name", profile.name.get())
+                        .append("lastLogin", Timestamp(profile.timestamp))
+                        .append("kit", Document("slot1", (slot1))
+                            .append("slot2", (slot2))
+                            .append("slot3", (slot3))
+                            .append("slot4", (slot4))
+                            .append("slot5", (slot5))
+                            .append("slot6", (slot6))
+                            .append("slot7", (slot7))
+                            .append("slot8", (slot8))
+                            .append("slot9", (slot9))
+                        )
+                    this.findOneAndReplace(filter, document, FindOneAndReplaceOptions().upsert(true))
+                    Schedulers.sync().run {
+                        exitEditor(p)
+                    }
+                    Chat.sendMessage(p, "${Chat.dash} Successfully saved your kit.")
+                    return@run
+                }
+            } catch (e: MongoException) {
+                Chat.sendMessage(p, "${Chat.dash} Failed to save your kit.")
+                exitEditor(p)
+                e.printStackTrace()
+            }
+            return@run
+        }
+    }
+
+    fun exitEditor(p: Player) {
+        send(p)
+        Chat.sendMessage(p, "${Chat.dash} Exited the arena kit editor.")
     }
 
     fun send(p: Player) {
@@ -69,7 +173,11 @@ class SpawnFeature : Listener {
             .addLore("&7Right-click to join the FFA Arena.")
             .make()
         p.inventory.setItem(4, arenaSword)
-
+        val editKit = ItemBuilder(Material.ENDER_CHEST)
+            .name("&cEdit Arena Kit &7(Right Click)")
+            .addLore("&7Right-click to edit your kit for the FFA Arena.")
+            .make()
+        p.inventory.setItem(7, editKit)
         if (ScenarioHandler.getActiveScenarios().contains(ScenarioHandler.getScenario("auction"))) {
             p.inventory.clear()
         }
@@ -88,7 +196,20 @@ class SpawnFeature : Listener {
                 SettingsFeature.instance.data!!.getDouble("config.spawn.pitch").toFloat()
             )
         }
+        editorList.remove(p.uniqueId)
         p.teleport(location)
+    }
+
+    @EventHandler
+    fun onPlayerQuit(e: PlayerQuitEvent) {
+        editorList.remove(e.player.uniqueId)
+    }
+
+    @EventHandler
+    fun onBucketEmpty(e: PlayerBucketEmptyEvent) {
+        if (e.player.world.name == "Spawn") {
+            e.isCancelled = true
+        }
     }
 
     @EventHandler
@@ -127,6 +248,10 @@ class SpawnFeature : Listener {
                         e.isCancelled = true
                         Bukkit.dispatchCommand(e.player, "ckit")
                     }
+                    Chat.colored("&cEdit Arena Kit &7(Right Click)") -> {
+                        e.isCancelled = true
+                        sendEditor(e.player)
+                    }
                 }
             }
         }
@@ -134,7 +259,7 @@ class SpawnFeature : Listener {
 
     @EventHandler
     fun onInventoryClick(e: InventoryClickEvent) {
-        if (e.whoClicked.world.name == "Spawn") {
+        if (e.whoClicked.world.name == "Spawn" && !editorList.contains(e.whoClicked.uniqueId)) {
             e.isCancelled = true
         }
     }
