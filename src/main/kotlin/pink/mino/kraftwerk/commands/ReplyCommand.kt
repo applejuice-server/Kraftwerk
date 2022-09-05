@@ -40,7 +40,7 @@ class ReplyCommand : CommandExecutor {
         Chat.sendMessage(sender, "&7To: &f${target.displayName} &8- &7$message")
         Chat.sendMessage(target, "&7From: &f${sender.displayName} &8- &7$message")
 
-        target.playSound(sender.location, Sound.NOTE_PLING, 10.toFloat(), 0.toFloat())
+        target.playSound(target.location, Sound.NOTE_PLING, 10.toFloat(), 0.toFloat())
         return true
     }
 }
