@@ -103,6 +103,7 @@ class Kraftwerk : ExtendedJavaPlugin() {
         Bukkit.getServer().pluginManager.registerEvents(MobEggsListener(), this)
         Bukkit.getServer().pluginManager.registerEvents(CowboyFeature(), this)
         Bukkit.getServer().pluginManager.registerEvents(ArenaFeature(), this)
+        Bukkit.getServer().pluginManager.registerEvents(OrganizedFights.instance, this)
 
         /* Registering commands */
         getCommand("clear").executor = ClearInventoryCommand()
@@ -142,6 +143,7 @@ class Kraftwerk : ExtendedJavaPlugin() {
         getCommand("helpoplist").executor = HelpopListCommand()
         getCommand("game").executor = GameCommand()
         getCommand("setspawn").executor = SetSpawnCommand()
+        getCommand("orgs").executor = OrganizedFightsCommand()
 
         getCommand("gm").executor = GamemodeCommand()
         getCommand("gamemode").executor = GamemodeCommand()
@@ -246,7 +248,22 @@ class Kraftwerk : ExtendedJavaPlugin() {
         GameState.setState(GameState.LOBBY)
         Log.info("Game state set to Lobby.")
         for (world in Bukkit.getWorldContainer().list()!!) {
-            server.createWorld(WorldCreator(world))
+            if (world == "Spawn" || world == "Arena") {
+                server.createWorld(WorldCreator(world))
+            } else {
+                val wc = WorldCreator(world)
+                if (SettingsFeature.instance.worlds!!.getString("${world}.type").lowercase() == "normal") {
+                    wc.environment(World.Environment.NORMAL)
+                } else if (SettingsFeature.instance.worlds!!.getString("${world}.type").lowercase() == "nether") {
+                    wc.environment(World.Environment.NETHER)
+                } else if (SettingsFeature.instance.worlds!!.getString("${world}.type").lowercase() == "end") {
+                    wc.environment(World.Environment.THE_END)
+                } else {
+                    wc.environment(World.Environment.NORMAL)
+                }
+                server.createWorld(wc)
+            }
+
             Log.info("World $world loaded.")
         }
         for (world in Bukkit.getWorlds()) {

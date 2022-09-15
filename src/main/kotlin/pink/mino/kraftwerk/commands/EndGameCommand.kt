@@ -68,7 +68,7 @@ class EndGameCommand : CommandExecutor {
             } else {
                 winnersList.add(player.uniqueId.toString())
                 kills[player.uniqueId.toString()] = SettingsFeature.instance.data!!.getInt("game.kills." + player.name)
-                if (!ConfigOptionHandler.getOption("statless")!!.enabled) JavaPlugin.getPlugin(Kraftwerk::class.java).statsHandler.lookupStatsPlayer(player)!!.wins++
+                if (!ConfigOptionHandler.getOption("statless")!!.enabled) JavaPlugin.getPlugin(Kraftwerk::class.java).statsHandler.lookupStatsPlayer(player).wins++
             }
         }
 
@@ -133,6 +133,7 @@ class EndGameCommand : CommandExecutor {
         SettingsFeature.instance.data!!.set("game.list", ArrayList<String>())
         SettingsFeature.instance.data!!.set("game.kills", null)
         SettingsFeature.instance.data!!.set("game.nether", false)
+        SettingsFeature.instance.data!!.set("game.nether.nether", false)
         SettingsFeature.instance.data!!.set("whitelist.requests", false)
         SettingsFeature.instance.data!!.set("whitelist.list", ArrayList<String>())
         SettingsFeature.instance.data!!.set("matchpost.opens", null)

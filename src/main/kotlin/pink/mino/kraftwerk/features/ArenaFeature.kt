@@ -67,7 +67,7 @@ class ArenaFeature : Listener {
                 return ItemStack(Material.LAVA_BUCKET)
             }
             "FOOD" -> {
-                return ItemStack(Material.GOLDEN_CARROT, 16)
+                return ItemStack(Material.GOLDEN_CARROT, 64)
             }
             "GAPPLES" -> {
                 return ItemStack(Material.GOLDEN_APPLE, 5)
@@ -132,7 +132,7 @@ class ArenaFeature : Listener {
                         p.inventory.setItem(3, ItemStack(Material.COBBLESTONE, 64))
                         p.inventory.setItem(4, ItemStack(Material.WATER_BUCKET))
                         p.inventory.setItem(5, ItemStack(Material.LAVA_BUCKET))
-                        p.inventory.setItem(6, ItemStack(Material.GOLDEN_CARROT, 16))
+                        p.inventory.setItem(6, ItemStack(Material.GOLDEN_CARROT, 64))
                         p.inventory.setItem(7, ItemStack(Material.GOLDEN_APPLE, 5))
                         val goldenHeads = ItemStack(Material.GOLDEN_APPLE, 3)
                         val meta = goldenHeads.itemMeta
