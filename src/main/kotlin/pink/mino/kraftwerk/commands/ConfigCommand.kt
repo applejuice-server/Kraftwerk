@@ -44,6 +44,15 @@ class ConfigCommand : CommandExecutor {
         }
     }
 
+    private fun getSpecials(option: String): String {
+        val op = SettingsFeature.instance.data!!.getString("game.specials.${option}").toBoolean()
+        return if (op) {
+            "&aEnabled"
+        } else {
+            "&cDisabled"
+        }
+    }
+
     private fun getEventTime(event: String): Int {
         return SettingsFeature.instance.data!!.getInt("game.events.${event}")
     }
@@ -277,6 +286,9 @@ class ConfigCommand : CommandExecutor {
             .addLore(" &7Strength Potions ${Chat.dash} &f${getNether("strengthpotions")} ")
             .addLore(" &7Splash Potions ${Chat.dash} &f${getNether("splashpotions")} ")
             .addLore(" ")
+            .addLore(" &7Portal Trapping ${Chat.dash} &f${getRule("portaltrapping")} ")
+            .addLore(" &7Portal Camping ${Chat.dash} &f${getRule("portalcamping")} ")
+            .addLore(" ")
             .make()
         val editConfig = ItemBuilder(Material.COMMAND)
             .name(" &4&lEdit Config ")
@@ -298,20 +310,35 @@ class ConfigCommand : CommandExecutor {
             .addLore(" &7Running At Meetup ${Chat.dash} &f${getRule("runningatmu")}")
             .addLore(" ")
             .make()
+        val specialsConfig = ItemBuilder(Material.BLAZE_POWDER)
+            .name(" &4&lSpecial Options ")
+            .addLore(" ")
+            .addLore(" &7Fire Resistance before PvP ${Chat.dash} &f${getSpecials("frbp")} ")
+            .addLore(" &7Absorption before PvP ${Chat.dash} &f${getSpecials("abp")} ")
+            .addLore(" &7Block Decay @ Meetup ${Chat.dash} &f${getSpecials("meetupblockdecay")} ")
+            .addLore(" ")
+            .make()
+
         if (sender.hasPermission("uhc.staff")) {
-            gui.item(22, editConfig).onClick runnable@ {
+            gui.item(21, editConfig).onClick runnable@ {
                 it.isCancelled = true
                 if (sender.hasPermission("uhc.staff")) {
                     Bukkit.dispatchCommand(sender, "editconfig")
                 }
             }
-            gui.item(21, pvpConfig).onClick runnable@ {
+            gui.item(23, specialsConfig).onClick runnable@ {
+                it.isCancelled = true
+                if (sender.hasPermission("uhc.staff")) {
+                    Bukkit.dispatchCommand(sender, "editconfig specials")
+                }
+            }
+            gui.item(20, pvpConfig).onClick runnable@ {
                 it.isCancelled = true
                 if (sender.hasPermission("uhc.staff")) {
                     Bukkit.dispatchCommand(sender, "editconfig rules")
                 }
             }
-            gui.item(23, netherConfig).onClick runnable@ {
+            gui.item(24, netherConfig).onClick runnable@ {
                 it.isCancelled = true
                 if (sender.hasPermission("uhc.staff")) {
                     Bukkit.dispatchCommand(sender, "editconfig nether")
@@ -328,6 +355,12 @@ class ConfigCommand : CommandExecutor {
                 it.isCancelled = true
                 if (sender.hasPermission("uhc.staff")) {
                     Bukkit.dispatchCommand(sender, "editconfig nether")
+                }
+            }
+            gui.item(22, specialsConfig).onClick runnable@ {
+                it.isCancelled = true
+                if (sender.hasPermission("uhc.staff")) {
+                    Bukkit.dispatchCommand(sender, "editconfig specials")
                 }
             }
         }

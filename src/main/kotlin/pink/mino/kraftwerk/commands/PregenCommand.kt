@@ -1,6 +1,7 @@
 package pink.mino.kraftwerk.commands
 
 import com.wimbli.WorldBorder.Config
+import me.lucko.helper.utils.Log
 import org.bukkit.*
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
@@ -63,7 +64,7 @@ class PregenCommand : CommandExecutor {
                 if (file.name.lowercase() == pregenConfig.name.lowercase()) {
                     Files.walk(file.toPath()).sorted(Comparator.reverseOrder()).map(Path::toFile).forEach { it.delete() }
                     file.delete()
-                    print("Deleted world file for ${pregenConfig.name}.")
+                    Log.info("Deleted world file for ${pregenConfig.name}.")
                 }
             }
         }
@@ -71,6 +72,10 @@ class PregenCommand : CommandExecutor {
 
         val wc = WorldCreator(pregenConfig.name)
         wc.environment(pregenConfig.type)
+        if (pregenConfig.type === World.Environment.NETHER) {
+            SettingsFeature.instance.data!!.set("game.nether.nether", true)
+            SettingsFeature.instance.saveData()
+        }
         wc.type(WorldType.NORMAL)
 
         if (pregenConfig.generator == PregenerationGenerationTypes.CITY_WORLD) {
@@ -78,11 +83,12 @@ class PregenCommand : CommandExecutor {
         }
         val world = wc.createWorld()
         world.difficulty = Difficulty.HARD
-        print("Created world ${pregenConfig.name}.")
-        SettingsFeature.instance.data!!.set("pregen.world", world.name)
+        Log.info("Created world ${pregenConfig.name}.")
+        if (pregenConfig.type != World.Environment.NETHER && pregenConfig.type != World.Environment.THE_END) SettingsFeature.instance.data!!.set("pregen.world", world.name)
         SettingsFeature.instance.worlds!!.set("${world.name}.name", world.name)
         SettingsFeature.instance.worlds!!.set("${world.name}.madeby", pregenConfig.player.uniqueId.toString())
         SettingsFeature.instance.worlds!!.set("${world.name}.date", Date().toString())
+        SettingsFeature.instance.worlds!!.set("${world.name}.type", pregenConfig.type.toString().uppercase())
         SettingsFeature.instance.worlds!!.set("${world.name}.orerates.gold", pregenConfig.goldore)
         SettingsFeature.instance.worlds!!.set("${world.name}.orerates.diamond", pregenConfig.diamondore)
         SettingsFeature.instance.worlds!!.set("${world.name}.canerate", pregenConfig.canerate)
@@ -140,7 +146,7 @@ class PregenCommand : CommandExecutor {
     override fun onCommand(sender: CommandSender, command: Command, label: String?, args: Array<String>): Boolean {
         if (sender is Player) {
             if (!sender.hasPermission("uhc.staff.pregen")) {
-                Chat.sendMessage(sender, "{ChatColor.RED}You don't have permission to use this command.")
+                Chat.sendMessage(sender, "${ChatColor.RED}You don't have permission to use this command.")
                 return false
             }
         }

@@ -8,6 +8,7 @@ import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.inventory.InventoryType
+import org.bukkit.event.player.PlayerPortalEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.potion.PotionEffect
@@ -61,6 +62,8 @@ enum class Events {
 }
 
 class UHCTask : BukkitRunnable() {
+    val portalLocations = hashMapOf<UUID, Location>()
+
     val finalHeal = SettingsFeature.instance.data!!.getInt("game.events.final-heal") * 60 + 45
     val pvp = ((SettingsFeature.instance.data!!.getInt("game.events.pvp") + SettingsFeature.instance.data!!.getInt("game.events.final-heal")) * 60) + 45
     val meetup = ((SettingsFeature.instance.data!!.getInt("game.events.pvp") + SettingsFeature.instance.data!!.getInt("game.events.final-heal") + SettingsFeature.instance.data!!.getInt("game.events.meetup")) * 60) + 45
@@ -180,6 +183,13 @@ class UHCTask : BukkitRunnable() {
                 }
                 Bukkit.broadcastMessage(" ")
                 for (player in Bukkit.getOnlinePlayers()) {
+
+                    if (SettingsFeature.instance.data!!.getBoolean("game.specials.frbp")) {
+                        player.addPotionEffect(PotionEffect(PotionEffectType.FIRE_RESISTANCE, pvp * 20, 0, false, false))
+                    }
+                    if (SettingsFeature.instance.data!!.getBoolean("game.specials.abp")) {
+                        player.addPotionEffect(PotionEffect(PotionEffectType.ABSORPTION, pvp * 20, 0, false, false))
+                    }
                     Chat.sendMessage(player, "&7You may &abegin&7! The host for this game is &c${SettingsFeature.instance.data!!.getString("game.host")}&7!")
 
                     Chat.sendMessage(player, "&7Scenarios: &f${scenarios.joinToString(", ")}&7")
@@ -189,7 +199,7 @@ class UHCTask : BukkitRunnable() {
                     player.sendTitle(Chat.colored("&a&lGO!"), Chat.colored("&7You may now play the game, do &c/helpop&7 for help!"))
                     if (!SpecFeature.instance.getSpecs().contains(player.name)) {
                         if (SettingsFeature.instance.data!!.getInt("game.starterfood") > 0) {
-                            player.inventory.setItem(0, ItemStack(Material.COOKED_BEEF, SettingsFeature.instance.data!!.getInt("game.starterfood")))
+                            player.inventory.addItem(ItemStack(Material.COOKED_BEEF, SettingsFeature.instance.data!!.getInt("game.starterfood")))
                         }
                         list.add(player.name)
                         if (!ConfigOptionHandler.getOption("statless")!!.enabled) JavaPlugin.getPlugin(Kraftwerk::class.java).statsHandler.getStatsPlayer(player)!!.gamesPlayed++
@@ -240,6 +250,16 @@ class UHCTask : BukkitRunnable() {
                     Chat.sendCenteredMessage(player, "&cMeetup&7 will start in &c${rawMeetup / 60} minutes&7.")
                     Chat.sendMessage(player, Chat.line)
                     player.playSound(player.location, Sound.ANVIL_LAND, 10F, 1F)
+                    if (SettingsFeature.instance.data!!.getBoolean("game.specials.frbp")) {
+                        if (player.hasPotionEffect(PotionEffectType.FIRE_RESISTANCE)) {
+                            player.removePotionEffect(PotionEffectType.FIRE_RESISTANCE)
+                        }
+                    }
+                    if (SettingsFeature.instance.data!!.getBoolean("game.specials.abp")) {
+                        if (player.hasPotionEffect(PotionEffectType.ABSORPTION)) {
+                            player.removePotionEffect(PotionEffectType.ABSORPTION)
+                        }
+                    }
                 }
                 Bukkit.getPluginManager().callEvent(PvPEnableEvent())
             }
@@ -259,9 +279,20 @@ class UHCTask : BukkitRunnable() {
                 for (scenario in ScenarioHandler.getActiveScenarios()) {
                     scenario.onMeetup()
                 }
+                SettingsFeature.instance.data!!.set("game.nether.nether", false)
+                SettingsFeature.instance.saveData()
                 Bukkit.broadcastMessage(Chat.colored(Chat.line))
                 UHCFeature().scheduleShrink(500)
                 currentEvent = Events.BORDER_SHRINK_ONE
+            }
+            meetup + 5 -> {
+                for (player in Bukkit.getOnlinePlayers()) {
+                    if (player.world.name.endsWith("_nether")) {
+                        player.playSound(player.location, Sound.ENDERDRAGON_GROWL, 10F, 1F)
+                        player.teleport(portalLocations[player.uniqueId]!!)
+                        Chat.sendMessage(player, "${Chat.dash} You've been teleported to your previous portal location as it's meetup.")
+                    }
+                }
             }
             meetup + 300 -> {
                 UHCFeature().scheduleShrink(250)
@@ -300,6 +331,10 @@ class UHCTask : BukkitRunnable() {
 
 class UHCFeature : Listener {
     var scattering = false
+    @EventHandler
+    fun onPortalEvent(e: PlayerPortalEvent) {
+        if (e.player.world.name == SettingsFeature.instance.data!!.getString("pregen.world")) JavaPlugin.getPlugin(Kraftwerk::class.java).game!!.portalLocations[e.player.uniqueId] = e.player.location
+    }
 
     fun start(mode: String) {
         GameState.setState(GameState.WAITING)

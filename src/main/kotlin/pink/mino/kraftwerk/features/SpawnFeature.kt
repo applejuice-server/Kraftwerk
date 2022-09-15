@@ -22,8 +22,7 @@ import org.bukkit.event.player.*
 import org.bukkit.plugin.java.JavaPlugin
 import pink.mino.kraftwerk.Kraftwerk
 import pink.mino.kraftwerk.scenarios.ScenarioHandler
-import pink.mino.kraftwerk.utils.Chat
-import pink.mino.kraftwerk.utils.ItemBuilder
+import pink.mino.kraftwerk.utils.*
 import java.sql.Timestamp
 import java.util.*
 
@@ -136,6 +135,12 @@ class SpawnFeature : Listener {
         p.health = 20.0
         p.allowFlight = false
         p.isFlying = false
+        if (GameState.currentState == GameState.LOBBY) {
+            if (PerkChecker.checkPerks(p).contains(Perk.SPAWN_FLY)) {
+                p.allowFlight = true
+                p.isFlying = true
+            }
+        }
         p.foodLevel = 20
         val effects = p.activePotionEffects
         for (effect in effects) {

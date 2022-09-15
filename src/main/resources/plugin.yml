@@ -300,6 +300,11 @@ commands:
     aliases:
       - ss
     description: Sets the spawn point.
+  orgs:
+    aliases:
+      - org
+      - organizedfights
+    description: Setup organized fights.
 depend:
   - ProtocolLib
   - Vault

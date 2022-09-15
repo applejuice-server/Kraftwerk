@@ -40,6 +40,12 @@ class ConfigOptionHandler {
             addOption(TierIIOption())
             addOption(StrengthPotionOption())
             addOption(SplashPotionsOption())
+            addOption(PortalCampingOption())
+            addOption(PortalTrappingOption())
+
+            addOption(MeetupBlockDecayOption())
+            addOption(FireResistanceBeforePvPOption())
+            addOption(AbsorptionBeforePvPOption())
 
             configOptions.sortWith(Comparator.comparing(ConfigOption::name))
         }

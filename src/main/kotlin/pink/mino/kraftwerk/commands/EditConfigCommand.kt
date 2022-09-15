@@ -108,6 +108,15 @@ class EditConfigCommand : CommandExecutor {
                 player.closeInventory()
                 Bukkit.dispatchCommand(player, "editconfig rules")
             }
+            val specials = ItemBuilder(Material.BLAZE_POWDER)
+                .name("&cSpecial Options")
+                .addLore("&7Click here to edit special options.")
+                .make()
+            gui.item(8, specials).onClick runnable@ {
+                it.isCancelled = true
+                player.closeInventory()
+                Bukkit.dispatchCommand(player, "editconfig specials")
+            }
         } else if (args[0].lowercase() == "options") {
             gui = GuiBuilder().rows(2).name(ChatColor.translateAlternateColorCodes('&', "&4Edit UHC Config")).owner(sender)
             size = 17
@@ -576,6 +585,31 @@ class EditConfigCommand : CommandExecutor {
                         Chat.colored("&8Right Click&7 to subtract &cone&7.")
                     )
                     it.currentItem.itemMeta = meta
+                }
+            }
+        }  else if (args[0].lowercase() == "specials") {
+            gui = GuiBuilder().rows(1).name(ChatColor.translateAlternateColorCodes('&', "&4Edit UHC Config")).owner(sender)
+            size = 8
+            var iterator = 0
+            for (option in ConfigOptionHandler.configOptions) {
+                if (option.category === "specials") {
+                    val item = ItemStack(option.material)
+                    val itemMeta = item.itemMeta
+                    var color: String = if (option.enabled) "&a"
+                    else "&c"
+                    itemMeta.displayName = Chat.colored("${color}${option.name}")
+                    itemMeta.lore = Chat.scenarioTextWrap(Chat.colored("&7${option.description}"), 40)
+                    item.itemMeta = itemMeta
+                    gui.item(iterator, item).onClick runnable@ {
+                        it.isCancelled = true
+                        ConfigOptionHandler.getOption(option.id)?.toggle()
+                        color = if (option.enabled) "&a"
+                        else "&c"
+                        val meta = it.currentItem.itemMeta
+                        meta.displayName = Chat.colored("${color}${option.name}")
+                        it.currentItem.itemMeta = meta
+                    }
+                    iterator++
                 }
             }
         }
