@@ -56,6 +56,13 @@ class ScenarioHandler {
             addScenario(ChampionsScenario())
             addScenario(DoNotDisturbScenario())
             addScenario(CreeperPongScenario())
+            addScenario(BowlessScenario())
+            addScenario(NoFallScenario())
+            addScenario(LoveAtFirstSightScenario())
+            addScenario(GenieScenario())
+            addScenario(UnendurableHealingScenario())
+            addScenario(AssaultAndBatteryScenario())
+            addScenario(GappleRouletteScenario())
             scenarios.sortWith(Comparator.comparing(Scenario::name))
         }
 
