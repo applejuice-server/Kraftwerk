@@ -39,7 +39,14 @@ class GoldenHeadsOption : ConfigOption(
     }
     val player = e.entity
     if (player.world.name != "Arena") {
-      if (ScenarioHandler.getScenario("goldenretriever")!!.enabled || ScenarioHandler.getScenario("barebones")!!.enabled || ScenarioHandler.getScenario("graverobbers")!!.enabled || ScenarioHandler.getScenario("timebomb")!!.enabled || ScenarioHandler.getScenario("champions")!!.enabled) return
+      if (ScenarioHandler.getScenario("goldenretriever")!!.enabled || ScenarioHandler.getScenario("barebones")!!.enabled || ScenarioHandler.getScenario("graverobbers")!!.enabled || ScenarioHandler.getScenario("timebomb")!!.enabled || ScenarioHandler.getScenario("graverobbers")!!.enabled) {
+        val skull = ItemBuilder(Material.SKULL_ITEM)
+          .toSkull()
+          .setOwner(player.name)
+          .make()
+        e.drops.add(skull)
+        return
+      }
       player.location.block.type = Material.NETHER_FENCE
       player.location.add(0.0, 1.0, 0.0).block.type = Material.SKULL
 

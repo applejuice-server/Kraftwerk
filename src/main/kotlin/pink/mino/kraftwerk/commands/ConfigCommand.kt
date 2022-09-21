@@ -80,7 +80,7 @@ class ConfigCommand : CommandExecutor {
             sender.sendMessage("You can't use this command as you technically aren't a player.")
             return false
         }
-        val gui = GuiBuilder().rows(3).name(ChatColor.translateAlternateColorCodes('&', "&4UHC Config")).owner(sender)
+        val gui = GuiBuilder().rows(3).name(ChatColor.translateAlternateColorCodes('&', "&4&lGame Configuration")).owner(sender)
 
         sender.sendMessage(Chat.colored("${Chat.dash} Opening the UHC configuration..."))
         val options = ItemBuilder(Material.LAVA_BUCKET)
@@ -88,6 +88,7 @@ class ConfigCommand : CommandExecutor {
             .addLore(" ")
             .addLore(" &7Horses ${Chat.dash} &7${getOption("horses")} ")
             .addLore(" &7Starter Food ${Chat.dash} &f${SettingsFeature.instance.data!!.getInt("game.starterfood")} ")
+            .addLore(" &7Permaday ${Chat.dash} &f${getOption("permaday")} ")
             .addLore(" ")
             .addLore(" &7Statless ${Chat.dash} &7${getOption("statless")} ")
             .addLore(" &7Double Arrows ${Chat.dash} &7${getOption("doublearrows")}")
@@ -194,6 +195,7 @@ class ConfigCommand : CommandExecutor {
             }
         }
         teamConfig.addLore(" &7Team Management ${Chat.dash} &f${ffa} ").addLore(" ")
+        teamConfig.addLore(" &7Friendly Fire ${Chat.dash} &f${if (SettingsFeature.instance.data!!.getBoolean("game.friendlyFire")) "&aEnabled" else "&cDisabled"}")
         val teamConf = teamConfig.make()
         gui.item(12, teamConf).onClick runnable@ {
             it.isCancelled = true
@@ -264,6 +266,7 @@ class ConfigCommand : CommandExecutor {
             .addLore(" ")
             .addLore(" &7Diamond Ore Rates ${Chat.dash} &f${diaRates} ")
             .addLore(" &7Gold Ore Rates ${Chat.dash} &f${goldRates} ")
+            .addLore(" &7Ores Outside Caves ${Chat.dash} &f${if (SettingsFeature.instance.worlds!!.getBoolean("${SettingsFeature.instance.data!!.get("pregen.world")}.oresoutsidecaves")) "&aEnabled" else "&cDisabled"} ")
             .addLore(" ")
             .addLore(" &7Stripmining ${Chat.dash} &f${getRule("stripmining")} ")
             .addLore(" &7Rollercoastering ${Chat.dash} &f${getRule("rollarcoastering")} ")
