@@ -19,6 +19,7 @@ class MeetupBlockDecayOption : ConfigOption(
     @EventHandler
     fun onBlockPlace(e: BlockPlaceEvent) {
         if (!enabled) return
+        if (JavaPlugin.getPlugin(Kraftwerk::class.java).game == null) return
         if (JavaPlugin.getPlugin(Kraftwerk::class.java).game!!.timer <= JavaPlugin.getPlugin(Kraftwerk::class.java).game!!.meetup) return
         Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
             BlockAnimation().blockCrackAnimation(e.player, e.block, 1)

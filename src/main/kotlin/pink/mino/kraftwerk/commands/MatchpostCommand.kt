@@ -84,19 +84,29 @@ class ScheduleBroadcast(private val opening: String) : BukkitRunnable() {
             cancel()
         }
         if (getTime() == removeFifteenMinutes(opening)) {
+            cancel()
             val host = Bukkit.getOfflinePlayer(SettingsFeature.instance.data!!.getString("game.host"))
             var embed = EmbedBuilder()
             embed.setColor(Color(255, 61, 61))
             embed.setTitle(SettingsFeature.instance.data!!.getString("matchpost.host"))
             embed.setThumbnail("https://visage.surgeplay.com/bust/512/${host.uniqueId}")
             val scenarios = SettingsFeature.instance.data!!.getStringList("matchpost.scenarios")
-            val opening = (System.currentTimeMillis() / 1000L) + (900000L) / 1000L
-            embed.addField("Teams", SettingsFeature.instance.data!!.getString("matchpost.team"), true)
-            embed.addField("Opening", "<t:${opening}:t> (<t:${opening}:R>)", true)
-            embed.addField("Scenarios", scenarios.joinToString(", "), true)
+            val fr = (System.currentTimeMillis() / 1000L) + (900000L) / 1000L
+            val tweet = JavaPlugin.getPlugin(Kraftwerk::class.java).twitterInstance.updateStatus(
+                "\uD83E\uDDC3 applejuice | NA\n" +
+                        "\n" +
+                        "\uD83D\uDC65 ${SettingsFeature.instance.data!!.getString("matchpost.team")} - \uD83D\uDD79 ${scenarios.joinToString(", ")}\n" +
+                        "\n" +
+                        "⏰ Opening at: ${opening} UTC (in 15 minutes) | time.is/UTC\n" +
+                        "⌨ Version: 1.8.x | IP: uhc.applejuice.bar"
+            )
+            embed.addField("Teams", SettingsFeature.instance.data!!.getString("matchpost.team"), false)
+            embed.addField("Scenarios", scenarios.joinToString(", "), false)
             var flag = ":flag_ca:"
-            embed.addField("IP", "$flag - `uhc.applejuice.bar`", true)
-            embed.addField("Matchpost", "https://hosts.uhc.gg/m/${SettingsFeature.instance.data!!.getInt("matchpost.id")}", true)
+            embed.addField("IP", "$flag `uhc.applejuice.bar` (1.8.x)", false)
+            Bukkit.broadcastMessage("${Chat.prefix} Matchpost posted on discord & twitter! View the tweet here: &b&uhttps://twitter.com/applejuiceuhc/status/${tweet.id}")
+            embed.addField("Opening", "<t:${fr}:t> (<t:${fr}:R>)", false)
+            embed.addField("Matchpost", "[uhc.gg](https://hosts.uhc.gg/m/${SettingsFeature.instance.data!!.getInt("matchpost.id")}) | [Twitter](https://twitter.com/applejuiceuhc/status/${tweet.id})", false)
             Discord.instance!!.getTextChannelById(937811305102999573)!!.sendMessage("<@&793406242013839381> (Use `/togglematches` to toggle matchpost alerts)").queue()
             Discord.instance!!.getTextChannelById(937811305102999573)!!.sendMessageEmbeds(embed.build()).queue()
             embed = EmbedBuilder()
@@ -108,7 +118,6 @@ class ScheduleBroadcast(private val opening: String) : BukkitRunnable() {
             SettingsFeature.instance.data!!.set("whitelist.requests", true)
             SettingsFeature.instance.data!!.set("matchpost.posted", true)
             SettingsFeature.instance.saveData()
-            cancel()
         }
     }
 }
