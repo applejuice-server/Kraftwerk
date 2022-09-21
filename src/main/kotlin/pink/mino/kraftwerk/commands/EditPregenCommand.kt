@@ -111,6 +111,13 @@ class EditPregenCommand : CommandExecutor {
                 Chat.sendMessage(sender, "${Chat.dash} &7Generator set to &c${pregenConfig.generator.name.uppercase()}&7.")
             }
         } else if (args[0] == "settings") {
+            val oresOutsideCaves = ItemBuilder(Material.DIAMOND_PICKAXE)
+                .name("&7Ores Outside Caves: &c${pregenConfig.oresOutsideCaves}")
+                .addLore("&7Click to toggle spawning ores outside caves.")
+                .addLore(" ")
+                .addLore("&8Left Click &7to toggle spawning ores outside caves.")
+                .addLore(" ")
+                .make()
             val clearTrees = ItemBuilder(Material.LEAVES)
                 .name("&7Clear Trees: &c${pregenConfig.clearTrees}")
                 .addLore("&7Click to toggle clearing trees.")
@@ -149,6 +156,14 @@ class EditPregenCommand : CommandExecutor {
                 .addLore("&8Right Click: &c-5")
                 .addLore(" ")
                 .make()
+            gui.item(1, oresOutsideCaves).onClick {
+                it.isCancelled = true
+                pregenConfig.oresOutsideCaves = !pregenConfig.oresOutsideCaves
+                val meta = it.currentItem.itemMeta
+                meta.displayName = Chat.colored("&7Ores Outside Caves: &c${pregenConfig.oresOutsideCaves}")
+                it.currentItem.itemMeta = meta
+                Chat.sendMessage(sender, "${Chat.dash} &7Ores outside caves set to &c${pregenConfig.oresOutsideCaves}&7.")
+            }
             gui.item(2, clearTrees).onClick {
                 it.isCancelled = true
                 pregenConfig.clearTrees = !pregenConfig.clearTrees

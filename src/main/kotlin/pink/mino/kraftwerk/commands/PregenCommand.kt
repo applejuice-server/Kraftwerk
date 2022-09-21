@@ -32,6 +32,7 @@ open class PregenConfig(val player: OfflinePlayer, val name: String) {
     var diamondore: Int = 0
     var goldore: Int = 0
     var canerate: Int = 25
+    var oresOutsideCaves: Boolean = true
 }
 
 class PregenConfigHandler {
@@ -92,6 +93,7 @@ class PregenCommand : CommandExecutor {
         SettingsFeature.instance.worlds!!.set("${world.name}.orerates.gold", pregenConfig.goldore)
         SettingsFeature.instance.worlds!!.set("${world.name}.orerates.diamond", pregenConfig.diamondore)
         SettingsFeature.instance.worlds!!.set("${world.name}.canerate", pregenConfig.canerate)
+        SettingsFeature.instance.worlds!!.set("${world.name}.oresOutsideCaves", pregenConfig.oresOutsideCaves)
         SettingsFeature.instance.saveWorlds()
 
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
@@ -168,6 +170,18 @@ class PregenCommand : CommandExecutor {
                     Chat.sendMessage(sender, "${Chat.dash} There is no valid pregeneration task running.")
                 }
                 return true
+            } else if (args[0] == "pause") {
+                if (Config.fillTask.valid()) {
+                    if (Config.fillTask.isPaused) {
+                        Bukkit.broadcastMessage(Chat.colored("${Chat.dash} &a&oResuming&7 the pregeneration task."))
+                        Config.fillTask.pause(false)
+                    } else {
+                        Chat.sendMessage(sender, "${Chat.dash} &c&lPausing&7 the pregeneration task.")
+                        Config.fillTask.pause(true)
+                    }
+                } else {
+                    Chat.sendMessage(sender, "${Chat.dash} There is no valid pregeneration task running.")
+                }
             } else {
                 val gui = GuiBuilder().name("&4Pregeneration Config").rows(1).owner(sender as Player)
                 Chat.sendMessage(sender, "${Chat.dash} &7Opening pregeneration config for &7'&f${args[0]}&7'...")
@@ -184,10 +198,11 @@ class PregenCommand : CommandExecutor {
                     .addLore(" ")
                     .addLore("&7Clear Water: &c${if (pregenConfig.clearWater) "&aEnabled" else "&cDisabled"}")
                     .addLore("&7Clear Trees: &c${if (pregenConfig.clearTrees) "&aEnabled" else "&cDisabled"}")
+                    .addLore("&7Ores Outside Caves: &c${if (pregenConfig.oresOutsideCaves) "&aEnabled" else "&cDisabled"}")
                     .addLore("&7Rates: ")
-                    .addLore(" &6Gold Ore: &c${pregenConfig.goldore}% Removed")
-                    .addLore(" &bDiamond Ore: &c${pregenConfig.diamondore}% Removed")
-                    .addLore(" &aSugar Cane: &c${pregenConfig.canerate}% Increased")
+                    .addLore(" ${Chat.dot} &6Gold Ore: &c${pregenConfig.goldore}% Removed")
+                    .addLore(" ${Chat.dot} &bDiamond Ore: &c${pregenConfig.diamondore}% Removed")
+                    .addLore(" ${Chat.dot} &aSugar Cane: &c${pregenConfig.canerate}% Increased")
                     .addLore(Chat.guiLine)
                     .make()
                 val submit = ItemBuilder(Material.EMERALD)
