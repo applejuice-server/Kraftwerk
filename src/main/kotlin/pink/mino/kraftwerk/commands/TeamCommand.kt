@@ -617,12 +617,16 @@ class TeamCommand : CommandExecutor {
             if (args[1] == "on") {
                 for (team in TeamsFeature.manager.getTeams()) {
                     team.setAllowFriendlyFire(true)
+                    SettingsFeature.instance.data!!.set("game.friendlyFire", true)
+                    SettingsFeature.instance.saveData()
                 }
                 Bukkit.broadcastMessage(Chat.colored("${Chat.dash} Friendly fire has been enabled by &f${sender.name}&7."))
             }
             if (args[1] == "off") {
                 for (team in TeamsFeature.manager.getTeams()) {
                     team.setAllowFriendlyFire(false)
+                    SettingsFeature.instance.data!!.set("game.friendlyFire", false)
+                    SettingsFeature.instance.saveData()
                 }
                 Bukkit.broadcastMessage(Chat.colored("${Chat.dash} Friendly fire has been disabled by &f${sender.name}&7."))
             }

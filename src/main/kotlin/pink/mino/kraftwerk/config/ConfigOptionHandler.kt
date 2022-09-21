@@ -47,6 +47,8 @@ class ConfigOptionHandler {
             addOption(FireResistanceBeforePvPOption())
             addOption(AbsorptionBeforePvPOption())
 
+            addOption(PermadayOption())
+
             configOptions.sortWith(Comparator.comparing(ConfigOption::name))
         }
 

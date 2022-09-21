@@ -13,6 +13,15 @@ import java.util.*
 class OreLimiterListener : Listener {
 
     private var random = Random()
+    val ores = listOf(
+        Material.COAL_ORE,
+        Material.IRON_ORE,
+        Material.GOLD_ORE,
+        Material.REDSTONE_ORE,
+        Material.LAPIS_ORE,
+        Material.DIAMOND_ORE,
+        Material.EMERALD_ORE
+    )
 
     @EventHandler
     fun on(event: ChunkModifiableEvent) {
@@ -23,6 +32,7 @@ class OreLimiterListener : Listener {
         // Diamond/Gold removed from SettingsFeature
         val goldRate = SettingsFeature.instance.worlds!!.getInt(chunk.world.name + ".orerates.gold")
         val diamondRate = SettingsFeature.instance.worlds!!.getInt(chunk.world.name + ".orerates.diamond")
+        val oresOutsideCaves = SettingsFeature.instance.worlds!!.getBoolean("${chunk.world.name}.oresOutsideCaves")
 
         for (x in 0..16) {
             for (y in 0..64) {
@@ -33,11 +43,27 @@ class OreLimiterListener : Listener {
 
                     val type = block.type
 
-                    if (type != Material.REDSTONE_ORE && type != Material.DIAMOND_ORE && type != Material.GOLD_ORE) continue
+                    if (!ores.contains(type)) continue
 
                     val vein: List<Block> = BlockUtil().getVein(block)
                     checked.addAll(vein)
 
+                    if (!oresOutsideCaves) {
+                        var good = false
+                        vein.forEach {
+                            BlockUtil().getBlocks(it, 2)
+                                .forEach { block -> if (block.type == Material.AIR ||
+                                    block.type == Material.WATER ||
+                                    block.type == Material.STATIONARY_WATER ||
+                                    block.type == Material.LAVA ||
+                                    block.type == Material.STATIONARY_LAVA
+                                ) good = true }
+                        }
+                        if (!good) {
+                            vein.forEach { it.type = Material.STONE }
+                            continue
+                        }
+                    }
                     if (type == Material.REDSTONE_ORE) {
                         if ((random.nextInt(99) + 1) <= 40) {
                             vein.forEach { it.type = Material.STONE }
@@ -46,7 +72,7 @@ class OreLimiterListener : Listener {
                         if ((random.nextInt(99) + 1) <= goldRate) {
                             vein.forEach { it.type = Material.STONE }
                         }
-                    } else {
+                    } else if (type == Material.DIAMOND_ORE) {
                         if ((random.nextInt(99) + 1) <= diamondRate) {
                             vein.forEach { it.type = Material.STONE }
                         }
