@@ -202,7 +202,6 @@ class UHCTask : BukkitRunnable() {
                             player.inventory.addItem(ItemStack(Material.COOKED_BEEF, SettingsFeature.instance.data!!.getInt("game.starterfood")))
                         }
                         list.add(player.name)
-                        if (!ConfigOptionHandler.getOption("statless")!!.enabled) JavaPlugin.getPlugin(Kraftwerk::class.java).statsHandler.getStatsPlayer(player)!!.gamesPlayed++
                     }
                 }
                 SettingsFeature.instance.data!!.set("game.list", list)
@@ -213,6 +212,11 @@ class UHCTask : BukkitRunnable() {
                 Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world")).setGameRuleValue("doDaylightCycle", true.toString())
                 for (player in Bukkit.getOnlinePlayers()) {
                     player.addPotionEffect(PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 300, 100, true, true))
+                }
+            }
+            46 -> {
+                for (player in Bukkit.getOnlinePlayers()) {
+                    if (!ConfigOptionHandler.getOption("statless")!!.enabled) JavaPlugin.getPlugin(Kraftwerk::class.java).statsHandler.getStatsPlayer(player)!!.gamesPlayed++
                 }
             }
             finalHeal -> {
