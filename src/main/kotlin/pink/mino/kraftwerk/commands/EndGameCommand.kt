@@ -114,6 +114,13 @@ class EndGameCommand : CommandExecutor {
         embed.setColor(java.awt.Color(255, 61, 61))
         embed.setTitle(SettingsFeature.instance.data!!.getString("matchpost.host"))
         embed.setThumbnail("https://visage.surgeplay.com/bust/512/${host.uniqueId}")
+        val listOfWinners = winners.joinToString(", ", "", "", -1, "...") {
+            "$it [${
+                SettingsFeature.instance.data!!.getInt(
+                    "game.kills.${Bukkit.getOfflinePlayer(it).name}"
+                )
+            }]"
+        }
         embed.addField("Winners", winners.joinToString(", ", "", "", -1, "...") {
             "**$it** [${
                 SettingsFeature.instance.data!!.getInt(
@@ -126,6 +133,13 @@ class EndGameCommand : CommandExecutor {
                 team.removePlayer(player)
             }
         }
+        val tweet = JavaPlugin.getPlugin(Kraftwerk::class.java).twitterInstance.updateStatus("\uD83E\uDDC3 applejuice | Winners\n" +
+                "\n" +
+                "\uD83D\uDD79 ${SettingsFeature.instance.data!!.getString("matchpost.host")} / \uD83D\uDC65 ${listOfWinners}\n" +
+                "\n" +
+                "Thanks for playing!")
+        embed.addField("Winner Tweet", "[Click here to view the tweet](https://twitter.com/${tweet.user.screenName}/status/${tweet.id})", false)
+        Bukkit.broadcastMessage(Chat.colored("${Chat.dash} View the winner tweet here! &b&nhttps://twitter.com/${tweet.user.screenName}/status/${tweet.id}"))
         embed.addField("Matchpost", "https://hosts.uhc.gg/m/${SettingsFeature.instance.data!!.getInt("matchpost.id")}", false)
         Discord.instance!!.getTextChannelById(937811334106583040)!!.sendMessageEmbeds(embed.build()).queue()
 

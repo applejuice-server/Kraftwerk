@@ -305,6 +305,8 @@ commands:
       - org
       - organizedfights
     description: Setup organized fights.
+  genie:
+    description: Genie Scenario Command.
 depend:
   - ProtocolLib
   - Vault

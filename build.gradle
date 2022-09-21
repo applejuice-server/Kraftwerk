@@ -18,6 +18,7 @@ repositories {
     maven { url = 'https://jitpack.io/' }
     maven { url = 'https://repo.lucko.me/' }
     maven { url = 'https://repo.codemc.io/repository/maven-public/' }
+    maven { url = 'https://twitter4j.org/maven2' }
     mavenLocal()
 }
 
@@ -41,7 +42,7 @@ dependencies {
     compileOnly files('lib/LunarClient.jar')
     compileOnly files('lib/LunarClient-NetHandler.jar')
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
-    implementation('io.github.redouane59.twitter:twittered:2.16')
+    implementation ('org.twitter4j:twitter4j-core:4.0.7')
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
     compileOnly 'com.gmail.filoghost.holographicdisplays:holographicdisplays-api:2.4.9'
 }
