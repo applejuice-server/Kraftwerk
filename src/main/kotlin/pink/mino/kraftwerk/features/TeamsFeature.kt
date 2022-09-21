@@ -86,7 +86,8 @@ class TeamsFeature private constructor() {
         team!!.prefix = color
         team.suffix = "§r"
         team.displayName = color + "Team #${teamCount}"
-        team.setAllowFriendlyFire(true)
+        if (SettingsFeature.instance.data!!.getBoolean("game.friendlyFire")) team.setAllowFriendlyFire(true)
+        else team.setAllowFriendlyFire(false)
         team.setCanSeeFriendlyInvisibles(true)
 
         // Add player.
