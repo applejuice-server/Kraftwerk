@@ -127,7 +127,7 @@ class ProfileService : ProfileRepository {
                 with (JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.getDatabase("applejuice").getCollection("players")) {
                     val filter = Filters.eq("name", name)
                     val document = this.find(filter).first()
-                    val p = ImmutableProfile(UUID.fromString(document!!["uuid"] as String), name, document["lastLogin"] as Long)
+                    val p = ImmutableProfile(document!!["uuid"] as UUID, name, (document["lastLogin"] as Date).time)
                     updateCache(p)
                     return@supply Optional.of(p)
                 }

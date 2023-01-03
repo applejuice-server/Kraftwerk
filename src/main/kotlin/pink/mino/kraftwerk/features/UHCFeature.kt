@@ -365,6 +365,7 @@ class UHCFeature : Listener {
         for (player in Bukkit.getOnlinePlayers()) {
             if (!SpecFeature.instance.getSpecs().contains(player.name)) {
                 SpawnFeature.instance.send(player)
+                SpawnFeature.instance.editorList.remove(player.uniqueId)
                 CombatLogFeature.instance.removeCombatLog(player.name)
                 player.playSound(player.location, Sound.WOOD_CLICK, 10F, 1F)
                 player.enderChest.clear()

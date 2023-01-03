@@ -264,8 +264,10 @@ class SpawnFeature : Listener {
 
     @EventHandler
     fun onInventoryClick(e: InventoryClickEvent) {
-        if (e.whoClicked.world.name == "Spawn" && !editorList.contains(e.whoClicked.uniqueId)) {
-            e.isCancelled = true
+        if (e.whoClicked.world.name == "Spawn") {
+            if (!editorList.contains(e.whoClicked.uniqueId)) {
+                e.isCancelled = true
+            }
         }
     }
 
