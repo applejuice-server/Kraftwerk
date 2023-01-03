@@ -168,7 +168,7 @@ class StatsHandler : Listener {
             .handler { event ->
                 val statsPlayer = StatsPlayer(event.player)
                 updateCache(statsPlayer)
-                Schedulers.async().run { loadPlayerData(statsPlayer) }
+                Schedulers.async().run { loadPlayerData(statsPlayer.player.uniqueId, statsPlayer) }
             }
         Events.subscribe(PlayerQuitEvent::class.java, EventPriority.MONITOR)
             .handler { event ->
@@ -213,14 +213,14 @@ class StatsHandler : Listener {
         Objects.requireNonNull(player, "player")
         val sPlayer = StatsPlayer(player)
         updateCache(sPlayer)
-        loadPlayerData(sPlayer)
+        loadPlayerData(sPlayer.player.uniqueId, sPlayer)
         return sPlayer
     }
 
-    fun loadPlayerData(statsPlayer: StatsPlayer) {
+    fun loadPlayerData(uuid: UUID, statsPlayer: StatsPlayer) {
         try {
             with (JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.getDatabase("applejuice").getCollection("stats")) {
-                val playerData = find(Filters.eq("uuid", statsPlayer.player.uniqueId)).first()
+                val playerData = find(Filters.eq("uuid", uuid)).first()
                 if (playerData != null) {
                     statsPlayer.diamondsMined = playerData.getInteger("diamondsMined")
                     statsPlayer.ironMined = playerData.getInteger("ironMined")

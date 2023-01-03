@@ -1,5 +1,6 @@
 package pink.mino.kraftwerk.commands
 
+import me.lucko.helper.profiles.ProfileRepository
 import me.lucko.helper.promise.Promise
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
@@ -31,14 +32,15 @@ class StatsCommand : CommandExecutor {
         val target: OfflinePlayer = if (args.isEmpty()) {
             sender
         } else {
-            Bukkit.getOfflinePlayer(args[0])
+            val profile = JavaPlugin.getPlugin(Kraftwerk::class.java).getService(ProfileRepository::class.java).lookupProfile(args[0]).get()
+            Bukkit.getOfflinePlayer(profile.get().uniqueId)
         }
         Promise.start()
             .thenRunSync runnable@ {
-                Chat.sendMessage(sender, "${Chat.dash} &7Loading stats for &f${target.name}&7...")
+                Chat.sendMessage(sender, "${Chat.dash} &7Loading stats for &f${args[0]}&7...")
             }
             .thenApplyAsync {
-                JavaPlugin.getPlugin(Kraftwerk::class.java).statsHandler.lookupStatsPlayer(target)!!
+                JavaPlugin.getPlugin(Kraftwerk::class.java).statsHandler.lookupStatsPlayer(target)
             }
             .thenAcceptSync { statsPlayer ->
                 val ores = ItemBuilder(Material.DIAMOND_ORE)
@@ -76,10 +78,10 @@ class StatsCommand : CommandExecutor {
                     .make()
 
                 val skull = ItemBuilder(Material.SKULL_ITEM)
-                    .name("&f${target.name}")
-                    .addLore("&7The statistics for &f${target.name}&7.")
+                    .name("&f${args[0]}")
+                    .addLore("&7The statistics for &f${args[0]}&7.")
                     .toSkull()
-                    .setOwner(target.name)
+                    .setOwner(args[0])
                     .make()
 
                 gui.item(0, skull).onClick runnable@ {

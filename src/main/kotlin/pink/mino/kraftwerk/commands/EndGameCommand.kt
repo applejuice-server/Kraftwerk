@@ -3,6 +3,7 @@ package pink.mino.kraftwerk.commands
 import com.mongodb.MongoException
 import com.mongodb.client.model.Filters
 import com.mongodb.client.model.FindOneAndReplaceOptions
+import me.lucko.helper.profiles.ProfileRepository
 import me.lucko.helper.utils.Log
 import net.dv8tion.jda.api.EmbedBuilder
 import org.bson.Document
@@ -62,7 +63,8 @@ class EndGameCommand : CommandExecutor {
         }
 
         for (winner in winners) {
-            val player = Bukkit.getOfflinePlayer(winner)
+            val profile = JavaPlugin.getPlugin(Kraftwerk::class.java).getService(ProfileRepository::class.java).lookupProfile(winner).get()
+            val player = Bukkit.getOfflinePlayer(profile.get().uniqueId)
             if (player == null) {
                 Chat.sendMessage(sender, "&cInvalid player '${winner}', not adding to winner's list.")
             } else {
