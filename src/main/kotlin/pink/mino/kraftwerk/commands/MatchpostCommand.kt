@@ -104,7 +104,7 @@ class ScheduleBroadcast(private val opening: String) : BukkitRunnable() {
             embed.addField("Scenarios", scenarios.joinToString(", "), false)
             var flag = ":flag_ca:"
             embed.addField("IP", "$flag `uhc.applejuice.bar` (1.8.x)", false)
-            Bukkit.broadcastMessage("${Chat.prefix} Matchpost posted on discord & twitter! View the tweet here: &b&uhttps://twitter.com/applejuiceuhc/status/${tweet.id}")
+            Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Matchpost posted on discord & twitter! View the tweet here: &b&uhttps://twitter.com/applejuiceuhc/status/${tweet.id}"))
             embed.addField("Opening", "<t:${fr}:t> (<t:${fr}:R>)", false)
             embed.addField("Matchpost", "[uhc.gg](https://hosts.uhc.gg/m/${SettingsFeature.instance.data!!.getInt("matchpost.id")}) | [Twitter](https://twitter.com/applejuiceuhc/status/${tweet.id})", false)
             Discord.instance!!.getTextChannelById(937811305102999573)!!.sendMessage("<@&793406242013839381> (Use `/togglematches` to toggle matchpost alerts)").queue()

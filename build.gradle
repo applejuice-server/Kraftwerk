@@ -18,7 +18,7 @@ repositories {
     maven { url = 'https://jitpack.io/' }
     maven { url = 'https://repo.lucko.me/' }
     maven { url = 'https://repo.codemc.io/repository/maven-public/' }
-    maven { url = 'https://twitter4j.org/maven2' }
+    //maven { url = 'https://twitter4j.org/maven2' }
     mavenLocal()
 }
 
@@ -35,7 +35,9 @@ dependencies {
     }
     compileOnly "com.gitlab.ruany:LiteBansAPI:0.3.5"
     implementation 'com.google.code.gson:gson:2.9.0'
-    compileOnly "net.citizensnpcs:citizens-main:2.0.30-SNAPSHOT"
+    compileOnly('net.citizensnpcs:citizens-main:2.0.30-SNAPSHOT') {
+        exclude group: '*', module: '*'
+    }
     compileOnly "com.github.MilkBowl:VaultAPI:1.7"
     compileOnly "org.bukkit:craftbukkit:1.8.8-R0.1-SNAPSHOT"
     compileOnly files('lib/WorldBorder.jar')

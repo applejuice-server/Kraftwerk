@@ -1,5 +1,7 @@
 package pink.mino.kraftwerk.listeners
 
+import net.md_5.bungee.api.chat.ClickEvent
+import net.md_5.bungee.api.chat.TextComponent
 import org.bukkit.*
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -134,6 +136,23 @@ class PlayerJoinListener : Listener {
                         SpawnFeature.instance.send(player)
                     }, 1L)
                     SpecFeature.instance.specChat("&f${player.name}&7 hasn't been late-scattered, sending them to spawn.")
+                    val comp = TextComponent(Chat.colored("${Chat.dash} &d&lLatescatter player?"))
+                    val comp2 = TextComponent(Chat.colored("${Chat.dash} &c&lInsert latescatter command?"))
+                    comp.clickEvent = ClickEvent(
+                        ClickEvent.Action.RUN_COMMAND,
+                        "/ls ${player.name}"
+                    )
+                    comp2.clickEvent = ClickEvent(
+                        ClickEvent.Action.SUGGEST_COMMAND,
+                        "/ls ${player.name} "
+                    )
+                    SpecFeature.instance.getSpecs().forEach {
+                        val p = Bukkit.getOfflinePlayer(it)
+                        if (p.isOnline) {
+                            (p as Player).spigot().sendMessage(comp)
+                            p.spigot().sendMessage(comp2)
+                        }
+                    }
                 }
             }
         }
