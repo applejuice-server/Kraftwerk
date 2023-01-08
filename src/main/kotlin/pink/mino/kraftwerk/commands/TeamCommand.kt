@@ -225,6 +225,10 @@ class TeamCommand : CommandExecutor {
                 )
                 Chat.sendMessage(
                     sender,
+                    "${Chat.dash} &f/team setcolor <team> <color> ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Recolors the provided team to the one of your choosing."
+                )
+                Chat.sendMessage(
+                    sender,
                     "${Chat.dash} &f/team rvb ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Randomizes all players that aren't Spectators into a two teams together."
                 )
                 Chat.sendMessage(sender, Chat.line)
@@ -791,7 +795,6 @@ class TeamCommand : CommandExecutor {
                 return false
             }
             selectedColor = colors[0].toString() + selectedColor
-            print(selectedColor)
             if (!TeamsFeature.manager.colors.contains(selectedColor)) {
                 Chat.sendMessage(sender, "${Chat.dash} This color is already in use.")
                 return false
@@ -870,7 +873,6 @@ class TeamCommand : CommandExecutor {
             }
 
             selectedColor = colors[0].toString() + selectedColor
-            print(selectedColor)
             if (!TeamsFeature.manager.colors.contains(selectedColor)) {
                 Chat.sendMessage(sender, "${Chat.dash} This color is already in use.")
                 return false
