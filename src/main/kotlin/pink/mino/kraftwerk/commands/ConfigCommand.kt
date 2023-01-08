@@ -266,7 +266,7 @@ class ConfigCommand : CommandExecutor {
             .addLore(" ")
             .addLore(" &7Diamond Ore Rates ${Chat.dash} &f${diaRates} ")
             .addLore(" &7Gold Ore Rates ${Chat.dash} &f${goldRates} ")
-            .addLore(" &7Ores Outside Caves ${Chat.dash} &f${if (SettingsFeature.instance.worlds!!.getBoolean("${SettingsFeature.instance.data!!.get("pregen.world")}.oresoutsidecaves")) "&aEnabled" else "&cDisabled"} ")
+            .addLore(" &7Ores Outside Caves ${Chat.dash} &f${if (SettingsFeature.instance.worlds!!.getBoolean("${SettingsFeature.instance.data!!.get("pregen.world")}.oresOutsideCaves")) "&aEnabled" else "&cDisabled"} ")
             .addLore(" ")
             .addLore(" &7Stripmining ${Chat.dash} &f${getRule("stripmining")} ")
             .addLore(" &7Rollercoastering ${Chat.dash} &f${getRule("rollarcoastering")} ")
