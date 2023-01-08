@@ -69,7 +69,6 @@ class GuiBuilder : Listener {
                             }
                         }
                     }
-                    e.isCancelled = true
                 }
             }
         }
