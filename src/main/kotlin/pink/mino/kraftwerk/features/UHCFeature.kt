@@ -265,6 +265,7 @@ class UHCTask : BukkitRunnable() {
                         }
                     }
                 }
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wl on")
                 Bukkit.getPluginManager().callEvent(PvPEnableEvent())
             }
             meetup -> {
