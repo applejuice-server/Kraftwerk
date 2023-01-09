@@ -211,10 +211,14 @@ class StatsHandler : Listener {
 
     fun lookupStatsPlayer(player: OfflinePlayer): StatsPlayer {
         Objects.requireNonNull(player, "player")
-        val sPlayer = StatsPlayer(player)
-        updateCache(sPlayer)
-        loadPlayerData(sPlayer.player.uniqueId, sPlayer)
-        return sPlayer
+        if (statsPlayerMap.getIfPresent(player.uniqueId) != null) {
+            return statsPlayerMap.getIfPresent(player.uniqueId)!!
+        } else {
+            val sPlayer = StatsPlayer(player)
+            loadPlayerData(player.uniqueId, sPlayer)
+            updateCache(sPlayer)
+            return sPlayer
+        }
     }
 
     fun loadPlayerData(uuid: UUID, statsPlayer: StatsPlayer) {
