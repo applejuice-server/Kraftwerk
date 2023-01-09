@@ -63,10 +63,12 @@ class SuperheroesScenario : Scenario(
                     if (pool.size == 0) continue
                     try {
                         val hero = pool[Random.nextInt(pool.size)]
-                        superheroes[player as Player] = hero
-                        pool.remove(hero)
-                        Chat.sendMessage(player, "$prefix Your assigned power is: &f${hero.name}&7.")
-                        givePower(player)
+                        if (player.isOnline) {
+                            superheroes[player as Player] = hero
+                            pool.remove(hero)
+                            Chat.sendMessage(player, "$prefix Your assigned power is: &f${hero.name}&7.")
+                            givePower(player)
+                        }
                     } catch(_: Error) {}
                 }
             }
