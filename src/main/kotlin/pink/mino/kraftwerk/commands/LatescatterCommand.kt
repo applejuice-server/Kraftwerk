@@ -47,6 +47,9 @@ class LatescatterCommand : CommandExecutor {
         if (list == null) list = ArrayList<String>()
         if (args.size == 1) {
             player = Bukkit.getPlayer(args[0])
+            if (SettingsFeature.instance.data!!.getInt("game.teamSize") != 1) {
+                TeamsFeature.manager.createTeam(player)
+            }
             player.playSound(player.location, Sound.WOOD_CLICK, 10F, 1F)
             player.maxHealth = 20.0
             player.health = player.maxHealth
@@ -83,11 +86,11 @@ class LatescatterCommand : CommandExecutor {
             teammate = Bukkit.getPlayer(args[1])
             if (TeamsFeature.manager.getTeam(teammate) == null) {
                 val team = TeamsFeature.manager.createTeam(player)
-                team.addPlayer(teammate)
+                TeamsFeature.manager.joinTeam(team.name, player)
                 SendTeamView(team).runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 20L)
             } else {
                 val team = TeamsFeature.manager.getTeam(teammate)
-                team!!.addPlayer(player)
+                TeamsFeature.manager.joinTeam(team!!.name, player)
             }
             player.playSound(player.location, Sound.WOOD_CLICK, 10F, 1F)
             player.maxHealth = 20.0
