@@ -101,6 +101,7 @@ class Kraftwerk : ExtendedJavaPlugin() {
         Bukkit.getServer().pluginManager.registerEvents(OreLimiterListener(), this)
         Bukkit.getServer().pluginManager.registerEvents(PregenListener(), this)
         Bukkit.getServer().pluginManager.registerEvents(CanePopulatorFeature(), this)
+        Bukkit.getServer().pluginManager.registerEvents(TeamsFeature.manager, this)
         Bukkit.getServer().pluginManager.registerEvents(OpenedMatchesListener(), this)
 
         /* Donator Listeners */
@@ -187,6 +188,7 @@ class Kraftwerk : ExtendedJavaPlugin() {
         getCommand("fullbright").executor = FullbrightCommand()
         getCommand("timers").executor = TimersCommand()
         getCommand("arena").executor = ArenaCommand()
+        getCommand("deathloc").executor = DeathLocCommand()
         //getCommand("hotbar").executor = HotbarCommand()
 
         /* ProtocolLib stuff */

@@ -307,6 +307,8 @@ commands:
     description: Setup organized fights.
   genie:
     description: Genie Scenario Command.
+  deathloc:
+    description: Gets the location of a player that died.
 depend:
   - ProtocolLib
   - Vault
