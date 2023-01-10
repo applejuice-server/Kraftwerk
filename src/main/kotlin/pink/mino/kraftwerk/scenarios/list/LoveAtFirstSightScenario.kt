@@ -28,8 +28,8 @@ class LoveAtFirstSightScenario : Scenario(
             if (player != damager) {
                 if (TeamsFeature.manager.getTeam(player) == null && TeamsFeature.manager.getTeam(damager) == null) {
                     e.damage = 0.0
-                    TeamsFeature.manager.createTeam(player)
-                        .addPlayer(damager)
+                    val team = TeamsFeature.manager.createTeam(player)
+                    TeamsFeature.manager.joinTeam(team.name, player)
                     Chat.sendMessage(player, "${Chat.dash} You are now teamed with &f${PlayerUtils.getPrefix(damager)}${damager.name}&7!")
                     Chat.sendMessage(damager, "${Chat.dash} You are now teamed with &f${PlayerUtils.getPrefix(player)}${player.name}&7!")
                     player.playSound(player.location, Sound.LEVEL_UP, 1f, 1f)

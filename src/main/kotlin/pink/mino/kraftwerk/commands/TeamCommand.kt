@@ -358,7 +358,7 @@ class TeamCommand : CommandExecutor {
                     return false
                 }
                 Chat.sendMessage(player, "${Chat.dash} &7You have joined &f${team.displayName}&7!")
-                team.addPlayer(player)
+                TeamsFeature.manager.joinTeam(team.name, player)
                 for (players in team.players) {
                     if (players is Player && players != player) {
                         Chat.sendMessage(
@@ -430,7 +430,7 @@ class TeamCommand : CommandExecutor {
                 player.sendMessage(ChatColor.RED.toString() + "You are not on a team.")
                 return true
             }
-            team.removePlayer(player)
+            TeamsFeature.manager.leaveTeam(player)
             LunarClientAPI.getInstance().sendTeammates(player, LCPacketTeammates(player.uniqueId, 100L, HashMap()))
             Chat.sendMessage(player, "${Chat.dash} You left your team.")
             for (players in team.players) {
@@ -449,23 +449,45 @@ class TeamCommand : CommandExecutor {
             Chat.sendCenteredMessage(sender, "&c&lTeams List")
             Chat.sendMessage(sender, " ")
             val teamList = ArrayList<Team>()
-            for ((index, team) in TeamsFeature.manager.getTeams().withIndex()) {
-                if (team.players.size != 0) {
-                    teamList.add(team)
-                    val list = ArrayList<String>()
-                    for (player in team.players) {
-                        list.add(player.name)
+            if (ScenarioHandler.getActiveScenarios().contains(ScenarioHandler.getScenario("moles"))) {
+                for ((index, team) in TeamsFeature.manager.getTeams().withIndex()) {
+                    if (team.players.size != 0) {
+                        teamList.add(team)
+                        val list = ArrayList<String>()
+                        for (player in team.players) {
+                            list.add(player.name)
+                        }
+                        Chat.sendMessage(
+                            sender,
+                            "${team.displayName} &8(&f${list.size}&8) ${Chat.dash} &f${list.joinToString(", ")}"
+                        )
                     }
-                    Chat.sendMessage(
-                        sender,
-                        "${team.displayName} &8(&f${list.size}&8) ${Chat.dash} &f${list.joinToString(", ")}"
-                    )
                 }
+                if (teamList.isEmpty()) {
+                    Chat.sendCenteredMessage(sender, "&7&lThere are no teams right now!")
+                }
+                Chat.sendMessage(sender, Chat.line)
+            } else {
+                val keys = TeamsFeature.manager.teamMap.keys
+                keys.forEach {
+                    val team = TeamsFeature.manager.getTeam("UHC${it}")
+                    if (team != null) {
+                        val list = ArrayList<String>()
+                        for (teammate in TeamsFeature.manager.teamMap[it]!!) {
+                            if (teammate.isOnline) {
+                                list.add("&a${teammate.name}")
+                            } else {
+                                list.add("&c${teammate.name}")
+                            }
+                        }
+                        Chat.sendMessage(sender, "${team.displayName} &8(&f${TeamsFeature.manager.teamMap[it]!!.size}&8) ${Chat.dash} &f${list.joinToString(", ")}")
+                    }
+                }
+                if (keys.isEmpty()) {
+                    Chat.sendCenteredMessage(sender, "&7&lThere are no teams right now!")
+                }
+                Chat.sendMessage(sender, Chat.line)
             }
-            if (teamList.isEmpty()) {
-                Chat.sendCenteredMessage(sender, "&7&lThere are no teams right now!")
-            }
-            Chat.sendMessage(sender, Chat.line)
         } else if (args[0] == "delete") {
             if (sender is Player) {
                 if (!sender.hasPermission("uhc.staff.team")) {
@@ -491,7 +513,7 @@ class TeamCommand : CommandExecutor {
                 return false
             }
             for (player in selectedTeam.players) {
-                selectedTeam.removePlayer(player)
+                TeamsFeature.manager.leaveTeam(player)
                 if (player.isOnline) {
                     LunarClientAPI.getInstance()
                         .sendTeammates(player as Player, LCPacketTeammates(player.uniqueId, 100L, HashMap()))
@@ -530,8 +552,8 @@ class TeamCommand : CommandExecutor {
                 Chat.sendMessage(sender, "&cThat player is currently not in a team right now.")
                 return false
             }
-            val targetTeam = TeamsFeature.manager.getTeam(target)
-            team.addPlayer(target)
+            val targetTeam = TeamsFeature.manager.getTeam(target2)
+            TeamsFeature.manager.joinTeam(targetTeam!!.name, target)
             if (targetTeam != null) {
                 if (targetTeam.size == 0) {
                     TeamsFeature.manager.deleteTeam(targetTeam)
@@ -571,7 +593,7 @@ class TeamCommand : CommandExecutor {
                     Chat.sendMessage(sender, "&c${element} is already in a team.")
                     continue
                 }
-                t.addPlayer(target)
+                TeamsFeature.manager.joinTeam(t.name, target)
             }
             Chat.sendMessage(sender, "${Chat.dash} Successfully added all players to the team.")
         } else if (args[0] == "remove" || args[0] == "kick") {
@@ -595,7 +617,7 @@ class TeamCommand : CommandExecutor {
                 Chat.sendMessage(sender, "${Chat.dash} That player is currently not in a team right now.")
                 return false
             }
-            team.removePlayer(target)
+            TeamsFeature.manager.leaveTeam(target)
             Chat.sendMessage(
                 sender,
                 "${Chat.dash} Successfully removed &f${target.name}&7 from &f${team.name}&7's team"
@@ -658,7 +680,7 @@ class TeamCommand : CommandExecutor {
                     if (team.players.size < args[1].toInt()) {
                         player.kickPlayer(Chat.colored("&cYou've been kicked as your team is undersized."))
                     }
-                    TeamsFeature.manager.deleteTeam(team)
+                    //TeamsFeature.manager.deleteTeam(team)
                 }
             }
         } else if (args[0] == "randomize") {
@@ -698,7 +720,7 @@ class TeamCommand : CommandExecutor {
                         player,
                         "${Chat.dash} You've been added to ${team.prefix}${team.name}&7, check &f/team list&7 for the members of your team."
                     )
-                    team.addPlayer(player)
+                    TeamsFeature.manager.joinTeam(team.name, player)
                 }
             }
         } else if (args[0] == "rvb") {
@@ -723,9 +745,9 @@ class TeamCommand : CommandExecutor {
             blue.prefix = "${ChatColor.BLUE}"
             for ((index, player) in valid.withIndex()) {
                 if (index % 2 == 0) {
-                    red.addPlayer(player)
+                    TeamsFeature.manager.joinTeam(red.name, player)
                 } else {
-                    blue.addPlayer(player)
+                    TeamsFeature.manager.joinTeam(blue.name, player)
                 }
             }
             Bukkit.broadcastMessage(Chat.colored("${Chat.dash} &cRed&7 vs &9Blue&7 teams have been randomized."))

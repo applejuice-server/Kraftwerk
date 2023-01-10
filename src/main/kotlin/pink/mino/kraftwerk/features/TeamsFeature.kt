@@ -5,20 +5,42 @@ import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
+import org.bukkit.event.EventHandler
+import org.bukkit.event.Listener
 import org.bukkit.scoreboard.Scoreboard
 import org.bukkit.scoreboard.Team
+import pink.mino.kraftwerk.events.TeamJoinEvent
+import pink.mino.kraftwerk.events.TeamLeaveEvent
 
 
-class TeamsFeature private constructor() {
+class TeamsFeature private constructor() : Listener {
     val sb: Scoreboard = Bukkit.getScoreboardManager().mainScoreboard
     private val teams = ArrayList<Team>()
     val colors = ArrayList<String>()
     var teamCount: Int = 0
+    val teamMap = hashMapOf<Int, Set<OfflinePlayer>>()
+
+    @EventHandler
+    fun onTeamJoin(e: TeamJoinEvent) {
+        val team = e.team.name.replace("UHC", "").toInt()
+        teamMap[team] = e.team.players
+    }
+
+    @EventHandler
+    fun onTeamLeave(e: TeamLeaveEvent) {
+        val team = e.team.name.replace("UHC", "").toInt()
+        teamMap[team] = e.team.players
+    }
+
+    fun getId(team: Team) : Int {
+        return team.name.replace("UHC", "").toInt()
+    }
 
     /**
      * Gets a list of all teams.
      * @return the list of teams.
      */
+
     fun getTeams(): List<Team> {
         return teams
     }
@@ -27,9 +49,11 @@ class TeamsFeature private constructor() {
      * Leaves the current team of the player.
      * @param player the player leaving.
      */
-    fun leaveTeam(player: Player) {
+    fun leaveTeam(player: OfflinePlayer) {
         if (getTeam(player) != null) {
-            getTeam(player)!!.removePlayer(player)
+            val team = getTeam(player)!!
+            team.removePlayer(player)
+            Bukkit.getPluginManager().callEvent(TeamLeaveEvent(team, player))
         }
     }
 
@@ -41,6 +65,7 @@ class TeamsFeature private constructor() {
     fun joinTeam(teamName: String?, player: Player?) {
         val team: Team = sb.getTeam(teamName)
         team.addPlayer(player)
+        Bukkit.getPluginManager().callEvent(TeamJoinEvent(team, player!!))
     }
 
     fun deleteTeam(team: Team) {
@@ -52,6 +77,7 @@ class TeamsFeature private constructor() {
 
     fun resetTeams() {
         for (team in teams) {
+
             team.unregister()
         }
         teamCount = 0
@@ -91,7 +117,10 @@ class TeamsFeature private constructor() {
         team.setCanSeeFriendlyInvisibles(true)
 
         // Add player.
-        if (player != null) team.addPlayer(player)
+        if (player != null) {
+            team.addPlayer(player)
+            Bukkit.getPluginManager().callEvent(TeamJoinEvent(team, player))
+        }
 
         // Add to list.
         teams.add(team)
