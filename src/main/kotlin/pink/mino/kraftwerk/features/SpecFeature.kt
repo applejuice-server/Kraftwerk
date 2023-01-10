@@ -297,7 +297,7 @@ class SpecFeature : Listener {
         return SettingsFeature.instance.data!!.getStringList("game.specs")
     }
 
-    fun isSpec(p: Player): Boolean {
+    fun isSpec(p: OfflinePlayer): Boolean {
         return getSpecs().contains(p.name)
     }
 

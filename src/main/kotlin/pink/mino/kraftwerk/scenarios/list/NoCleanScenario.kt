@@ -71,6 +71,10 @@ class NoCleanScenario : Scenario(
                 noClean.remove(((e.damager as Arrow).shooter as Player))
                 Chat.sendMessage(((e.damager as Arrow).shooter as Player), "&cYour NoClean has been removed as you damaged another player!")
             }
+        } else {
+            if (noClean[e.entity as Player] != null) {
+                e.isCancelled = true
+            }
         }
     }
 }
