@@ -57,6 +57,7 @@ class PlayerDeathListener : Listener {
                 if (!player.hasPermission("uhc.staff")) {
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wl remove ${player.name}")
                 }
+                if (TeamsFeature.manager.getTeam(player) != null) TeamsFeature.manager.getTeam(player)!!.removePlayer(player)
             }
             Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
                 player.spigot().respawn()
