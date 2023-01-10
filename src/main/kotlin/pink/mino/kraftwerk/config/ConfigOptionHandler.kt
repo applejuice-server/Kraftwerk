@@ -48,6 +48,8 @@ class ConfigOptionHandler {
             addOption(AbsorptionBeforePvPOption())
 
             addOption(PermadayOption())
+            addOption(TeamKillingRule())
+            addOption(CrossteamKillingRule())
 
             configOptions.sortWith(Comparator.comparing(ConfigOption::name))
         }
