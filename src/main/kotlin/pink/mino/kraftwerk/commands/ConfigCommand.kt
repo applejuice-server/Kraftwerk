@@ -196,6 +196,7 @@ class ConfigCommand : CommandExecutor {
         }
         teamConfig.addLore(" &7Team Management ${Chat.dash} &f${ffa} ").addLore(" ")
         teamConfig.addLore(" &7Friendly Fire ${Chat.dash} &f${if (SettingsFeature.instance.data!!.getBoolean("game.friendlyFire")) "&aEnabled" else "&cDisabled"}")
+        teamConfig.addLore(" ")
         val teamConf = teamConfig.make()
         gui.item(12, teamConf).onClick runnable@ {
             it.isCancelled = true
@@ -307,6 +308,8 @@ class ConfigCommand : CommandExecutor {
             .addLore(" &7Stealing ${Chat.dash} &f${getRule("stealing")}")
             .addLore(" ")
             .addLore(" &7Crossteaming ${Chat.dash} &f${getRule("crossteaming")}")
+            .addLore(" &7Scumballing/Crossteam Killing ${Chat.dash} &f${getRule("scumballing")}")
+            .addLore(" &7Team Killing ${Chat.dash} &f${getRule("teamkilling")}")
             .addLore(" &7iPvP ${Chat.dash} &cNot Allowed")
             .addLore(" ")
             .addLore(" &7Skybasing ${Chat.dash} &f${getRule("skybasing")}")
