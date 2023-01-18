@@ -14,6 +14,7 @@ import net.dv8tion.jda.api.entities.Activity
 import org.bukkit.*
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.ShapedRecipe
+import org.bukkit.inventory.ShapelessRecipe
 import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.material.MaterialData
 import pink.mino.kraftwerk.commands.*
@@ -90,7 +91,6 @@ class Kraftwerk : ExtendedJavaPlugin() {
         Bukkit.getServer().pluginManager.registerEvents(CombatLogFeature.instance, this)
         Bukkit.getServer().pluginManager.registerEvents(SpecFeature.instance, this)
         Bukkit.getServer().pluginManager.registerEvents(ShootListener(), this)
-        Bukkit.getServer().pluginManager.registerEvents(PlayerInteractListener(), this)
         Bukkit.getServer().pluginManager.registerEvents(PlayerRegisterListener(), this)
         Bukkit.getServer().pluginManager.registerEvents(PortalListener(), this)
         Bukkit.getServer().pluginManager.registerEvents(WorldSwitchListener(), this)
@@ -355,6 +355,8 @@ class Kraftwerk : ExtendedJavaPlugin() {
         head.itemMeta = meta
         val goldenHead: ShapedRecipe = ShapedRecipe(head).shape("@@@", "@*@", "@@@").setIngredient('@', Material.GOLD_INGOT).setIngredient('*', mater)
         Bukkit.getServer().addRecipe(goldenHead)
+        val string = ShapelessRecipe(ItemStack(Material.STRING)).addIngredient(Material.WOOL).addIngredient(Material.WOOL).addIngredient(Material.WOOL).addIngredient(Material.WOOL)
+        Bukkit.getServer().addRecipe(string)
     }
 
 }
