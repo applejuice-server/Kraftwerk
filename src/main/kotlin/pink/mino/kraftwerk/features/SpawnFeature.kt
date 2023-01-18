@@ -189,7 +189,7 @@ class SpawnFeature : Listener {
         if (ScenarioHandler.getActiveScenarios().contains(ScenarioHandler.getScenario("champions"))) {
             p.inventory.setItem(0, championsKit)
         }
-        val location = if (SettingsFeature.instance.data!!.getDouble("config.location.x") == null) {
+        var location = if (SettingsFeature.instance.data!!.getDouble("config.location.x") == null) {
             Location(Bukkit.getWorlds().random(), 0.5, 95.0, 0.5)
         } else {
             Location(
@@ -200,6 +200,9 @@ class SpawnFeature : Listener {
                 SettingsFeature.instance.data!!.getDouble("config.spawn.yaw").toFloat(),
                 SettingsFeature.instance.data!!.getDouble("config.spawn.pitch").toFloat()
             )
+        }
+        if (ScenarioHandler.getActiveScenarios().contains(ScenarioHandler.getScenario("auction"))) {
+            location = Location(Bukkit.getWorld("Spawn"), -278.0, 96.5, 7.0)
         }
         editorList.remove(p.uniqueId)
         p.teleport(location)

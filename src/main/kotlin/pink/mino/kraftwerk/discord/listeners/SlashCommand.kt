@@ -59,7 +59,7 @@ class SlashCommand : ListenerAdapter() {
                 val target = Bukkit.getOfflinePlayer(player)
                 if (target == null) event.reply("Invalid player!").setEphemeral(true).queue()
                 if (SettingsFeature.instance.data!!.getBoolean("whitelist.requests")) {
-                    Schedulers.async().run runnable@ {
+                    Schedulers.sync().run runnable@ {
                         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wl add $player")
                     }
                     event.reply("**${MarkdownSanitizer.escape(player)}** has been whitelisted on the server, connect using `uhc.applejuice.bar`.").queue()
