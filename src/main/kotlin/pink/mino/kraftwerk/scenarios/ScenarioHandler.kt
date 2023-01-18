@@ -64,6 +64,7 @@ class ScenarioHandler {
             addScenario(AssaultAndBatteryScenario())
             addScenario(GappleRouletteScenario())
             addScenario(SuperheroesScenario())
+            addScenario(KrenzinatorScenario())
             scenarios.sortWith(Comparator.comparing(Scenario::name))
         }
 

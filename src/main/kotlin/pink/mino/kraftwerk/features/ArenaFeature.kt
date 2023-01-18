@@ -316,6 +316,12 @@ class ArenaFeature : Listener {
             EntityType.RABBIT -> {
                 e.isCancelled = true
             }
+            EntityType.WITCH -> {
+                e.isCancelled = true
+            }
+            EntityType.SPIDER -> {
+                e.isCancelled = true
+            }
             else -> {}
         }
     }
