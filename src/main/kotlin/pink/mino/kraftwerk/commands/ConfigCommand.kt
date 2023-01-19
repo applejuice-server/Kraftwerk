@@ -92,6 +92,7 @@ class ConfigCommand : CommandExecutor {
             .addLore(" ")
             .addLore(" &7Statless ${Chat.dash} &7${getOption("statless")} ")
             .addLore(" &7Double Arrows ${Chat.dash} &7${getOption("doublearrows")}")
+            .addLore(" &7Death Lightning ${Chat.dash} &7${getOption("deathlightning")}")
             .addLore(" ")
             .addLore(" &7Pearl Damage ${Chat.dash} &7${getOption("pearldamage")} ")
             .addLore(" &7Pearl Cooldown ${Chat.dash} &7${getOption("pearlcooldown")} ")

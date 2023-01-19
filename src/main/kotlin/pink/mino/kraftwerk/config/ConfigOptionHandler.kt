@@ -24,6 +24,8 @@ class ConfigOptionHandler {
             addOption(EnderPearlCooldownOption())
             addOption(StatlessOption())
             addOption(DoubleArrowsOption())
+            addOption(PermadayOption())
+            addOption(DeathLightningOption())
 
             addOption(CrossteamingOption())
             addOption(StalkingOption())
@@ -31,6 +33,8 @@ class ConfigOptionHandler {
             addOption(SkybasingOption())
             addOption(RunningAtMeetupOption())
             addOption(F5AbuseOption())
+            addOption(TeamKillingRule())
+            addOption(CrossteamKillingRule())
 
             addOption(RollarcoasteringOption())
             addOption(StripminingOption())
@@ -46,10 +50,6 @@ class ConfigOptionHandler {
             addOption(MeetupBlockDecayOption())
             addOption(FireResistanceBeforePvPOption())
             addOption(AbsorptionBeforePvPOption())
-
-            addOption(PermadayOption())
-            addOption(TeamKillingRule())
-            addOption(CrossteamKillingRule())
 
             configOptions.sortWith(Comparator.comparing(ConfigOption::name))
         }

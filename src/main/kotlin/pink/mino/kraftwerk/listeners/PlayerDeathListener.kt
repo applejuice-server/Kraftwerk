@@ -8,6 +8,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.plugin.java.JavaPlugin
 import pink.mino.kraftwerk.Kraftwerk
+import pink.mino.kraftwerk.config.ConfigOptionHandler
 import pink.mino.kraftwerk.features.CombatLogFeature
 import pink.mino.kraftwerk.features.SettingsFeature
 import pink.mino.kraftwerk.features.TeamsFeature
@@ -23,7 +24,7 @@ class PlayerDeathListener : Listener {
         if (!e.entity.hasMetadata("NPC")) {
             val player = e.entity as Player
             val old = e.deathMessage
-            player.world.strikeLightningEffect(player.location)
+            if (ConfigOptionHandler.getOption("deathlightning")!!.enabled) player.world.strikeLightningEffect(player.location)
             e.deathMessage = ChatColor.translateAlternateColorCodes('&', "&8»&f $old")
             if (player.world.name == "Arena") {
                 e.deathMessage = null
