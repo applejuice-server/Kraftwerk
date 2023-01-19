@@ -129,9 +129,11 @@ class ConfigCommand : CommandExecutor {
         val events = ItemBuilder(Material.WATCH)
             .name(" &4&lEvents")
             .addLore(" ")
-            .addLore(" &7Final Heal is in &f${getEventTime("final-heal")} minutes ")
-            .addLore(" &7PvP is in &f${getEventTime("pvp") + getEventTime("final-heal")} minutes ")
+            .addLore(" &7Final Heal is given in &f${getEventTime("final-heal")} minutes ")
+            .addLore(" &7PvP is enabled in &f${getEventTime("pvp") + getEventTime("final-heal")} minutes ")
+            .addLore(" &7The border begins shrinking in &f${getEventTime("borderShrink") + getEventTime("pvp") + getEventTime("final-heal")} minutes ")
             .addLore(" &7Meetup is in &f${getEventTime("meetup") + getEventTime("pvp") + getEventTime("final-heal")} minutes ")
+
             .addLore(" ")
             .make()
         gui.item(5, events).onClick runnable@ {

@@ -225,6 +225,14 @@ class EditConfigCommand : CommandExecutor {
                 Chat.colored("&8Right Click&7 to subtract &cone&7.")
             )
 
+            val bs = ItemBuilder(Material.BEDROCK)
+                .name("&cBorder Shrinks")
+                .addLore("&7The border begins to shrink in &c${SettingsFeature.instance.data!!.getInt("game.events.pvp") + SettingsFeature.instance.data!!.getInt("game.events.final-heal") + SettingsFeature.instance.data!!.getInt("game.events.borderShrink")} minutes&7.")
+                .addLore(" ")
+                .addLore("&8Left Click&7 to add &aone&7.")
+                .addLore("&8Right Click&7 to subtract &cone&7.")
+                .make()
+
             finalHeal.itemMeta = fhMeta
             pvp.itemMeta = pvpMeta
             meetup.itemMeta = muMeta
@@ -258,7 +266,7 @@ class EditConfigCommand : CommandExecutor {
                     it.currentItem.itemMeta = meta
                 }
             }
-            gui.item(4, pvp).onClick runnable@ {
+            gui.item(3, pvp).onClick runnable@ {
                 it.isCancelled = true
                 if (it.click.isLeftClick) {
                     SettingsFeature.instance.data!!.set("game.events.pvp", SettingsFeature.instance.data!!.getInt("game.events.pvp") + 1)
@@ -290,7 +298,7 @@ class EditConfigCommand : CommandExecutor {
                     it.currentItem.itemMeta = meta
                 }
             }
-            gui.item(6, meetup).onClick runnable@ {
+            gui.item(4, meetup).onClick runnable@ {
                 it.isCancelled = true
                 if (it.click.isLeftClick) {
                     SettingsFeature.instance.data!!.set("game.events.meetup", SettingsFeature.instance.data!!.getInt("game.events.meetup") + 1)
@@ -313,6 +321,36 @@ class EditConfigCommand : CommandExecutor {
                     val meta = it.currentItem.itemMeta
                     meta.lore = listOf(
                         Chat.colored(Chat.colored("&7Meetup happens in &c${SettingsFeature.instance.data!!.getInt("game.events.pvp") + SettingsFeature.instance.data!!.getInt("game.events.final-heal") + SettingsFeature.instance.data!!.getInt("game.events.meetup")} minutes&7.")),
+                        "",
+                        Chat.colored("&8Left Click&7 to add &aone&7."),
+                        Chat.colored("&8Right Click&7 to subtract &cone&7.")
+                    )
+                    it.currentItem.itemMeta = meta
+                }
+            }
+            gui.item(5, bs).onClick runnable@ {
+                it.isCancelled = true
+                if (it.click.isLeftClick) {
+                    SettingsFeature.instance.data!!.set("game.events.borderShrink", SettingsFeature.instance.data!!.getInt("game.events.borderShrink") + 1)
+                    SettingsFeature.instance.saveData()
+                    val meta = it.currentItem.itemMeta
+                    meta.lore = listOf(
+                        Chat.colored("&7The border begins to shrink in &c${SettingsFeature.instance.data!!.getInt("game.events.pvp") + SettingsFeature.instance.data!!.getInt("game.events.final-heal") + SettingsFeature.instance.data!!.getInt("game.events.borderShrink")} minutes&7."),
+                        "",
+                        Chat.colored("&8Left Click&7 to add &aone&7."),
+                        Chat.colored("&8Right Click&7 to subtract &cone&7.")
+                    )
+                    it.currentItem.itemMeta = meta
+                } else if (it.click.isRightClick) {
+                    if (SettingsFeature.instance.data!!.getInt("game.events.borderShrink") <= 1) {
+                        Chat.sendMessage(player, "${Chat.prefix} Can't subtract, this timer is already at 1 minute.")
+                        return@runnable
+                    }
+                    SettingsFeature.instance.data!!.set("game.events.borderShrink", SettingsFeature.instance.data!!.getInt("game.events.borderShrink") - 1)
+                    SettingsFeature.instance.saveData()
+                    val meta = it.currentItem.itemMeta
+                    meta.lore = listOf(
+                        Chat.colored("&7The border begins to shrink in &c${SettingsFeature.instance.data!!.getInt("game.events.pvp") + SettingsFeature.instance.data!!.getInt("game.events.final-heal") + SettingsFeature.instance.data!!.getInt("game.events.borderShrink")} minutes&7."),
                         "",
                         Chat.colored("&8Left Click&7 to add &aone&7."),
                         Chat.colored("&8Right Click&7 to subtract &cone&7.")
