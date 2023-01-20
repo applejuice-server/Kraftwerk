@@ -51,9 +51,10 @@ class FalloutScenario : Scenario(
         }
     }
 
+    val prefix = "&8[&cFallout&8]&7"
     override fun onPvP() {
         task = FalloutIterator()
         task!!.runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 20L)
-        Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} The damage tick for Fallout has started, the damage tick happen every 45 seconds."))
+        Bukkit.broadcastMessage(Chat.colored("${prefix} The damage tick for Fallout has started, the damage tick happen every 45 seconds."))
     }
 }

@@ -38,7 +38,7 @@ class ClearInventoryCommand : CommandExecutor {
                     openInventory.topInventory.clear()
                 }
 
-                Chat.sendMessage(player, "${Chat.dash} &7You've cleared your own inventory.")
+                Chat.sendMessage(player, "${Chat.prefix} &7You've cleared your own inventory.")
             } else {
                 sender.sendMessage("You can't use this command as you aren't technically a player.")
             }
@@ -59,14 +59,14 @@ class ClearInventoryCommand : CommandExecutor {
                     if (openInventory.type == InventoryType.CRAFTING) {
                         openInventory.topInventory.clear()
                     }
-                    Chat.sendMessage(online, "${Chat.dash} &7Your inventory has been cleared by §c${sender.name}§7.")
+                    Chat.sendMessage(online, "${Chat.prefix} &7Your inventory has been cleared by §c${sender.name}§7.")
                 }
-                Chat.sendMessage(sender as Player, "${Chat.dash} &7You've cleared all players' inventories.")
+                Chat.sendMessage(sender as Player, "${Chat.prefix} &7You've cleared all players' inventories.")
                 return true
             } else {
                 val target = Bukkit.getServer().getPlayer(args[0])
                 if (target == null) {
-                    Chat.sendMessage(sender as Player, "${Chat.dash} &7That player is not online or has never logged onto the server.")
+                    Chat.sendMessage(sender as Player, "${Chat.prefix} &7That player is not online or has never logged onto the server.")
                 }
                 val inv = target.inventory
 
@@ -83,8 +83,8 @@ class ClearInventoryCommand : CommandExecutor {
                     openInventory.topInventory.clear()
                 }
 
-                Chat.sendMessage(target, "${Chat.dash} &7Your inventory has been cleared by &c${sender.name}&7.")
-                Chat.sendMessage(sender as Player, "${Chat.dash} &7Cleared &c${target.name}'s&7 inventory.")
+                Chat.sendMessage(target, "${Chat.prefix} &7Your inventory has been cleared by &c${sender.name}&7.")
+                Chat.sendMessage(sender as Player, "${Chat.prefix} &7Cleared &c${target.name}'s&7 inventory.")
                 return true
             }
         }

@@ -39,6 +39,8 @@ class GappleRouletteScenario : Scenario(
         PotionEffectType.WITHER
     )
 
+    val prefix = "&8[&cGapple Roulette&8]&7"
+
     @EventHandler
     fun onPlayerConsume(e: PlayerItemConsumeEvent) {
         if (!enabled) return
@@ -50,7 +52,7 @@ class GappleRouletteScenario : Scenario(
                 e.player.removePotionEffect(PotionEffectType.ABSORPTION)
                 e.player.removePotionEffect(PotionEffectType.REGENERATION)
                 e.player.addPotionEffect(PotionEffect(effect, 20 * seconds, 0))
-                Chat.sendMessage(e.player, "${Chat.dash} You got &f${effect.name}&7 for &f${seconds} seconds&7!")
+                Chat.sendMessage(e.player, "${prefix} You got &f${effect.name}&7 for &f${seconds} seconds&7!")
             }, 1L)
         }
     }

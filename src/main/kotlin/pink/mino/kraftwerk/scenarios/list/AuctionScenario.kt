@@ -31,7 +31,7 @@ class AuctionScenario : Scenario(
     var owners: MutableList<String> = mutableListOf()
     var diamondAmount: HashMap<Player, Int> = hashMapOf() // stores owners and their diamonds
     var ownerArea: HashMap<Player, Location> = hashMapOf()
-    val prefix = "&8[&4Auction&8]&7 "
+    val prefix = "&8[&cAuction&8]&7 "
     var maxDiamonds = 50
     var highestBid = -1
     var highestBidder: Player? = null

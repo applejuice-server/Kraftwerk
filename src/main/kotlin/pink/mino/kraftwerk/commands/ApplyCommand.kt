@@ -12,7 +12,7 @@ class ApplyCommand : CommandExecutor {
         label: String?,
         args: Array<String>
     ): Boolean {
-        sender.sendMessage(Chat.colored("${Chat.dash} The staff application URL is: &chttps://forms.gle/Z2fYxzqLLNDd3Fjv7"))
+        sender.sendMessage(Chat.colored("${Chat.prefix} The staff application URL is: &chttps://forms.gle/Z2fYxzqLLNDd3Fjv7"))
         return true
     }
 }

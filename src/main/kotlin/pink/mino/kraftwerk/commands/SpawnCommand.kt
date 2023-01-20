@@ -21,7 +21,7 @@ class SpawnCommand : CommandExecutor {
         }
         if (GameState.currentState == GameState.LOBBY) {
             SpawnFeature.instance.send(sender)
-            sender.sendMessage(Chat.colored("${Chat.dash} You've been sent to spawn."))
+            sender.sendMessage(Chat.colored("${Chat.prefix} You've been sent to spawn."))
         } else {
             Chat.sendMessage(sender, "&cYou can't use this command at the moment.")
         }

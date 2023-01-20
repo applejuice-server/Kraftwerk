@@ -30,12 +30,13 @@ class MonstersIncScenario : Scenario(
         Material.WOOD_DOOR
     )
 
+    val prefix = "&8[&cMonsters Inc.&8]&7"
     @EventHandler
     fun onBlockPlace(e: BlockPlaceEvent) {
         if (!enabled) return
         if (doorList.contains(e.block.type)) {
             doors.add(e.block.location)
-            Chat.sendMessage(e.player, "${Chat.prefix} This door has been linked.")
+            Chat.sendMessage(e.player, "$prefix This door has been linked.")
         }
     }
 
@@ -54,7 +55,7 @@ class MonstersIncScenario : Scenario(
         if (e.clickedBlock == null) return
         if (e.action != Action.RIGHT_CLICK_BLOCK && e.action != Action.RIGHT_CLICK_AIR) return
         if (doorList.contains(e.clickedBlock.type)) {
-            Chat.sendMessage(e.player, "${Chat.prefix} Teleporting to a random door...")
+            Chat.sendMessage(e.player, "$prefix Teleporting to a random door...")
             val location = doors[Random.nextInt(doors.size)]
             e.player.teleport(location)
         }

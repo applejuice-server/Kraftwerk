@@ -249,7 +249,7 @@ class MatchpostCommand : CommandExecutor {
                 Chat.sendMessage(sender, "&cYou must provide a valid matchpost ID.")
                 return false
             } else {
-                Chat.sendMessage(sender, "${Chat.dash} Matchpost: &chttps://hosts.uhc.gg/m/${SettingsFeature.instance.data!!.getInt("matchpost.id")}")
+                Chat.sendMessage(sender, "${Chat.prefix} Matchpost: &chttps://hosts.uhc.gg/m/${SettingsFeature.instance.data!!.getInt("matchpost.id")}")
                 return false
             }
         }
@@ -357,8 +357,8 @@ class MatchpostCommand : CommandExecutor {
         SettingsFeature.instance.data!!.set("matchpost.server", server)
         ScheduleOpening(opening).runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, (5 * 20).toLong())
         ScheduleBroadcast(opening).runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 300L)
-        Chat.sendMessage(sender, "${Chat.dash} Set the matchpost to &fhttps://hosts.uhc.gg/m/${id.toInt()}")
-        Chat.sendMessage(sender, "${Chat.dash} The server will now begin to check when the matchpost opens.")
+        Chat.sendMessage(sender, "${Chat.prefix} Set the matchpost to &fhttps://hosts.uhc.gg/m/${id.toInt()}")
+        Chat.sendMessage(sender, "${Chat.prefix} The server will now begin to check when the matchpost opens.")
         SettingsFeature.instance.saveData()
         return true
     }

@@ -36,7 +36,7 @@ class ChatListener : Listener {
                 e.message = e.message.replace(":star:", pink.mino.kraftwerk.utils.Chat.colored("&e✰&r"))
             }
             if (e.message.contains(":100:", true)) {
-                e.message = e.message.replace(":100:", pink.mino.kraftwerk.utils.Chat.colored("&c&l&n100&r"))
+                e.message = e.message.replace(":100:", pink.mino.kraftwerk.utils.Chat.colored("&c&o&l&n100&r"))
             }
             if (e.message.contains("o7", true)) {
                 e.message = e.message.replace("o7", pink.mino.kraftwerk.utils.Chat.colored("&e(｀-´)>&r"))

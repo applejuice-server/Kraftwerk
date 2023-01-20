@@ -30,8 +30,6 @@ import org.bukkit.event.inventory.InventoryType
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.*
 import org.bukkit.inventory.ItemStack
-import org.bukkit.inventory.meta.ItemMeta
-import org.bukkit.material.MaterialData
 import org.bukkit.material.SpawnEgg
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.potion.PotionEffect
@@ -54,7 +52,7 @@ class ChampionsScenario : Scenario(
     "champions",
     Material.GOLDEN_APPLE
 ), CommandExecutor {
-    val prefix = Chat.colored("&8[&4Champions&8] &7")
+    val prefix = Chat.colored("&8[&cChampions&8] &7")
     val kits = hashMapOf<UUID, String>()
 
     init {

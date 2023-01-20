@@ -69,7 +69,7 @@ class PregenCommand : CommandExecutor {
                 }
             }
         }
-        if (pregenConfig.player.isOnline) Chat.sendMessage(pregenConfig.player as Player, "${Chat.dash} &7Creating world &8'&f${pregenConfig.name}&8'...")
+        if (pregenConfig.player.isOnline) Chat.sendMessage(pregenConfig.player as Player, "${Chat.prefix} &7Creating world &8'&f${pregenConfig.name}&8'...")
 
         val wc = WorldCreator(pregenConfig.name)
         wc.environment(pregenConfig.type)
@@ -116,7 +116,7 @@ class PregenCommand : CommandExecutor {
             )
         }, 5L)
 
-        Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "${Chat.dash} &7Pregeneration started in &8'&f${pregenConfig.name}&8'&7."))
+        Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "${Chat.prefix} &7Pregeneration started in &8'&f${pregenConfig.name}&8'&7."))
         //PregenActionBarFeature().runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 20L)
         val blocks = BlockUtil().getBlocks(Bukkit.getWorld(pregenConfig.name).spawnLocation.block, 100)
         if (blocks != null) {
@@ -141,7 +141,7 @@ class PregenCommand : CommandExecutor {
         SettingsFeature.instance.data!!.set("pregen.border", pregenConfig.border)
         SettingsFeature.instance.data!!.set("world.list", list)
         SettingsFeature.instance.saveData()
-        if (pregenConfig.player.isOnline) Chat.sendMessage(pregenConfig.player as Player, "${Chat.dash} &7Your world has been set as the default UHC world, to change this, use &f/w worlds&7.")
+        if (pregenConfig.player.isOnline) Chat.sendMessage(pregenConfig.player as Player, "${Chat.prefix} &7Your world has been set as the default UHC world, to change this, use &f/w worlds&7.")
 
     }
 
@@ -153,7 +153,7 @@ class PregenCommand : CommandExecutor {
             }
         }
         if (args.isEmpty()) {
-            Chat.sendMessage(sender, "${Chat.dash} &7Usage: &c/pregen <name>&7.")
+            Chat.sendMessage(sender, "${Chat.prefix} &7Usage: &c/pregen <name>&7.")
             return false
         } else {
             if (blacklistNames.contains(args[0].lowercase())) {
@@ -162,29 +162,29 @@ class PregenCommand : CommandExecutor {
             }
             if (args[0] == "cancel") {
                 if (Config.fillTask.valid()) {
-                    Chat.sendMessage(sender, "${Chat.dash} Cancelling the pregeneration task.")
+                    Chat.sendMessage(sender, "${Chat.prefix} Cancelling the pregeneration task.")
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
                         "wb fill cancel"
                     )
                 } else {
-                    Chat.sendMessage(sender, "${Chat.dash} There is no valid pregeneration task running.")
+                    Chat.sendMessage(sender, "${Chat.prefix} There is no valid pregeneration task running.")
                 }
                 return true
             } else if (args[0] == "pause") {
                 if (Config.fillTask.valid()) {
                     if (Config.fillTask.isPaused) {
-                        Bukkit.broadcastMessage(Chat.colored("${Chat.dash} &a&oResuming&7 the pregeneration task."))
+                        Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} &a&oResuming&7 the pregeneration task."))
                         Config.fillTask.pause(false)
                     } else {
-                        Chat.sendMessage(sender, "${Chat.dash} &c&lPausing&7 the pregeneration task.")
+                        Chat.sendMessage(sender, "${Chat.prefix} &c&lPausing&7 the pregeneration task.")
                         Config.fillTask.pause(true)
                     }
                 } else {
-                    Chat.sendMessage(sender, "${Chat.dash} There is no valid pregeneration task running.")
+                    Chat.sendMessage(sender, "${Chat.prefix} There is no valid pregeneration task running.")
                 }
             } else {
                 val gui = GuiBuilder().name("&4Pregeneration Config").rows(1).owner(sender as Player)
-                Chat.sendMessage(sender, "${Chat.dash} &7Opening pregeneration config for &7'&f${args[0]}&7'...")
+                Chat.sendMessage(sender, "${Chat.prefix} &7Opening pregeneration config for &7'&f${args[0]}&7'...")
                 val player = sender
                 val pregenConfig = PregenConfigHandler.addConfig(player, PregenConfig(player, args[0]))
                 val config = ItemBuilder(Material.GRASS)

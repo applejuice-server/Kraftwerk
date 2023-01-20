@@ -20,7 +20,7 @@ class HotbarCommand : CommandExecutor {
         }
         if (GameState.currentState == GameState.LOBBY) {
             if (sender.world.name == "Arena") {
-                sender.sendMessage(Chat.colored("&8[&4Arena&8]&7 &7You can't use this command in the Arena."))
+                sender.sendMessage(Chat.colored("&8[&cArena&8]&7 &7You can't use this command in the Arena."))
                 return false
             }
             val gui = GuiBuilder().rows(1).name(ChatColor.translateAlternateColorCodes('&', "&4Hotbar Editor"))

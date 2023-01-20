@@ -25,11 +25,11 @@ class FullbrightCommand : CommandExecutor {
         val player = sender
         if (player.hasPotionEffect(PotionEffectType.NIGHT_VISION)) {
             player.removePotionEffect(PotionEffectType.NIGHT_VISION)
-            Chat.sendMessage(player, "${Chat.dash} You have &cdisabled &7your fullbright.")
+            Chat.sendMessage(player, "${Chat.prefix} You have &cdisabled &7your fullbright.")
             JavaPlugin.getPlugin(Kraftwerk::class.java).fullbright.remove(player.name.lowercase())
         } else {
             player.addPotionEffect(PotionEffect(PotionEffectType.NIGHT_VISION, 1028391820, 0, false, false))
-            Chat.sendMessage(player, "${Chat.dash} You have &aenabled &7your fullbright.")
+            Chat.sendMessage(player, "${Chat.prefix} You have &aenabled &7your fullbright.")
             JavaPlugin.getPlugin(Kraftwerk::class.java).fullbright.add(player.name.lowercase())
         }
         return true

@@ -1,6 +1,5 @@
 package pink.mino.kraftwerk.commands
 
-import me.lucko.helper.profiles.ProfileRepository
 import me.lucko.helper.promise.Promise
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
@@ -36,10 +35,10 @@ class StatsCommand : CommandExecutor {
         }
         Promise.start()
             .thenRunSync runnable@ {
-                Chat.sendMessage(sender, "${Chat.dash} &7Loading stats for &f${target.name}&7...")
+                Chat.sendMessage(sender, "${Chat.prefix} &7Loading stats for &f${target.name}&7...")
             }
             .thenApplyAsync {
-                JavaPlugin.getPlugin(Kraftwerk::class.java).statsHandler.lookupStatsPlayer(target)!!
+                JavaPlugin.getPlugin(Kraftwerk::class.java).statsHandler.lookupStatsPlayer(target)
             }
             .thenAcceptSync { statsPlayer ->
                 val ores = ItemBuilder(Material.DIAMOND_ORE)

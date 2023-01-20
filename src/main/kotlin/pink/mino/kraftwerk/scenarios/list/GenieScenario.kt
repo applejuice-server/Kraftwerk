@@ -26,7 +26,7 @@ class GenieScenario : Scenario(
     "genie",
     Material.EXP_BOTTLE
 ), CommandExecutor {
-    val prefix = Chat.colored("&8[&4Genie&8]&7")
+    val prefix = Chat.colored("&8[&cGenie&8]&7")
     val wishes = hashMapOf<UUID, Int>()
 
     init {

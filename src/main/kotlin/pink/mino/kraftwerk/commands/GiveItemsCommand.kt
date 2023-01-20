@@ -29,8 +29,8 @@ class GiveItemsCommand : CommandExecutor {
         for (scenario in ScenarioHandler.getActiveScenarios()) {
             scenario.givePlayer(target)
         }
-        Chat.sendMessage(sender, "${Chat.dash} Given items to &f${target.name}&7.")
-        Chat.sendMessage(target, "${Chat.dash} You received items from &f${sender.name}&7.")
+        Chat.sendMessage(sender, "${Chat.prefix} Given items to &f${target.name}&7.")
+        Chat.sendMessage(target, "${Chat.prefix} You received items from &f${sender.name}&7.")
         return true
     }
 

@@ -38,10 +38,10 @@ class GamemodeCommand : CommandExecutor {
                             return false
                         }
                         target.gameMode = GameMode.SPECTATOR
-                        Chat.sendMessage(target, "${Chat.dash} &f${sender.name}&7 has set your gamemode to §cSpectator§7.")
+                        Chat.sendMessage(target, "${Chat.prefix} &f${sender.name}&7 has set your gamemode to §cSpectator§7.")
                     } else {
                         player.gameMode = GameMode.SPECTATOR
-                        Chat.sendMessage(player, "${Chat.dash} &7Set your gamemode to §cSpectator§7.")
+                        Chat.sendMessage(player, "${Chat.prefix} &7Set your gamemode to §cSpectator§7.")
                     }
                 }
                 "gmc" -> {
@@ -52,10 +52,10 @@ class GamemodeCommand : CommandExecutor {
                             return false
                         }
                         target.gameMode = GameMode.CREATIVE
-                        Chat.sendMessage(target, "${Chat.dash} &f${sender.name}&7 has set your gamemode to §cCreative§7.")
+                        Chat.sendMessage(target, "${Chat.prefix} &f${sender.name}&7 has set your gamemode to §cCreative§7.")
                     } else {
                         player.gameMode = GameMode.CREATIVE
-                        Chat.sendMessage(player, "${Chat.dash} &7Set your gamemode to §cCreative§7.")
+                        Chat.sendMessage(player, "${Chat.prefix} &7Set your gamemode to §cCreative§7.")
                     }
                 }
                 "gma" -> {
@@ -66,10 +66,10 @@ class GamemodeCommand : CommandExecutor {
                             return false
                         }
                         target.gameMode = GameMode.ADVENTURE
-                        Chat.sendMessage(target, "${Chat.dash} &f${sender.name}&7 has set your gamemode to §cAdventure§7.")
+                        Chat.sendMessage(target, "${Chat.prefix} &f${sender.name}&7 has set your gamemode to §cAdventure§7.")
                     } else {
                         player.gameMode = GameMode.ADVENTURE
-                        Chat.sendMessage(player, "${Chat.dash} &7Set your gamemode to §cAdventure§7.")
+                        Chat.sendMessage(player, "${Chat.prefix} &7Set your gamemode to §cAdventure§7.")
                     }
                 }
                 "gms" -> {
@@ -80,10 +80,10 @@ class GamemodeCommand : CommandExecutor {
                             return false
                         }
                         target.gameMode = GameMode.SURVIVAL
-                        Chat.sendMessage(target, "${Chat.dash} &f${sender.name}&7 has set your gamemode to §cSurvival§7.")
+                        Chat.sendMessage(target, "${Chat.prefix} &f${sender.name}&7 has set your gamemode to §cSurvival§7.")
                     } else {
                         player.gameMode = GameMode.SURVIVAL
-                        Chat.sendMessage(player, "${Chat.dash} &7Set your gamemode to §cSurvival§7.")
+                        Chat.sendMessage(player, "${Chat.prefix} &7Set your gamemode to §cSurvival§7.")
                     }
                 }
             }
@@ -97,10 +97,10 @@ class GamemodeCommand : CommandExecutor {
                             return false
                         }
                         target.gameMode = GameMode.SURVIVAL
-                        Chat.sendMessage(target, "${Chat.dash} &f${sender.name}&7 has set your gamemode to §cSurvival§7.")
+                        Chat.sendMessage(target, "${Chat.prefix} &f${sender.name}&7 has set your gamemode to §cSurvival§7.")
                     } else {
                         sender.gameMode = GameMode.SURVIVAL
-                        Chat.sendMessage(sender, "${Chat.dash} &7Set your gamemode to §cSurvival§7.")
+                        Chat.sendMessage(sender, "${Chat.prefix} &7Set your gamemode to §cSurvival§7.")
                     }
                 }
                 "0" -> {
@@ -111,10 +111,10 @@ class GamemodeCommand : CommandExecutor {
                             return false
                         }
                         target.gameMode = GameMode.SURVIVAL
-                        Chat.sendMessage(target, "${Chat.dash} &f${sender.name}&7 has set your gamemode to §cSurvival§7.")
+                        Chat.sendMessage(target, "${Chat.prefix} &f${sender.name}&7 has set your gamemode to §cSurvival§7.")
                     } else {
                         sender.gameMode = GameMode.SURVIVAL
-                        Chat.sendMessage(sender, "${Chat.dash} &7Set your gamemode to §cSurvival§7.")
+                        Chat.sendMessage(sender, "${Chat.prefix} &7Set your gamemode to §cSurvival§7.")
                     }
                 }
                 "survival" -> {
@@ -125,10 +125,10 @@ class GamemodeCommand : CommandExecutor {
                             return false
                         }
                         target.gameMode = GameMode.SURVIVAL
-                        Chat.sendMessage(target, "${Chat.dash} &f${sender.name}&7 has set your gamemode to §cSurvival§7.")
+                        Chat.sendMessage(target, "${Chat.prefix} &f${sender.name}&7 has set your gamemode to §cSurvival§7.")
                     } else {
                         sender.gameMode = GameMode.SURVIVAL
-                        Chat.sendMessage(sender, "${Chat.dash} &7Set your gamemode to §cSurvival§7.")
+                        Chat.sendMessage(sender, "${Chat.prefix} &7Set your gamemode to §cSurvival§7.")
                     }
                 }
 
@@ -140,10 +140,10 @@ class GamemodeCommand : CommandExecutor {
                             return false
                         }
                         target.gameMode = GameMode.CREATIVE
-                        Chat.sendMessage(target, "${Chat.dash} &f${sender.name}&7 has set your gamemode to §cCreative§7.")
+                        Chat.sendMessage(target, "${Chat.prefix} &f${sender.name}&7 has set your gamemode to §cCreative§7.")
                     } else {
                         sender.gameMode = GameMode.CREATIVE
-                        Chat.sendMessage(sender, "${Chat.dash} &7Set your gamemode to §cCreative§7.")
+                        Chat.sendMessage(sender, "${Chat.prefix} &7Set your gamemode to §cCreative§7.")
                     }
                 }
                 "1" -> {
@@ -154,10 +154,10 @@ class GamemodeCommand : CommandExecutor {
                             return false
                         }
                         target.gameMode = GameMode.CREATIVE
-                        Chat.sendMessage(target, "${Chat.dash} &f${sender.name}&7 has set your gamemode to §cCreative§7.")
+                        Chat.sendMessage(target, "${Chat.prefix} &f${sender.name}&7 has set your gamemode to §cCreative§7.")
                     } else {
                         sender.gameMode = GameMode.CREATIVE
-                        Chat.sendMessage(sender, "${Chat.dash} &7Set your gamemode to §cCreative§7.")
+                        Chat.sendMessage(sender, "${Chat.prefix} &7Set your gamemode to §cCreative§7.")
                     }
                 }
                 "creative" -> {
@@ -168,10 +168,10 @@ class GamemodeCommand : CommandExecutor {
                             return false
                         }
                         target.gameMode = GameMode.CREATIVE
-                        Chat.sendMessage(target, "${Chat.dash} &f${sender.name}&7 has set your gamemode to §cCreative§7.")
+                        Chat.sendMessage(target, "${Chat.prefix} &f${sender.name}&7 has set your gamemode to §cCreative§7.")
                     } else {
                         sender.gameMode = GameMode.CREATIVE
-                        Chat.sendMessage(sender, "${Chat.dash} &7Set your gamemode to §cCreative§7.")
+                        Chat.sendMessage(sender, "${Chat.prefix} &7Set your gamemode to §cCreative§7.")
                     }
                 }
 
@@ -183,10 +183,10 @@ class GamemodeCommand : CommandExecutor {
                             return false
                         }
                         target.gameMode = GameMode.ADVENTURE
-                        Chat.sendMessage(target, "${Chat.dash} &f${sender.name}&7 has set your gamemode to §cAdventure§7.")
+                        Chat.sendMessage(target, "${Chat.prefix} &f${sender.name}&7 has set your gamemode to §cAdventure§7.")
                     } else {
                         sender.gameMode = GameMode.ADVENTURE
-                        Chat.sendMessage(sender, "${Chat.dash} &7Set your gamemode to §cAdventure§7.")
+                        Chat.sendMessage(sender, "${Chat.prefix} &7Set your gamemode to §cAdventure§7.")
                     }
                 }
                 "2" -> {
@@ -197,10 +197,10 @@ class GamemodeCommand : CommandExecutor {
                             return false
                         }
                         target.gameMode = GameMode.ADVENTURE
-                        Chat.sendMessage(target, "${Chat.dash} &f${sender.name}&7 has set your gamemode to §cAdventure§7.")
+                        Chat.sendMessage(target, "${Chat.prefix} &f${sender.name}&7 has set your gamemode to §cAdventure§7.")
                     } else {
                         sender.gameMode = GameMode.ADVENTURE
-                        Chat.sendMessage(sender, "${Chat.dash} &7Set your gamemode to §cAdventure§7.")
+                        Chat.sendMessage(sender, "${Chat.prefix} &7Set your gamemode to §cAdventure§7.")
                     }
                 }
                 "adventure" -> {
@@ -211,10 +211,10 @@ class GamemodeCommand : CommandExecutor {
                             return false
                         }
                         target.gameMode = GameMode.ADVENTURE
-                        Chat.sendMessage(target, "${Chat.dash} &f${sender.name}&7 has set your gamemode to §cAdventure§7.")
+                        Chat.sendMessage(target, "${Chat.prefix} &f${sender.name}&7 has set your gamemode to §cAdventure§7.")
                     } else {
                         sender.gameMode = GameMode.ADVENTURE
-                        Chat.sendMessage(sender, "${Chat.dash} &7Set your gamemode to §cAdventure§7.")
+                        Chat.sendMessage(sender, "${Chat.prefix} &7Set your gamemode to §cAdventure§7.")
                     }
                 }
 
@@ -226,10 +226,10 @@ class GamemodeCommand : CommandExecutor {
                             return false
                         }
                         target.gameMode = GameMode.SPECTATOR
-                        Chat.sendMessage(target, "${Chat.dash} &f${sender.name}&7 has set your gamemode to §cSpectator§7.")
+                        Chat.sendMessage(target, "${Chat.prefix} &f${sender.name}&7 has set your gamemode to §cSpectator§7.")
                     } else {
                         sender.gameMode = GameMode.SPECTATOR
-                        Chat.sendMessage(sender, "${Chat.dash} &7Set your gamemode to §cSpectator§7.")
+                        Chat.sendMessage(sender, "${Chat.prefix} &7Set your gamemode to §cSpectator§7.")
                     }
                 }
                 "sp" -> {
@@ -240,10 +240,10 @@ class GamemodeCommand : CommandExecutor {
                             return false
                         }
                         target.gameMode = GameMode.SPECTATOR
-                        Chat.sendMessage(target, "${Chat.dash} &f${sender.name}&7 has set your gamemode to §cSpectator§7.")
+                        Chat.sendMessage(target, "${Chat.prefix} &f${sender.name}&7 has set your gamemode to §cSpectator§7.")
                     } else {
                         sender.gameMode = GameMode.SPECTATOR
-                        Chat.sendMessage(sender, "${Chat.dash} &7Set your gamemode to §cSpectator§7.")
+                        Chat.sendMessage(sender, "${Chat.prefix} &7Set your gamemode to §cSpectator§7.")
                     }
                 }
                 "spectator" -> {
@@ -254,10 +254,10 @@ class GamemodeCommand : CommandExecutor {
                             return false
                         }
                         target.gameMode = GameMode.SPECTATOR
-                        Chat.sendMessage(target, "${Chat.dash} &f${sender.name}&7 has set your gamemode to §cSpectator§7.")
+                        Chat.sendMessage(target, "${Chat.prefix} &f${sender.name}&7 has set your gamemode to §cSpectator§7.")
                     } else {
                         sender.gameMode = GameMode.SPECTATOR
-                        Chat.sendMessage(sender, "${Chat.dash} &7Set your gamemode to §cSpectator§7.")
+                        Chat.sendMessage(sender, "${Chat.prefix} &7Set your gamemode to §cSpectator§7.")
                     }
                 }
             }

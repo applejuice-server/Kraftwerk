@@ -91,7 +91,7 @@ class WhitelistCommand : CommandExecutor {
                 addWhitelist(target.name.lowercase())
             }
             args[0] == "list" -> {
-                Chat.sendMessage(sender, "${Chat.dash} Whitelist list: &f${SettingsFeature.instance.data!!.getStringList("whitelist.list").joinToString(", ")}&7.")
+                Chat.sendMessage(sender, "${Chat.prefix} Whitelist list: &f${SettingsFeature.instance.data!!.getStringList("whitelist.list").joinToString(", ")}&7.")
             }
             args[0] == "remove" -> {
                 if (args.size == 1) {
@@ -101,34 +101,34 @@ class WhitelistCommand : CommandExecutor {
                 val target = Bukkit.getServer().getPlayer(args[1])
                 val offline = Bukkit.getServer().getOfflinePlayer(args[1])
                 if (target == null) {
-                    Bukkit.broadcastMessage(Chat.colored("${Chat.dash} ${ChatColor.WHITE}${offline.name}${ChatColor.GRAY} has been removed from the whitelist."))
+                    Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} ${ChatColor.WHITE}${offline.name}${ChatColor.GRAY} has been removed from the whitelist."))
                     removeWhitelist(offline.name.lowercase())
                     return true
                 }
-                Bukkit.broadcastMessage(Chat.colored("${Chat.dash} ${ChatColor.WHITE}${target.name}${ChatColor.GRAY} has been removed from the whitelist."))
+                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} ${ChatColor.WHITE}${target.name}${ChatColor.GRAY} has been removed from the whitelist."))
                 removeWhitelist(target.name.lowercase())
             }
             args[0] == "clear" -> {
                 SettingsFeature.instance.data!!.set("whitelist.list", ArrayList<String>())
                 SettingsFeature.instance.saveData()
-                Bukkit.broadcastMessage(Chat.colored("${Chat.dash} Whitelist cleared."))
+                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Whitelist cleared."))
             }
             args[0] == "all" -> {
                 for (online in Bukkit.getOnlinePlayers()) {
                     addWhitelist(online.name.lowercase())
-                    online.sendMessage(Chat.colored("${Chat.dash} All players whitelisted."))
+                    online.sendMessage(Chat.colored("${Chat.prefix} All players whitelisted."))
                 }
             }
             args[0] == "off" -> {
                 SettingsFeature.instance.data!!.set("whitelist.enabled", false)
                 SettingsFeature.instance.saveData()
-                Bukkit.broadcastMessage(Chat.colored("${Chat.dash} The whitelist is now ${ChatColor.RED}disabled${ChatColor.WHITE}."))
+                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} The whitelist is now ${ChatColor.RED}disabled${ChatColor.WHITE}."))
                 Bukkit.getPluginManager().callEvent(WhitelistStateChangeEvent(false))
             }
             args[0] == "on" -> {
                 SettingsFeature.instance.data!!.set("whitelist.enabled", true)
                 SettingsFeature.instance.saveData()
-                Bukkit.broadcastMessage(Chat.colored("${Chat.dash} The whitelist is now ${ChatColor.GREEN}enabled${ChatColor.WHITE}."))
+                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} The whitelist is now ${ChatColor.GREEN}enabled${ChatColor.WHITE}."))
                 Bukkit.getPluginManager().callEvent(WhitelistStateChangeEvent(true))
             }
         }

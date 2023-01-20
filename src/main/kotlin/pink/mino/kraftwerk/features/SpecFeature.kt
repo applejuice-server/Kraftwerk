@@ -142,7 +142,7 @@ class SpecFeature : Listener {
     companion object {
         val instance = SpecFeature()
     }
-    val prefix = "&8[&4Spec&8]&7"
+    val prefix = "&8[&cSpec&8]&7"
 
     fun joinSpec(p: Player) {
         p.health = 20.0
@@ -191,7 +191,7 @@ class SpecFeature : Listener {
         p.inventory.setItem(23, locations)
         p.inventory.setItem(25, respawn)
 
-        Chat.sendMessage(p, "${Chat.dash} You are now in spectator mode.")
+        Chat.sendMessage(p, "${prefix} You are now in spectator mode.")
 
         Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
             if (LunarClientAPI.getInstance().isRunningLunarClient(p)) {
@@ -248,7 +248,7 @@ class SpecFeature : Listener {
         p.inventory.setItem(23, locations)
         p.inventory.setItem(25, respawn)
 
-        Chat.sendMessage(p, "${Chat.dash} You are now in spectator mode.")
+        Chat.sendMessage(p, "${prefix} You are now in spectator mode.")
 
         Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
             if (LunarClientAPI.getInstance().isRunningLunarClient(p)) {
@@ -281,7 +281,7 @@ class SpecFeature : Listener {
         SettingsFeature.instance.saveData()
 
         specChat("&f${p.name}&7 has left spectator mode.", p)
-        Chat.sendMessage(p, "${Chat.dash} You are no longer in spectator mode.")
+        Chat.sendMessage(p, "${prefix} You are no longer in spectator mode.")
         Scoreboard.setScore(Chat.colored("${Chat.dash} &7Playing..."), PlayerUtils.getPlayingPlayers().size)
 
         Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
@@ -307,7 +307,7 @@ class SpecFeature : Listener {
                 if (p != null && p == player) {
                     continue
                 }
-                Chat.sendMessage(player, "${Chat.dash} $chat")
+                Chat.sendMessage(player, "$prefix $chat")
             }
         }
     }
@@ -321,7 +321,7 @@ class SpecFeature : Listener {
                 when (e.currentItem.itemMeta.displayName) {
                     "&cTeleport to 0,0" -> {
                         p.teleport(Location(p.world, 0.0, 100.0, 0.0))
-                        Chat.sendMessage(p, "${Chat.dash} You have been teleported to 0,0.")
+                        Chat.sendMessage(p, "${prefix} You have been teleported to 0,0.")
                     }
                     "&cNearby Players" -> {
                         Bukkit.dispatchCommand(p, "nearby")
@@ -334,12 +334,12 @@ class SpecFeature : Listener {
                             }
                         }
                         if (list.isEmpty()) {
-                            Chat.sendMessage(p, "${Chat.dash} There are no players online.")
+                            Chat.sendMessage(p, "${prefix} There are no players online.")
                         }
                         Chat.sendMessage(p, Chat.line)
                         Chat.sendCenteredMessage(p, "&c&lPlayer Locations")
                         for (player in list) {
-                            Chat.sendMessage(p, "${Chat.dash} &7${player.name} &7is at &b${floor(player.location.x)}, &7${floor(player.location.y)}, &7${floor(player.location.z)}")
+                            Chat.sendMessage(p, "${prefix} &7${player.name} &7is at &b${floor(player.location.x)}, &7${floor(player.location.y)}, &7${floor(player.location.z)}")
                         }
                         Chat.sendMessage(p, Chat.line)
                     }
@@ -368,7 +368,7 @@ class SpecFeature : Listener {
                     }
                     val target = list.random()
                     e.player.teleport(target.location)
-                    Chat.sendMessage(e.player, "${Chat.dash} Teleported to &f${target.name}&7!")
+                    Chat.sendMessage(e.player, "${prefix} Teleported to &f${target.name}&7!")
                 }
             }
         }

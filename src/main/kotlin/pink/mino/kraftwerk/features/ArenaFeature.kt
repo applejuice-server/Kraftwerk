@@ -36,7 +36,7 @@ class ArenaFeature : Listener {
     companion object {
         val instance = ArenaFeature()
     }
-    val prefix = "&8[&4Arena&8]&7"
+    val prefix = "&8[&cArena&8]&7"
 
     fun unbreakableItem(material: Material): ItemStack {
         val item = ItemStack(material)

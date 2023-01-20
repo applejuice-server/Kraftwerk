@@ -28,7 +28,7 @@ class PortalListener : Listener {
             World.Environment.NORMAL -> fromName + "_nether"
             World.Environment.NETHER -> {
                 if (!fromName.endsWith("_nether")) {
-                    Chat.sendMessage(player, "${Chat.dash} &7You don't appear to be in the nether. Please helpop if this is incorrect.")
+                    Chat.sendMessage(player, "${Chat.prefix} &7You don't appear to be in the nether. Please helpop if this is incorrect.")
                     return
                 }
                 fromName.substring(0, fromName.length - 7)
@@ -37,11 +37,11 @@ class PortalListener : Listener {
         }
         val targetWorld = Bukkit.getWorld(targetName)
         if (targetWorld == null) {
-            Chat.sendMessage(player, Chat.dash + "&7The nether hasn't been generated for this world.")
+            Chat.sendMessage(player, Chat.prefix + "&7The nether hasn't been generated for this world.")
             return
         }
         if (!SettingsFeature.instance.data!!.getBoolean("game.nether.nether")) {
-            Chat.sendMessage(player, Chat.dash + "&7The nether is currently disabled.")
+            Chat.sendMessage(player, Chat.prefix + "&7The nether is currently disabled.")
             return
         }
         val multiplier = if (fromWorld.environment === World.Environment.NETHER) 8.0 else 0.125
@@ -57,7 +57,7 @@ class PortalListener : Listener {
         to = agent.findOrCreate(to)
         to = LocationUtils.findSafeLocationInsideBorder(to, 10, agent)
         if (to == null || to.y < 0) {
-            Chat.sendMessage(player, "${Chat.dash} &7Couldn't find a safe place inside of the overworld, defaulting to 0,0.")
+            Chat.sendMessage(player, "${Chat.prefix} &7Couldn't find a safe place inside of the overworld, defaulting to 0,0.")
             to = agent.findOrCreate(Location(targetWorld, 0.0, 100.0, 0.0))
             to = LocationUtils.findSafeLocationInsideBorder(to, 10, agent)
             event.to = to

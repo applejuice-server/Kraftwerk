@@ -24,10 +24,10 @@ class LapisCommand : CommandExecutor {
         }
         if (PickupFeature.instance.lapisPlayers.contains(sender)) {
             PickupFeature.instance.lapisPlayers.remove(sender)
-            Chat.sendMessage(sender, "${Chat.dash} &7You have enabled &1Lapis&7 pickups!")
+            Chat.sendMessage(sender, "${Chat.prefix} &7You have enabled &1Lapis&7 pickups!")
         } else {
             PickupFeature.instance.lapisPlayers.add(sender)
-            Chat.sendMessage(sender, "${Chat.dash} &7You have disabled &1Lapis&7 pickups!")
+            Chat.sendMessage(sender, "${Chat.prefix} &7You have disabled &1Lapis&7 pickups!")
         }
         return true
     }
