@@ -15,6 +15,7 @@ class InfiniteEnchanterScenario : Scenario(
     "infiniteenchanter",
     Material.EXP_BOTTLE
 ) {
+    val prefix = "&8[&cInfinite Enchanter&8]&7"
     override fun onStart() {
         for (player in Bukkit.getOnlinePlayers()) {
             if (!SpecFeature.instance.getSpecs().contains(player.name)) {
@@ -25,7 +26,7 @@ class InfiniteEnchanterScenario : Scenario(
                 )
                 player.level = 20000
                 PlayerUtils.bulkItems(player, list)
-                Chat.sendMessage(player, "${Chat.prefix} You've been given your &cInfinite Enchanter&7 items.")
+                Chat.sendMessage(player, "${prefix} You've been given your &cInfinite Enchanter&7 items.")
             }
         }
     }
@@ -39,6 +40,6 @@ class InfiniteEnchanterScenario : Scenario(
         )
         player.level = 20000
         PlayerUtils.bulkItems(player, list)
-        Chat.sendMessage(player, "${Chat.prefix} You've been given your &cInfinite Enchanter&7 items.")
+        Chat.sendMessage(player, "${prefix} You've been given your &cInfinite Enchanter&7 items.")
     }
 }

@@ -23,15 +23,15 @@ class MoleLocationCommand : CommandExecutor {
             return false
         }
         if (!ScenarioHandler.getActiveScenarios().contains(ScenarioHandler.getScenario("moles"))) {
-            Chat.sendMessage(sender, "${Chat.dash} &cMoles&7 isn't enabled!")
+            Chat.sendMessage(sender, "${Chat.prefix} &cMoles&7 isn't enabled!")
             return false
         }
         if (GameState.currentState != GameState.INGAME) {
-            Chat.sendMessage(sender, "${Chat.dash} &cMoles&7 isn't available right now!")
+            Chat.sendMessage(sender, "${Chat.prefix} &cMoles&7 isn't available right now!")
             return false
         }
         if (MolesScenario.instance.moles[sender.uniqueId] == null) {
-            Chat.sendMessage(sender, "${Chat.dash} &7You aren't a mole!")
+            Chat.sendMessage(sender, "${Chat.prefix} &7You aren't a mole!")
             return false
         }
         val x = (sender.location.x * 100.0).roundToInt() / 100.0

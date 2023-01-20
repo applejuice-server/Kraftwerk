@@ -19,16 +19,17 @@ class AssaultAndBatteryScenario : Scenario(
 ) {
     val melee = arrayListOf<UUID>()
     val ranged = arrayListOf<UUID>()
+    val prefix = "&8[&cAssault and Battery&8]&7"
 
     override fun onStart() {
         for (team in TeamsFeature.manager.getTeams()) {
             for ((index, member) in team.players.withIndex().shuffled()) {
                 if (index == 0) {
                     melee.add(member.uniqueId)
-                    Chat.sendMessage(member as Player, "${Chat.prefix} You are the Assault player on your team, you may only attack using melee weapons.")
+                    Chat.sendMessage(member as Player, "${prefix} You are the Assault player on your team, you may only attack using melee weapons.")
                 } else {
                     ranged.add(member.uniqueId)
-                    Chat.sendMessage(member as Player, "${Chat.prefix} You are the Battery player on your team, you may only attack using ranged weapons.")
+                    Chat.sendMessage(member as Player, "${prefix} You are the Battery player on your team, you may only attack using ranged weapons.")
                 }
             }
         }
@@ -44,10 +45,10 @@ class AssaultAndBatteryScenario : Scenario(
             for ((index, member) in team.players.withIndex().shuffled()) {
                 if (index == 0) {
                     melee.add(member.uniqueId)
-                    if (member.isOnline) Chat.sendMessage(member as Player, "${Chat.prefix} You are the Assault player on your team, you may only attack using melee weapons.")
+                    if (member.isOnline) Chat.sendMessage(member as Player, "${prefix} You are the Assault player on your team, you may only attack using melee weapons.")
                 } else {
                     ranged.add(member.uniqueId)
-                    if (member.isOnline) Chat.sendMessage(member as Player, "${Chat.prefix} You are the Battery player on your team, you may only attack using ranged weapons.")
+                    if (member.isOnline) Chat.sendMessage(member as Player, "${prefix} You are the Battery player on your team, you may only attack using ranged weapons.")
                 }
             }
         }
@@ -72,7 +73,7 @@ class AssaultAndBatteryScenario : Scenario(
             val damager = e.damager as Player
             if (!melee.contains(damager.uniqueId) && TeamsFeature.manager.getTeam(damager) != null) {
                 e.isCancelled = true
-                Chat.sendMessage(damager, "${Chat.prefix} You are not the Assault player on your team, you may only attack using melee weapons.")
+                Chat.sendMessage(damager, "${prefix} You are not the Assault player on your team, you may only attack using melee weapons.")
                 return
             }
         } else if (e.entity is Player && e.damager is org.bukkit.entity.Projectile) {
@@ -80,7 +81,7 @@ class AssaultAndBatteryScenario : Scenario(
             val damager = (e.damager as org.bukkit.entity.Projectile).shooter as Player
             if (!ranged.contains(damager.uniqueId) && TeamsFeature.manager.getTeam(damager) != null) {
                 e.isCancelled = true
-                Chat.sendMessage(damager, "${Chat.prefix} You are not the Battery player on your team, you may only attack using ranged weapons.")
+                Chat.sendMessage(damager, "${prefix} You are not the Battery player on your team, you may only attack using ranged weapons.")
                 return
             }
         }

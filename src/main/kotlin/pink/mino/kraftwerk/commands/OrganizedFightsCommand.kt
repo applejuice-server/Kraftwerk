@@ -24,7 +24,7 @@ class OrganizedFights : Listener {
 
     fun clearList() {
         assigned.clear()
-        Bukkit.broadcastMessage(Chat.colored("${Chat.dash} The assigned organized fights list has been cleared!"))
+        Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} The assigned organized fights list has been cleared!"))
     }
 
     fun addPlayer(player: Player) {
@@ -44,8 +44,8 @@ class OrganizedFights : Listener {
                 }${Bukkit.getOfflinePlayer(it).name}"
             )
         }
-        Bukkit.broadcastMessage(Chat.colored("${Chat.dash} ${PlayerUtils.getPrefix(player)}${player.name}&7 has been assigned to fight!"))
-        Bukkit.broadcastMessage(Chat.colored("${Chat.dash} &7&oAssigned players: ${list.joinToString("&7, &r")}"))
+        Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} ${PlayerUtils.getPrefix(player)}${player.name}&7 has been assigned to fight!"))
+        Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} &7&oAssigned players: ${list.joinToString("&7, &r")}"))
     }
 
     fun removePlayer(player: Player) {
@@ -65,8 +65,8 @@ class OrganizedFights : Listener {
                 }${Bukkit.getOfflinePlayer(it).name}"
             )
         }
-        Bukkit.broadcastMessage(Chat.colored("${Chat.dash} ${PlayerUtils.getPrefix(player)}${player.name}&7 has been removed from the fight!"))
-        Bukkit.broadcastMessage(Chat.colored("${Chat.dash} &7&oAssigned players: ${list.joinToString("&7, &r")}"))
+        Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} ${PlayerUtils.getPrefix(player)}${player.name}&7 has been removed from the fight!"))
+        Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} &7&oAssigned players: ${list.joinToString("&7, &r")}"))
     }
 
     @EventHandler
@@ -115,7 +115,7 @@ class OrganizedFightsCommand : CommandExecutor {
             }
         }
         if (args.isEmpty()) {
-            Chat.sendMessage(sender, "${Chat.dash} Usage: &c/orgs <assign/unassign/clear/start/stop>")
+            Chat.sendMessage(sender, "${Chat.prefix} Usage: &c/orgs <assign/unassign/clear/start/stop>")
             return true
         }
         if (args[0] == "start") {
@@ -142,23 +142,23 @@ class OrganizedFightsCommand : CommandExecutor {
             }
         } else if (args[0] == "assign") {
             if (args.size < 2) {
-                Chat.sendMessage(sender, "${Chat.dash} Usage: &c/orgs assign <player>")
+                Chat.sendMessage(sender, "${Chat.prefix} Usage: &c/orgs assign <player>")
                 return true
             }
             val player = Bukkit.getPlayer(args[1])
             if (player == null) {
-                Chat.sendMessage(sender, "${Chat.dash} &cPlayer not found!")
+                Chat.sendMessage(sender, "${Chat.prefix} &cPlayer not found!")
                 return true
             }
             OrganizedFights.instance.addPlayer(player)
         } else if (args[0] == "unassign") {
             if (args.size < 2) {
-                Chat.sendMessage(sender, "${Chat.dash} Usage: &c/orgs unassign <player>")
+                Chat.sendMessage(sender, "${Chat.prefix} Usage: &c/orgs unassign <player>")
                 return true
             }
             val player = Bukkit.getPlayer(args[1])
             if (player == null) {
-                Chat.sendMessage(sender, "${Chat.dash} &cPlayer not found!")
+                Chat.sendMessage(sender, "${Chat.prefix} &cPlayer not found!")
                 return true
             }
             OrganizedFights.instance.removePlayer(player)

@@ -24,11 +24,11 @@ class HelpOpReplyCommand : CommandExecutor {
             }
         }
         if (args.isEmpty() || args.size <= 1) {
-            Chat.sendMessage(sender, "${Chat.dash} Invalid usage: &f/hr <id> <reply>&7.")
+            Chat.sendMessage(sender, "${Chat.prefix} Invalid usage: &f/hr <id> <reply>&7.")
             return false
         }
         if (args[0].toIntOrNull() == null) {
-            Chat.sendMessage(sender, "${Chat.dash} Invalid ID: &f/hr <id> <reply>&7.")
+            Chat.sendMessage(sender, "${Chat.prefix} Invalid ID: &f/hr <id> <reply>&7.")
             return false
         }
         val message = StringBuilder()
@@ -38,7 +38,7 @@ class HelpOpReplyCommand : CommandExecutor {
         val msg = message.toString().trim()
         val player = HelpOp.getHelpop(args[0].toInt())
         if (player == null) {
-            Chat.sendMessage(sender, "${Chat.dash} Invalid ID: &f/hr <id> <reply>&7.")
+            Chat.sendMessage(sender, "${Chat.prefix} Invalid ID: &f/hr <id> <reply>&7.")
             return false
         }
         Chat.sendMessage(player, "&8[&4Help-OP&8]&f ${sender.name}&7 replied with ${Chat.dash} &f&o${msg}")

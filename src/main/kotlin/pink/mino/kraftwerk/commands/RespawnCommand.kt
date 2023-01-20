@@ -77,9 +77,9 @@ class RespawnCommand : CommandExecutor {
             return false
         }
         if (args.isEmpty()) {
-            Chat.sendMessage(sender, "${Chat.dash} Opening list of respawnable players...")
+            Chat.sendMessage(sender, "${Chat.prefix} Opening list of respawnable players...")
             if (RespawnFeature.instance.respawnablePlayers.size == 0) {
-                Chat.sendMessage(sender, "${Chat.dash} There are no players to respawn.")
+                Chat.sendMessage(sender, "${Chat.prefix} There are no players to respawn.")
                 return false
             }
             var size = 1
@@ -171,8 +171,8 @@ class RespawnCommand : CommandExecutor {
             SettingsFeature.instance.saveData()
             WhitelistCommand().addWhitelist(player.name.lowercase())
             player.addPotionEffect(PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 300, 1000, true, false))
-            Chat.sendMessage(player, "${Chat.dash} You have been respawned by &f${sender.name}&7.")
-            Chat.sendMessage(sender, "${Chat.dash} &f${player.name}&7 has been respawned.")
+            Chat.sendMessage(player, "${Chat.prefix} You have been respawned by &f${sender.name}&7.")
+            Chat.sendMessage(sender, "${Chat.prefix} &f${player.name}&7 has been respawned.")
         }
         return true
     }

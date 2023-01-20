@@ -6,7 +6,7 @@ import pink.mino.kraftwerk.utils.Chat
 import kotlin.random.Random
 
 class InfoFeature : BukkitRunnable() {
-    val prefix: String = "${Chat.dash}&7"
+    val prefix: String = "&8[&cInfo&8]&7"
     private val announcements = listOf(
         Chat.colored("$prefix Join our discord server using &f/discord&7!"),
         Chat.colored("$prefix Apply for staff using &f/apply&7!"),
@@ -25,7 +25,9 @@ class InfoFeature : BukkitRunnable() {
         Chat.colored("$prefix Don't know when the Loot Crate (or other) will spawn? Use &f/timers&7!"),
         Chat.colored("$prefix Who has the top kills in the game? Use &f/kt&7!"),
         Chat.colored("$prefix Message your team your mined ores using &f/pmminedores&7!"),
-        Chat.colored("$prefix Message your team the ores you have now using &f/pmores&7!")
+        Chat.colored("$prefix Message your team the ores you have now using &f/pmores&7!"),
+        Chat.colored("$prefix Are you a content creator? Apply for media rank using &f/media&7!")
+
     )
     override fun run() {
         if (Bukkit.getOnlinePlayers().isNotEmpty()) {

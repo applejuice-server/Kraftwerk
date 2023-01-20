@@ -50,7 +50,7 @@ class ScenarioCommand : CommandExecutor {
             }
         }
         sender.openInventory(gui.make())
-        sender.sendMessage(Chat.colored("${Chat.dash} Opening active scenarios menu..."))
+        sender.sendMessage(Chat.colored("${Chat.prefix} Opening active scenarios menu..."))
         sender.playSound(sender.location, Sound.CLICK, 10.toFloat(), 10.toFloat())
         return true
     }

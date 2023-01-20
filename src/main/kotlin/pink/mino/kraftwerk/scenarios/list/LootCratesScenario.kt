@@ -101,6 +101,7 @@ class LootCratesScenario : Scenario(
         ItemStack(Material.GOLDEN_APPLE)
     )
 
+    val prefix = "&8[&cLoot Crates&8]&7"
     @EventHandler
     fun onClick(e: PlayerInteractEvent) {
         if (!enabled) return
@@ -116,13 +117,13 @@ class LootCratesScenario : Scenario(
                     )
                 ) return
                 if (itemStack.amount > 1) {
-                    Chat.sendMessage(p, "${Chat.prefix} &7You can only open one lootcrate at a time!")
+                    Chat.sendMessage(p, "${prefix} &7You can only open one lootcrate at a time!")
                     return
                 }
                 val stack = tier1[Random.nextInt(tier1.size)]
                 p.inventory.itemInHand = null
                 p.inventory.addItem(stack)
-                Chat.sendMessage(p, "${Chat.prefix} You have received &c${stack.amount} ${stack.type.name}&7 from your lootcrate!")
+                Chat.sendMessage(p, "${prefix} You have received &c${stack.amount} ${stack.type.name}&7 from your lootcrate!")
             } else if (itemStack.type == Material.ENDER_CHEST) {
                 if (!itemStack.itemMeta.displayName.equals(
                         Chat.colored("&cTier II Loot Crate"),
@@ -130,13 +131,13 @@ class LootCratesScenario : Scenario(
                     )
                 ) return
                 if (itemStack.amount > 1) {
-                    Chat.sendMessage(p, "${Chat.prefix} &7You can only open one lootcrate at a time!")
+                    Chat.sendMessage(p, "${prefix} &7You can only open one lootcrate at a time!")
                     return
                 }
                 val stack = tier2[Random.nextInt(tier2.size)]
                 p.inventory.itemInHand = null
                 p.inventory.addItem(stack)
-                Chat.sendMessage(p, "${Chat.prefix} You have received &c${stack.amount} ${stack.type.name}&7 from your lootcrate!")
+                Chat.sendMessage(p, "${prefix} You have received &c${stack.amount} ${stack.type.name}&7 from your lootcrate!")
             }
         }
     }
@@ -148,7 +149,7 @@ class LootCratesScenario : Scenario(
         }
         if (e.block.type == Material.CHEST || e.block.type == Material.ENDER_CHEST) {
             e.isCancelled = true
-            Chat.sendMessage(e.player, "${Chat.prefix} You can't place chests in Loot Crates.")
+            Chat.sendMessage(e.player, "${prefix} You can't place chests in Loot Crates.")
         }
     }
 
@@ -159,7 +160,7 @@ class LootCratesScenario : Scenario(
         }
         if (e.currentItem.type == Material.ENDER_CHEST || e.currentItem.type == Material.CHEST) {
             e.isCancelled = true
-            Chat.sendMessage(e.whoClicked, "${Chat.prefix} You can't craft chests in Loot Crates.")
+            Chat.sendMessage(e.whoClicked, "${prefix} You can't craft chests in Loot Crates.")
         }
     }
 
@@ -181,10 +182,10 @@ class LootCratesScenario : Scenario(
         val chance = Random.nextInt(2)
         if (chance == 1) {
             player.inventory.addItem(tier1Chest)
-            Chat.sendMessage(player, "${Chat.prefix} You've been given a &cTier I&7 Loot Crate.")
+            Chat.sendMessage(player, "${prefix} You've been given a &cTier I&7 Loot Crate.")
         } else {
             player.inventory.addItem(tier2Chest)
-            Chat.sendMessage(player, "${Chat.prefix} You've been given a &cTier II&7 Loot Crate.")
+            Chat.sendMessage(player, "${prefix} You've been given a &cTier II&7 Loot Crate.")
         }
         player.playSound(player.location, Sound.NOTE_PLING, 10F, 1F)
     }
@@ -214,15 +215,15 @@ class LootCratesScenario : Scenario(
         tier2Chest.itemMeta = meta
         for (player in Bukkit.getOnlinePlayers()) {
             if (SpecFeature.instance.getSpecs().contains(player.name)) {
-                Chat.sendMessage(player, "${Chat.prefix} Players have been given their lootcrates.")
+                Chat.sendMessage(player, "${prefix} Players have been given their lootcrates.")
             } else {
                 val chance = Random.nextInt(2)
                 if (chance == 1) {
                     player.inventory.addItem(tier1Chest)
-                    Chat.sendMessage(player, "${Chat.prefix} You've been given a &cTier I&7 Loot Crate.")
+                    Chat.sendMessage(player, "${prefix} You've been given a &cTier I&7 Loot Crate.")
                 } else {
                     player.inventory.addItem(tier2Chest)
-                    Chat.sendMessage(player, "${Chat.prefix} You've been given a &cTier II&7 Loot Crate.")
+                    Chat.sendMessage(player, "${prefix} You've been given a &cTier II&7 Loot Crate.")
                 }
             }
             player.playSound(player.location, Sound.NOTE_PLING, 10F, 1F)

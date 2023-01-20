@@ -6,10 +6,7 @@ import org.bukkit.entity.Egg
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.entity.EntityDamageByEntityEvent
-import org.bukkit.event.entity.ProjectileHitEvent
 import org.bukkit.event.inventory.CraftItemEvent
-import org.bukkit.event.inventory.PrepareItemCraftEvent
-import org.bukkit.event.player.PlayerEggThrowEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.ShapelessRecipe
 import org.bukkit.plugin.java.JavaPlugin
@@ -23,7 +20,7 @@ class KrenzinatorScenario : Scenario(
     "krenzinator",
     Material.REDSTONE_BLOCK
 ) {
-    val prefix: String = "&8[&4Krenzinator&8]&7"
+    val prefix: String = "&8[&cKrenzinator&8]&7"
 
     override fun onToggle(to: Boolean) {
         if (!to) {

@@ -33,7 +33,7 @@ class VoteNoCommand : CommandExecutor {
         }
         JavaPlugin.getPlugin(Kraftwerk::class.java).vote!!.no += 1
         JavaPlugin.getPlugin(Kraftwerk::class.java).vote!!.voted.add(player)
-        Chat.sendMessage(sender, "${Chat.dash} Successfully voted &cno&7 on the current poll.")
+        Chat.sendMessage(sender, "${Chat.prefix} Successfully voted &cno&7 on the current poll.")
         return true
     }
 }

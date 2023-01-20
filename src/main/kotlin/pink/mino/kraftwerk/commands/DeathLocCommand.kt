@@ -24,7 +24,7 @@ class DeathLocCommand : CommandExecutor {
             return false
         }
         if (args.size != 1) {
-            Chat.sendMessage(sender, "${Chat.dash} Usage: &c/deathloc <player>")
+            Chat.sendMessage(sender, "${Chat.prefix} Usage: &c/deathloc <player>")
             return false
         }
         val target = sender.server.getOfflinePlayer(args[0])
@@ -33,8 +33,8 @@ class DeathLocCommand : CommandExecutor {
             return false
         }
         sender.teleport(RespawnFeature.instance.locations[target.uniqueId]!!)
-        Chat.sendMessage(sender, "${Chat.dash} Teleported to &f${target.name}&7's death location.")
-        Chat.sendMessage(sender, "${Chat.dash} Coordinates: &cX: ${floor(RespawnFeature.instance.locations[target.uniqueId]!!.x)}, Y: ${floor(RespawnFeature.instance.locations[target.uniqueId]!!.y)}, &cZ: ${floor(RespawnFeature.instance.locations[target.uniqueId]!!.z)}")
+        Chat.sendMessage(sender, "${Chat.prefix} Teleported to &f${target.name}&7's death location.")
+        Chat.sendMessage(sender, "${Chat.prefix} Coordinates: &cX: ${floor(RespawnFeature.instance.locations[target.uniqueId]!!.x)}, Y: ${floor(RespawnFeature.instance.locations[target.uniqueId]!!.y)}, &cZ: ${floor(RespawnFeature.instance.locations[target.uniqueId]!!.z)}")
 
         return true
     }

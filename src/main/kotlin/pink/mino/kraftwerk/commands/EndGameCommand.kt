@@ -139,7 +139,7 @@ class EndGameCommand : CommandExecutor {
                 "\n" +
                 "Thanks for playing!")
         embed.addField("Winner Tweet", "[Click here to view the tweet](https://twitter.com/${tweet.user.screenName}/status/${tweet.id})", false)
-        Bukkit.broadcastMessage(Chat.colored("${Chat.dash} View the winner tweet here! &b&nhttps://twitter.com/${tweet.user.screenName}/status/${tweet.id}"))
+        Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} View the winner tweet here! &b&nhttps://twitter.com/${tweet.user.screenName}/status/${tweet.id}"))
         embed.addField("Matchpost", "https://hosts.uhc.gg/m/${SettingsFeature.instance.data!!.getInt("matchpost.id")}", false)
         Discord.instance!!.getTextChannelById(937811334106583040)!!.sendMessageEmbeds(embed.build()).queue()
 

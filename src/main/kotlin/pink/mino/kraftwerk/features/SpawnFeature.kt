@@ -30,6 +30,7 @@ class SpawnFeature : Listener {
     val spawnLocation = Location(Bukkit.getWorld("Spawn"), -221.5, 95.0, -140.5)
     val editorList = ArrayList<UUID>()
 
+    val prefix = "&8[&cServer&8]&7"
     companion object {
         val instance = SpawnFeature()
     }
@@ -73,7 +74,7 @@ class SpawnFeature : Listener {
                 exitEditor(e.player)
             }
             if (sign.getLine(1).toString() == "[Save Kit]") {
-                Chat.sendMessage(e.player, "${Chat.dash} Saving your kit...")
+                Chat.sendMessage(e.player, "${prefix} Saving your kit...")
                 saveKit(e.player)
             }
         }
@@ -113,11 +114,11 @@ class SpawnFeature : Listener {
                     Schedulers.sync().run {
                         exitEditor(p)
                     }
-                    Chat.sendMessage(p, "${Chat.dash} Successfully saved your kit.")
+                    Chat.sendMessage(p, "${prefix} Successfully saved your kit.")
                     return@run
                 }
             } catch (e: MongoException) {
-                Chat.sendMessage(p, "${Chat.dash} Failed to save your kit.")
+                Chat.sendMessage(p, "${prefix} Failed to save your kit.")
                 exitEditor(p)
                 e.printStackTrace()
             }
@@ -127,7 +128,7 @@ class SpawnFeature : Listener {
 
     fun exitEditor(p: Player) {
         send(p)
-        Chat.sendMessage(p, "${Chat.dash} Exited the arena kit editor.")
+        Chat.sendMessage(p, "${prefix} Exited the arena kit editor.")
     }
 
     fun send(p: Player) {

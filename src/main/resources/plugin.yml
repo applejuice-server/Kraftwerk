@@ -309,6 +309,8 @@ commands:
     description: Genie Scenario Command.
   deathloc:
     description: Gets the location of a player that died.
+  media:
+    description: Media rank application URL.
 depend:
   - ProtocolLib
   - Vault

@@ -10,7 +10,7 @@ class Chat {
     companion object {
         private const val CENTER_PX = 154
 
-        const val prefix = "&8[&4UHC&8]&7"
+        const val prefix = "&8[&cUHC&8]&7"
         const val dash = "§8»&7"
         const val dot = "§8●§7"
         const val line = "§8§m-----------------------------------------------------"

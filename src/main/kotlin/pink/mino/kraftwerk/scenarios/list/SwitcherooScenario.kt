@@ -26,8 +26,8 @@ class SwitcherooScenario : Scenario(
             val victimLoc = victim.location
             shooter.teleport(victimLoc)
             victim.teleport(shooterLoc)
-            Chat.sendMessage(victim, "${Chat.prefix} You swapped positions with &f${shooter.name}&7!")
-            Chat.sendMessage(shooter, "${Chat.prefix} You swapped positions with &f${victim.name}&7!")
+            Chat.sendMessage(victim, "&8[&cSwitcheroo&8]&7 You swapped positions with &f${shooter.name}&7!")
+            Chat.sendMessage(shooter, "&8[&cSwitcheroo&8]&7 You swapped positions with &f${victim.name}&7!")
         }
     }
 }

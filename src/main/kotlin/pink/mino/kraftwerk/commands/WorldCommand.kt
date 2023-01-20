@@ -26,7 +26,7 @@ class WorldCommand : CommandExecutor {
     ): Boolean {
         if (sender is Player) {
             if (!sender.hasPermission("uhc.staff.whitelist")) {
-                sender.sendMessage(Chat.colored("${Chat.dash} You do not have permission to use this command."))
+                sender.sendMessage(Chat.colored("&cYou do not have permission to use this command."))
                 return false
             }
         }

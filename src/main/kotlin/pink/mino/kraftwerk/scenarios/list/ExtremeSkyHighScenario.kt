@@ -53,10 +53,12 @@ class ExtremeSkyHighScenario : Scenario(
             null
         }
     }
+
+    val prefix = "&8[&cExtreme SkyHigh&8]&7"
     override fun onPvP() {
         task = ExtremeSkyHighIterator()
         task!!.runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 20L)
-        Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} The damage tick for &fExtreme SkyHigh&7 has started, the damage tick happen every 45 seconds."))
+        Bukkit.broadcastMessage(Chat.colored("${prefix} The damage tick for &fExtreme SkyHigh&7 has started, the damage tick happen every 45 seconds."))
     }
 
     override fun onStart() {
@@ -68,7 +70,7 @@ class ExtremeSkyHighScenario : Scenario(
         for (player in Bukkit.getOnlinePlayers()) {
             if (!SpecFeature.instance.getSpecs().contains(player.name)) {
                 PlayerUtils.bulkItems(player, arrayListOf(ItemStack(Material.STAINED_CLAY, 128, 14), ItemStack(Material.PUMPKIN, 2), ItemStack(Material.SNOW_BLOCK, 4), ItemStack(Material.STRING, 2), shovel, ItemStack(Material.FEATHER, 16)))
-                Chat.sendMessage(player, "${Chat.prefix} You've been given your SkyHigh items.")
+                Chat.sendMessage(player, "${prefix} You've been given your SkyHigh items.")
             }
         }
     }
@@ -80,6 +82,6 @@ class ExtremeSkyHighScenario : Scenario(
         meta.addEnchant(Enchantment.DIG_SPEED, 10, true)
         shovel.itemMeta = meta
         PlayerUtils.bulkItems(player, arrayListOf(ItemStack(Material.STAINED_CLAY, 128, 14), ItemStack(Material.PUMPKIN, 2), ItemStack(Material.SNOW_BLOCK, 4), ItemStack(Material.STRING, 2), shovel, ItemStack(Material.FEATHER, 16)))
-        Chat.sendMessage(player, "${Chat.prefix} You've been given your SkyHigh items.")
+        Chat.sendMessage(player, "${prefix} You've been given your SkyHigh items.")
     }
 }

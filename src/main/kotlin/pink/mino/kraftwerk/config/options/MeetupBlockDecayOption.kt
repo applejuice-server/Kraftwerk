@@ -42,15 +42,15 @@ class MeetupBlockDecayOption : ConfigOption(
                                             Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
                                                 BlockAnimation().blockBreakAnimation(null, e.block)
                                                 e.block.type = Material.AIR
-                                            }, 20L)
-                                        }, 20L)
-                                    }, 20L)
-                                }, 20L)
-                            }, 20L)
-                        }, 20L)
-                    }, 20L)
-                }, 20L)
-            }, 20L)
-        }, 20L)
+                                            }, 40L)
+                                        }, 40L)
+                                    }, 40L)
+                                }, 40L)
+                            }, 40L)
+                        }, 40L)
+                    }, 40L)
+                }, 40L)
+            }, 40L)
+        }, 40L)
     }
 }

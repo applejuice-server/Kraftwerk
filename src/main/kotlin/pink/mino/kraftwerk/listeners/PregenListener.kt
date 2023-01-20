@@ -16,6 +16,7 @@ import kotlin.math.roundToInt
 
 class PregenListener : Listener {
 
+    val prefix = "&8[&cServer&8]&7"
     @EventHandler
     fun on(event: WorldBorderFillStartEvent) {
         object : BukkitRunnable() {
@@ -29,7 +30,7 @@ class PregenListener : Listener {
                     } else {
                         cancel()
                         event.fillTask.cancel()
-                        Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Cancelled pregen because no world was set."))
+                        Bukkit.broadcastMessage(Chat.colored("${prefix} Cancelled pregen because no world was set."))
                     }
                 } else {
                     cancel()
@@ -40,7 +41,7 @@ class PregenListener : Listener {
 
     @EventHandler
     fun on(event: WorldBorderFillFinishedEvent) {
-        Bukkit.broadcastMessage(Chat.colored("${Chat.dash} Pregeneration in world '&c${event.world.name}&7' finished."))
-        Bukkit.broadcastMessage(Chat.colored("${Chat.dash} Please wait for TPS to stabilize at &c20 &7before restarting."))
+        Bukkit.broadcastMessage(Chat.colored("${prefix} Pregeneration in world '&c${event.world.name}&7' finished."))
+        Bukkit.broadcastMessage(Chat.colored("${prefix} Please wait for TPS to stabilize at &c20 &7before restarting."))
     }
 }

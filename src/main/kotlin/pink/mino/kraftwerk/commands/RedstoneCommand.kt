@@ -52,10 +52,10 @@ class RedstoneCommand : CommandExecutor {
         }
         if (PickupFeature.instance.redstonePlayers.contains(sender)) {
             PickupFeature.instance.redstonePlayers.remove(sender)
-            Chat.sendMessage(sender, "${Chat.dash} &7You have enabled &cRedstone&7 pickups!")
+            Chat.sendMessage(sender, "${Chat.prefix} &7You have enabled &cRedstone&7 pickups!")
         } else {
             PickupFeature.instance.redstonePlayers.add(sender)
-            Chat.sendMessage(sender, "${Chat.dash} &7You have disabled &cRedstone&7 pickups!")
+            Chat.sendMessage(sender, "${Chat.prefix} &7You have disabled &cRedstone&7 pickups!")
         }
         return true
     }

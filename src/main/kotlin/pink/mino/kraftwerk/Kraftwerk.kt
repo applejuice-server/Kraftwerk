@@ -189,6 +189,7 @@ class Kraftwerk : ExtendedJavaPlugin() {
         getCommand("timers").executor = TimersCommand()
         getCommand("arena").executor = ArenaCommand()
         getCommand("deathloc").executor = DeathLocCommand()
+        getCommand("media").executor = MediaCommand()
         //getCommand("hotbar").executor = HotbarCommand()
 
         /* ProtocolLib stuff */

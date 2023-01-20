@@ -65,7 +65,7 @@ class SplitCommand : CommandExecutor {
             sender.inventory.addItem(book)
         }
 
-        Chat.sendMessage(sender, "${Chat.dash} &7Your enchants have been split.")
+        Chat.sendMessage(sender, "${Chat.prefix} &7Your enchants have been split.")
         return true
     }
 }

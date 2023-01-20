@@ -39,7 +39,7 @@ class PlayerDeathListener : Listener {
                     } else {
                         "&f"
                     }
-                    Scoreboard.setScore(Chat.colored("${Chat.dash} ${color}${killer.name}"), o + 1)
+                    Scoreboard.setScore(Chat.colored(" ${color}${killer.name}"), o + 1)
                 }
                 val list = SettingsFeature.instance.data!!.getStringList("game.list")
                 list.remove(player.name)
@@ -51,8 +51,8 @@ class PlayerDeathListener : Listener {
                 } else {
                     "&f"
                 }
-                Scoreboard.deleteScore(Chat.colored("${Chat.dash} ${color}${player.name}"))
-                if (kills > 0) Scoreboard.setScore(Chat.colored("${Chat.dash} ${color}&m${player.name}"), kills)
+                Scoreboard.deleteScore(Chat.colored(" ${color}${player.name}"))
+                if (kills > 0) Scoreboard.setScore(Chat.colored(" ${color}&m${player.name}"), kills)
                 Scoreboard.setScore(Chat.colored("${Chat.dash} &7Playing..."), Math.max(PlayerUtils.getPlayingPlayers().size - 1, 0))
                 CombatLogFeature.instance.removeCombatLog(player.name)
                 if (!player.hasPermission("uhc.staff")) {
@@ -79,7 +79,7 @@ class PlayerDeathListener : Listener {
                     } else {
                         "&f"
                     }
-                    Scoreboard.setScore(Chat.colored("${Chat.dash} ${color}${killer.name}"), o + 1)
+                    Scoreboard.setScore(Chat.colored(" ${color}${killer.name}"), o + 1)
                 }
                 val list = SettingsFeature.instance.data!!.getStringList("game.list")
                 list.remove(player.name)

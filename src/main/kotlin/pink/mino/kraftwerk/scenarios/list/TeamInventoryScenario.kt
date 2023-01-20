@@ -29,6 +29,8 @@ class TeamInventoryScenario : Scenario(
         val instance = TeamInventoryScenario()
     }
 
+    val prefix = "&8[&cTeam Inventory&8]&7"
+
     fun aliveTeammates(player: Player): ArrayList<Player> {
         val teammates = ArrayList<Player>()
         val team = TeamsFeature.manager.getTeam(player)
@@ -55,7 +57,7 @@ class TeamInventoryScenario : Scenario(
                     e.drops.add(item)
                 }
                 teamInventories!![team]!!.clear()
-                Chat.sendMessage(e.entity.killer, "${Chat.dash} The contents of their &f&oTeam Inventory&7 have been dropped as well.")
+                Chat.sendMessage(e.entity.killer, "$prefix The contents of their &f&oTeam Inventory&7 have been dropped as well.")
             }
         } else {
             if (soloInventories!![player.uniqueId] != null) {
@@ -63,7 +65,7 @@ class TeamInventoryScenario : Scenario(
                     e.drops.add(item)
                 }
                 soloInventories!![player.uniqueId]!!.clear()
-                Chat.sendMessage(e.entity.killer, "${Chat.dash} The contents of their &f&oTeam Inventory&7 have been dropped as well.")
+                Chat.sendMessage(e.entity.killer, "$prefix The contents of their &f&oTeam Inventory&7 have been dropped as well.")
             }
         }
     }

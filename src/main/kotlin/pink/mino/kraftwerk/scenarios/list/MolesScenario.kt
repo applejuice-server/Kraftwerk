@@ -23,7 +23,7 @@ class MolesScenario : Scenario(
         val instance = MolesScenario()
     }
 
-    val prefix = "&8[&4Moles&8]&7"
+    val prefix = "&8[&cMoles&8]&7"
     val moles: HashMap<UUID, Boolean> = HashMap()
     var moleTeam: Team? = null
 

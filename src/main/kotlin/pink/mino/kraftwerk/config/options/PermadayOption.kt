@@ -16,7 +16,7 @@ class PermadayOption : ConfigOption(
     override fun onToggle(to: Boolean) {
         val world = Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world"))
         if (world == null) {
-            Bukkit.broadcastMessage("${Chat.dash} Permaday cannot be toggled while there is no overworld world!")
+            Bukkit.broadcastMessage("${Chat.prefix} Permaday cannot be toggled while there is no overworld world!")
             return
         }
         if (enabled) {

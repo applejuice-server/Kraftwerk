@@ -109,14 +109,14 @@ class UHCTask : BukkitRunnable() {
                         player,
                         "&cMeetup is in ${Chat.dash} &f${timeToString((meetup - timer).toLong())} &8| &7Border: &f${SettingsFeature.instance.data!!.getInt("pregen.border") * 2} (±${
                             SettingsFeature.instance.data!!.getInt("pregen.border")
-                        }) &8| &f${timeToString((meetup + 300) - timer.toLong())}"
+                        }) &8| &f${timeToString((borderShrink + 300) - timer.toLong())}"
                     )
                 } else {
                     ActionBar.sendActionBarMessage(
                         player,
                         "&cIt is now Meetup! Head to 0,0! &8| &7Border: &f${SettingsFeature.instance.data!!.getInt("pregen.border") * 2} (±${
                             SettingsFeature.instance.data!!.getInt("pregen.border")
-                        }) &8| &f${timeToString((meetup + 300) - timer.toLong())}"
+                        }) &8| &f${timeToString((borderShrink + 300) - timer.toLong())}"
                     )
                 }
             }
@@ -126,14 +126,14 @@ class UHCTask : BukkitRunnable() {
                         player,
                         "&cMeetup is in ${Chat.dash} &f${timeToString((meetup - timer).toLong())} &8| &7Border: &f${SettingsFeature.instance.data!!.getInt("pregen.border") * 2} (±${
                             SettingsFeature.instance.data!!.getInt("pregen.border")
-                        }) &8| &f${timeToString((meetup + 600) - timer.toLong())}"
+                        }) &8| &f${timeToString((borderShrink + 600) - timer.toLong())}"
                     )
                 } else {
                     ActionBar.sendActionBarMessage(
                         player,
                         "&cIt is now Meetup! Head to 0,0! &8| &7Border: &f${SettingsFeature.instance.data!!.getInt("pregen.border") * 2} (±${
                             SettingsFeature.instance.data!!.getInt("pregen.border")
-                        }) &8| &f${timeToString((meetup + 600) - timer.toLong())}"
+                        }) &8| &f${timeToString((borderShrink + 600) - timer.toLong())}"
                     )
                 }
             }
@@ -143,14 +143,14 @@ class UHCTask : BukkitRunnable() {
                         player,
                         "&cMeetup is in ${Chat.dash} &f${timeToString((meetup - timer).toLong())} &8| &7Border: &f${SettingsFeature.instance.data!!.getInt("pregen.border") * 2} (±${
                             SettingsFeature.instance.data!!.getInt("pregen.border")
-                        }) &8| &f${timeToString((meetup + 900) - timer.toLong())}"
+                        }) &8| &f${timeToString((borderShrink + 900) - timer.toLong())}"
                     )
                 } else {
                     ActionBar.sendActionBarMessage(
                         player,
                         "&cIt is now Meetup! Head to 0,0! &8| &7Border: &f${SettingsFeature.instance.data!!.getInt("pregen.border") * 2} (±${
                             SettingsFeature.instance.data!!.getInt("pregen.border")
-                        }) &8| &f${timeToString((meetup + 900) - timer.toLong())}"
+                        }) &8| &f${timeToString((borderShrink + 900) - timer.toLong())}"
                     )
                 }
             }
@@ -160,14 +160,14 @@ class UHCTask : BukkitRunnable() {
                         player,
                         "&cMeetup is in ${Chat.dash} &f${timeToString((meetup - timer).toLong())} &8| &7Border: &f${SettingsFeature.instance.data!!.getInt("pregen.border") * 2} (±${
                             SettingsFeature.instance.data!!.getInt("pregen.border")
-                        }) &8| &f${timeToString((meetup + 1200) - timer.toLong())}"
+                        }) &8| &f${timeToString((borderShrink + 1200) - timer.toLong())}"
                     )
                 } else {
                     ActionBar.sendActionBarMessage(
                         player,
                         "&cIt is now Meetup! Head to 0,0! &8| &7Border: &f${SettingsFeature.instance.data!!.getInt("pregen.border") * 2} (±${
                             SettingsFeature.instance.data!!.getInt("pregen.border")
-                        }) &8| &f${timeToString((meetup + 1200) - timer.toLong())}"
+                        }) &8| &f${timeToString((borderShrink + 1200) - timer.toLong())}"
                     )
                 }
             }
@@ -177,14 +177,14 @@ class UHCTask : BukkitRunnable() {
                         player,
                         "&cMeetup is in ${Chat.dash} &f${timeToString((meetup - timer).toLong())} &8| &7Border: &f${SettingsFeature.instance.data!!.getInt("pregen.border") * 2} (±${
                             SettingsFeature.instance.data!!.getInt("pregen.border")
-                        }) &8| &f${timeToString((meetup + 1500) - timer.toLong())}"
+                        }) &8| &f${timeToString((borderShrink + 1500) - timer.toLong())}"
                     )
                 } else {
                     ActionBar.sendActionBarMessage(
                         player,
                         "&cIt is now Meetup! Head to 0,0! &8| &7Border: &f${SettingsFeature.instance.data!!.getInt("pregen.border") * 2} (±${
                             SettingsFeature.instance.data!!.getInt("pregen.border")
-                        }) &8| &f${timeToString((meetup + 1500) - timer.toLong())}"
+                        }) &8| &f${timeToString((borderShrink + 1500) - timer.toLong())}"
                     )
                 }
             }
@@ -328,9 +328,9 @@ class UHCTask : BukkitRunnable() {
                     } else {
                         Chat.sendCenteredMessage(player, "&7The border will start shrinking until it's at &f50x50 (±25)&7!")
                     }
-                    UHCFeature().scheduleShrink(500)
                     Bukkit.broadcastMessage(Chat.colored(Chat.line))
                 }
+                UHCFeature().scheduleShrink(500)
             }
             meetup + 1 -> {
                 Bukkit.broadcastMessage(Chat.colored(Chat.line))
@@ -352,30 +352,30 @@ class UHCTask : BukkitRunnable() {
                     if (player.world.name.endsWith("_nether")) {
                         player.playSound(player.location, Sound.ENDERDRAGON_GROWL, 10F, 1F)
                         player.teleport(portalLocations[player.uniqueId]!!)
-                        Chat.sendMessage(player, "${Chat.dash} You've been teleported to your previous portal location as it's meetup.")
+                        Chat.sendMessage(player, "${Chat.prefix} You've been teleported to your previous portal location as it's meetup.")
                     }
                 }
             }
-            meetup + 300 -> {
+            borderShrink + 300 -> {
                 UHCFeature().scheduleShrink(250)
                 currentEvent = Events.BORDER_SHRINK_TWO
             }
-            meetup + 600 -> {
+            borderShrink + 600 -> {
                 UHCFeature().scheduleShrink(100)
                 currentEvent = Events.BORDER_SHRINK_THREE
             }
-            meetup + 900 -> {
+            borderShrink + 900 -> {
                 UHCFeature().scheduleShrink(75)
                 currentEvent = Events.BORDER_SHRINK_FOUR
             }
-            meetup + 1200 -> {
+            borderShrink + 1200 -> {
                 if (ScenarioHandler.getScenario("bigcrack")!!.enabled) {
                     return
                 }
                 UHCFeature().scheduleShrink(50)
                 currentEvent = Events.BORDER_SHRINK_FIVE
             }
-            meetup + 1500 -> {
+            borderShrink + 1500 -> {
                 if (ScenarioHandler.getScenario("bigcrack")!!.enabled) {
                     return
                 }
@@ -406,9 +406,9 @@ class UHCFeature : Listener {
             world.pvp = false
         }
         if (mode == "ffa") {
-            Bukkit.broadcastMessage(Chat.colored("${Chat.dash} Starting a &cFFA&7 UHC game... now freezing players."))
+            Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Starting a &cFFA&7 UHC game... now freezing players."))
         } else if (mode == "teams") {
-            Bukkit.broadcastMessage(Chat.colored("${Chat.dash} Starting a &cTeams&7 UHC game... now freezing players."))
+            Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Starting a &cTeams&7 UHC game... now freezing players."))
             for (player in Bukkit.getOnlinePlayers()) {
                 if (!SpecFeature.instance.getSpecs().contains(player.name)) {
                     if (TeamsFeature.manager.getTeam(player) == null) {
@@ -457,11 +457,11 @@ class UHCFeature : Listener {
         val radius = SettingsFeature.instance.data!!.getInt("pregen.border")
 
         if (teams) {
-            Bukkit.broadcastMessage(Chat.colored("${Chat.dash} Attempting to start &cteam &7scatter..."))
+            Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Attempting to start &cteam &7scatter..."))
         } else {
-            Bukkit.broadcastMessage(Chat.colored("${Chat.dash} Attempting to start &csolo &7scatter..."))
+            Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Attempting to start &csolo &7scatter..."))
         }
-        Bukkit.broadcastMessage(Chat.colored("${Chat.dash} Standby, this might take a bit."))
+        Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Standby, this might take a while."))
         JavaPlugin.getPlugin(Kraftwerk::class.java).scattering = true
         object: BukkitRunnable() {
             override fun run() {
@@ -498,7 +498,7 @@ class UHCFeature : Listener {
 
         object: BukkitRunnable() {
             override fun run() {
-                Bukkit.broadcastMessage(Chat.colored("${Chat.dash} All locations &cfound&7, starting to load chunks..."))
+                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} All locations &cfound&7, starting to load chunks..."))
 
                 val locs = JavaPlugin.getPlugin(Kraftwerk::class.java).scatterLocs.values.toMutableList()
                 val names = JavaPlugin.getPlugin(Kraftwerk::class.java).scatterLocs.keys.toMutableList()
@@ -512,7 +512,7 @@ class UHCFeature : Listener {
                         } else {
                             cancel()
                             locs.clear()
-                            Bukkit.broadcastMessage(Chat.colored("${Chat.dash} All chunks &cloaded&7, starting to scatter players..."))
+                            Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} All chunks &cloaded&7, starting to scatter players..."))
 
                             object: BukkitRunnable() {
                                 var i = 0
@@ -535,9 +535,9 @@ class UHCFeature : Listener {
                                         if (!scatter.isOnline) {
                                             val team = TeamsFeature.manager.getTeam(scatter)
                                             if (team == null) {
-                                                Bukkit.broadcastMessage(Chat.colored("${Chat.dash} Scheduled Scatter for &f${names[i]} &8(&c${i + 1}&8/&c${names.size}&8)"))
+                                                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Scheduled Scatter for &f${names[i]} &8(&c${i + 1}&8/&c${names.size}&8)"))
                                             } else {
-                                                Bukkit.broadcastMessage(Chat.colored("${Chat.dash} Scheduled Scatter for ${team.prefix}${names[i]} &8(&c${i + 1}&8/&c${names.size}&8)"))
+                                                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Scheduled Scatter for ${team.prefix}${names[i]} &8(&c${i + 1}&8/&c${names.size}&8)"))
                                             }
                                         } else {
                                             val scatterP = scatter as Player
@@ -547,9 +547,9 @@ class UHCFeature : Listener {
                                             scatterP.allowFlight = false
                                             val team = TeamsFeature.manager.getTeam(Bukkit.getOfflinePlayer(names[i]))
                                             if (team == null) {
-                                                Bukkit.broadcastMessage(Chat.colored("${Chat.dash} Scattered &f${scatterP.name} &8(&c${i + 1}&8/&c${names.size}&8)"))
+                                                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Scattered &f${scatterP.name} &8(&c${i + 1}&8/&c${names.size}&8)"))
                                             } else {
-                                                Bukkit.broadcastMessage(Chat.colored("${Chat.dash} Scattered ${team.prefix}${scatterP.name} &8(&c${i + 1}&8/&c${names.size}&8)"))
+                                                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Scattered ${team.prefix}${scatterP.name} &8(&c${i + 1}&8/&c${names.size}&8)"))
                                             }
                                             JavaPlugin.getPlugin(Kraftwerk::class.java).scatterLocs.remove(names[i])
                                             freeze()
@@ -558,7 +558,7 @@ class UHCFeature : Listener {
                                         i++
                                     } else {
                                         JavaPlugin.getPlugin(Kraftwerk::class.java).scattering = false
-                                        Bukkit.broadcastMessage(Chat.colored("${Chat.dash} &7Successfully scattered all players!"))
+                                        Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} &7Successfully scattered all players!"))
                                         SettingsFeature.instance.data!!.set("game.list", list)
                                         SettingsFeature.instance.saveData()
                                         Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
@@ -615,45 +615,45 @@ class UHCFeature : Listener {
 
     fun scheduleShrink(newBorder: Int) {
         Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-            Bukkit.broadcastMessage(Chat.colored("${Chat.dash} Shrinking to &f${newBorder*2}x${newBorder*2} (±${newBorder})&7 in &f10s&7."))
+            Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Shrinking to &f${newBorder*2}x${newBorder*2} (±${newBorder})&7 in &f10s&7."))
             Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                Bukkit.broadcastMessage(Chat.colored("${Chat.dash} Shrinking to &f${newBorder*2}x${newBorder*2} (±${newBorder})&7 in &f9s&7."))
+                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Shrinking to &f${newBorder*2}x${newBorder*2} (±${newBorder})&7 in &f9s&7."))
                 Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                    Bukkit.broadcastMessage(Chat.colored("${Chat.dash} Shrinking to &f${newBorder*2}x${newBorder*2} (±${newBorder})&7 in &f8s&7."))
+                    Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Shrinking to &f${newBorder*2}x${newBorder*2} (±${newBorder})&7 in &f8s&7."))
                     Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                        Bukkit.broadcastMessage(Chat.colored("${Chat.dash} Shrinking to &f${newBorder*2}x${newBorder*2} (±${newBorder})&7 in &f7s&7."))
+                        Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Shrinking to &f${newBorder*2}x${newBorder*2} (±${newBorder})&7 in &f7s&7."))
                         Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                            Bukkit.broadcastMessage(Chat.colored("${Chat.dash} Shrinking to &f${newBorder*2}x${newBorder*2} (±${newBorder})&7 in &f6s&7."))
+                            Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Shrinking to &f${newBorder*2}x${newBorder*2} (±${newBorder})&7 in &f6s&7."))
                             Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                                Bukkit.broadcastMessage(Chat.colored("${Chat.dash} Shrinking to &f${newBorder*2}x${newBorder*2} (±${newBorder})&7 in &f5s&7."))
+                                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Shrinking to &f${newBorder*2}x${newBorder*2} (±${newBorder})&7 in &f5s&7."))
                                 Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                                    Bukkit.broadcastMessage(Chat.colored("${Chat.dash} Shrinking to &f${newBorder*2}x${newBorder*2} (±${newBorder})&7 in &f4s&7."))
+                                    Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Shrinking to &f${newBorder*2}x${newBorder*2} (±${newBorder})&7 in &f4s&7."))
                                     Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                                        Bukkit.broadcastMessage(Chat.colored("${Chat.dash} Shrinking to &f${newBorder*2}x${newBorder*2} (±${newBorder})&7 in &f3s&7."))
+                                        Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Shrinking to &f${newBorder*2}x${newBorder*2} (±${newBorder})&7 in &f3s&7."))
                                         Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                                            Bukkit.broadcastMessage(Chat.colored("${Chat.dash} Shrinking to &f${newBorder*2}x${newBorder*2} (±${newBorder})&7 in &f2s&7."))
+                                            Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Shrinking to &f${newBorder*2}x${newBorder*2} (±${newBorder})&7 in &f2s&7."))
                                             Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                                                Bukkit.broadcastMessage(Chat.colored("${Chat.dash} Shrinking to &f${newBorder*2}x${newBorder*2} (±${newBorder})&7 in &f1s&7."))
+                                                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Shrinking to &f${newBorder*2}x${newBorder*2} (±${newBorder})&7 in &f1s&7."))
                                                 Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
                                                     for (player in Bukkit.getOnlinePlayers()) {
                                                         if (!SpecFeature.instance.getSpecs().contains(player.name)) {
                                                             if (!insideBorder(player, newBorder)) {
                                                                 player.addPotionEffect(PotionEffect(PotionEffectType.WEAKNESS, 160, 10, true, false))
                                                                 player.addPotionEffect(PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 160, 10, true, false))
-                                                                Chat.sendMessage(player, "${Chat.dash} You have gained &f8 seconds&7 of &fResistance X&7 as you are outside the border.")
+                                                                Chat.sendMessage(player, "${Chat.prefix} You have gained &f8 seconds&7 of &fResistance X&7 as you are outside the border.")
                                                             }
                                                         }
                                                     }
                                                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "border $newBorder")
                                                     Bukkit.broadcastMessage(Chat.colored(Chat.line))
-                                                    Bukkit.broadcastMessage(Chat.colored("${Chat.dash} The border has shrunken to &f${newBorder*2}x${newBorder*2} (±${newBorder})&7."))
+                                                    Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} The border has shrunken to &f${newBorder*2}x${newBorder*2} (±${newBorder})&7."))
                                                     if (ScenarioHandler.getScenario("bigcrack")!!.enabled) {
                                                         if (newBorder != 75) {
-                                                            Bukkit.broadcastMessage(Chat.colored("${Chat.dash} Next border shrink in &f5 minutes."))
+                                                            Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Next border shrink in &f5 minutes."))
                                                         }
                                                     } else {
                                                         if (newBorder != 25) {
-                                                            Bukkit.broadcastMessage(Chat.colored("${Chat.dash} Next border shrink in &f5 minutes."))
+                                                            Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Next border shrink in &f5 minutes."))
                                                         }
                                                     }
                                                     Bukkit.broadcastMessage(Chat.colored(Chat.line))
