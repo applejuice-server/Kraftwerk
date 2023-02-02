@@ -190,6 +190,7 @@ class Kraftwerk : ExtendedJavaPlugin() {
         getCommand("arena").executor = ArenaCommand()
         getCommand("deathloc").executor = DeathLocCommand()
         getCommand("media").executor = MediaCommand()
+        getCommand("enemyrecon").executor = EnemyReconCommand()
         //getCommand("hotbar").executor = HotbarCommand()
 
         /* ProtocolLib stuff */
@@ -257,11 +258,11 @@ class Kraftwerk : ExtendedJavaPlugin() {
                 ScheduleOpening(SettingsFeature.instance.data!!.getString("matchpost.opens")).runTaskTimer(this, 0L, 300L)
             }
             if (SettingsFeature.instance.data!!.getString("matchpost.host") == null) {
-                Discord.instance!!.presence.activity = Activity.playing("uhc.applejuice.bar")
+                Discord.instance!!.presence.activity = Activity.playing("applejuice.games")
             }
             else Discord.instance!!.presence.activity = Activity.playing(SettingsFeature.instance.data!!.getString("matchpost.host"))
         } else {
-            Discord.instance!!.presence.activity = Activity.playing("uhc.applejuice.bar")
+            Discord.instance!!.presence.activity = Activity.playing("applejuice.games")
             SettingsFeature.instance.data!!.set("matchpost.cancelled", null)
             SettingsFeature.instance.saveData()
         }

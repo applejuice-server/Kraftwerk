@@ -12,7 +12,7 @@ class RulesCommand : CommandExecutor {
         label: String?,
         args: Array<String>
     ): Boolean {
-        sender.sendMessage(Chat.colored("${Chat.prefix} View the server rules @ &chttps://rules.applejuice.bar"))
+        sender.sendMessage(Chat.colored("${Chat.prefix} View the server rules @ &chttps://rules.applejuice.games"))
         return false
     }
 }

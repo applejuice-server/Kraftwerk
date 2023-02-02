@@ -149,6 +149,15 @@ class TeamsFeature private constructor() : Listener {
         return null
     }
 
+    fun getOfflineTeam(offlinePlayer: OfflinePlayer): Team? {
+        for ((team, players) in teamMap.entries) {
+            if (players.contains(offlinePlayer)) {
+                return getTeam("UHC${team}")
+            }
+        }
+        return null
+    }
+
     /**
      * Sets up all the teams.
      */

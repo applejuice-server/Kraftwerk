@@ -11,7 +11,7 @@ class InfoFeature : BukkitRunnable() {
         Chat.colored("$prefix Join our discord server using &f/discord&7!"),
         Chat.colored("$prefix Apply for staff using &f/apply&7!"),
         Chat.colored("$prefix Want to host games on here? Apply for us! Use &f/apply&7!"),
-        Chat.colored("$prefix Like our server @ &fnamemc.com/server/uhc.applejuice.bar&7!"),
+        Chat.colored("$prefix Like our server @ &fnamemc.com/server/applejuice.games&7!"),
         Chat.colored("$prefix Want more games hosted? Apply for staff @ &f/apply&7!"),
         Chat.colored("$prefix Wanna know when games are hosted & more? Join our discord @ &f/discord&7."),
         Chat.colored("$prefix Follow us on twitter &b@applejuiceuhc&7!"),

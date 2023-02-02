@@ -63,6 +63,10 @@ class Leaderboards : BukkitRunnable() {
         plugin,
         Location(Bukkit.getWorld("Spawn"), -697.5, 108.5, 296.5)
     )
+    val latestMatch = HologramsAPI.createHologram(
+        plugin,
+        Location(Bukkit.getWorld("Spawn"), -711.5, 109.0, 264.5)
+    )
 
     override fun run() {
         timer -= 1
@@ -85,6 +89,8 @@ class Leaderboards : BukkitRunnable() {
                 gapplesEaten.appendTextLine(Chat.guiLine)
                 timesEnchanted.appendTextLine(Chat.colored("&c&lTimes Enchanted"))
                 timesEnchanted.appendTextLine(Chat.guiLine)
+                latestMatch.appendTextLine(Chat.colored("&c&lLatest Match"))
+                latestMatch.appendTextLine(Chat.guiLine)
                 with (JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.getDatabase("applejuice").getCollection("stats")) {
                     val gp = this.find().sort(descending("gamesPlayed")).limit(10)
                     for ((index, document) in gp.withIndex()) {
@@ -152,6 +158,42 @@ class Leaderboards : BukkitRunnable() {
                 timesEnchanted.appendTextLine(Chat.guiLine)
             } catch (e: MongoException) {
                 e.printStackTrace()
+            }
+            with (JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.getDatabase("applejuice").getCollection("matches")) {
+                val matches = this.find().sort(descending("startTime")).limit(1)
+                for (match in matches) {
+                    latestMatch.appendTextLine(Chat.colored("&e${match.getString("title")}"))
+                    latestMatch.appendTextLine(Chat.colored(" "))
+                    latestMatch.appendTextLine(Chat.colored("&7Teamsize ${Chat.dash} &f${match.getString("teams")}"))
+                    latestMatch.appendTextLine(Chat.colored("&7Scenarios (${(match["scenarios"] as List<*>).size}) ${Chat.dash} "))
+                    for (scenario in match["scenarios"] as List<*>) {
+                        latestMatch.appendTextLine(Chat.colored(" §8●§7 &f${scenario}&8"))
+                    }
+                    latestMatch.appendTextLine(Chat.colored(" "))
+                    var kills = 0
+                    val killsMap = match["winnerKills"] as Map<String, Int>
+                    for (kill in (match["winnerKills"] as Map<*, *>).values) {
+                        kills += kill as Int
+                    }
+                    latestMatch.appendTextLine(Chat.colored("&7Winner(s) ${Chat.dash} &8(&7Kills: &e${kills}&8)"))
+                    val winnerMap = mutableMapOf<String, Int>()
+                    for (winner in match["winners"] as List<*>) {
+                        plugin.getService(ProfileRepository::class.java).lookupProfile(UUID.fromString(winner as String)).thenApplySync {profile ->
+                            winnerMap[profile.name.get()] = killsMap[winner] as Int
+                        }
+                    }
+                    var winnerLimited = 10
+                    for (entry in winnerMap) {
+                        if (winnerLimited == 0) {
+                            latestMatch.appendTextLine(Chat.colored("&7&o(${winnerMap.size - 10} more winners&f&o)"))
+                            break
+                        }
+                        latestMatch.appendTextLine(Chat.colored(" ${Chat.dot} §f${entry.key} &8(&e${entry.value}&8)"))
+                        winnerLimited--
+                    }
+
+                }
+                latestMatch.appendTextLine(Chat.guiLine)
             }
             timer = 300
         }

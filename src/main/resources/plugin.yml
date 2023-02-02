@@ -311,6 +311,12 @@ commands:
     description: Gets the location of a player that died.
   media:
     description: Media rank application URL.
+  enemyrecon:
+    description: Enemy recon command
+    aliases:
+      - er
+      - recon
+      - enemyr
 depend:
   - ProtocolLib
   - Vault

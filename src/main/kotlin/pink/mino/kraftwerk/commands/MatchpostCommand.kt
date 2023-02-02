@@ -98,12 +98,12 @@ class ScheduleBroadcast(private val opening: String) : BukkitRunnable() {
                         "\uD83D\uDC65 ${SettingsFeature.instance.data!!.getString("matchpost.team")} - \uD83D\uDD79 ${scenarios.joinToString(", ")}\n" +
                         "\n" +
                         "⏰ Opening at: ${opening} UTC (in 15 minutes) | time.is/UTC\n" +
-                        "⌨ Version: 1.8.x | IP: uhc.applejuice.bar"
+                        "⌨ Version: 1.8.x | IP: applejuice.games"
             )
             embed.addField("Teams", SettingsFeature.instance.data!!.getString("matchpost.team"), false)
             embed.addField("Scenarios", scenarios.joinToString(", "), false)
             var flag = ":flag_ca:"
-            embed.addField("IP", "$flag `uhc.applejuice.bar` (1.8.x)", false)
+            embed.addField("IP", "$flag `applejuice.games` (1.8.x)", false)
             Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Matchpost posted on discord & twitter! View the tweet here: &b&uhttps://twitter.com/applejuiceuhc/status/${tweet.id}"))
             embed.addField("Opening", "<t:${fr}:t> (<t:${fr}:R>)", false)
             embed.addField("Matchpost", "[uhc.gg](https://hosts.uhc.gg/m/${SettingsFeature.instance.data!!.getInt("matchpost.id")}) | [Twitter](https://twitter.com/applejuiceuhc/status/${tweet.id})", false)
@@ -206,7 +206,7 @@ class ScheduleOpening(private val opening: String) : BukkitRunnable() {
             embed.setColor(Color(255, 61, 61))
             embed.setTitle(SettingsFeature.instance.data!!.getString("matchpost.host"))
             embed.setThumbnail("https://visage.surgeplay.com/bust/512/${host.uniqueId}")
-            embed.addField("Game Open!", "The game is now open at :beverage_box: `uhc.applejuice.bar`.", false)
+            embed.addField("Game Open!", "The game is now open at :beverage_box: `applejuice.games`.", false)
             Discord.instance!!.getTextChannelById(937811305102999573)!!.sendMessageEmbeds(embed.build()).queue()
             Bukkit.broadcastMessage(Chat.colored("${Chat.dash} The whitelist has been turned off automatically @ &c${opening}&7."))
             cancel()
@@ -308,9 +308,9 @@ class MatchpostCommand : CommandExecutor {
                 id = map["id"] as Double
                 scenarios = map["scenarios"] as List<*>
                 opening = "${(map["opens"] as String)[11]}${(map["opens"] as String)[12]}:${(map["opens"] as String)[14]}${(map["opens"] as String)[15]}"
-                server = if ((map["address"] as String) == "na2.applejuice.bar") {
+                server = if ((map["address"] as String) == "na2.applejuice.games") {
                     "uhc2"
-                } else if ((map["address"] as String) == "na1.applejuice.bar") {
+                } else if ((map["address"] as String) == "na1.applejuice.games") {
                     "uhc1"
                 } else {
                     "other"
