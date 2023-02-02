@@ -16,6 +16,7 @@ import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 import pink.mino.kraftwerk.features.SettingsFeature
 import pink.mino.kraftwerk.features.SpecFeature
+import pink.mino.kraftwerk.features.TeamsFeature
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GameState
 import pink.mino.kraftwerk.utils.GuiBuilder
@@ -155,6 +156,10 @@ class RespawnCommand : CommandExecutor {
                 player.addPotionEffect(effect)
             }
             player.inventory.contents = RespawnFeature.instance.inventory[player.uniqueId]!!
+            val team = TeamsFeature.manager.getOfflineTeam(player)
+            if (team != null) {
+                team.addPlayer(player)
+            }
             if (RespawnFeature.instance.helmet[player.uniqueId] != null) player.inventory.helmet = RespawnFeature.instance.helmet[player.uniqueId]!!
             if (RespawnFeature.instance.chestplate[player.uniqueId] != null) player.inventory.chestplate = RespawnFeature.instance.chestplate[player.uniqueId]!!
             if (RespawnFeature.instance.leggings[player.uniqueId] != null) player.inventory.leggings = RespawnFeature.instance.leggings[player.uniqueId]!!

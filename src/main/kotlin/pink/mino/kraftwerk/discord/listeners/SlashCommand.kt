@@ -34,7 +34,7 @@ class SlashCommand : ListenerAdapter() {
                 val embed = EmbedBuilder()
                 embed.setColor(Color(255, 61, 61))
                 embed.setAuthor("applejuice — IP Address", "https://dsc.gg/apple-juice", event.jda.selfUser.avatarUrl)
-                embed.setDescription("The IP address to the server is :beverage_box: `uhc.applejuice.bar`.")
+                embed.setDescription("The IP address to the server is :beverage_box: `applejuice.games`.")
                 event.replyEmbeds(embed.build()).setEphemeral(false).queue()
             }
             "togglealerts" -> {
@@ -62,7 +62,7 @@ class SlashCommand : ListenerAdapter() {
                     Schedulers.sync().run runnable@ {
                         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wl add $player")
                     }
-                    event.reply("**${MarkdownSanitizer.escape(player)}** has been whitelisted on the server, connect using `uhc.applejuice.bar`.").queue()
+                    event.reply("**${MarkdownSanitizer.escape(player)}** has been whitelisted on the server, connect using `applejuice.games`.").queue()
                 } else {
                     event.reply("Sorry, but whitelists are not available at this time!").setEphemeral(true).queue()
                 }

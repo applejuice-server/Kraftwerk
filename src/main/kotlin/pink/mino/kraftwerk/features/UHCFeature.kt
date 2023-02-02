@@ -264,7 +264,7 @@ class UHCTask : BukkitRunnable() {
             }
             46 -> {
                 for (player in Bukkit.getOnlinePlayers()) {
-                    if (!ConfigOptionHandler.getOption("statless")!!.enabled) JavaPlugin.getPlugin(Kraftwerk::class.java).statsHandler.getStatsPlayer(player)!!.gamesPlayed++
+                    if (!ConfigOptionHandler.getOption("statless")!!.enabled && !SpecFeature.instance.isSpec(player)) JavaPlugin.getPlugin(Kraftwerk::class.java).statsHandler.getStatsPlayer(player)!!.gamesPlayed++
                 }
             }
             finalHeal -> {
@@ -319,8 +319,8 @@ class UHCTask : BukkitRunnable() {
             }
             borderShrink -> {
                 currentEvent = Events.BORDER_SHRINK_ONE
+                Bukkit.broadcastMessage(Chat.colored(Chat.line))
                 for (player in Bukkit.getOnlinePlayers()) {
-                    Bukkit.broadcastMessage(Chat.colored(Chat.line))
                     Chat.sendCenteredMessage(player, "&c&lUHC")
                     Chat.sendMessage(player, " ")
                     if (ScenarioHandler.getScenario("bigcrack")!!.enabled) {
@@ -328,8 +328,8 @@ class UHCTask : BukkitRunnable() {
                     } else {
                         Chat.sendCenteredMessage(player, "&7The border will start shrinking until it's at &f50x50 (±25)&7!")
                     }
-                    Bukkit.broadcastMessage(Chat.colored(Chat.line))
                 }
+                Bukkit.broadcastMessage(Chat.colored(Chat.line))
                 UHCFeature().scheduleShrink(500)
             }
             meetup + 1 -> {

@@ -115,7 +115,6 @@ class SuperheroesScenario : Scenario(
             }
             PotionEffectType.DAMAGE_RESISTANCE -> {
                 player.addPotionEffect(PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 99999, 1))
-                player.addPotionEffect(PotionEffect(PotionEffectType.FIRE_RESISTANCE, 99999, 0))
             }
             PotionEffectType.INCREASE_DAMAGE -> {
                 player.addPotionEffect(PotionEffect(PotionEffectType.INCREASE_DAMAGE, 99999, 0))
