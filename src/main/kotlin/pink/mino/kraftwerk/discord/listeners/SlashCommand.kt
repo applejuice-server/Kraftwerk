@@ -1,22 +1,17 @@
 package pink.mino.kraftwerk.discord.listeners
 
 import me.lucko.helper.Schedulers
-import me.lucko.helper.profiles.ProfileRepository
 import me.lucko.helper.utils.Log
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import net.dv8tion.jda.api.utils.MarkdownSanitizer
 import org.bukkit.Bukkit
-import org.bukkit.plugin.java.JavaPlugin
-import pink.mino.kraftwerk.Kraftwerk
 import pink.mino.kraftwerk.features.SettingsFeature
 import pink.mino.kraftwerk.scenarios.ScenarioHandler
 import java.awt.Color
 
 class SlashCommand : ListenerAdapter() {
-
-    val profileService = JavaPlugin.getPlugin(Kraftwerk::class.java).getService(ProfileRepository::class.java)
     override fun onSlashCommand(event: SlashCommandEvent) {
         if (event.guild == null) return
         val member = event.member

@@ -9,6 +9,8 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerPickupItemEvent
 import org.bukkit.inventory.ItemStack
+import org.bukkit.plugin.java.JavaPlugin
+import pink.mino.kraftwerk.Kraftwerk
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.PerkChecker
 
@@ -22,12 +24,13 @@ class PickupFeature : Listener {
 
     @EventHandler
     fun onPlayerPickup(e: PlayerPickupItemEvent) {
-        if (lapisPlayers.contains(e.player)) {
+        val profile = JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.getProfile(e.player.uniqueId)
+        if (profile!!.disableLapisPickup) {
             if (e.item.itemStack.type == Material.INK_SACK && e.item.itemStack.durability == 4.toShort() && e.player.inventory.containsAtLeast(ItemStack(Material.INK_SACK, 64, 4), 64)) {
                 e.isCancelled = true
             }
         }
-        if (redstonePlayers.contains(e.player)) {
+        if (profile.disableRedstonePickup) {
             if (e.item.itemStack.type == Material.REDSTONE && e.player.inventory.containsAtLeast(ItemStack(Material.REDSTONE, 64), 64)) {
                 e.isCancelled = true
             }

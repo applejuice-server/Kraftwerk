@@ -253,14 +253,6 @@ commands:
     aliases:
       - d
     description: View the donator menu.
-  redstone:
-    aliases:
-      - rs
-    description: Toggle redstone pickup.
-  lapis:
-    aliases:
-      - l
-    description: Toggles lapis pickup.
   giveitems:
     aliases:
       - gi
@@ -317,6 +309,12 @@ commands:
       - er
       - recon
       - enemyr
+  ignore:
+    description: Ignore players so that you won't receive their messages, nor can they message you.
+    aliases:
+      - block
+  profile:
+    description: View your own player profile.
 depend:
   - ProtocolLib
   - Vault

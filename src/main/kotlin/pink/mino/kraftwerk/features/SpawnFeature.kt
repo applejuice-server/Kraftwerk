@@ -4,7 +4,6 @@ import com.mongodb.MongoException
 import com.mongodb.client.model.Filters
 import com.mongodb.client.model.FindOneAndReplaceOptions
 import me.lucko.helper.Schedulers
-import me.lucko.helper.profiles.ProfileRepository
 import org.bson.Document
 import org.bukkit.*
 import org.bukkit.block.Sign
@@ -85,7 +84,7 @@ class SpawnFeature : Listener {
             try {
                 with (JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.getDatabase("applejuice").getCollection("kits")) {
                     val filter = Filters.eq("uuid", p.uniqueId)
-                    val profile = JavaPlugin.getPlugin(Kraftwerk::class.java).getService(ProfileRepository::class.java).lookupProfile(p.uniqueId).get()
+                    val profile = JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.lookupProfile(p.uniqueId).get()
 
                     val slot1 = if (p.inventory.getItem(0) != null) ChatColor.stripColor(p.inventory.getItem(0).itemMeta.displayName).uppercase() else "NONE"
                     val slot2 = if (p.inventory.getItem(1) != null) ChatColor.stripColor(p.inventory.getItem(1).itemMeta.displayName).uppercase() else "NONE"
@@ -98,7 +97,7 @@ class SpawnFeature : Listener {
                     val slot9 = if (p.inventory.getItem(8) != null) ChatColor.stripColor(p.inventory.getItem(8).itemMeta.displayName).uppercase() else "NONE"
 
                     val document = Document("uuid", profile.uniqueId)
-                        .append("name", profile.name.get())
+                        .append("name", profile.name)
                         .append("lastLogin", Timestamp(profile.timestamp))
                         .append("kit", Document("slot1", (slot1))
                             .append("slot2", (slot2))
@@ -163,7 +162,6 @@ class SpawnFeature : Listener {
             .name("&cUHC Configuration &7(Right Click)")
             .addLore("&7Right-click to view the UHC Configuration.")
             .make()
-        p.inventory.setItem(3, config)
 
         val scenarios = ItemBuilder(Material.CHEST)
             .name("&cActive Scenarios &7(Right Click)")
@@ -183,12 +181,22 @@ class SpawnFeature : Listener {
             .name("&cEdit Arena Kit &7(Right Click)")
             .addLore("&7Right-click to edit your kit for the FFA Arena.")
             .make()
+        val profile = ItemBuilder(Material.SKULL_ITEM)
+            .toSkull()
+            .name("&cYour Profile &7(Right Click)")
+            .addLore("&7Right-click to view your profile.")
+            .setOwner(p.name)
+            .make()
+        p.inventory.setItem(3, profile)
         p.inventory.setItem(7, editKit)
         if (ScenarioHandler.getActiveScenarios().contains(ScenarioHandler.getScenario("auction"))) {
             p.inventory.clear()
         }
         if (ScenarioHandler.getActiveScenarios().contains(ScenarioHandler.getScenario("champions"))) {
             p.inventory.setItem(0, championsKit)
+            p.inventory.setItem(1, config)
+        } else {
+            p.inventory.setItem(0, config)
         }
         var location = if (SettingsFeature.instance.data!!.getDouble("config.location.x") == null) {
             Location(Bukkit.getWorlds().random(), 0.5, 95.0, 0.5)
@@ -256,6 +264,10 @@ class SpawnFeature : Listener {
                     Chat.colored("&cChampions Kit &7(Right Click)") -> {
                         e.isCancelled = true
                         Bukkit.dispatchCommand(e.player, "ckit")
+                    }
+                    Chat.colored("&cYour Profile &7(Right Click)") -> {
+                        e.isCancelled = true
+                        Bukkit.dispatchCommand(e.player, "profile")
                     }
                     Chat.colored("&cEdit Arena Kit &7(Right Click)") -> {
                         e.isCancelled = true

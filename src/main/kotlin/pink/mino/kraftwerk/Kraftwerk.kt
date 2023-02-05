@@ -6,7 +6,6 @@ import com.mongodb.MongoClient
 import com.mongodb.MongoClientException
 import com.mongodb.MongoClientURI
 import me.lucko.helper.plugin.ExtendedJavaPlugin
-import me.lucko.helper.profiles.ProfileRepository
 import me.lucko.helper.utils.Log
 import me.lucko.spark.api.Spark
 import net.dv8tion.jda.api.JDA
@@ -61,6 +60,7 @@ class Kraftwerk : ExtendedJavaPlugin() {
     lateinit var statsHandler: StatsHandler
     lateinit var dataSource: MongoClient
     lateinit var spark: Spark
+    lateinit var profileHandler: ProfileService
 
     companion object {
         val instance = this
@@ -183,14 +183,14 @@ class Kraftwerk : ExtendedJavaPlugin() {
         getCommand("voteyes").executor = VoteYesCommand()
         getCommand("voteno").executor = VoteNoCommand()
         //getCommand("donator").executor = DonatorCommand()
-        getCommand("lapis").executor = LapisCommand()
-        getCommand("redstone").executor = RedstoneCommand()
         getCommand("fullbright").executor = FullbrightCommand()
         getCommand("timers").executor = TimersCommand()
         getCommand("arena").executor = ArenaCommand()
         getCommand("deathloc").executor = DeathLocCommand()
         getCommand("media").executor = MediaCommand()
         getCommand("enemyrecon").executor = EnemyReconCommand()
+        getCommand("ignore").executor = IgnoreCommand()
+        getCommand("profile").executor = ProfileCommand()
         //getCommand("hotbar").executor = HotbarCommand()
 
         /* ProtocolLib stuff */
@@ -219,8 +219,8 @@ class Kraftwerk : ExtendedJavaPlugin() {
         addRecipes()
 
         statsHandler = StatsHandler()
+        profileHandler = ProfileService()
 
-        this.provideService(ProfileRepository::class.java, ProfileService())
         val provider = Bukkit.getServicesManager().getRegistration(
             Spark::class.java
         )
