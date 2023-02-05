@@ -7,7 +7,6 @@ import com.mongodb.client.model.FindOneAndReplaceOptions
 import com.mongodb.client.model.Sorts.descending
 import me.lucko.helper.Events
 import me.lucko.helper.Schedulers
-import me.lucko.helper.profiles.ProfileRepository
 import me.lucko.helper.profiles.plugin.external.caffeine.cache.Cache
 import me.lucko.helper.profiles.plugin.external.caffeine.cache.Caffeine
 import me.lucko.helper.utils.Log
@@ -25,6 +24,7 @@ import org.bukkit.scheduler.BukkitRunnable
 import pink.mino.kraftwerk.Kraftwerk
 import java.util.*
 import java.util.concurrent.TimeUnit
+
 class StatsPlayer(val player: OfflinePlayer) : Listener {
     var diamondsMined = 0
     var ironMined = 0
@@ -32,12 +32,25 @@ class StatsPlayer(val player: OfflinePlayer) : Listener {
 
     var gamesPlayed = 0
     var kills = 0
+    var arenaKills = 0
+    var arenaDeaths = 0
+    var highestArenaKs = 0
     var wins = 0
     var deaths = 0
 
+    var damageDealt = 0.0
+    var damageTaken = 0.0
+
+    var bowShots = 0
+    var bowHits = 0
+    var bowMisses = 0
+    var meleeHits = 0
+
+    var gapplesCrafted = 0
     var gapplesEaten = 0
     var timesCrafted = 0
     var timesEnchanted = 0
+    var timesNether = 0
 }
 
 class Leaderboards : BukkitRunnable() {
@@ -94,56 +107,56 @@ class Leaderboards : BukkitRunnable() {
                 with (JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.getDatabase("applejuice").getCollection("stats")) {
                     val gp = this.find().sort(descending("gamesPlayed")).limit(10)
                     for ((index, document) in gp.withIndex()) {
-                        val profile = JavaPlugin.getPlugin(Kraftwerk::class.java).getService(ProfileRepository::class.java).lookupProfile(document["uuid"] as UUID).get()
-                        if (document["gamesPlayed"] as Int != 0) gamesPlayed.appendTextLine(Chat.colored("&e${index + 1}. &f${profile.name.get()} &8- &b${document["gamesPlayed"] as Int}"))
+                        val profile = JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.lookupProfile(document["uuid"] as UUID).get()
+                        if (document["gamesPlayed"] as Int != 0) gamesPlayed.appendTextLine(Chat.colored("&e${index + 1}. &f${profile.name} &8- &b${document["gamesPlayed"] as Int}"))
                     }
                     if (gamesPlayed.size() == 2) {
                         gamesPlayed.appendTextLine(Chat.colored("&7No data yet x_x"))
                     }
                     val w = this.find().sort(descending("wins")).limit(10)
                     for ((index, document) in w.withIndex()) {
-                        val profile = JavaPlugin.getPlugin(Kraftwerk::class.java).getService(ProfileRepository::class.java).lookupProfile(document["uuid"] as UUID).get()
-                        if (document["wins"] as Int != 0) wins.appendTextLine(Chat.colored("&e${index + 1}. &f${profile.name.get()} &8- &b${document["wins"] as Int}"))
+                        val profile = JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.lookupProfile(document["uuid"] as UUID).get()
+                        if (document["wins"] as Int != 0) wins.appendTextLine(Chat.colored("&e${index + 1}. &f${profile.name} &8- &b${document["wins"] as Int}"))
                     }
                     if (wins.size() == 2) {
                         wins.appendTextLine(Chat.colored("&7No data yet x_x"))
                     }
                     val k = this.find().sort(descending("kills")).limit(10)
                     for ((index, document) in k.withIndex()) {
-                        val profile = JavaPlugin.getPlugin(Kraftwerk::class.java).getService(ProfileRepository::class.java).lookupProfile(document["uuid"] as UUID).get()
-                        if (document["kills"] as Int != 0) kills.appendTextLine(Chat.colored("&e${index + 1}. &f${profile.name.get()} &8- &b${document["kills"] as Int}"))
+                        val profile = JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.lookupProfile(document["uuid"] as UUID).get()
+                        if (document["kills"] as Int != 0) kills.appendTextLine(Chat.colored("&e${index + 1}. &f${profile.name} &8- &b${document["kills"] as Int}"))
                     }
                     if (kills.size() == 2) {
                         kills.appendTextLine(Chat.colored("&7No data yet x_x"))
                     }
                     val d = this.find().sort(descending("diamondsMined")).limit(10)
                     for ((index, document) in d.withIndex()) {
-                        val profile = JavaPlugin.getPlugin(Kraftwerk::class.java).getService(ProfileRepository::class.java).lookupProfile(document["uuid"] as UUID).get()
-                        if (document["diamondsMined"] as Int != 0) diamondsMined.appendTextLine(Chat.colored("&e${index + 1}. &f${profile.name.get()} &8- &b${document["diamondsMined"] as Int}"))
+                        val profile = JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.lookupProfile(document["uuid"] as UUID).get()
+                        if (document["diamondsMined"] as Int != 0) diamondsMined.appendTextLine(Chat.colored("&e${index + 1}. &f${profile.name} &8- &b${document["diamondsMined"] as Int}"))
                     }
                     if (diamondsMined.size() == 2) {
                         diamondsMined.appendTextLine(Chat.colored("&7No data yet x_x"))
                     }
                     val g = this.find().sort(descending("gapplesEaten")).limit(10)
                     for ((index, document) in g.withIndex()) {
-                        val profile = JavaPlugin.getPlugin(Kraftwerk::class.java).getService(ProfileRepository::class.java).lookupProfile(document["uuid"] as UUID).get()
-                        if (document["gapplesEaten"] as Int != 0) gapplesEaten.appendTextLine(Chat.colored("&e${index + 1}. &f${profile.name.get()} &8- &b${document["gapplesEaten"] as Int}"))
+                        val profile = JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.lookupProfile(document["uuid"] as UUID).get()
+                        if (document["gapplesEaten"] as Int != 0) gapplesEaten.appendTextLine(Chat.colored("&e${index + 1}. &f${profile.name} &8- &b${document["gapplesEaten"] as Int}"))
                     }
                     if (gapplesEaten.size() == 2) {
                         gapplesEaten.appendTextLine(Chat.colored("&7No data yet x_x"))
                     }
                     val t = this.find().sort(descending("timesEnchanted")).limit(10)
                     for ((index, document) in t.withIndex()) {
-                        val profile = JavaPlugin.getPlugin(Kraftwerk::class.java).getService(ProfileRepository::class.java).lookupProfile(document["uuid"] as UUID).get()
-                        if (document["timesEnchanted"] as Int != 0) timesEnchanted.appendTextLine(Chat.colored("&e${index + 1}. &f${profile.name.get()} &8- &b${document["timesEnchanted"] as Int}"))
+                        val profile = JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.lookupProfile(document["uuid"] as UUID).get()
+                        if (document["timesEnchanted"] as Int != 0) timesEnchanted.appendTextLine(Chat.colored("&e${index + 1}. &f${profile.name} &8- &b${document["timesEnchanted"] as Int}"))
                     }
                     if (timesEnchanted.size() == 2) {
                         timesEnchanted.appendTextLine(Chat.colored("&7No data yet x_x"))
                     }
                     val gm = this.find().sort(descending("goldMined")).limit(10)
                     for ((index, document) in gm.withIndex()) {
-                        val profile = JavaPlugin.getPlugin(Kraftwerk::class.java).getService(ProfileRepository::class.java).lookupProfile(document["uuid"] as UUID).get()
-                        if (document["goldMined"] as Int != 0) goldMined.appendTextLine(Chat.colored("&e${index + 1}. &f${profile.name.get()} &8- &b${document["goldMined"] as Int}"))
+                        val profile = JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.lookupProfile(document["uuid"] as UUID).get()
+                        if (document["goldMined"] as Int != 0) goldMined.appendTextLine(Chat.colored("&e${index + 1}. &f${profile.name} &8- &b${document["goldMined"] as Int}"))
                     }
                     if (goldMined.size() == 2) {
                         goldMined.appendTextLine(Chat.colored("&7No data yet x_x"))
@@ -178,9 +191,12 @@ class Leaderboards : BukkitRunnable() {
                     latestMatch.appendTextLine(Chat.colored("&7Winner(s) ${Chat.dash} &8(&7Kills: &e${kills}&8)"))
                     val winnerMap = mutableMapOf<String, Int>()
                     for (winner in match["winners"] as List<*>) {
-                        plugin.getService(ProfileRepository::class.java).lookupProfile(UUID.fromString(winner as String)).thenApplySync {profile ->
-                            winnerMap[profile.name.get()] = killsMap[winner] as Int
-                        }
+                        try {
+                            plugin.profileHandler.lookupProfile(UUID.fromString(winner as String))
+                                .thenApplySync { profile ->
+                                    winnerMap[profile.name!!] = killsMap[winner] as Int
+                                }
+                        } catch(_: Error) {}
                     }
                     var winnerLimited = 10
                     for (entry in winnerMap) {
@@ -235,9 +251,23 @@ class StatsHandler : Listener {
                     .append("wins", statsPlayer.wins)
                     .append("deaths", statsPlayer.deaths)
 
+                    .append("arenaDeaths", statsPlayer.arenaDeaths)
+                    .append("arenaKills", statsPlayer.arenaKills)
+                    .append("highestArenaKs", statsPlayer.highestArenaKs)
+
+                    .append("damageDealt", statsPlayer.damageDealt)
+                    .append("damageTaken", statsPlayer.damageTaken)
+
+                    .append("bowShots", statsPlayer.bowShots)
+                    .append("bowHits", statsPlayer.bowHits)
+                    .append("meleeHits", statsPlayer.meleeHits)
+                    .append("bowMisses", statsPlayer.bowMisses)
+
+                    .append("gapplesCrafted", statsPlayer.gapplesCrafted)
                     .append("gapplesEaten", statsPlayer.gapplesEaten)
                     .append("timesCrafted", statsPlayer.timesCrafted)
                     .append("timesEnchanted", statsPlayer.timesEnchanted)
+                    .append("timesNether", statsPlayer.timesNether)
                 this.findOneAndReplace(filter, document, FindOneAndReplaceOptions().upsert(true))
                 Log.info("Saved stats for ${statsPlayer.player.name}")
             }

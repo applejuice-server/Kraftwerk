@@ -42,37 +42,57 @@ class StatsCommand : CommandExecutor {
             }
             .thenAcceptSync { statsPlayer ->
                 val ores = ItemBuilder(Material.DIAMOND_ORE)
-                    .name("&4Ores")
-                    .addLore(Chat.guiLine)
+                    .name(" &4&lOres")
                     .addLore(" ")
-                    .addLore("&7Diamonds Mined ${Chat.dash} &c${statsPlayer.diamondsMined}")
-                    .addLore("&7Gold Mined ${Chat.dash} &c${statsPlayer.goldMined}")
-                    .addLore("&7Iron Mined ${Chat.dash} &c${statsPlayer.ironMined}")
+                    .addLore(" &7Diamonds Mined ${Chat.dash} &f${statsPlayer.diamondsMined}")
+                    .addLore(" &7Gold Mined ${Chat.dash} &f${statsPlayer.goldMined}")
+                    .addLore(" &7Iron Mined ${Chat.dash} &f${statsPlayer.ironMined}")
                     .addLore(" ")
-                    .addLore(Chat.guiLine)
                     .make()
-                val general = ItemBuilder(Material.DIAMOND_SWORD)
-                    .name("&4General")
-                    .addLore(Chat.guiLine)
+                val general = ItemBuilder(Material.DIAMOND)
+                    .name(" &4&lGeneral")
                     .addLore(" ")
-                    .addLore("&7Kills ${Chat.dash} &c${statsPlayer.kills}")
-                    .addLore("&7Deaths ${Chat.dash} &c${statsPlayer.deaths}")
-                    .addLore("&7Wins ${Chat.dash} &c${statsPlayer.wins}")
-                    .addLore("&7KDR ${Chat.dash} &c${round((statsPlayer.kills.toDouble() / statsPlayer.deaths.toDouble()))}")
-                    .addLore("&7Games Played ${Chat.dash} &c${statsPlayer.gamesPlayed}")
+                    .addLore(" &7Kills ${Chat.dash} &f${statsPlayer.kills}")
+                    .addLore(" &7Deaths ${Chat.dash} &f${statsPlayer.deaths}")
                     .addLore(" ")
-                    .addLore(Chat.guiLine)
+                    .addLore(" &7Wins ${Chat.dash} &f${statsPlayer.wins}")
+                    .addLore(" &7KDR ${Chat.dash} &f${round((statsPlayer.kills.toDouble() / statsPlayer.deaths.toDouble()))}")
+                    .addLore(" &7Games Played ${Chat.dash} &f${statsPlayer.gamesPlayed}")
+                    .addLore(" ")
                     .noAttributes()
                     .make()
-                val misc = ItemBuilder(Material.WATCH)
-                    .name("&4Misc.")
-                    .addLore(Chat.guiLine)
+                val pvp = ItemBuilder(Material.DIAMOND_SWORD)
+                    .noAttributes()
+                    .name(" &4&lPvP")
                     .addLore(" ")
-                    .addLore("&7Times Enchanted ${Chat.dash} &c${statsPlayer.timesEnchanted}")
-                    .addLore("&7Times Crafted  ${Chat.dash} &c${statsPlayer.timesCrafted}")
-                    .addLore("&7Gapples Eaten ${Chat.dash} &c${statsPlayer.gapplesEaten}")
+                    .addLore(" &7Damage Dealt ${Chat.dash } &f${round(statsPlayer.damageDealt)}❤")
+                    .addLore(" &7Damage Taken ${Chat.dash } &f${round(statsPlayer.damageTaken)}❤")
                     .addLore(" ")
-                    .addLore(Chat.guiLine)
+                    .addLore(" &7Bow Shots ${Chat.dash} &f${statsPlayer.bowShots}")
+                    .addLore(" &8&o(${statsPlayer.bowMisses} misses, ${statsPlayer.bowHits} hits)")
+                    .addLore(" ")
+                    .addLore(" &7Melee Hits ${Chat.dash} &f${statsPlayer.meleeHits}")
+                    .addLore(" ")
+                    .make()
+                val arena = ItemBuilder(Material.IRON_SWORD)
+                    .noAttributes()
+                    .name(" &4&lArena")
+                    .addLore(" ")
+                    .addLore(" &7Kills ${Chat.dash} &f${statsPlayer.arenaKills}")
+                    .addLore(" &7Deaths ${Chat.dash}&f ${statsPlayer.arenaDeaths}")
+                    .addLore(" &7Highest Killstreak ${Chat.dash}&f ${statsPlayer.highestArenaKs}")
+                    .addLore(" ")
+                    .make()
+                val misc = ItemBuilder(Material.WORKBENCH)
+                    .name(" &4&lMisc.")
+                    .addLore(" ")
+                    .addLore(" &7Times Enchanted ${Chat.dash} &f${statsPlayer.timesEnchanted}")
+                    .addLore(" &7Times Crafted  ${Chat.dash} &f${statsPlayer.timesCrafted}")
+                    .addLore(" &7Nether Travels  ${Chat.dash} &f${statsPlayer.timesNether}")
+
+                    .addLore(" &7Gapples Eaten ${Chat.dash} &f${statsPlayer.gapplesEaten}")
+                    .addLore(" &7Gapples Crafted ${Chat.dash} &f${statsPlayer.gapplesEaten}")
+                    .addLore(" ")
                     .make()
 
                 val skull = ItemBuilder(Material.SKULL_ITEM)
@@ -85,13 +105,19 @@ class StatsCommand : CommandExecutor {
                 gui.item(0, skull).onClick runnable@ {
                     it.isCancelled = true
                 }
-                gui.item(3, general).onClick runnable@ {
+                gui.item(2, general).onClick runnable@ {
                     it.isCancelled = true
                 }
-                gui.item(4, misc).onClick runnable@ {
+                gui.item(3, misc).onClick runnable@ {
                     it.isCancelled = true
                 }
-                gui.item(5, ores).onClick runnable@ {
+                gui.item(4, ores).onClick runnable@ {
+                    it.isCancelled = true
+                }
+                gui.item(5, pvp).onClick runnable@ {
+                    it.isCancelled = true
+                }
+                gui.item(6, arena).onClick runnable@ {
                     it.isCancelled = true
                 }
                 sender.openInventory(gui.make())

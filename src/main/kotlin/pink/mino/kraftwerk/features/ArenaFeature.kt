@@ -2,6 +2,7 @@ package pink.mino.kraftwerk.features
 
 import com.mongodb.client.model.Filters
 import me.lucko.helper.Schedulers
+import me.lucko.helper.utils.Log
 import net.minecraft.server.v1_8_R3.EntityLiving
 import org.bukkit.Bukkit
 import org.bukkit.GameMode
@@ -188,7 +189,12 @@ class ArenaFeature : Listener {
                         killer.sendMessage(Chat.colored("$prefix &7You killed &f${victim.name}&7!"))
                         victim.sendMessage(Chat.colored("$prefix &7You were killed by &f${killer.name} &8(${color}${health}❤&8)"))
                         Killstreak.addKillstreak(killer)
-                        print("${killer.name} now has a killstreak of ${Killstreak.getKillstreak(killer)}.")
+                        if (Killstreak.getKillstreak(killer) > JavaPlugin.getPlugin(Kraftwerk::class.java).statsHandler.getStatsPlayer(killer)!!.highestArenaKs) {
+                            JavaPlugin.getPlugin(Kraftwerk::class.java).statsHandler.getStatsPlayer(killer)!!.highestArenaKs = Killstreak.getKillstreak(killer)
+                        }
+                        JavaPlugin.getPlugin(Kraftwerk::class.java).statsHandler.getStatsPlayer(killer)!!.arenaKills++
+                        JavaPlugin.getPlugin(Kraftwerk::class.java).statsHandler.getStatsPlayer(victim)!!.arenaDeaths++
+                        Log.info("${killer.name} now has a killstreak of ${Killstreak.getKillstreak(killer)}.")
                         if (Killstreak.getKillstreak(victim) >= 5) {
                             sendToPlayers("${prefix}&f ${victim.name}&7 lost their killstreak of &f${
                                 Killstreak.getKillstreak(
@@ -240,6 +246,7 @@ class ArenaFeature : Listener {
                         Killstreak.resetKillstreak(victim)
                     }
                 } else {
+                    JavaPlugin.getPlugin(Kraftwerk::class.java).statsHandler.getStatsPlayer(e.entity as Player)!!.arenaDeaths++
                     Chat.sendMessage((e.entity as Player), "$prefix You died!")
                     if (Killstreak.getKillstreak((e.entity as Player)) >= 5) {
                         sendToPlayers("${prefix}&f ${(e.entity as Player).name}&7 lost their killstreak of &f${

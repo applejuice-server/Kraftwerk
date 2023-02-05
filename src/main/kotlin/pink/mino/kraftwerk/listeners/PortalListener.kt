@@ -8,6 +8,8 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityPortalEvent
 import org.bukkit.event.player.PlayerPortalEvent
+import org.bukkit.plugin.java.JavaPlugin
+import pink.mino.kraftwerk.Kraftwerk
 import pink.mino.kraftwerk.features.SettingsFeature
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.LocationUtils
@@ -44,6 +46,7 @@ class PortalListener : Listener {
             Chat.sendMessage(player, Chat.prefix + "&7The nether is currently disabled.")
             return
         }
+        JavaPlugin.getPlugin(Kraftwerk::class.java).statsHandler.getStatsPlayer(player)!!.timesNether
         val multiplier = if (fromWorld.environment === World.Environment.NETHER) 8.0 else 0.125
         var to: Location? = Location(
             targetWorld,

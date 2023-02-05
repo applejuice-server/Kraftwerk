@@ -90,6 +90,12 @@ class UHCTask : BukkitRunnable() {
     var meetupHappened = false
 
     private fun displayTimer(player: Player) {
+        val preference = JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.getProfile(player.uniqueId)!!.borderPreference
+        val borderText = if (preference == "DIAMETER") {
+            "${SettingsFeature.instance.data!!.getInt("pregen.border") * 2}x${SettingsFeature.instance.data!!.getInt("pregen.border") * 2}"
+        } else {
+            "±${SettingsFeature.instance.data!!.getInt("pregen.border")}"
+        }
         when (currentEvent) {
             Events.PRE_START -> {
                 ActionBar.sendActionBarMessage(player, "&cStarting in ${Chat.dash} &f${timeToString((45 - timer).toLong())}")
@@ -107,16 +113,12 @@ class UHCTask : BukkitRunnable() {
                 if (!meetupHappened) {
                     ActionBar.sendActionBarMessage(
                         player,
-                        "&cMeetup is in ${Chat.dash} &f${timeToString((meetup - timer).toLong())} &8| &7Border: &f${SettingsFeature.instance.data!!.getInt("pregen.border") * 2} (±${
-                            SettingsFeature.instance.data!!.getInt("pregen.border")
-                        }) &8| &f${timeToString((borderShrink + 300) - timer.toLong())}"
+                        "&cMeetup is in ${Chat.dash} &f${timeToString((meetup - timer).toLong())} &8| &7Border: &f${borderText} &8| &f${timeToString((borderShrink + 300) - timer.toLong())}"
                     )
                 } else {
                     ActionBar.sendActionBarMessage(
                         player,
-                        "&cIt is now Meetup! Head to 0,0! &8| &7Border: &f${SettingsFeature.instance.data!!.getInt("pregen.border") * 2} (±${
-                            SettingsFeature.instance.data!!.getInt("pregen.border")
-                        }) &8| &f${timeToString((borderShrink + 300) - timer.toLong())}"
+                        "&cIt is now Meetup! Head to 0,0! &8| &7Border: &7Border: &f${borderText} &8| &f${timeToString((borderShrink + 300) - timer.toLong())}"
                     )
                 }
             }
@@ -124,16 +126,12 @@ class UHCTask : BukkitRunnable() {
                 if (!meetupHappened) {
                     ActionBar.sendActionBarMessage(
                         player,
-                        "&cMeetup is in ${Chat.dash} &f${timeToString((meetup - timer).toLong())} &8| &7Border: &f${SettingsFeature.instance.data!!.getInt("pregen.border") * 2} (±${
-                            SettingsFeature.instance.data!!.getInt("pregen.border")
-                        }) &8| &f${timeToString((borderShrink + 600) - timer.toLong())}"
+                        "&cMeetup is in ${Chat.dash} &f${timeToString((meetup - timer).toLong())} &8| &7Border: &f${borderText} &8| &f${timeToString((borderShrink + 600) - timer.toLong())}"
                     )
                 } else {
                     ActionBar.sendActionBarMessage(
                         player,
-                        "&cIt is now Meetup! Head to 0,0! &8| &7Border: &f${SettingsFeature.instance.data!!.getInt("pregen.border") * 2} (±${
-                            SettingsFeature.instance.data!!.getInt("pregen.border")
-                        }) &8| &f${timeToString((borderShrink + 600) - timer.toLong())}"
+                        "&cIt is now Meetup! Head to 0,0! &8| &7Border: &f${borderText} &8| &f${timeToString((borderShrink + 600) - timer.toLong())}"
                     )
                 }
             }
@@ -141,16 +139,12 @@ class UHCTask : BukkitRunnable() {
                 if (!meetupHappened) {
                     ActionBar.sendActionBarMessage(
                         player,
-                        "&cMeetup is in ${Chat.dash} &f${timeToString((meetup - timer).toLong())} &8| &7Border: &f${SettingsFeature.instance.data!!.getInt("pregen.border") * 2} (±${
-                            SettingsFeature.instance.data!!.getInt("pregen.border")
-                        }) &8| &f${timeToString((borderShrink + 900) - timer.toLong())}"
+                        "&cMeetup is in ${Chat.dash} &f${timeToString((meetup - timer).toLong())} &8| &7Border: &f${borderText} &8| &f${timeToString((borderShrink + 900) - timer.toLong())}"
                     )
                 } else {
                     ActionBar.sendActionBarMessage(
                         player,
-                        "&cIt is now Meetup! Head to 0,0! &8| &7Border: &f${SettingsFeature.instance.data!!.getInt("pregen.border") * 2} (±${
-                            SettingsFeature.instance.data!!.getInt("pregen.border")
-                        }) &8| &f${timeToString((borderShrink + 900) - timer.toLong())}"
+                        "&cIt is now Meetup! Head to 0,0! &8| &7Border: &f${borderText} &8| &f${timeToString((borderShrink + 900) - timer.toLong())}"
                     )
                 }
             }
@@ -158,16 +152,12 @@ class UHCTask : BukkitRunnable() {
                 if (!meetupHappened) {
                     ActionBar.sendActionBarMessage(
                         player,
-                        "&cMeetup is in ${Chat.dash} &f${timeToString((meetup - timer).toLong())} &8| &7Border: &f${SettingsFeature.instance.data!!.getInt("pregen.border") * 2} (±${
-                            SettingsFeature.instance.data!!.getInt("pregen.border")
-                        }) &8| &f${timeToString((borderShrink + 1200) - timer.toLong())}"
+                        "&cMeetup is in ${Chat.dash} &f${timeToString((meetup - timer).toLong())} &8| &7Border: &f${borderText} &8| &f${timeToString((borderShrink + 1200) - timer.toLong())}"
                     )
                 } else {
                     ActionBar.sendActionBarMessage(
                         player,
-                        "&cIt is now Meetup! Head to 0,0! &8| &7Border: &f${SettingsFeature.instance.data!!.getInt("pregen.border") * 2} (±${
-                            SettingsFeature.instance.data!!.getInt("pregen.border")
-                        }) &8| &f${timeToString((borderShrink + 1200) - timer.toLong())}"
+                        "&cIt is now Meetup! Head to 0,0! &8| &7Border: &f${borderText} &8| &f${timeToString((borderShrink + 1200) - timer.toLong())}"
                     )
                 }
             }
@@ -175,16 +165,12 @@ class UHCTask : BukkitRunnable() {
                 if (!meetupHappened) {
                     ActionBar.sendActionBarMessage(
                         player,
-                        "&cMeetup is in ${Chat.dash} &f${timeToString((meetup - timer).toLong())} &8| &7Border: &f${SettingsFeature.instance.data!!.getInt("pregen.border") * 2} (±${
-                            SettingsFeature.instance.data!!.getInt("pregen.border")
-                        }) &8| &f${timeToString((borderShrink + 1500) - timer.toLong())}"
+                        "&cMeetup is in ${Chat.dash} &f${timeToString((meetup - timer).toLong())} &8| &7Border: &f${borderText} &8| &f${timeToString((borderShrink + 1500) - timer.toLong())}"
                     )
                 } else {
                     ActionBar.sendActionBarMessage(
                         player,
-                        "&cIt is now Meetup! Head to 0,0! &8| &7Border: &f${SettingsFeature.instance.data!!.getInt("pregen.border") * 2} (±${
-                            SettingsFeature.instance.data!!.getInt("pregen.border")
-                        }) &8| &f${timeToString((borderShrink + 1500) - timer.toLong())}"
+                        "&cIt is now Meetup! Head to 0,0! &8| &7Border: &f${borderText} &8| &f${timeToString((borderShrink + 1500) - timer.toLong())}"
                     )
                 }
             }
@@ -192,16 +178,12 @@ class UHCTask : BukkitRunnable() {
                 if (!meetupHappened) {
                     ActionBar.sendActionBarMessage(
                         player,
-                        "&cMeetup is in ${Chat.dash} &f${timeToString((meetup - timer).toLong())} &8| &7Border: &f${SettingsFeature.instance.data!!.getInt("pregen.border") * 2} (±${
-                            SettingsFeature.instance.data!!.getInt("pregen.border")
-                        })"
+                        "&cMeetup is in ${Chat.dash} &f${timeToString((meetup - timer).toLong())} &8| &7Border: &f${borderText}"
                     )
                 } else {
                     ActionBar.sendActionBarMessage(
                         player,
-                        "&cIt is now Meetup! Head to 0,0! &8| &7Border: &f${SettingsFeature.instance.data!!.getInt("pregen.border") * 2} (±${
-                            SettingsFeature.instance.data!!.getInt("pregen.border")
-                        })"
+                        "&cIt is now Meetup! Head to 0,0! &8| &7Border: &f${borderText}"
                     )
                 }
             }

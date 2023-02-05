@@ -25,7 +25,12 @@ class ShootListener : Listener {
                 val el: EntityLiving = (victim as CraftPlayer).handle
                 val health = floor(victim.health / 2 * 10 + el.absorptionHearts / 2 * 10)
                 val color = HealthChatColorer.returnHealth(health)
-                Chat.sendMessage(shooter, "${Chat.dash} &f${victim.name}&7 is at ${color}${health}%&7!")
+                val preference = JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.getProfile(shooter.uniqueId)!!.projectileMessages
+                if (preference == "CHAT") {
+                    Chat.sendMessage(shooter, "${Chat.dash} &f${victim.name}&7 is at ${color}${health}%&7!")
+                } else if (preference == "SUBTITLE") {
+                    shooter.sendTitle(Chat.colored("&7"), Chat.colored("&f${victim.name}&7 is at ${color}${health}%&7!"))
+                }
             }, 1L)
         }
     }
