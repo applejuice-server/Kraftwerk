@@ -50,6 +50,7 @@ class ConfigOptionHandler {
             addOption(MeetupBlockDecayOption())
             addOption(FireResistanceBeforePvPOption())
             addOption(AbsorptionBeforePvPOption())
+            addOption(PermadayAtMeetupOption())
 
             configOptions.sortWith(Comparator.comparing(ConfigOption::name))
         }

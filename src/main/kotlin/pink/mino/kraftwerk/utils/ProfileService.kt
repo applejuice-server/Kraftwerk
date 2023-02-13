@@ -82,6 +82,9 @@ class ProfileService {
                 .append("borderPreference", profile.borderPreference)
                 .append("ignored", profile.ignored)
                 .append("deathMessageOnScreen", profile.deathMessageOnScreen)
+                .append("xpNeeded", profile.xpNeeded)
+                .append("xp", profile.xp)
+                .append("level", profile.level)
             this.findOneAndReplace(filter, document, FindOneAndReplaceOptions().upsert(true))
         }
     }
@@ -114,7 +117,10 @@ class ProfileService {
                             (document["healthType"] as String),
                             (document["borderPreference"] as String),
                             (document["ignored"] as ArrayList<UUID>),
-                            (document["deathMessageOnScreen"] as Boolean)
+                            (document["deathMessageOnScreen"] as Boolean),
+                            (document["xpNeeded"] as? Double ?: 150.0),
+                            (document["xp"] as? Double ?: 0.0),
+                            (document["level"] as? Int ?: 1)
                         )
                     } else {
                         p = ImmutableProfile(

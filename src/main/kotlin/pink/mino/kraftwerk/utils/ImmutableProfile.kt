@@ -13,7 +13,10 @@ class ImmutableProfile(
     val healthType: String = "PERCENTAGE",
     var borderPreference: String = "RADIUS",
     var ignored: ArrayList<UUID> = arrayListOf(),
-    var deathMessageOnScreen: Boolean = true
+    var deathMessageOnScreen: Boolean = true,
+    var xpNeeded: Double = 150.0,
+    var xp: Double = 0.0,
+    var level: Int = 1
 ) : Profile {
     override fun getUniqueId(): UUID {
         return this.uniqueId

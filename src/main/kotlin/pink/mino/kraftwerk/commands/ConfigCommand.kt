@@ -324,7 +324,8 @@ class ConfigCommand : CommandExecutor {
             .addLore(" ")
             .addLore(" &7Fire Resistance before PvP ${Chat.dash} &f${getSpecials("frbp")} ")
             .addLore(" &7Absorption before PvP ${Chat.dash} &f${getSpecials("abp")} ")
-            .addLore(" &7Block Decay @ Meetup ${Chat.dash} &f${getSpecials("meetupblockdecay")} ")
+            .addLore(" &7Block Decay at Meetup ${Chat.dash} &f${getSpecials("meetupblockdecay")} ")
+            .addLore(" &7Permaday at Meetup ${Chat.dash} &f${getSpecials("permadayatmeetup")}")
             .addLore(" ")
             .make()
 

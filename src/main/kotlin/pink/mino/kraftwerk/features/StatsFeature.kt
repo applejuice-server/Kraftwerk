@@ -86,7 +86,7 @@ class StatsFeature : Listener {
             } else if (e.damager.type == EntityType.ARROW && (e.damager as Arrow).shooter is Player) {
                 JavaPlugin.getPlugin(Kraftwerk::class.java).statsHandler.getStatsPlayer(e.entity as Player)!!.damageTaken += e.finalDamage
                 JavaPlugin.getPlugin(Kraftwerk::class.java).statsHandler.getStatsPlayer((e.damager as Arrow).shooter as Player)!!.bowHits++
-                JavaPlugin.getPlugin(Kraftwerk::class.java).statsHandler.getStatsPlayer((e.entity as Arrow).shooter as Player)!!.bowMisses--
+                JavaPlugin.getPlugin(Kraftwerk::class.java).statsHandler.getStatsPlayer((e.damager as Arrow).shooter as Player)!!.bowMisses--
                 JavaPlugin.getPlugin(Kraftwerk::class.java).statsHandler.getStatsPlayer((e.damager as Arrow).shooter as Player)!!.damageDealt += e.finalDamage
             }
         }

@@ -1,6 +1,7 @@
 package pink.mino.kraftwerk.scenarios.list
 
 import me.lucko.helper.Schedulers
+import org.bukkit.GameMode
 import org.bukkit.Material
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.EntityType
@@ -8,8 +9,10 @@ import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.player.PlayerItemConsumeEvent
+import org.bukkit.event.player.PlayerToggleFlightEvent
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
+import pink.mino.kraftwerk.features.SettingsFeature
 import pink.mino.kraftwerk.features.SpecFeature
 import pink.mino.kraftwerk.features.TeamsFeature
 import pink.mino.kraftwerk.scenarios.Scenario
@@ -30,11 +33,15 @@ class SuperheroesScenario : Scenario(
             PotionEffectType.HEALTH_BOOST,
             PotionEffectType.SPEED,
             PotionEffectType.FAST_DIGGING,
-            PotionEffectType.JUMP,
             PotionEffectType.DAMAGE_RESISTANCE,
             PotionEffectType.INCREASE_DAMAGE,
-            PotionEffectType.INVISIBILITY
         )
+        if (SettingsFeature.instance.data!!.getInt("game.teamSize") >= 6) {
+            pool.add(PotionEffectType.INVISIBILITY)
+        }
+        if (SettingsFeature.instance.data!!.getInt("game.teamSize") >= 5) {
+            pool.add(PotionEffectType.JUMP)
+        }
         if (TeamsFeature.manager.getTeam(player) == null) {
             SpecFeature.instance.specChat("&f${player.name}&7 hasn't been late-scattered to a teammate, not giving them any powers.")
             return
@@ -54,11 +61,15 @@ class SuperheroesScenario : Scenario(
                 val pool = arrayListOf(
                     PotionEffectType.HEALTH_BOOST,
                     PotionEffectType.SPEED,
-                    PotionEffectType.JUMP,
                     PotionEffectType.DAMAGE_RESISTANCE,
                     PotionEffectType.INCREASE_DAMAGE,
-                    PotionEffectType.INVISIBILITY
                 )
+                if (SettingsFeature.instance.data!!.getInt("game.teamSize") >= 6) {
+                    pool.add(PotionEffectType.INVISIBILITY)
+                }
+                if (SettingsFeature.instance.data!!.getInt("game.teamSize") >= 5) {
+                    pool.add(PotionEffectType.JUMP)
+                }
                 for (player in team.players) {
                     if (pool.size == 0) continue
                     try {
@@ -81,6 +92,21 @@ class SuperheroesScenario : Scenario(
     }
 
     @EventHandler
+    fun onPlayerToggleFlight(e: PlayerToggleFlightEvent) {
+        val player = e.player
+        if (player.gameMode == GameMode.SPECTATOR || player.gameMode == GameMode.SPECTATOR || player.isFlying || superheroes[e.player] != PotionEffectType.JUMP) {
+            return
+        } else {
+            e.isCancelled = true
+            player.allowFlight = false
+            player.isFlying = true
+            player.velocity = e.player.location.direction.multiply(1.5).setY(1)
+            Schedulers.sync().runLater(runnable@ {
+                player.allowFlight = true
+            }, 20)
+        }
+    }
+    @EventHandler
     fun onPlayerConsume(e: PlayerItemConsumeEvent) {
         if (!enabled) return
         if (e.item.type == Material.MILK_BUCKET) {
@@ -100,11 +126,35 @@ class SuperheroesScenario : Scenario(
         }
     }
 
+    @EventHandler
+    fun onGoldenAppleConsume(e: PlayerItemConsumeEvent) {
+        if (!enabled) return
+        val absorption = SettingsFeature.instance.data!!.getBoolean("game.options.absorption")
+        if (superheroes[(e.player)] == PotionEffectType.HEALTH_BOOST && e.item.type == Material.GOLDEN_APPLE) {
+            Schedulers.sync().runLater(runnable@ {
+                if (absorption) {
+                    if (e.item.itemMeta.displayName != null && e.item.itemMeta.displayName == "§6Golden Head") {
+                        e.player.addPotionEffect(PotionEffect(PotionEffectType.REGENERATION, 160 * 2, 1))
+                    } else {
+                        e.player.addPotionEffect(PotionEffect(PotionEffectType.REGENERATION, 160, 1))
+                    }
+                } else {
+                    if (e.item.itemMeta.displayName != null && e.item.itemMeta.displayName == "§6Golden Head") {
+                        e.player.addPotionEffect(PotionEffect(PotionEffectType.REGENERATION, 200 * 2, 1))
+                    } else {
+                        e.player.addPotionEffect(PotionEffect(PotionEffectType.REGENERATION, 200, 1))
+                    }
+                }
+            }, 1)
+        }
+    }
     fun givePower(player: Player) {
         if (SpecFeature.instance.isSpec(player)) return
+        val absorption = SettingsFeature.instance.data!!.getBoolean("game.options.absorption")
         when (superheroes[player]) {
             PotionEffectType.HEALTH_BOOST -> {
                 player.addPotionEffect(PotionEffect(PotionEffectType.HEALTH_BOOST, 99999, 4))
+                player.health = player.maxHealth
             }
             PotionEffectType.SPEED -> {
                 player.addPotionEffect(PotionEffect(PotionEffectType.SPEED, 99999, 1))
@@ -112,12 +162,24 @@ class SuperheroesScenario : Scenario(
             }
             PotionEffectType.JUMP -> {
                 player.addPotionEffect(PotionEffect(PotionEffectType.JUMP, 99999, 3))
+                player.addPotionEffect(PotionEffect(PotionEffectType.SATURATION, 99999, 0))
             }
             PotionEffectType.DAMAGE_RESISTANCE -> {
-                player.addPotionEffect(PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 99999, 1))
+                player.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE)
+                if (!absorption) {
+                    player.addPotionEffect(PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 99999, 1))
+                } else {
+                    player.addPotionEffect(PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 99999, 0))
+                    player.addPotionEffect(PotionEffect(PotionEffectType.FIRE_RESISTANCE, 99999, 0))
+                }
             }
             PotionEffectType.INCREASE_DAMAGE -> {
-                player.addPotionEffect(PotionEffect(PotionEffectType.INCREASE_DAMAGE, 99999, 0))
+                if (!absorption) {
+                    player.addPotionEffect(PotionEffect(PotionEffectType.INCREASE_DAMAGE, 99999, 0))
+                } else {
+                    player.addPotionEffect(PotionEffect(PotionEffectType.INCREASE_DAMAGE, 99999, 0))
+                    player.addPotionEffect(PotionEffect(PotionEffectType.FIRE_RESISTANCE, 99999, 0))
+                }
             }
             PotionEffectType.INVISIBILITY -> {
                 player.addPotionEffect(PotionEffect(PotionEffectType.INVISIBILITY, 99999, 0))

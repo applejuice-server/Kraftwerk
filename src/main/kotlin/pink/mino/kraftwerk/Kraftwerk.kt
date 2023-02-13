@@ -109,6 +109,7 @@ class Kraftwerk : ExtendedJavaPlugin() {
         Bukkit.getServer().pluginManager.registerEvents(CowboyFeature(), this)
         Bukkit.getServer().pluginManager.registerEvents(ArenaFeature(), this)
         Bukkit.getServer().pluginManager.registerEvents(OrganizedFights.instance, this)
+        Bukkit.getServer().pluginManager.registerEvents(XpFeature(), this)
 
         /* Registering commands */
         getCommand("clear").executor = ClearInventoryCommand()

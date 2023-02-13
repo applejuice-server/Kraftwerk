@@ -5,6 +5,7 @@ import com.comphenix.protocol.events.ListenerPriority
 import com.comphenix.protocol.events.PacketAdapter
 import com.comphenix.protocol.events.PacketEvent
 import com.lunarclient.bukkitapi.LunarClientAPI
+import com.mongodb.MongoException
 import net.md_5.bungee.api.chat.ClickEvent
 import net.md_5.bungee.api.chat.TextComponent
 import org.bukkit.*
@@ -143,8 +144,10 @@ class SpecFeature : Listener {
         val instance = SpecFeature()
     }
     val prefix = "&8[&cSpec&8]&7"
+    val specStartTimes: HashMap<UUID, Long> = hashMapOf()
 
     fun joinSpec(p: Player) {
+        specStartTimes[p.uniqueId] = Date().time
         p.health = 20.0
         p.foodLevel = 20
         p.saturation = 20F
@@ -201,6 +204,7 @@ class SpecFeature : Listener {
         }, 5L)
     }
     fun spec(p: Player) {
+        specStartTimes[p.uniqueId] = Date().time
         SpawnFeature.instance.send(p)
         p.health = 20.0
         p.foodLevel = 20
@@ -259,6 +263,12 @@ class SpecFeature : Listener {
     }
 
     fun unspec(p: Player) {
+        val endTime = Date().time
+        try {
+            JavaPlugin.getPlugin(Kraftwerk::class.java).statsHandler.getStatsPlayer(p)!!.timeSpectated += (endTime - specStartTimes[p.uniqueId]!!)
+        } catch (e: MongoException) {
+            e.printStackTrace()
+        }
         p.health = 20.0
         p.foodLevel = 20
         p.saturation = 20F

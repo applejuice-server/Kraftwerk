@@ -20,6 +20,10 @@ class Chat {
             return (ChatColor.translateAlternateColorCodes('&', message))
         }
 
+        fun broadcast(message: String) {
+            Bukkit.broadcastMessage(colored(message))
+        }
+
         fun clear() {
             for (player in Bukkit.getOnlinePlayers()) {
                 if (SpecFeature.instance.isSpec(player)) continue
