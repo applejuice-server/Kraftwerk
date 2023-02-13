@@ -1,9 +1,17 @@
 package pink.mino.kraftwerk.features
 
+import com.gmail.filoghost.holographicdisplays.api.HologramsAPI
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.mongodb.MongoException
 import com.mongodb.client.model.Filters
 import com.mongodb.client.model.FindOneAndReplaceOptions
 import me.lucko.helper.Schedulers
+import me.lucko.helper.promise.Promise
+import me.lucko.helper.utils.Log
+import net.citizensnpcs.api.CitizensAPI
+import net.citizensnpcs.api.npc.MemoryNPCDataStore
+import net.citizensnpcs.api.npc.NPC
 import org.bson.Document
 import org.bukkit.*
 import org.bukkit.block.Sign
@@ -22,8 +30,14 @@ import org.bukkit.plugin.java.JavaPlugin
 import pink.mino.kraftwerk.Kraftwerk
 import pink.mino.kraftwerk.scenarios.ScenarioHandler
 import pink.mino.kraftwerk.utils.*
+import java.io.BufferedReader
+import java.io.InputStreamReader
+import java.net.HttpURLConnection
+import java.net.URL
 import java.sql.Timestamp
+import java.text.DecimalFormat
 import java.util.*
+
 
 class SpawnFeature : Listener {
     val spawnLocation = Location(Bukkit.getWorld("Spawn"), -221.5, 95.0, -140.5)
@@ -32,6 +46,116 @@ class SpawnFeature : Listener {
     val prefix = "&8[&cServer&8]&7"
     companion object {
         val instance = SpawnFeature()
+    }
+
+    class PlayerPurchase(
+        val id: Int,
+        val name: String,
+        val uuid: String
+    )
+
+    class Purchase(
+        val id: Number,
+        val amount: Double,
+        val email: String,
+        val date: String,
+        val gateway: Any,
+        val status: String,
+        val currency: Any,
+        val player: PlayerPurchase,
+        val packages: Any,
+        val notes: Any,
+        val creatorCode: Any
+    )
+
+    init {
+        val registry = CitizensAPI.createAnonymousNPCRegistry(MemoryNPCDataStore())
+        var highestNpc: NPC? = null
+        var recentNpc: NPC? = null
+
+        val recent = HologramsAPI.createHologram(JavaPlugin.getPlugin(Kraftwerk::class.java), Location(
+            Bukkit.getWorld("Spawn"),
+            -722.5,
+            109.0,
+            282.5,
+            61.5F,
+            -1.5F
+            )
+        )
+        val highestHolo = HologramsAPI.createHologram(JavaPlugin.getPlugin(Kraftwerk::class.java), Location(
+            Bukkit.getWorld("Spawn"),
+            -724.5,
+            109.0, 
+            280.5,
+            45.5F,
+            1.5F
+        ))
+        Schedulers.sync().runRepeating(Runnable {
+            Log.info("Updating Buycraft purchases...")
+            highestNpc?.destroy()
+            recentNpc?.destroy()
+
+            with(URL("https://plugin.tebex.io/payments").openConnection() as HttpURLConnection) {
+                requestMethod = "GET"
+                setRequestProperty("User-Agent", "Mozilla/5.0")
+                setRequestProperty("X-Tebex-Secret", SettingsFeature.instance.data!!.getString("buycraftToken"))
+                BufferedReader(InputStreamReader(inputStream)).use {
+                    val response = StringBuffer()
+                    var inputLine = it.readLine()
+                    while (inputLine != null) {
+                        response.append(inputLine)
+                        inputLine = it.readLine()
+                    }
+                    it.close()
+                    val type = object : TypeToken<List<Purchase>>() {}.type
+                    var purchases: List<Purchase> = Gson().fromJson(response.toString(), type)
+                    recent.clearLines()
+                    highestHolo.clearLines()
+                    recent.appendTextLine(Chat.colored("&4&lRecent Purchase"))
+                    highestHolo.appendTextLine(Chat.colored("&4&lHighest Purchase"))
+                    val loc1 = Location(
+                        Bukkit.getWorld("Spawn"),
+                        -722.5,
+                        106.5,
+                        282.5,
+                        61.5F,
+                        -1.5F
+                    )
+                    val loc2 = Location(
+                        Bukkit.getWorld("Spawn"),
+                        -724.5,
+                        106.5,
+                        280.5,
+                        45.5F,
+                        1.5F
+                    )
+                    for ((index, purchase) in purchases.withIndex()) {
+                        if (index == 0) {
+                            val npc = registry.createNPC(EntityType.PLAYER, purchase.player.name)
+                            npc.setAlwaysUseNameHologram(true)
+                            npc.name = purchase.player.name
+                            npc.spawn(loc1)
+                            recentNpc = npc
+                            recent.appendTextLine(Chat.colored("&a$${DecimalFormat("0.00").format(purchase.amount)}"))
+                        }
+                    }
+
+                    var highest: Purchase? = null
+                    for (purchase in purchases) {
+                        val amount = highest?.amount ?: 0.0
+                        if (purchase.amount > amount) highest = purchase
+                    }
+                    if (highest != null) {
+                        val npc = registry.createNPC(EntityType.PLAYER, highest.player.name)
+                        npc.setAlwaysUseNameHologram(true)
+                        npc.name = highest.player.name
+                        highestHolo.appendTextLine(Chat.colored("&a$${DecimalFormat("0.00").format(highest.amount)}"))
+                        npc.spawn(loc2)
+                        highestNpc = npc
+                    }
+                }
+            }
+        }, 0L, 5 * 60 * 20)
     }
 
     fun sendEditor(p: Player) {
@@ -140,6 +264,17 @@ class SpawnFeature : Listener {
                 p.allowFlight = true
                 p.isFlying = true
             }
+            Promise.start()
+                .thenApplyAsync {
+                    JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.lookupProfile(p.uniqueId)
+                }
+                .thenAcceptSync {
+                    val xp = (it.get().xp as Double?) ?: 0.0
+                    val xpNeeded = (it.get().xpNeeded as Double?) ?: 0.0
+                    val level = (it.get().level as Int?) ?: 1
+                    p.level = level
+                    p.exp = (xp / xpNeeded).toFloat()
+                }
         }
         p.foodLevel = 20
         val effects = p.activePotionEffects

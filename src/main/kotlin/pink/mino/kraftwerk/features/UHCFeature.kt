@@ -89,6 +89,8 @@ class UHCTask : BukkitRunnable() {
     var paused = false
     var meetupHappened = false
 
+    var pve = 0
+
     private fun displayTimer(player: Player) {
         val preference = JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.getProfile(player.uniqueId)!!.borderPreference
         val borderText = if (preference == "DIAMETER") {
@@ -233,16 +235,17 @@ class UHCTask : BukkitRunnable() {
                         }
                         list.add(player.name)
                     }
+                    if (!ConfigOptionHandler.getOption("statless")!!.enabled) XpFeature().add(player, 30.0)
                 }
                 SettingsFeature.instance.data!!.set("game.list", list)
                 SettingsFeature.instance.saveData()
+                for (player in Bukkit.getOnlinePlayers()) {
+                    player.addPotionEffect(PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 300, 100, true, true))
+                }
                 for (scenario in ScenarioHandler.getActiveScenarios()) {
                     scenario.onStart()
                 }
                 Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world")).setGameRuleValue("doDaylightCycle", true.toString())
-                for (player in Bukkit.getOnlinePlayers()) {
-                    player.addPotionEffect(PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 300, 100, true, true))
-                }
             }
             46 -> {
                 for (player in Bukkit.getOnlinePlayers()) {
@@ -285,6 +288,7 @@ class UHCTask : BukkitRunnable() {
                     Chat.sendCenteredMessage(player, "&7The border will begin &cshrinking&7 in &c${rawBs / 60} minutes&7.")
                     Chat.sendMessage(player, Chat.line)
                     player.playSound(player.location, Sound.ANVIL_LAND, 10F, 1F)
+                    if (!ConfigOptionHandler.getOption("statless")!!.enabled) XpFeature().add(player, 20.0)
                     if (SettingsFeature.instance.data!!.getBoolean("game.specials.frbp")) {
                         if (player.hasPotionEffect(PotionEffectType.FIRE_RESISTANCE)) {
                             player.removePotionEffect(PotionEffectType.FIRE_RESISTANCE)
@@ -315,11 +319,17 @@ class UHCTask : BukkitRunnable() {
                 UHCFeature().scheduleShrink(500)
             }
             meetup + 1 -> {
+                if (ConfigOptionHandler.getOption("permadayatmeetup")!!.enabled) {
+                    val world = Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world"))
+                    world.time = 6000
+                    world.setGameRuleValue("doDaylightCycle", "false")
+                }
                 Bukkit.broadcastMessage(Chat.colored(Chat.line))
                 for (player in Bukkit.getOnlinePlayers()) {
                     Chat.sendCenteredMessage(player, "&c&lUHC")
                     Chat.sendMessage(player, " ")
                     Chat.sendCenteredMessage(player, "&7It's now &cMeetup&7! Head to &a0,0&7!")
+                    if (!ConfigOptionHandler.getOption("statless")!!.enabled) XpFeature().add(player, 25.0)
                 }
                 for (scenario in ScenarioHandler.getActiveScenarios()) {
                     scenario.onMeetup()
@@ -404,9 +414,9 @@ class UHCFeature : Listener {
         if (list == null) list = ArrayList<String>()
         for (player in Bukkit.getOnlinePlayers()) {
             if (!SpecFeature.instance.getSpecs().contains(player.name)) {
-                SpawnFeature.instance.send(player)
-                SpawnFeature.instance.editorList.remove(player.uniqueId)
-                CombatLogFeature.instance.removeCombatLog(player.name)
+            SpawnFeature.instance.send(player)
+            SpawnFeature.instance.editorList.remove(player.uniqueId)
+            CombatLogFeature.instance.removeCombatLog(player.name)
                 player.playSound(player.location, Sound.WOOD_CLICK, 10F, 1F)
                 player.enderChest.clear()
                 player.maxHealth = 20.0

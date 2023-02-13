@@ -51,6 +51,8 @@ class StatsPlayer(val player: OfflinePlayer) : Listener {
     var timesCrafted = 0
     var timesEnchanted = 0
     var timesNether = 0
+
+    var timeSpectated: Long = 0
 }
 
 class Leaderboards : BukkitRunnable() {
@@ -86,7 +88,17 @@ class Leaderboards : BukkitRunnable() {
         if (timer == 0) {
             try {
                 for (hologram in HologramsAPI.getHolograms(plugin)) {
-                    hologram.clearLines()
+                    if (hologram == gamesPlayed ||
+                        hologram == wins ||
+                        hologram == diamondsMined ||
+                        hologram == kills ||
+                        hologram == goldMined ||
+                        hologram == gapplesEaten ||
+                        hologram == timesEnchanted ||
+                        hologram == latestMatch
+                    ) {
+                        hologram.clearLines()
+                    }
                 }
                 gamesPlayed.appendTextLine(Chat.colored("&c&lGames Played"))
                 gamesPlayed.appendTextLine(Chat.guiLine)
@@ -268,6 +280,7 @@ class StatsHandler : Listener {
                     .append("timesCrafted", statsPlayer.timesCrafted)
                     .append("timesEnchanted", statsPlayer.timesEnchanted)
                     .append("timesNether", statsPlayer.timesNether)
+                    .append("timeSpectated", statsPlayer.timeSpectated)
                 this.findOneAndReplace(filter, document, FindOneAndReplaceOptions().upsert(true))
                 Log.info("Saved stats for ${statsPlayer.player.name}")
             }
@@ -301,15 +314,24 @@ class StatsHandler : Listener {
                     statsPlayer.diamondsMined = playerData.getInteger("diamondsMined")
                     statsPlayer.ironMined = playerData.getInteger("ironMined")
                     statsPlayer.goldMined = playerData.getInteger("goldMined")
-
                     statsPlayer.deaths = playerData.getInteger("deaths")
                     statsPlayer.kills = playerData.getInteger("kills")
                     statsPlayer.gamesPlayed = playerData.getInteger("gamesPlayed")
+                    statsPlayer.arenaKills = playerData.getInteger("arenaKills")
+                    statsPlayer.arenaDeaths = playerData.getInteger("arenaDeaths")
+                    statsPlayer.damageDealt = playerData.getDouble("damageDealt")
+                    statsPlayer.damageTaken = playerData.getDouble("damageTaken")
+                    statsPlayer.bowShots = playerData.getInteger("bowShots")
+                    statsPlayer.bowMisses = playerData.getInteger("bowMisses")
+                    statsPlayer.bowHits = playerData.getInteger("bowHits")
+                    statsPlayer.meleeHits = playerData.getInteger("meleeHits")
                     statsPlayer.wins = playerData.getInteger("wins")
-
+                    statsPlayer.gapplesCrafted = playerData.getInteger("gapplesCrafted")
                     statsPlayer.gapplesEaten = playerData.getInteger("gapplesEaten")
                     statsPlayer.timesCrafted = playerData.getInteger("timesCrafted")
                     statsPlayer.timesEnchanted = playerData.getInteger("timesEnchanted")
+                    statsPlayer.timesNether = playerData.getInteger("timesNether")
+                    statsPlayer.timeSpectated = playerData.getLong("timeSpectated")
                     Log.info("Loaded stats for ${statsPlayer.player.name}.")
                 } else {
                     Log.info("Could not load stats for ${statsPlayer.player.name}.")

@@ -14,9 +14,31 @@ import pink.mino.kraftwerk.Kraftwerk
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GuiBuilder
 import pink.mino.kraftwerk.utils.ItemBuilder
+import kotlin.math.floor
 import kotlin.math.round
 
 class StatsCommand : CommandExecutor {
+    private fun timeToString(ticks: Long): String {
+        var t = ticks
+        val hours = floor(t / 3600.toDouble()).toInt()
+        t -= hours * 3600
+        val minutes = floor(t / 60.toDouble()).toInt()
+        t -= minutes * 60
+        val seconds = t.toInt()
+        val output = StringBuilder()
+        if (hours > 0) {
+            output.append(hours).append('h')
+            if (minutes == 0) {
+                output.append(minutes).append('m')
+            }
+        }
+        if (minutes > 0) {
+            output.append(minutes).append('m')
+        }
+        output.append(seconds).append('s')
+        return output.toString()
+    }
+
     override fun onCommand(
         sender: CommandSender,
         command: Command?,
@@ -102,6 +124,12 @@ class StatsCommand : CommandExecutor {
                     .setOwner(statsPlayer.player.name)
                     .make()
 
+                val staff = ItemBuilder(Material.IRON_BLOCK)
+                    .name(" &4&lStaff")
+                    .addLore(" ")
+                    .addLore(" &7Time Spectated ${Chat.dash} &f${timeToString(round(statsPlayer.timeSpectated.toDouble() / 1000).toLong())} ")
+                    .addLore(" ")
+                    .make()
                 gui.item(0, skull).onClick runnable@ {
                     it.isCancelled = true
                 }
@@ -118,6 +146,9 @@ class StatsCommand : CommandExecutor {
                     it.isCancelled = true
                 }
                 gui.item(6, arena).onClick runnable@ {
+                    it.isCancelled = true
+                }
+                gui.item(7, staff).onClick runnable@ {
                     it.isCancelled = true
                 }
                 sender.openInventory(gui.make())

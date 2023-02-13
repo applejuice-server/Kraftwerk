@@ -16,10 +16,7 @@ import org.bukkit.plugin.java.JavaPlugin
 import pink.mino.kraftwerk.Kraftwerk
 import pink.mino.kraftwerk.config.ConfigOptionHandler
 import pink.mino.kraftwerk.discord.Discord
-import pink.mino.kraftwerk.features.SettingsFeature
-import pink.mino.kraftwerk.features.SpawnFeature
-import pink.mino.kraftwerk.features.SpecFeature
-import pink.mino.kraftwerk.features.TeamsFeature
+import pink.mino.kraftwerk.features.*
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GameState
 import java.io.File
@@ -68,6 +65,7 @@ class EndGameCommand : CommandExecutor {
             } else {
                 winnersList.add(player.uniqueId.toString())
                 kills[player.uniqueId.toString()] = SettingsFeature.instance.data!!.getInt("game.kills." + player.name)
+                if (!ConfigOptionHandler.getOption("statless")!!.enabled) XpFeature().add(player, 50.0)
                 if (!ConfigOptionHandler.getOption("statless")!!.enabled) JavaPlugin.getPlugin(Kraftwerk::class.java).statsHandler.lookupStatsPlayer(player).wins++
             }
         }
@@ -94,6 +92,7 @@ class EndGameCommand : CommandExecutor {
                 .append("startTime", game.startTime)
                 .append("fill", game.fill)
                 .append("milliseconds", game.endTime!! - game.startTime)
+                .append("pveDeaths", game.pve)
 
             this.findOneAndReplace(filter, document, FindOneAndReplaceOptions().upsert(true))
         }

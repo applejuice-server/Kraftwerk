@@ -40,6 +40,9 @@ class PlayerDeathListener : Listener {
                         "&f"
                     }
                     Scoreboard.setScore(Chat.colored(" ${color}${killer.name}"), o + 1)
+                } else {
+                    JavaPlugin.getPlugin(Kraftwerk::class.java).game!!.pve++
+                    Scoreboard.setScore(Chat.colored("${Chat.dash} &aPvE"), JavaPlugin.getPlugin(Kraftwerk::class.java).game!!.pve)
                 }
                 val list = SettingsFeature.instance.data!!.getStringList("game.list")
                 list.remove(player.name)
