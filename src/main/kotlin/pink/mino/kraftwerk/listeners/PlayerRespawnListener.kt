@@ -7,6 +7,8 @@ import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerRespawnEvent
 import org.bukkit.plugin.java.JavaPlugin
 import pink.mino.kraftwerk.Kraftwerk
+import pink.mino.kraftwerk.config.ConfigOption
+import pink.mino.kraftwerk.config.ConfigOptionHandler
 import pink.mino.kraftwerk.features.SpawnFeature
 import pink.mino.kraftwerk.features.SpecFeature
 import pink.mino.kraftwerk.utils.Chat
@@ -26,10 +28,12 @@ class PlayerRespawnListener : Listener{
                 SpecFeature.instance.spec(e.player)
             }
         }, 1L)
-        Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-            if (!e.player.hasPermission("uhc.staff")) {
-                e.player.kickPlayer(Chat.colored("&7Thank you for playing!\n\n&7Join our discord for more games: &cdsc.gg/apple-juice"))
-            }
-        }, 1200L)
+        if (!ConfigOptionHandler.getOption("private")!!.enabled) {
+            Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
+                if (!e.player.hasPermission("uhc.staff")) {
+                    e.player.kickPlayer(Chat.colored("&7Thank you for playing!\n&7Join our discord for more games: &cdsc.gg/apple-juice"))
+                }
+            }, 1200L)
+        }
     }
 }

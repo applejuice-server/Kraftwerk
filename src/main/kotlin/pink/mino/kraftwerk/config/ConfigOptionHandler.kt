@@ -52,6 +52,9 @@ class ConfigOptionHandler {
             addOption(AbsorptionBeforePvPOption())
             addOption(PermadayAtMeetupOption())
 
+            addOption(PrivateRoundOption())
+            addOption(NoBrandingOption())
+
             configOptions.sortWith(Comparator.comparing(ConfigOption::name))
         }
 

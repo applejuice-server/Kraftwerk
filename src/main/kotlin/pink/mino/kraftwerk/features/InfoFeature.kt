@@ -2,6 +2,7 @@ package pink.mino.kraftwerk.features
 
 import org.bukkit.Bukkit
 import org.bukkit.scheduler.BukkitRunnable
+import pink.mino.kraftwerk.config.ConfigOptionHandler
 import pink.mino.kraftwerk.utils.Chat
 import kotlin.random.Random
 
@@ -31,7 +32,9 @@ class InfoFeature : BukkitRunnable() {
     )
     override fun run() {
         if (Bukkit.getOnlinePlayers().isNotEmpty()) {
-            Bukkit.broadcastMessage(announcements[Random.nextInt(announcements.size)])
+            if (!ConfigOptionHandler.getOption("private")!!.enabled) {
+                Bukkit.broadcastMessage(announcements[Random.nextInt(announcements.size)])
+            }
         }
     }
 }

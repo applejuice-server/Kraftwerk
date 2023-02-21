@@ -2,6 +2,7 @@ package pink.mino.kraftwerk.features
 
 import me.lucko.spark.api.statistic.StatisticWindow.TicksPerSecond
 import me.lucko.spark.api.statistic.types.DoubleStatistic
+import net.minecraft.server.v1_8_R3.IChatBaseComponent
 import net.minecraft.server.v1_8_R3.IChatBaseComponent.ChatSerializer
 import net.minecraft.server.v1_8_R3.PacketPlayOutPlayerListHeaderFooter
 import org.bukkit.Bukkit
@@ -10,6 +11,7 @@ import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.scheduler.BukkitRunnable
 import pink.mino.kraftwerk.Kraftwerk
+import pink.mino.kraftwerk.config.ConfigOptionHandler
 import pink.mino.kraftwerk.scenarios.ScenarioHandler
 import pink.mino.kraftwerk.utils.Chat
 
@@ -70,14 +72,24 @@ class TabFeature : BukkitRunnable() {
         if (scenarios.isEmpty()) {
             scenarios.add("Vanilla+")
         }
-        val header = ChatSerializer.a("{\"text\": \"${Chat.colored("\n&capple&ajuice")}\n${Chat.colored("&7TPS: ${checkTps(
-            Math.round(tpsLast10Secs * 100.0) / 100.0
-        )} &8| &7Ping: &f${checkPing(craftplayer.handle.ping)}")}ms\n${Chat.colored(" &b@applejuiceuhc &8- &9/discord ")}\n\"}")
+        val header: IChatBaseComponent = if (!ConfigOptionHandler.getOption("nobranding")!!.enabled) {
+            ChatSerializer.a("{\"text\": \"${Chat.colored("\n&capple&ajuice")}\n${Chat.colored("&7TPS: ${checkTps(
+                Math.round(tpsLast10Secs * 100.0) / 100.0
+            )} &8| &7Ping: &f${checkPing(craftplayer.handle.ping)}")}ms\n${Chat.colored(" &b@applejuiceuhc &8- &9/discord ")}\n\"}")
+        } else {
+            ChatSerializer.a("{\"text\": \"${Chat.colored("\n&capple&ajuice")}\n${Chat.colored("&7TPS: ${checkTps(
+                Math.round(tpsLast10Secs * 100.0) / 100.0
+            )} &8| &7Ping: &f${checkPing(craftplayer.handle.ping)}")}ms\n\"}")
+        }
         var game = "${SettingsFeature.instance.data!!.getString("game.host")}'s ${SettingsFeature.instance.data!!.getString("matchpost.team")}"
         if (SettingsFeature.instance.data!!.getString("matchpost.team") == null) {
             game = "Not set"
         }
-        val footer = ChatSerializer.a("{\"text\": \"\n${Chat.colored(" &7Game: &f${game} \n &7Scenarios: &f${scenarioTextWrap(scenarios.joinToString(", "), 40).joinToString("\n")} ")}\n\"}")
+        val footer: IChatBaseComponent = if (!ConfigOptionHandler.getOption("nobranding")!!.enabled) {
+            ChatSerializer.a("{\"text\": \"\n${Chat.colored(" &7Game: &f${game} \n &7Scenarios: &f${scenarioTextWrap(scenarios.joinToString(", "), 40).joinToString("\n")} ")}\n\"}")
+        } else {
+            ChatSerializer.a("{\"text\": \"\n${Chat.colored(" &7Scenarios: &f${scenarioTextWrap(scenarios.joinToString(", "), 40).joinToString("\n")} ")}\n\"}")
+        }
         val packet = PacketPlayOutPlayerListHeaderFooter()
         try {
             val headerField = packet.javaClass.getDeclaredField("a")
