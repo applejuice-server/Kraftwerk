@@ -118,7 +118,7 @@ class EditConfigCommand : CommandExecutor {
                 Bukkit.dispatchCommand(player, "editconfig specials")
             }
         } else if (args[0].lowercase() == "options") {
-            gui = GuiBuilder().rows(2).name(ChatColor.translateAlternateColorCodes('&', "&4Edit UHC Config")).owner(sender)
+            gui = GuiBuilder().rows(3).name(ChatColor.translateAlternateColorCodes('&', "&4Edit UHC Config")).owner(sender)
             size = 17
             var iterator = 0
             for (option in ConfigOptionHandler.configOptions) {

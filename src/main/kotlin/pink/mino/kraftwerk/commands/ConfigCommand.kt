@@ -328,6 +328,18 @@ class ConfigCommand : CommandExecutor {
             .addLore(" &7Permaday at Meetup ${Chat.dash} &f${getSpecials("permadayatmeetup")}")
             .addLore(" ")
             .make()
+        val privateRoundConfig = ItemBuilder(Material.NAME_TAG)
+            .name(" &4&lPrivate Options")
+            .addLore(" ")
+            .addLore(" &7Private Mode ${Chat.dash} &f${getOption("private")}" )
+            .addLore(" &7No Branding ${Chat.dash} &f${getOption("noBranding")} ")
+            .addLore(" &7Custom Branding ${Chat.dash} &f${SettingsFeature.instance.data!!.getString("game.options.customBranding")} ")
+            .addLore(" ")
+            .addLore(" &7RR Mode ${Chat.dash} &f${getOption("recordedRound")}")
+            .addLore(" &7Time between Episodes ${Chat.dash} &f${SettingsFeature.instance.data!!.getInt("episodeTimer")} ")
+            .addLore(" &7Episodes ${Chat.dash} &f${SettingsFeature.instance.data!!.getInt("episodeCount")} ")
+            .addLore(" ")
+            .make()
 
         if (sender.hasPermission("uhc.staff")) {
             gui.item(21, editConfig).onClick runnable@ {
@@ -354,25 +366,59 @@ class ConfigCommand : CommandExecutor {
                     Bukkit.dispatchCommand(sender, "editconfig nether")
                 }
             }
+            gui.item(22, privateRoundConfig).onClick runnable@ {
+                it.isCancelled = true
+                if (sender.hasPermission("uhc.staff")) {
+                    Bukkit.dispatchCommand(sender, "editconfig options")
+                }
+            }
         } else {
-            gui.item(21, pvpConfig).onClick runnable@ {
-                it.isCancelled = true
-                if (sender.hasPermission("uhc.staff")) {
-                    Bukkit.dispatchCommand(sender, "editconfig rules")
+            if (SettingsFeature.instance.data!!.getBoolean("game.options.private") == null || SettingsFeature.instance.data!!.getBoolean("game.options.private") == false) {
+                gui.item(21, pvpConfig).onClick runnable@ {
+                    it.isCancelled = true
+                    if (sender.hasPermission("uhc.staff")) {
+                        Bukkit.dispatchCommand(sender, "editconfig rules")
+                    }
+                }
+                gui.item(23, netherConfig).onClick runnable@ {
+                    it.isCancelled = true
+                    if (sender.hasPermission("uhc.staff")) {
+                        Bukkit.dispatchCommand(sender, "editconfig nether")
+                    }
+                }
+                gui.item(22, specialsConfig).onClick runnable@ {
+                    it.isCancelled = true
+                    if (sender.hasPermission("uhc.staff")) {
+                        Bukkit.dispatchCommand(sender, "editconfig specials")
+                    }
+                }
+            } else {
+                gui.item(20, pvpConfig).onClick runnable@ {
+                    it.isCancelled = true
+                    if (sender.hasPermission("uhc.staff")) {
+                        Bukkit.dispatchCommand(sender, "editconfig rules")
+                    }
+                }
+                gui.item(23, netherConfig).onClick runnable@ {
+                    it.isCancelled = true
+                    if (sender.hasPermission("uhc.staff")) {
+                        Bukkit.dispatchCommand(sender, "editconfig nether")
+                    }
+                }
+                gui.item(24, specialsConfig).onClick runnable@ {
+                    it.isCancelled = true
+                    if (sender.hasPermission("uhc.staff")) {
+                        Bukkit.dispatchCommand(sender, "editconfig specials")
+                    }
+                }
+                gui.item(21, privateRoundConfig).onClick runnable@ {
+                    it.isCancelled = true
+                    if (sender.hasPermission("uhc.staff")) {
+                        Bukkit.dispatchCommand(sender, "editconfig options")
+                    }
                 }
             }
-            gui.item(23, netherConfig).onClick runnable@ {
-                it.isCancelled = true
-                if (sender.hasPermission("uhc.staff")) {
-                    Bukkit.dispatchCommand(sender, "editconfig nether")
-                }
-            }
-            gui.item(22, specialsConfig).onClick runnable@ {
-                it.isCancelled = true
-                if (sender.hasPermission("uhc.staff")) {
-                    Bukkit.dispatchCommand(sender, "editconfig specials")
-                }
-            }
+
         }
 
 
