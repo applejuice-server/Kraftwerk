@@ -11,6 +11,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.plugin.java.JavaPlugin
 import pink.mino.kraftwerk.Kraftwerk
+import pink.mino.kraftwerk.scenarios.ScenarioHandler
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.HealthChatColorer
 import kotlin.math.floor
@@ -26,10 +27,14 @@ class ShootListener : Listener {
                 val health = floor(victim.health / 2 * 10 + el.absorptionHearts / 2 * 10)
                 val color = HealthChatColorer.returnHealth(health)
                 val preference = JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.getProfile(shooter.uniqueId)!!.projectileMessages
-                if (preference == "CHAT") {
-                    Chat.sendMessage(shooter, "${Chat.dash} &f${victim.name}&7 is at ${color}${health}%&7!")
-                } else if (preference == "SUBTITLE") {
-                    shooter.sendTitle(Chat.colored("&7"), Chat.colored("&f${victim.name}&7 is at ${color}${health}%&7!"))
+                if (ScenarioHandler.getActiveScenarios().contains(ScenarioHandler.getScenario("parafusion"))) {
+                    return@runTaskLater
+                } else {
+                    if (preference == "CHAT") {
+                        Chat.sendMessage(shooter, "${Chat.dash} &f${victim.name}&7 is at ${color}${health}%&7!")
+                    } else if (preference == "SUBTITLE") {
+                        shooter.sendTitle(Chat.colored("&7"), Chat.colored("&f${victim.name}&7 is at ${color}${health}%&7!"))
+                    }
                 }
             }, 1L)
         }

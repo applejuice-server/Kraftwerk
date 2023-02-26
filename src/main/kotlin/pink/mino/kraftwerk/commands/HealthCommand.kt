@@ -8,12 +8,17 @@ import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer
 import org.bukkit.entity.Player
+import pink.mino.kraftwerk.scenarios.ScenarioHandler
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.HealthChatColorer
 import kotlin.math.floor
 
 class HealthCommand : CommandExecutor {
     override fun onCommand(sender: CommandSender, cmd: Command, lbl: String, args: Array<String>): Boolean {
+        if (ScenarioHandler.getActiveScenarios().contains(ScenarioHandler.getScenario("parafusion"))) {
+            Chat.sendMessage(sender, "&cParafusion is enabled, so you can't use this command.")
+            return false
+        }
         if (args.isEmpty()) {
             if (sender !is Player) {
                 sender.sendMessage("You can't use this command as you technically aren't a player.")
