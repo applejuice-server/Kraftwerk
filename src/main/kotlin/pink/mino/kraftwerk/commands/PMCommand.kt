@@ -6,6 +6,7 @@ import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import pink.mino.kraftwerk.utils.Chat
+import pink.mino.kraftwerk.utils.PlayerUtils
 
 class PMCommand : CommandExecutor {
     override fun onCommand(sender: CommandSender, command: Command?, label: String?, args: Array<String>): Boolean {
@@ -24,14 +25,14 @@ class PMCommand : CommandExecutor {
                 return true
             }
             for (element in args) {
-                message.append("${ChatColor.GRAY}${element}").append(" " + ChatColor.GRAY)
+                message.append(element).append(" ")
             }
 
             val msg = message.toString().trim()
 
             for (team in sender.scoreboard.getPlayerTeam(sender).players) {
                 if (team is Player) {
-                    team.sendMessage("§8[§4Team Chat§8] ${ChatColor.WHITE}${sender.name} ${Chat.dash} ${ChatColor.GRAY}${msg}")
+                    Chat.sendMessage(team, "&8[&4Team Chat&8] ${PlayerUtils.getPrefix(sender)}${sender.name} ${Chat.dash} &7&o${msg}")
                 }
             }
         }
