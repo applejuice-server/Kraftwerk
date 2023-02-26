@@ -67,6 +67,7 @@ class ScenarioHandler {
             addScenario(KrenzinatorScenario())
             //addScenario(EnemyReconScenario())
             addScenario(RedArrowsScenario())
+            addScenario(ParafusionScenario())
             scenarios.sortWith(Comparator.comparing(Scenario::name))
         }
 
