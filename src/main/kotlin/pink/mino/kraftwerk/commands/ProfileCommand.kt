@@ -11,17 +11,9 @@ import pink.mino.kraftwerk.Kraftwerk
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GuiBuilder
 import pink.mino.kraftwerk.utils.ItemBuilder
+import kotlin.math.floor
 
 class ProfileCommand : CommandExecutor {
-    /**
-     * Executes the given command, returning its success
-     *
-     * @param sender Source of the command
-     * @param command Command which was executed
-     * @param label Alias of the command which was used
-     * @param args Passed command arguments
-     * @return true if a valid command, otherwise false
-     */
     override fun onCommand(
         sender: CommandSender,
         command: Command?,
@@ -44,10 +36,22 @@ class ProfileCommand : CommandExecutor {
             .addLore(" &7Click to view your player stats. ")
             .addLore(" ")
             .make()
-
+        val profile = JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.getProfile(sender.uniqueId)!!
+        val xp = JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.getProfile(sender.uniqueId)!!.xp
+        val xpNeeded = JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.getProfile(sender.uniqueId)!!.xpNeeded
+        val level = JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.getProfile(sender.uniqueId)!!.level
+        val misc = ItemBuilder(Material.NETHER_STAR)
+            .name(" &4&lMisc.")
+            .addLore(" ")
+            .addLore(" &7Your Level ${Chat.dash} &a${level} &8(&a${floor((xp / xpNeeded) * 100)}%&8)")
+            .addLore(" &7Chat Mode ${Chat.dash} &f${profile.chatMode}")
+            .addLore(" ")
+            .make()
+        gui.item(13, misc).onClick runnable@ {
+            it.isCancelled = true
+        }
         gui.item(12, settings).onClick runnable@ { inventoryClickEvent ->
             val player = inventoryClickEvent.whoClicked as Player
-            val profile = JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.getProfile(player.uniqueId)!!
             val gui = GuiBuilder().rows(1).name("&4&lPlayer Settings").owner(player)
             val disableRedstonePickup = ItemBuilder(Material.REDSTONE)
             if (profile.disableRedstonePickup) {

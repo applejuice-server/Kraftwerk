@@ -195,6 +195,20 @@ commands:
     aliases:
       - mcc
     description: Communicate with other moles.
+  chat:
+    aliases:
+      - c
+    description: Change chat channels
+  publicchat:
+    aliases:
+      - gc
+      - pc
+    description: Speak in public chat
+  staffchat:
+    aliases:
+      - ssc
+      - ac
+    description: Speak in staff chat
   molekit:
     aliases:
       - mk
@@ -257,6 +271,13 @@ commands:
     aliases:
       - gi
     description: Give scenario items to a player.
+  portalloc:
+    aliases:
+      - portall
+      - locportal
+      - findportal
+      - portalpos
+    description: Find the location of the last time someone entered a nether portal.
   auction:
     aliases:
       - auc
