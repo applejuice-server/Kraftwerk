@@ -27,8 +27,10 @@ class InfoFeature : BukkitRunnable() {
         Chat.colored("$prefix Who has the top kills in the game? Use &f/kt&7!"),
         Chat.colored("$prefix Message your team your mined ores using &f/pmminedores&7!"),
         Chat.colored("$prefix Message your team the ores you have now using &f/pmores&7!"),
-        Chat.colored("$prefix Are you a content creator? Apply for media rank using &f/media&7!")
-
+        Chat.colored("$prefix Are you a content creator? Apply for media rank using &f/media&7!"),
+        Chat.colored("$prefix Is someone being annoying to you? Use &f/ignore&7!"),
+        Chat.colored("$prefix Can't see? Use &f/fb&7 to enable night vision!"),
+        Chat.colored("$prefix Team with other players using &f/team&7!"),
     )
     override fun run() {
         if (Bukkit.getOnlinePlayers().isNotEmpty()) {
