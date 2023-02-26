@@ -69,6 +69,9 @@ class BareBonesScenario : Scenario(
                 val stack = ItemStack(Material.IRON_INGOT)
                 e.player.world.dropItemNaturally(e.block.location, stack)
             }
+            Material.ANVIL -> {
+                e.isCancelled = true
+            }
             else -> {}
         }
     }

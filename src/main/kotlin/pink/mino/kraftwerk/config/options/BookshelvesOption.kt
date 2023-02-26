@@ -19,7 +19,6 @@ class BookshelvesOption : ConfigOption(
         }
         if (e.block.type === Material.BOOKSHELF) {
             e.isCancelled = true
-            e.block.type = Material.AIR
         }
     }
 }
