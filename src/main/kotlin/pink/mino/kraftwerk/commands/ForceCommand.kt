@@ -31,7 +31,7 @@ class ForceCommand : CommandExecutor {
             return false
         }
         if (args[0] == "start") {
-            JavaPlugin.getPlugin(Kraftwerk::class.java).game!!.timer = 45
+            JavaPlugin.getPlugin(Kraftwerk::class.java).game!!.timer = 30
             Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} &f${sender.name}&7 has forced &eGame Start&7."))
         } else if (args[0] == "fh") {
             JavaPlugin.getPlugin(Kraftwerk::class.java).game!!.timer = JavaPlugin.getPlugin(Kraftwerk::class.java).game!!.finalHeal
