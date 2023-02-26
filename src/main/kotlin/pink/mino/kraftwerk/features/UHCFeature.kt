@@ -64,14 +64,14 @@ enum class Events {
 class UHCTask : BukkitRunnable() {
     val portalLocations = hashMapOf<UUID, Location>()
 
-    val finalHeal = SettingsFeature.instance.data!!.getInt("game.events.final-heal") * 60 + 45
-    val pvp = ((SettingsFeature.instance.data!!.getInt("game.events.pvp") + SettingsFeature.instance.data!!.getInt("game.events.final-heal")) * 60) + 45
-    val meetup = ((SettingsFeature.instance.data!!.getInt("game.events.pvp") + SettingsFeature.instance.data!!.getInt("game.events.final-heal") + SettingsFeature.instance.data!!.getInt("game.events.meetup")) * 60) + 45
-    val borderShrink = (SettingsFeature.instance.data!!.getInt("game.events.final-heal") + SettingsFeature.instance.data!!.getInt("game.events.pvp") + SettingsFeature.instance.data!!.getInt("game.events.borderShrink")) * 60 + 45
+    val finalHeal = SettingsFeature.instance.data!!.getInt("game.events.final-heal") * 60 + 30
+    val pvp = ((SettingsFeature.instance.data!!.getInt("game.events.pvp") + SettingsFeature.instance.data!!.getInt("game.events.final-heal")) * 60) + 30
+    val meetup = ((SettingsFeature.instance.data!!.getInt("game.events.pvp") + SettingsFeature.instance.data!!.getInt("game.events.final-heal") + SettingsFeature.instance.data!!.getInt("game.events.meetup")) * 60) + 30
+    val borderShrink = (SettingsFeature.instance.data!!.getInt("game.events.final-heal") + SettingsFeature.instance.data!!.getInt("game.events.pvp") + SettingsFeature.instance.data!!.getInt("game.events.borderShrink")) * 60 + 30
 
-    val rawPvP = (SettingsFeature.instance.data!!.getInt("game.events.pvp") * 60) + 45
-    val rawMeetup = (SettingsFeature.instance.data!!.getInt("game.events.meetup") * 60) + 45
-    val rawBs = (SettingsFeature.instance.data!!.getInt("game.events.borderShrink") * 60) + 45
+    val rawPvP = (SettingsFeature.instance.data!!.getInt("game.events.pvp") * 60) + 30
+    val rawMeetup = (SettingsFeature.instance.data!!.getInt("game.events.meetup") * 60) + 30
+    val rawBs = (SettingsFeature.instance.data!!.getInt("game.events.borderShrink") * 60) + 30
 
     var timer = 0
     var currentEvent: Events = Events.PRE_START
@@ -100,7 +100,7 @@ class UHCTask : BukkitRunnable() {
         }
         when (currentEvent) {
             Events.PRE_START -> {
-                ActionBar.sendActionBarMessage(player, "&cStarting in ${Chat.dash} &f${timeToString((45 - timer).toLong())}")
+                ActionBar.sendActionBarMessage(player, "&cStarting in ${Chat.dash} &f${timeToString((30 - timer).toLong())}")
             }
             Events.START -> {
                 ActionBar.sendActionBarMessage(player, "&cFinal Heal is in ${Chat.dash} &f${timeToString((finalHeal - timer).toLong())}")
@@ -198,9 +198,9 @@ class UHCTask : BukkitRunnable() {
         if (list == null) list = ArrayList<String>()
         when (timer) {
             0 -> {
-                Bukkit.broadcastMessage(Chat.colored("${Chat.dash} Starting in &f45 seconds&7..."))
+                Bukkit.broadcastMessage(Chat.colored("${Chat.dash} Starting in &f30 seconds&7..."))
             }
-            45 -> {
+            30 -> {
                 currentEvent = Events.START
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "cc")
                 GameState.setState(GameState.INGAME)
@@ -247,7 +247,7 @@ class UHCTask : BukkitRunnable() {
                 }
                 Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world")).setGameRuleValue("doDaylightCycle", true.toString())
             }
-            46 -> {
+            31 -> {
                 for (player in Bukkit.getOnlinePlayers()) {
                     if (!ConfigOptionHandler.getOption("statless")!!.enabled && !SpecFeature.instance.isSpec(player)) JavaPlugin.getPlugin(Kraftwerk::class.java).statsHandler.getStatsPlayer(player)!!.gamesPlayed++
                 }
@@ -316,7 +316,15 @@ class UHCTask : BukkitRunnable() {
                     }
                 }
                 Bukkit.broadcastMessage(Chat.colored(Chat.line))
-                UHCFeature().scheduleShrink(500)
+                if (SettingsFeature.instance.data!!.getInt("pregen.border") == 750) {
+                    UHCFeature().scheduleShrink(500)
+                } else if (SettingsFeature.instance.data!!.getInt("pregen.border") == 500) {
+                    UHCFeature().scheduleShrink(250)
+                } else if (SettingsFeature.instance.data!!.getInt("pregen.border") == 1000) {
+                    UHCFeature().scheduleShrink(750)
+                } else {
+                    UHCFeature().scheduleShrink(750)
+                }
             }
             meetup + 1 -> {
                 if (ConfigOptionHandler.getOption("permadayatmeetup")!!.enabled) {
@@ -349,29 +357,68 @@ class UHCTask : BukkitRunnable() {
                 }
             }
             borderShrink + 300 -> {
-                UHCFeature().scheduleShrink(250)
+                if (SettingsFeature.instance.data!!.getInt("pregen.border") == 750) {
+                    UHCFeature().scheduleShrink(500)
+                } else if (SettingsFeature.instance.data!!.getInt("pregen.border") == 500) {
+                    UHCFeature().scheduleShrink(250)
+                } else if (SettingsFeature.instance.data!!.getInt("pregen.border") == 250) {
+                    UHCFeature().scheduleShrink(100)
+                } else {
+                    UHCFeature().scheduleShrink(250)
+                }
                 currentEvent = Events.BORDER_SHRINK_TWO
             }
             borderShrink + 600 -> {
-                UHCFeature().scheduleShrink(100)
+                if (SettingsFeature.instance.data!!.getInt("pregen.border") == 500) {
+                    UHCFeature().scheduleShrink(250)
+                } else if (SettingsFeature.instance.data!!.getInt("pregen.border") == 250) {
+                    UHCFeature().scheduleShrink(100)
+                } else if (SettingsFeature.instance.data!!.getInt("pregen.border") == 100) {
+                    UHCFeature().scheduleShrink(75)
+                } else {
+                    UHCFeature().scheduleShrink(100)
+                }
                 currentEvent = Events.BORDER_SHRINK_THREE
             }
             borderShrink + 900 -> {
-                UHCFeature().scheduleShrink(75)
+                if (SettingsFeature.instance.data!!.getInt("pregen.border") == 250) {
+                    UHCFeature().scheduleShrink(100)
+                } else if (SettingsFeature.instance.data!!.getInt("pregen.border") == 100) {
+                    UHCFeature().scheduleShrink(75)
+                } else if (SettingsFeature.instance.data!!.getInt("pregen.border") == 75) {
+                    UHCFeature().scheduleShrink(50)
+                } else {
+                    UHCFeature().scheduleShrink(75)
+                }
                 currentEvent = Events.BORDER_SHRINK_FOUR
             }
             borderShrink + 1200 -> {
                 if (ScenarioHandler.getScenario("bigcrack")!!.enabled) {
                     return
                 }
-                UHCFeature().scheduleShrink(50)
+                if (SettingsFeature.instance.data!!.getInt("pregen.border") == 100) {
+                    UHCFeature().scheduleShrink(75)
+                } else if (SettingsFeature.instance.data!!.getInt("pregen.border") == 75) {
+                    UHCFeature().scheduleShrink(50)
+                } else if (SettingsFeature.instance.data!!.getInt("pregen.border") == 50) {
+                    UHCFeature().scheduleShrink(25)
+                    return
+                } else {
+                    UHCFeature().scheduleShrink(50)
+                }
                 currentEvent = Events.BORDER_SHRINK_FIVE
             }
             borderShrink + 1500 -> {
                 if (ScenarioHandler.getScenario("bigcrack")!!.enabled) {
                     return
                 }
-                UHCFeature().scheduleShrink(25)
+                if (SettingsFeature.instance.data!!.getInt("pregen.border") == 75) {
+                    UHCFeature().scheduleShrink(50)
+                } else if (SettingsFeature.instance.data!!.getInt("pregen.border") == 50) {
+                    UHCFeature().scheduleShrink(25)
+                } else {
+                    UHCFeature().scheduleShrink(25)
+                }
                 currentEvent = Events.BORDER_SHRINK_SIX
             }
         }
