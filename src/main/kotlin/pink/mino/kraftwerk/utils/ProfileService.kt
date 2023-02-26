@@ -85,6 +85,7 @@ class ProfileService {
                 .append("xpNeeded", profile.xpNeeded)
                 .append("xp", profile.xp)
                 .append("level", profile.level)
+                .append("chatMode", profile.chatMode)
             this.findOneAndReplace(filter, document, FindOneAndReplaceOptions().upsert(true))
         }
     }
@@ -120,7 +121,8 @@ class ProfileService {
                             (document["deathMessageOnScreen"] as Boolean),
                             (document["xpNeeded"] as? Double ?: 150.0),
                             (document["xp"] as? Double ?: 0.0),
-                            (document["level"] as? Int ?: 1)
+                            (document["level"] as? Int ?: 1),
+                            (document["chatMode"] as? String ?: "PUBLIC")
                         )
                     } else {
                         p = ImmutableProfile(

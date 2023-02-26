@@ -7,6 +7,12 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.player.AsyncPlayerChatEvent
+import org.bukkit.plugin.java.JavaPlugin
+import pink.mino.kraftwerk.Kraftwerk
+import pink.mino.kraftwerk.features.SpecFeature
+import pink.mino.kraftwerk.features.TeamsFeature
+import pink.mino.kraftwerk.scenarios.ScenarioHandler
+import pink.mino.kraftwerk.scenarios.list.MolesScenario
 import pink.mino.kraftwerk.utils.PlayerUtils
 
 class ChatListener : Listener {
@@ -45,10 +51,54 @@ class ChatListener : Listener {
                 e.message = e.message.replace(":blush:", pink.mino.kraftwerk.utils.Chat.colored("&d(◡‿◡✿)&r"))
             }
         }
-        if (player.hasPermission("uhc.donator.whitechat")) {
-            e.format = prefix + pink.mino.kraftwerk.utils.Chat.colored("${PlayerUtils.getPrefix(player)}%s") + ChatColor.DARK_GRAY + " » " + ChatColor.WHITE + "%s"
-        } else {
-            e.format = prefix + pink.mino.kraftwerk.utils.Chat.colored("${PlayerUtils.getPrefix(player)}%s") + ChatColor.DARK_GRAY + " » " + ChatColor.GRAY + "%s"
+        var preference = JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.getProfile(player.uniqueId)!!.chatMode
+        if (preference == "MOLES") {
+            e.isCancelled = true
+            if (!ScenarioHandler.getActiveScenarios().contains(ScenarioHandler.getScenario("moles")) || MolesScenario.instance.moles[player.uniqueId] == null) {
+                pink.mino.kraftwerk.utils.Chat.sendMessage(player, "&cMoles is not enabled. Setting your chat mode back to PUBLIC.")
+                preference = "PUBLIC"
+                JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.getProfile(player.uniqueId)!!.chatMode = "PUBLIC"
+            } else {
+                Bukkit.dispatchCommand(player, "mcc ${e.message}")
+            }
+        }
+        if (preference == "STAFF") {
+            e.isCancelled = true
+            if (!player.hasPermission("uhc.staff")) {
+                pink.mino.kraftwerk.utils.Chat.sendMessage(player, "&cYou aren't a Staff member. Setting your chat mode back to PUBLIC.")
+                preference = "PUBLIC"
+                JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.getProfile(player.uniqueId)!!.chatMode = "PUBLIC"
+            } else {
+                Bukkit.dispatchCommand(player, "ac ${e.message}")
+            }
+        }
+        if (preference == "SPEC") {
+            e.isCancelled = true
+            if (!SpecFeature.instance.isSpec(player)) {
+                pink.mino.kraftwerk.utils.Chat.sendMessage(player, "&cYou aren't a Staff member. Setting your chat mode back to PUBLIC.")
+                preference = "PUBLIC"
+                JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.getProfile(player.uniqueId)!!.chatMode = "PUBLIC"
+            } else {
+                Bukkit.dispatchCommand(player, "sc ${e.message}")
+            }
+        }
+        if (preference == "TEAM") {
+            e.isCancelled = true
+            if (TeamsFeature.manager.getTeam(player) == null) {
+                pink.mino.kraftwerk.utils.Chat.sendMessage(player, "&cYou aren't on a Team. Setting your chat mode back to PUBLIC.")
+                preference = "PUBLIC"
+                JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.getProfile(player.uniqueId)!!.chatMode = "PUBLIC"
+            } else {
+                Bukkit.dispatchCommand(player, "pm ${e.message}")
+            }
+        }
+        if (preference == "PUBLIC") {
+            e.isCancelled = false
+            if (player.hasPermission("uhc.donator.whitechat")) {
+                e.format = prefix + pink.mino.kraftwerk.utils.Chat.colored("${PlayerUtils.getPrefix(player)}%s") + ChatColor.DARK_GRAY + " » " + ChatColor.WHITE + "%s"
+            } else {
+                e.format = prefix + pink.mino.kraftwerk.utils.Chat.colored("${PlayerUtils.getPrefix(player)}%s") + ChatColor.DARK_GRAY + " » " + ChatColor.GRAY + "%s"
+            }
         }
     }
 

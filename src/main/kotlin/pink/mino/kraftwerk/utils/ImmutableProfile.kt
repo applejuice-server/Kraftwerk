@@ -16,7 +16,8 @@ class ImmutableProfile(
     var deathMessageOnScreen: Boolean = true,
     var xpNeeded: Double = 150.0,
     var xp: Double = 0.0,
-    var level: Int = 1
+    var level: Int = 1,
+    var chatMode: String = "PUBLIC"
 ) : Profile {
     override fun getUniqueId(): UUID {
         return this.uniqueId
