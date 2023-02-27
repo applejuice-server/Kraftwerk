@@ -31,7 +31,7 @@ class PlayerConnectListener : Listener {
                                 Chat.colored("&cYou are not allowed to join while the whitelist is on!\n&cPvP is currently enabled and no more players will be able to join late!\n\n&7Get pre-whitelisted on the discord @ &cdsc.gg/apple-juice&7!")
                             )
                         } else {
-                            if (SettingsFeature.instance.data!!.getString("matchpost.team") == "Auctions" || SettingsFeature.instance.data!!.getString("matchpost.team").contains("Random")) {
+                            if (SettingsFeature.instance.data!!.getString("matchpost.team") != null || SettingsFeature.instance.data!!.getString("matchpost.team") == "Auctions" || SettingsFeature.instance.data!!.getString("matchpost.team").contains("Random")) {
                                 e.disallow(
                                     PlayerLoginEvent.Result.KICK_WHITELIST,
                                     Chat.colored("&cYou are not allowed to join while the whitelist is on!\n&cYou cannot late scatter in an Auction or a Random teams game!\n\n&7Get pre-whitelisted on the discord @ &cdsc.gg/apple-juice&7!")

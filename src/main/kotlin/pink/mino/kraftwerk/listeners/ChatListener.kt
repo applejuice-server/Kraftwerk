@@ -1,5 +1,6 @@
 package pink.mino.kraftwerk.listeners
 
+import me.lucko.helper.Schedulers
 import net.milkbowl.vault.chat.Chat
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
@@ -59,7 +60,9 @@ class ChatListener : Listener {
                 preference = "PUBLIC"
                 JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.getProfile(player.uniqueId)!!.chatMode = "PUBLIC"
             } else {
-                Bukkit.dispatchCommand(player, "mcc ${e.message}")
+                Schedulers.sync().run {
+                    Bukkit.dispatchCommand(player, "mcc ${e.message}")
+                }
             }
         }
         if (preference == "STAFF") {
@@ -69,7 +72,9 @@ class ChatListener : Listener {
                 preference = "PUBLIC"
                 JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.getProfile(player.uniqueId)!!.chatMode = "PUBLIC"
             } else {
-                Bukkit.dispatchCommand(player, "ac ${e.message}")
+                Schedulers.sync().run {
+                    Bukkit.dispatchCommand(player, "ac ${e.message}")
+                }
             }
         }
         if (preference == "SPEC") {
@@ -79,7 +84,9 @@ class ChatListener : Listener {
                 preference = "PUBLIC"
                 JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.getProfile(player.uniqueId)!!.chatMode = "PUBLIC"
             } else {
-                Bukkit.dispatchCommand(player, "sc ${e.message}")
+                Schedulers.sync().run {
+                    Bukkit.dispatchCommand(player, "sc ${e.message}")
+                }
             }
         }
         if (preference == "TEAM") {
@@ -89,7 +96,9 @@ class ChatListener : Listener {
                 preference = "PUBLIC"
                 JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.getProfile(player.uniqueId)!!.chatMode = "PUBLIC"
             } else {
-                Bukkit.dispatchCommand(player, "pm ${e.message}")
+                Schedulers.sync().run {
+                    Bukkit.dispatchCommand(player, "pm ${e.message}")
+                }
             }
         }
         if (preference == "PUBLIC") {
