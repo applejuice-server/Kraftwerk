@@ -107,13 +107,12 @@ class Kraftwerk : ExtendedJavaPlugin() {
         Bukkit.getServer().pluginManager.registerEvents(CanePopulatorFeature(), this)
         Bukkit.getServer().pluginManager.registerEvents(TeamsFeature.manager, this)
         Bukkit.getServer().pluginManager.registerEvents(OpenedMatchesListener(), this)
-
-        /* Donator Listeners */
         Bukkit.getServer().pluginManager.registerEvents(MobEggsListener(), this)
         Bukkit.getServer().pluginManager.registerEvents(CowboyFeature(), this)
         Bukkit.getServer().pluginManager.registerEvents(ArenaFeature(), this)
         Bukkit.getServer().pluginManager.registerEvents(OrganizedFights.instance, this)
         Bukkit.getServer().pluginManager.registerEvents(XpFeature(), this)
+        //Bukkit.getServer().pluginManager.registerEvents(MLGFeature(), this)
 
         /* Registering commands */
         getCommand("clear").executor = ClearInventoryCommand()
