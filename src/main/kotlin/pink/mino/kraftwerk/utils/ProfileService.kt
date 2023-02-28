@@ -86,6 +86,7 @@ class ProfileService {
                 .append("xp", profile.xp)
                 .append("level", profile.level)
                 .append("chatMode", profile.chatMode)
+                .append("coins", profile.coins)
             this.findOneAndReplace(filter, document, FindOneAndReplaceOptions().upsert(true))
         }
     }
@@ -122,7 +123,8 @@ class ProfileService {
                             (document["xpNeeded"] as? Double ?: 150.0),
                             (document["xp"] as? Double ?: 0.0),
                             (document["level"] as? Int ?: 1),
-                            (document["chatMode"] as? String ?: "PUBLIC")
+                            (document["chatMode"] as? String ?: "PUBLIC"),
+                            (document["coins"] as? Double ?: 0.0)
                         )
                     } else {
                         p = ImmutableProfile(
