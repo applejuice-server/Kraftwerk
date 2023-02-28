@@ -4,6 +4,7 @@ import me.lucko.helper.promise.Promise
 import me.lucko.helper.utils.Log
 import org.bukkit.Material
 import org.bukkit.OfflinePlayer
+import org.bukkit.command.CommandSender
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -14,7 +15,9 @@ import org.bukkit.plugin.java.JavaPlugin
 import pink.mino.kraftwerk.Kraftwerk
 import pink.mino.kraftwerk.config.ConfigOptionHandler
 import pink.mino.kraftwerk.scenarios.ScenarioHandler
+import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GameState
+import kotlin.random.Random
 
 class XpFeature : Listener {
 
@@ -30,6 +33,9 @@ class XpFeature : Listener {
                     it.get().xpNeeded *= 1.15
                     it.get().xp -= it.get().xpNeeded
                     Log.info("${p.name} leveled up to Level ${it.get().level}")
+                    val reward = Random.nextDouble(25.5)
+                    it.get().coins += reward
+                    Chat.sendMessage(p as CommandSender, "&8[&bLeveling&8]&7 You leveled up to &bLevel ${it.get().level}&7! You gained &6⚜ $reward&7 as a reward.")
                 }
             }
     }

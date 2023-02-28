@@ -308,39 +308,6 @@ class Kraftwerk : ExtendedJavaPlugin() {
         SettingsFeature.instance.data!!.set("whitelist.enabled", true)
         SettingsFeature.instance.saveData()
         Leaderboards().runTaskTimer(this, 0L, 20L)
-
-        val manager = Bukkit.getScoreboardManager()
-        val board: org.bukkit.scoreboard.Scoreboard = manager.mainScoreboard
-        val name: Objective
-        val tab: Objective
-        name = if (board.getObjective("HealthNamePL") == null) {
-            board.registerNewObjective("HealthNamePL", "dummy")
-        } else {
-            board.getObjective("HealthNamePL")
-        }
-        tab = if (board.getObjective("HealthTabPL") == null) {
-            board.registerNewObjective("HealthTabPL", "dummy")
-        } else {
-            board.getObjective("HealthTabPL")
-        }
-        name.displaySlot = DisplaySlot.BELOW_NAME
-        name.displayName = ChatColor.RED.toString() + "❤"
-        tab.displaySlot = DisplaySlot.PLAYER_LIST
-        Bukkit.getScheduler().runTaskTimer(this, {
-            if (ScenarioHandler.getActiveScenarios().contains(ScenarioHandler.getScenario("parafusion"))) {
-                name.displaySlot = null
-                tab.displaySlot = null
-            } else {
-                for (player in Bukkit.getOnlinePlayers()) {
-                    val health = floor(player.health / 20 * 100 + ((player as CraftPlayer).handle.absorptionHearts / 2) * 10).toInt()
-                    name.getScore(player.name).score = health
-                    tab.getScore(player.name).score = health
-                }
-                name.displaySlot = DisplaySlot.BELOW_NAME
-                tab.displaySlot = DisplaySlot.PLAYER_LIST
-            }
-        }, 1L, 1L)
-
         Bukkit.getLogger().info("Kraftwerk enabled.")
     }
 

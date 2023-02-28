@@ -45,6 +45,7 @@ class ProfileCommand : CommandExecutor {
             .addLore(" ")
             .addLore(" &7Your Level ${Chat.dash} &a${level} &8(&a${floor((xp / xpNeeded) * 100)}%&8)")
             .addLore(" &7Chat Mode ${Chat.dash} &f${profile.chatMode}")
+            .addLore(" &7Coins ${Chat.dash} &6⚜ ${profile.coins}")
             .addLore(" ")
             .make()
         gui.item(13, misc).onClick runnable@ {

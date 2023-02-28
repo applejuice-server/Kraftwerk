@@ -74,7 +74,7 @@ class Leaderboards : BukkitRunnable() {
         plugin,
         Location(Bukkit.getWorld("Spawn"), -696.5, 108.5, 293.5)
     )
-    val timesEnchanted = HologramsAPI.createHologram(
+    val highestLevel = HologramsAPI.createHologram(
         plugin,
         Location(Bukkit.getWorld("Spawn"), -697.5, 108.5, 296.5)
     )
@@ -94,7 +94,7 @@ class Leaderboards : BukkitRunnable() {
                         hologram == kills ||
                         hologram == goldMined ||
                         hologram == gapplesEaten ||
-                        hologram == timesEnchanted ||
+                        hologram == highestLevel ||
                         hologram == latestMatch
                     ) {
                         hologram.clearLines()
@@ -112,8 +112,8 @@ class Leaderboards : BukkitRunnable() {
                 goldMined.appendTextLine(Chat.guiLine)
                 gapplesEaten.appendTextLine(Chat.colored("&c&lGapples Eaten"))
                 gapplesEaten.appendTextLine(Chat.guiLine)
-                timesEnchanted.appendTextLine(Chat.colored("&c&lTimes Enchanted"))
-                timesEnchanted.appendTextLine(Chat.guiLine)
+                highestLevel.appendTextLine(Chat.colored("&b&lHighest Level"))
+                highestLevel.appendTextLine(Chat.guiLine)
                 latestMatch.appendTextLine(Chat.colored("&c&lLatest Match"))
                 latestMatch.appendTextLine(Chat.guiLine)
                 with (JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.getDatabase("applejuice").getCollection("stats")) {
@@ -157,14 +157,6 @@ class Leaderboards : BukkitRunnable() {
                     if (gapplesEaten.size() == 2) {
                         gapplesEaten.appendTextLine(Chat.colored("&7No data yet x_x"))
                     }
-                    val t = this.find().sort(descending("timesEnchanted")).limit(10)
-                    for ((index, document) in t.withIndex()) {
-                        val profile = JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.lookupProfile(document["uuid"] as UUID).get()
-                        if (document["timesEnchanted"] as Int != 0) timesEnchanted.appendTextLine(Chat.colored("&e${index + 1}. &f${profile.name} &8- &b${document["timesEnchanted"] as Int}"))
-                    }
-                    if (timesEnchanted.size() == 2) {
-                        timesEnchanted.appendTextLine(Chat.colored("&7No data yet x_x"))
-                    }
                     val gm = this.find().sort(descending("goldMined")).limit(10)
                     for ((index, document) in gm.withIndex()) {
                         val profile = JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.lookupProfile(document["uuid"] as UUID).get()
@@ -174,13 +166,23 @@ class Leaderboards : BukkitRunnable() {
                         goldMined.appendTextLine(Chat.colored("&7No data yet x_x"))
                     }
                 }
+                with (JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.getDatabase("applejuice").getCollection("players")) {
+                    val t = this.find().sort(descending("level")).limit(10)
+                    for ((index, document) in t.withIndex()) {
+                        val profile = JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.lookupProfile(document["uuid"] as UUID).get()
+                        if (document["level"] as Int != 0) highestLevel.appendTextLine(Chat.colored("&e${index + 1}. &f${profile.name} &8- &aLevel ${profile.level}"))
+                    }
+                    if (highestLevel.size() == 2) {
+                        highestLevel.appendTextLine(Chat.colored("&7No data yet x_x"))
+                    }
+                }
                 gamesPlayed.appendTextLine(Chat.guiLine)
                 wins.appendTextLine(Chat.guiLine)
                 kills.appendTextLine(Chat.guiLine)
                 diamondsMined.appendTextLine(Chat.guiLine)
                 goldMined.appendTextLine(Chat.guiLine)
                 gapplesEaten.appendTextLine(Chat.guiLine)
-                timesEnchanted.appendTextLine(Chat.guiLine)
+                highestLevel.appendTextLine(Chat.guiLine)
             } catch (e: MongoException) {
                 e.printStackTrace()
             }
