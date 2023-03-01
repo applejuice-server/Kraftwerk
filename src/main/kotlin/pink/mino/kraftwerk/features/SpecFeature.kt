@@ -23,10 +23,7 @@ import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.inventory.InventoryClickEvent
-import org.bukkit.event.player.PlayerDropItemEvent
-import org.bukkit.event.player.PlayerInteractEntityEvent
-import org.bukkit.event.player.PlayerInteractEvent
-import org.bukkit.event.player.PlayerPickupItemEvent
+import org.bukkit.event.player.*
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.scheduler.BukkitRunnable
@@ -36,7 +33,7 @@ import java.util.*
 import kotlin.math.floor
 import kotlin.math.round
 
-class InvSeeFeature(private val player: Player, private val target: Player, ) : BukkitRunnable() {
+class InvSeeFeature(private val player: Player, private val target: Player) : BukkitRunnable() {
     override fun run() {
         if (!target.isOnline) {
             cancel()
@@ -101,6 +98,24 @@ class SpecClickFeature : PacketAdapter(JavaPlugin.getPlugin(Kraftwerk::class.jav
                     }
                     21 -> {
                         Bukkit.dispatchCommand(p, "nearby")
+                    }
+                    22 -> {
+                        if (JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.lookupProfile(p.uniqueId)!!.get().specSocialSpy) {
+                            JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.lookupProfile(p.uniqueId)!!.get().specSocialSpy = false
+                            Chat.sendMessage(p, "${SpecFeature.instance.prefix} Disabled &5Social Spy&7!")
+                        } else {
+                            JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.lookupProfile(p.uniqueId)!!.get().specSocialSpy = true
+                            Chat.sendMessage(p, "${SpecFeature.instance.prefix} Enabled &5Social Spy&7!")
+                        }
+                        val socialSpy = ItemBuilder(Material.NAME_TAG)
+                            .addLore("&7Click to view social commands.")
+                        val pref = JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.lookupProfile(p.uniqueId)!!.get().specSocialSpy
+                        if (pref) {
+                            socialSpy.name("&aSocial Spy")
+                        } else {
+                            socialSpy.name("&cSocial Spy")
+                        }
+                        p.inventory.setItem(22, socialSpy.make())
                     }
                     23 -> {
                         val list = ArrayList<Player>()
@@ -188,13 +203,22 @@ class SpecFeature : Listener {
             .name("&cRespawn Players")
             .addLore("&7Click to view a list of dead players that can be respawned.")
             .make()
+        val socialSpy = ItemBuilder(Material.NAME_TAG)
+            .addLore("&7Click to view social commands.")
+        val pref = JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.lookupProfile(p.uniqueId)!!.get().specSocialSpy
+        if (pref) {
+            socialSpy.name("&aSocial Spy")
+        } else {
+            socialSpy.name("&cSocial Spy")
+        }
 
         p.inventory.setItem(19, teleportTo00)
         p.inventory.setItem(21, nearby)
+        p.inventory.setItem(22, socialSpy.make())
         p.inventory.setItem(23, locations)
         p.inventory.setItem(25, respawn)
 
-        Chat.sendMessage(p, "${prefix} You are now in spectator mode.")
+        Chat.sendMessage(p, "$prefix You are now in spectator mode.")
 
         Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
             if (LunarClientAPI.getInstance().isRunningLunarClient(p)) {
@@ -203,6 +227,30 @@ class SpecFeature : Listener {
             }
         }, 5L)
     }
+
+    val commands = arrayListOf(
+        "/msg",
+        "/pm",
+        "/r",
+        "/reply",
+        "/tell",
+        "/message",
+        "/whisper"
+    )
+
+    @EventHandler
+    fun onPlayerCommand(e: PlayerCommandPreprocessEvent) {
+        val message = e.message.lowercase().split(" ")
+        if (commands.contains(message[0])) {
+            for (spectator in getSpecs()) {
+                val player = Bukkit.getPlayer(spectator)
+                if (player != null && JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.lookupProfile(player.uniqueId)!!.get().specSocialSpy) {
+                    Chat.sendMessage(player, "&e&o${e.player.name} ${Chat.dash} &7${message.joinToString(" ")}")
+                }
+             }
+        }
+    }
+
     fun spec(p: Player) {
         specStartTimes[p.uniqueId] = Date().time
         SpawnFeature.instance.send(p)
@@ -246,9 +294,18 @@ class SpecFeature : Listener {
             .name("&cRespawn Players")
             .addLore("&7Click to view a list of dead players that can be respawned.")
             .make()
+        val socialSpy = ItemBuilder(Material.NAME_TAG)
+            .addLore("&7Click to view social commands.")
+        val pref = JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.lookupProfile(p.uniqueId)!!.get().specSocialSpy
+        if (pref) {
+            socialSpy.name("&aSocial Spy")
+        } else {
+            socialSpy.name("&cSocial Spy")
+        }
 
         p.inventory.setItem(19, teleportTo00)
         p.inventory.setItem(21, nearby)
+        p.inventory.setItem(22, socialSpy.make())
         p.inventory.setItem(23, locations)
         p.inventory.setItem(25, respawn)
 
