@@ -49,8 +49,6 @@ class GappleRouletteScenario : Scenario(
             Schedulers.sync().runLater ({
                 val effect = potionEffects.random()
                 val seconds = Random().nextInt(90)
-                e.player.removePotionEffect(PotionEffectType.ABSORPTION)
-                e.player.removePotionEffect(PotionEffectType.REGENERATION)
                 e.player.addPotionEffect(PotionEffect(effect, 20 * seconds, 0))
                 Chat.sendMessage(e.player, "${prefix} You got &f${effect.name}&7 for &f${seconds} seconds&7!")
             }, 1L)
