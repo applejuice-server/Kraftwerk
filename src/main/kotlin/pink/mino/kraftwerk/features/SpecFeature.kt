@@ -235,7 +235,8 @@ class SpecFeature : Listener {
         "/reply",
         "/tell",
         "/message",
-        "/whisper"
+        "/whisper",
+        "/mcc"
     )
 
     @EventHandler
