@@ -1,6 +1,7 @@
 package pink.mino.kraftwerk.scenarios.list
 
 import me.lucko.helper.Schedulers
+import org.bukkit.Bukkit
 import org.bukkit.GameMode
 import org.bukkit.Material
 import org.bukkit.OfflinePlayer
@@ -42,22 +43,49 @@ class SuperheroesScenario : Scenario(
         if (SettingsFeature.instance.data!!.getInt("game.teamSize") >= 5) {
             pool.add(PotionEffectType.JUMP)
         }
-        if (TeamsFeature.manager.getTeam(player) == null) {
-            SpecFeature.instance.specChat("&f${player.name}&7 hasn't been late-scattered to a teammate, not giving them any powers.")
-            return
-        }
-        for (teammate in TeamsFeature.manager.getTeam(player)!!.players) {
-            pool.remove(superheroes[teammate])
+        if (TeamsFeature.manager.getTeam(player) != null) {
+            for (teammate in TeamsFeature.manager.getTeam(player)!!.players) {
+                pool.remove(superheroes[teammate])
+            }
         }
         val hero = pool[Random.nextInt(pool.size)]
         superheroes[player] = hero
         givePower(player)
-        Chat.sendMessage(player, "$prefix Your assigned Avenger is: &f${hero.name}&7.")
+        Chat.sendMessage(player, "$prefix Your assigned power is: &f${hero.name}&7.")
     }
 
     fun assignPowers() {
-        for (team in TeamsFeature.manager.getTeams()) {
-            if (team.size > 0) {
+        if (SettingsFeature.instance.data!!.getInt("game.teamSize") > 1) {
+            for (team in TeamsFeature.manager.getTeams()) {
+                if (team.size > 0) {
+                    val pool = arrayListOf(
+                        PotionEffectType.HEALTH_BOOST,
+                        PotionEffectType.SPEED,
+                        PotionEffectType.DAMAGE_RESISTANCE,
+                        PotionEffectType.INCREASE_DAMAGE,
+                    )
+                    if (SettingsFeature.instance.data!!.getInt("game.teamSize") >= 6) {
+                        pool.add(PotionEffectType.INVISIBILITY)
+                    }
+                    if (SettingsFeature.instance.data!!.getInt("game.teamSize") >= 5) {
+                        pool.add(PotionEffectType.JUMP)
+                    }
+                    for (player in team.players) {
+                        if (pool.size == 0) continue
+                        try {
+                            val hero = pool[Random.nextInt(pool.size)]
+                            if (player.isOnline) {
+                                superheroes[player as Player] = hero
+                                pool.remove(hero)
+                                Chat.sendMessage(player, "$prefix Your assigned power is: &f${hero.name}&7.")
+                                givePower(player)
+                            }
+                        } catch(_: Error) {}
+                    }
+                }
+            }
+        } else {
+            for (player in Bukkit.getOnlinePlayers()) {
                 val pool = arrayListOf(
                     PotionEffectType.HEALTH_BOOST,
                     PotionEffectType.SPEED,
@@ -70,18 +98,10 @@ class SuperheroesScenario : Scenario(
                 if (SettingsFeature.instance.data!!.getInt("game.teamSize") >= 5) {
                     pool.add(PotionEffectType.JUMP)
                 }
-                for (player in team.players) {
-                    if (pool.size == 0) continue
-                    try {
-                        val hero = pool[Random.nextInt(pool.size)]
-                        if (player.isOnline) {
-                            superheroes[player as Player] = hero
-                            pool.remove(hero)
-                            Chat.sendMessage(player, "$prefix Your assigned power is: &f${hero.name}&7.")
-                            givePower(player)
-                        }
-                    } catch(_: Error) {}
-                }
+                val hero = pool[Random.nextInt(pool.size)]
+                superheroes[player as Player] = hero
+                Chat.sendMessage(player, "$prefix Your assigned power is: &f${hero.name}&7.")
+                givePower(player)
             }
         }
     }
