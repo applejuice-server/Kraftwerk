@@ -24,6 +24,17 @@ class ChatListener : Listener {
         vaultChat = Bukkit.getServer().servicesManager.load(Chat::class.java)
     }
 
+    val slurs = arrayListOf(
+        "tranny",
+        "nigger",
+        "faggot",
+        "retard",
+        "kys",
+        "nigga",
+        "negro",
+        "sreggin"
+    )
+
     @EventHandler(priority = EventPriority.HIGH)
     fun onPlayerChat(e: AsyncPlayerChatEvent) {
         val player = e.player
@@ -103,6 +114,18 @@ class ChatListener : Listener {
         }
         if (preference == "PUBLIC") {
             e.isCancelled = false
+            if (!player.hasPermission("uhc.donator.whitechat")) {
+                val words = e.message.split(" ")
+                for (word in words) {
+                    if (slurs.contains(word.lowercase())) {
+                        e.isCancelled = true
+                        pink.mino.kraftwerk.utils.Chat.sendMessage(e.player, "$prefix ${PlayerUtils.getPrefix(player)}${player.name} &8»&7 ${e.message}")
+                        Schedulers.sync().runLater({
+                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mute ${player.name} -s 1d Inappropiate Language (auto)")
+                        }, (5 * 20).toLong())
+                    }
+                }
+            }
             if (player.hasPermission("uhc.donator.whitechat")) {
                 e.format = prefix + pink.mino.kraftwerk.utils.Chat.colored("${PlayerUtils.getPrefix(player)}%s") + ChatColor.DARK_GRAY + " » " + ChatColor.WHITE + "%s"
             } else {
