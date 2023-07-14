@@ -132,13 +132,6 @@ class EndGameCommand : CommandExecutor {
                 team.removePlayer(player)
             }
         }
-        val tweet = JavaPlugin.getPlugin(Kraftwerk::class.java).twitterInstance.updateStatus("\uD83E\uDDC3 applejuice | Winners\n" +
-                "\n" +
-                "\uD83D\uDD79 ${SettingsFeature.instance.data!!.getString("matchpost.host")} / \uD83D\uDC65 ${listOfWinners}\n" +
-                "\n" +
-                "Thanks for playing!")
-        embed.addField("Winner Tweet", "[Click here to view the tweet](https://twitter.com/${tweet.user.screenName}/status/${tweet.id})", false)
-        Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} View the winner tweet here! &b&nhttps://twitter.com/${tweet.user.screenName}/status/${tweet.id}"))
         embed.addField("Matchpost", "https://hosts.uhc.gg/m/${SettingsFeature.instance.data!!.getInt("matchpost.id")}", false)
         Discord.instance!!.getTextChannelById(1129309991124357140)!!.sendMessageEmbeds(embed.build()).queue()
 
