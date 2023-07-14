@@ -140,7 +140,7 @@ class EndGameCommand : CommandExecutor {
         embed.addField("Winner Tweet", "[Click here to view the tweet](https://twitter.com/${tweet.user.screenName}/status/${tweet.id})", false)
         Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} View the winner tweet here! &b&nhttps://twitter.com/${tweet.user.screenName}/status/${tweet.id}"))
         embed.addField("Matchpost", "https://hosts.uhc.gg/m/${SettingsFeature.instance.data!!.getInt("matchpost.id")}", false)
-        Discord.instance!!.getTextChannelById(937811334106583040)!!.sendMessageEmbeds(embed.build()).queue()
+        Discord.instance!!.getTextChannelById(1129309991124357140)!!.sendMessageEmbeds(embed.build()).queue()
 
         SettingsFeature.instance.data!!.set("game.winners", ArrayList<String>())
         SettingsFeature.instance.data!!.set("game.list", ArrayList<String>())
@@ -184,8 +184,8 @@ class EndGameCommand : CommandExecutor {
         Bukkit.broadcastMessage(Chat.colored(Chat.line))
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wl off")
         val log = File("./logs/latest.log")
-        Discord.instance!!.getTextChannelById(955314362019635270)!!.sendMessage("**${gameTitle}**").queue()
-        Discord.instance!!.getTextChannelById(955314362019635270)!!.sendFile(log, "game.log").queue()
+        Discord.instance!!.getTextChannelById(1129315297657106504)!!.sendMessage("**${gameTitle}**").queue()
+        Discord.instance!!.getTextChannelById(1129315297657106504)!!.sendFile(log, "game.log").queue()
 
         return true
     }
