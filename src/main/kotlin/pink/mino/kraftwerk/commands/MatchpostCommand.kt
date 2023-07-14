@@ -92,21 +92,13 @@ class ScheduleBroadcast(private val opening: String) : BukkitRunnable() {
             embed.setThumbnail("https://visage.surgeplay.com/bust/512/${host.uniqueId}")
             val scenarios = SettingsFeature.instance.data!!.getStringList("matchpost.scenarios")
             val fr = (System.currentTimeMillis() / 1000L) + (900000L) / 1000L
-            val tweet = JavaPlugin.getPlugin(Kraftwerk::class.java).twitterInstance.updateStatus(
-                "\uD83E\uDDC3 applejuice | NA\n" +
-                        "\n" +
-                        "\uD83D\uDC65 ${SettingsFeature.instance.data!!.getString("matchpost.team")} - \uD83D\uDD79 ${scenarios.joinToString(", ")}\n" +
-                        "\n" +
-                        "⏰ Opening at: ${opening} UTC (in 15 minutes) | time.is/UTC\n" +
-                        "⌨ Version: 1.8.x | IP: applejuice.games"
-            )
             embed.addField("Teams", SettingsFeature.instance.data!!.getString("matchpost.team"), false)
             embed.addField("Scenarios", scenarios.joinToString(", "), false)
             var flag = ":flag_ca:"
             embed.addField("IP", "$flag `applejuice.games` (1.8.x)", false)
-            Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Matchpost posted on discord & twitter! View the tweet here: &b&uhttps://twitter.com/applejuiceuhc/status/${tweet.id}"))
+            Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Matchpost posted on discord & twitter!"))
             embed.addField("Opening", "<t:${fr}:t> (<t:${fr}:R>)", false)
-            embed.addField("Matchpost", "[uhc.gg](https://hosts.uhc.gg/m/${SettingsFeature.instance.data!!.getInt("matchpost.id")}) | [Twitter](https://twitter.com/applejuiceuhc/status/${tweet.id})", false)
+            embed.addField("Matchpost", "[uhc.gg](https://hosts.uhc.gg/m/${SettingsFeature.instance.data!!.getInt("matchpost.id")})", false)
             Discord.instance!!.getTextChannelById(1129309971327221760)!!.sendMessage("<@&1129405126889713692> (Use `/togglematches` to toggle matchpost alerts)").queue()
             Discord.instance!!.getTextChannelById(1129309971327221760)!!.sendMessageEmbeds(embed.build()).queue()
             embed = EmbedBuilder()

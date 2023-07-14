@@ -49,6 +49,7 @@ class Discord : ListenerAdapter() {
                     .addOption(OptionType.STRING, "ign", "The player you want to be whitelisted.", true)
             )
             instance = jda
+            commands.queue()
         }
     }
 }
