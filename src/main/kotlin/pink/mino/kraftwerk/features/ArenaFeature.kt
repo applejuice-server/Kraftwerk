@@ -8,6 +8,7 @@ import org.bukkit.Bukkit
 import org.bukkit.GameMode
 import org.bukkit.Material
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer
+import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Arrow
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
@@ -21,15 +22,14 @@ import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.EntitySpawnEvent
 import org.bukkit.event.player.PlayerBucketEmptyEvent
 import org.bukkit.event.player.PlayerDropItemEvent
+import org.bukkit.event.player.PlayerPickupItemEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 import pink.mino.kraftwerk.Kraftwerk
-import pink.mino.kraftwerk.utils.BlockAnimation
-import pink.mino.kraftwerk.utils.Chat
-import pink.mino.kraftwerk.utils.HealthChatColorer
-import pink.mino.kraftwerk.utils.Killstreak
+import pink.mino.kraftwerk.utils.*
+import java.util.UUID
 import kotlin.math.floor
 
 
@@ -86,6 +86,8 @@ class ArenaFeature : Listener {
         }
     }
 
+    val seeds = hashMapOf<UUID, Int?>()
+
     fun send(p: Player) {
         if (SpecFeature.instance.getSpecs().contains(p.name)) {
             SpecFeature.instance.unspec(p)
@@ -96,6 +98,7 @@ class ArenaFeature : Listener {
         p.saturation = 20F
         p.exp = 0F
         p.level = 0
+        seeds[p.uniqueId] = 0
         val effects = p.activePotionEffects
         for (effect in effects) {
             p.removePotionEffect(effect.type)
@@ -153,6 +156,38 @@ class ArenaFeature : Listener {
         ScatterFeature.scatterSolo(p, Bukkit.getWorld("Arena"), 100)
         p.addPotionEffect(PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 60, 100, true, false))
         p.addPotionEffect(PotionEffect(PotionEffectType.WEAKNESS, 60, 100, true, false))
+    }
+
+    @EventHandler
+    fun onPlayerPickup(e: PlayerPickupItemEvent) {
+        if (e.player.world.name != "Arena") return
+        if (e.item.itemStack.type == Material.SEEDS) {
+            if (seeds[e.player.uniqueId] != null) {
+                seeds[e.player.uniqueId] = seeds[e.player.uniqueId]!! + e.item.itemStack.amount
+                if (seeds[e.player.uniqueId]!! >= 10) {
+                    for ((index, item) in e.player.inventory.contents.withIndex()) {
+                        if (item.type == Material.DIAMOND_SWORD) {
+                            val sword = ItemBuilder(Material.DIAMOND_SWORD)
+                                .name("&5&lSeedly Sword")
+                                .addEnchantment(Enchantment.DAMAGE_ALL, 1)
+                                .addEnchantment(Enchantment.FIRE_ASPECT, 1)
+                                .make()
+                            e.player.inventory.setItem(index, sword)
+                        }
+                        if (item.type == Material.BOW) {
+                            val bow = ItemBuilder(Material.BOW)
+                                .name("&5&lSeedly Bow")
+                                .addEnchantment(Enchantment.ARROW_DAMAGE, 1)
+                                .addEnchantment(Enchantment.ARROW_FIRE, 1)
+                                .make()
+                            e.player.inventory.setItem(index, bow)
+                        }
+                    }
+                    Chat.sendMessage(e.player, "&8[&d&lSecret&8]&7&o You get the &5&oSeedly&7 buff!")
+                    seeds[e.player.uniqueId] = null
+                }
+            }
+        }
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
