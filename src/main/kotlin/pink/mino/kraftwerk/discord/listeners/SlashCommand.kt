@@ -36,14 +36,14 @@ class SlashCommand : ListenerAdapter() {
                 val embed = EmbedBuilder()
                 embed.setColor(Color(255, 61, 61))
                 embed.setAuthor("applejuice — Toggle alerts", "https://dsc.gg/apple-juice", event.jda.selfUser.avatarUrl)
-                if (member!!.roles.contains(event.jda.getRoleById(793406242013839381))) {
+                if (member!!.roles.contains(event.jda.getRoleById(1129405126889713692))) {
                     if (guild != null) {
-                        guild.getRoleById(793406242013839381)?.let { guild.removeRoleFromMember(member.id, it) }?.queue()
+                        guild.getRoleById(1129405126889713692)?.let { guild.removeRoleFromMember(member.id, it) }?.queue()
                     }
                     embed.setDescription("You have disabled matchpost notifications.")
                 } else {
                     if (guild != null) {
-                        guild.getRoleById(793406242013839381)?.let { guild.addRoleToMember(member.id, it) }?.queue()
+                        guild.getRoleById(1129405126889713692)?.let { guild.addRoleToMember(member.id, it) }?.queue()
                     }
                     embed.setDescription("You have enabled matchpost notifications.")
                 }

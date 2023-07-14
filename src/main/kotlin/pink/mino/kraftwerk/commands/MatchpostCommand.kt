@@ -107,14 +107,14 @@ class ScheduleBroadcast(private val opening: String) : BukkitRunnable() {
             Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Matchpost posted on discord & twitter! View the tweet here: &b&uhttps://twitter.com/applejuiceuhc/status/${tweet.id}"))
             embed.addField("Opening", "<t:${fr}:t> (<t:${fr}:R>)", false)
             embed.addField("Matchpost", "[uhc.gg](https://hosts.uhc.gg/m/${SettingsFeature.instance.data!!.getInt("matchpost.id")}) | [Twitter](https://twitter.com/applejuiceuhc/status/${tweet.id})", false)
-            Discord.instance!!.getTextChannelById(937811305102999573)!!.sendMessage("<@&793406242013839381> (Use `/togglematches` to toggle matchpost alerts)").queue()
-            Discord.instance!!.getTextChannelById(937811305102999573)!!.sendMessageEmbeds(embed.build()).queue()
+            Discord.instance!!.getTextChannelById(1129309971327221760)!!.sendMessage("<@&1129405126889713692> (Use `/togglematches` to toggle matchpost alerts)").queue()
+            Discord.instance!!.getTextChannelById(1129309971327221760)!!.sendMessageEmbeds(embed.build()).queue()
             embed = EmbedBuilder()
             embed.setColor(Color(255, 61, 61))
             embed.setTitle(SettingsFeature.instance.data!!.getString("matchpost.host"))
             embed.setThumbnail("https://visage.surgeplay.com/bust/512/${host.uniqueId}")
             embed.addField("Pre-whitelists are on!", "You are now allowed to use the command `/wl` to request to pre-whitelist yourself in the server!", false)
-            Discord.instance!!.getTextChannelById(1013903390616604753)!!.sendMessageEmbeds(embed.build()).queue()
+            Discord.instance!!.getTextChannelById(1129308837187436574)!!.sendMessageEmbeds(embed.build()).queue()
             SettingsFeature.instance.data!!.set("whitelist.requests", true)
             SettingsFeature.instance.data!!.set("matchpost.posted", true)
             SettingsFeature.instance.saveData()
@@ -195,10 +195,8 @@ class ScheduleOpening(private val opening: String) : BukkitRunnable() {
             val time: Long
             if (SettingsFeature.instance.data!!.getBoolean("matchpost.teamsGame")) {
                 time = 360
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer 360 &cWhitelist is enabled in ${Chat.dash}&f")
             } else {
                 time = 180
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer 180 &cWhitelist is enabled in ${Chat.dash}&f")
             }
             val host = Bukkit.getOfflinePlayer(SettingsFeature.instance.data!!.getString("game.host"))
             val embed = EmbedBuilder()
@@ -207,7 +205,7 @@ class ScheduleOpening(private val opening: String) : BukkitRunnable() {
             embed.setTitle(SettingsFeature.instance.data!!.getString("matchpost.host"))
             embed.setThumbnail("https://visage.surgeplay.com/bust/512/${host.uniqueId}")
             embed.addField("Game Open!", "The game is now open at :beverage_box: `applejuice.games`.", false)
-            Discord.instance!!.getTextChannelById(937811305102999573)!!.sendMessageEmbeds(embed.build()).queue()
+            Discord.instance!!.getTextChannelById(1129309971327221760)!!.sendMessageEmbeds(embed.build()).queue()
             Bukkit.broadcastMessage(Chat.colored("${Chat.dash} The whitelist has been turned off automatically @ &c${opening}&7."))
             cancel()
             Opening(time).runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 20L)
