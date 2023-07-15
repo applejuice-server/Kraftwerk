@@ -14,7 +14,10 @@ import pink.mino.kraftwerk.features.SpecFeature
 import pink.mino.kraftwerk.features.TeamsFeature
 import pink.mino.kraftwerk.scenarios.ScenarioHandler
 import pink.mino.kraftwerk.scenarios.list.MolesScenario
+import pink.mino.kraftwerk.utils.Perk
+import pink.mino.kraftwerk.utils.PerkChecker
 import pink.mino.kraftwerk.utils.PlayerUtils
+import java.util.*
 
 class ChatListener : Listener {
 
@@ -35,14 +38,26 @@ class ChatListener : Listener {
         "sreggin"
     )
 
+    val cooldowns = hashMapOf<UUID, Long>()
+    val cooldownTime: Int = 3
+
     @EventHandler(priority = EventPriority.HIGH)
     fun onPlayerChat(e: AsyncPlayerChatEvent) {
         val player = e.player
         val group: String? = vaultChat?.getPrimaryGroup(player)
         val prefix: String = ChatColor.translateAlternateColorCodes('&', vaultChat?.getGroupPrefix(player.world, group))
-        if (player.hasPermission("uhc.donator.emotes")) {
+        if (PerkChecker.checkPerks(player).contains(Perk.EMOTES)) {
             if (e.message.contains(":shrug:", true)) {
                 e.message = e.message.replace(":shrug:", pink.mino.kraftwerk.utils.Chat.colored("&e¯\\_(ツ)_/¯&r"))
+            }
+            if (e.message.contains(":yes:", true)) {
+                e.message = e.message.replace(":yes:", pink.mino.kraftwerk.utils.Chat.colored("&l&a✔&r"))
+            }
+            if (e.message.contains(":no:", true)) {
+                e.message = e.message.replace(":no:", pink.mino.kraftwerk.utils.Chat.colored("&l&c✖&r"))
+            }
+            if (e.message.contains("123", true)) {
+                e.message = e.message.replace("123", pink.mino.kraftwerk.utils.Chat.colored("&a1&e2&c3&r"))
             }
             if (e.message.contains("<3", true)) {
                 e.message = e.message.replace("<3", pink.mino.kraftwerk.utils.Chat.colored("&c❤&r"))
@@ -113,8 +128,15 @@ class ChatListener : Listener {
             }
         }
         if (preference == "PUBLIC") {
+            if (!PerkChecker.checkPerks(e.player).contains(Perk.NO_CHAT_DELAY)) {
+                val secondsLeft: Long = cooldowns[e.player.uniqueId]!! / 1000 + cooldownTime - System.currentTimeMillis() / 1000
+                if (secondsLeft > 0) {
+                    pink.mino.kraftwerk.utils.Chat.sendMessage(player, "&cYou are currently on cooldown for ${secondsLeft}s. Skip the cooldown by purchasing a rank at &ehttps://applejuice.tebex.io&c.")
+                }
+                return
+            }
             e.isCancelled = false
-            if (!player.hasPermission("uhc.donator.whitechat")) {
+            if (!PerkChecker.checkPerks(e.player).contains(Perk.WHITE_CHAT)) {
                 val words = e.message.split(" ")
                 for (word in words) {
                     if (slurs.contains(word.lowercase())) {
@@ -126,11 +148,12 @@ class ChatListener : Listener {
                     }
                 }
             }
-            if (player.hasPermission("uhc.donator.whitechat")) {
+            if (PerkChecker.checkPerks(player).contains(Perk.WHITE_CHAT)) {
                 e.format = prefix + pink.mino.kraftwerk.utils.Chat.colored("${PlayerUtils.getPrefix(player)}%s") + ChatColor.DARK_GRAY + " » " + ChatColor.WHITE + "%s"
             } else {
                 e.format = prefix + pink.mino.kraftwerk.utils.Chat.colored("${PlayerUtils.getPrefix(player)}%s") + ChatColor.DARK_GRAY + " » " + ChatColor.GRAY + "%s"
             }
+            cooldowns[player.uniqueId] = System.currentTimeMillis()
         }
     }
 

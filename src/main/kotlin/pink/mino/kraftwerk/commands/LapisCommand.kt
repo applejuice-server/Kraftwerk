@@ -4,7 +4,10 @@ import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
+import org.bukkit.plugin.java.JavaPlugin
+import pink.mino.kraftwerk.Kraftwerk
 import pink.mino.kraftwerk.utils.Chat
+import pink.mino.kraftwerk.utils.Perk
 import pink.mino.kraftwerk.utils.PerkChecker
 
 class LapisCommand : CommandExecutor {
@@ -18,15 +21,15 @@ class LapisCommand : CommandExecutor {
             sender.sendMessage("You must be a player to use this command!")
             return false
         }
-        if (!PerkChecker.checkPerk(sender, "uhc.donator.togglePickups")) {
-            Chat.sendMessage(sender, "&cYou must be &6Gold&c to use this command. Buy it at &eapplejuice.tebex.io")
+        if (!PerkChecker.checkPerks(sender).contains(Perk.TOGGLE_PICKUPS)) {
+            Chat.sendMessage(sender, "&cYou must be &6Gold&c to use this command. Buy it at &ehttps://applejuice.tebex.io")
             return false
         }
-        if (PickupFeature.instance.lapisPlayers.contains(sender)) {
-            PickupFeature.instance.lapisPlayers.remove(sender)
+        if (JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.getProfile(sender.uniqueId)!!.disableLapisPickup) {
+            JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.getProfile(sender.uniqueId)!!.disableLapisPickup = false
             Chat.sendMessage(sender, "${Chat.prefix} &7You have enabled &1Lapis&7 pickups!")
         } else {
-            PickupFeature.instance.lapisPlayers.add(sender)
+            JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.getProfile(sender.uniqueId)!!.disableLapisPickup = true
             Chat.sendMessage(sender, "${Chat.prefix} &7You have disabled &1Lapis&7 pickups!")
         }
         return true

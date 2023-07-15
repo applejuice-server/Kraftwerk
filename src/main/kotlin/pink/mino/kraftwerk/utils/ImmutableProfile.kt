@@ -19,7 +19,9 @@ class ImmutableProfile(
     var level: Int = 1,
     var chatMode: String = "PUBLIC",
     var coins: Double = 0.0,
-    var specSocialSpy: Boolean = false
+    var specSocialSpy: Boolean = false,
+    var selectedTag: String? = null,
+    var unlockedTags: ArrayList<String> = arrayListOf()
 ) : Profile {
     override fun getUniqueId(): UUID {
         return this.uniqueId

@@ -8,9 +8,7 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 import pink.mino.kraftwerk.Kraftwerk
-import pink.mino.kraftwerk.utils.Chat
-import pink.mino.kraftwerk.utils.GuiBuilder
-import pink.mino.kraftwerk.utils.ItemBuilder
+import pink.mino.kraftwerk.utils.*
 import kotlin.math.floor
 
 class ProfileCommand : CommandExecutor {
@@ -40,12 +38,17 @@ class ProfileCommand : CommandExecutor {
         val xp = JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.getProfile(sender.uniqueId)!!.xp
         val xpNeeded = JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.getProfile(sender.uniqueId)!!.xpNeeded
         val level = JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.getProfile(sender.uniqueId)!!.level
+        val progress: Double = if (floor((xp / xpNeeded) * 100) > 0) {
+            floor((xp / xpNeeded) * 100)
+        } else {
+            0.0
+        }
         val misc = ItemBuilder(Material.NETHER_STAR)
             .name(" &4&lMisc.")
             .addLore(" ")
-            .addLore(" &7Your Level ${Chat.dash} &a${level} &8(&a${floor((xp / xpNeeded) * 100)}%&8)")
+            .addLore(" &7Your Level ${Chat.dash} &a${level} &8(&a${progress.toInt()}%&8)")
             .addLore(" &7Chat Mode ${Chat.dash} &f${profile.chatMode}")
-            .addLore(" &7Coins ${Chat.dash} &6⚜ ${profile.coins}")
+            .addLore(" &7Coins ${Chat.dash} &6⚜ ${floor(profile.coins)}")
             .addLore(" ")
             .make()
         gui.item(13, misc).onClick runnable@ {
@@ -161,6 +164,10 @@ class ProfileCommand : CommandExecutor {
                 }
             }
             gui.item(0, disableRedstonePickup.make()).onClick runnable@ {
+                if (!PerkChecker.checkPerks(player).contains(Perk.TOGGLE_PICKUPS)) {
+                    Chat.sendMessage(player, "&cThis setting is locked to &6Gold&c players. &cBuy it at &ehttps://applejuice.tebex.io&c.")
+                    return@runnable
+                }
                 if (profile.disableRedstonePickup) {
                     profile.disableRedstonePickup = false
                     val meta = disableRedstonePickup.meta
@@ -185,6 +192,10 @@ class ProfileCommand : CommandExecutor {
                 JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.getProfile(player.uniqueId)!!.disableRedstonePickup = profile.disableRedstonePickup
             }
             gui.item(1, disableLapisPickup.make()).onClick runnable@ {
+                if (!PerkChecker.checkPerks(player).contains(Perk.TOGGLE_PICKUPS)) {
+                    Chat.sendMessage(player, "&cThis setting is locked to &6Gold&c players. &cBuy it at &ehttps://applejuice.tebex.io&c.")
+                    return@runnable
+                }
                 if (profile.disableLapisPickup) {
                     profile.disableLapisPickup = false
                     Chat.sendMessage(player, "${Chat.prefix} Lapis pickup has been &aenabled&7!")

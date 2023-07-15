@@ -286,6 +286,10 @@ commands:
     description: Auction Scenario Command.
   bid:
     description: Bid on an auction.
+  redstone:
+    description: Disable/enable redstone pickup. Donator feature.
+  lapis:
+    description: Enable/disable lapis pickup. Donator feature.
   invsee:
     description: View a player's inventory.
   fullbright:
@@ -336,6 +340,10 @@ commands:
       - block
   profile:
     description: View your own player profile.
+  emotes:
+    aliases:
+      - emote
+    description: View your player emotes.
 depend:
   - ProtocolLib
   - Vault
