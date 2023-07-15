@@ -59,7 +59,7 @@ class Kraftwerk : ExtendedJavaPlugin() {
     lateinit var profileHandler: ProfileService
 
     companion object {
-        val instance = this
+        lateinit var instance: Kraftwerk
     }
 
     override fun load() {
@@ -68,6 +68,7 @@ class Kraftwerk : ExtendedJavaPlugin() {
 
     override fun enable() {
         /* Registering listeners */
+        instance = this
         Bukkit.getServer().pluginManager.registerEvents(ServerListPingListener(), this)
         Bukkit.getServer().pluginManager.registerEvents(PlayerJoinListener(), this)
         Bukkit.getServer().pluginManager.registerEvents(PlayerQuitListener(), this)
