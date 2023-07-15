@@ -160,9 +160,9 @@ class ChatListener : Listener {
             val tag = Kraftwerk.instance.profileHandler.getProfile(player.uniqueId)!!.selectedTag
             var display = ""
             if (tag != null) {
-                display = Tags.valueOf(tag.uppercase()).display
+                display = " ${Tags.valueOf(tag.uppercase()).display} "
             }
-            e.format = prefix + pink.mino.kraftwerk.utils.Chat.colored("${PlayerUtils.getPrefix(player)}%s") + display + ChatColor.DARK_GRAY + " » " + pink.mino.kraftwerk.utils.Chat.colored(color) + "%s"
+            e.format = prefix + pink.mino.kraftwerk.utils.Chat.colored("${PlayerUtils.getPrefix(player)}%s") + pink.mino.kraftwerk.utils.Chat.colored(display) + ChatColor.DARK_GRAY + " » " + pink.mino.kraftwerk.utils.Chat.colored(color) + "%s"
             cooldowns[player.uniqueId] = System.currentTimeMillis()
         }
     }

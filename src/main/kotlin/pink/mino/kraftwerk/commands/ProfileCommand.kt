@@ -259,7 +259,7 @@ class ProfileCommand : CommandExecutor {
                     index++
                     val tag = Tags.valueOf(v.uppercase())
                     val display = ItemBuilder(tag.item)
-                        .name(v.lowercase().replaceFirstChar { it.uppercase() })
+                        .name("&d${v.lowercase().replaceFirstChar { it.uppercase() }}")
                         .addLore("&7Applies ${tag.display}&7 at the end of your name.")
                         .make()
                     gui.item(index, display).onClick runnable@ {
