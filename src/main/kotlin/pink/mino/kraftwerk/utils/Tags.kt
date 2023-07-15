@@ -35,7 +35,7 @@ class GrantTagCommand : CommandExecutor {
         profile.unlockedTags.add(args[1].uppercase())
         Kraftwerk.instance.profileHandler.saveProfile(profile)
         if (player.isOnline) {
-            Chat.sendMessage(player as Player, "${Chat.prefix} You've been granted the &c${args[1].uppercase()} ${Tags.valueOf(args[1].uppercase()).display}&7 tag.")
+            Chat.sendMessage(player as Player, "${Chat.prefix} You've been granted the &e${args[1].uppercase()} ${Tags.valueOf(args[1].uppercase()).display}&7 tag.")
         }
         return true
     }
