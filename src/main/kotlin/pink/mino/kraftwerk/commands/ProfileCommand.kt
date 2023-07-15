@@ -256,7 +256,6 @@ class ProfileCommand : CommandExecutor {
                 }
                 var index = 0
                 for (v in profile!!.unlockedTags) {
-                    index++
                     val tag = Tags.valueOf(v.uppercase())
                     val display = ItemBuilder(tag.item)
                         .name("&d${v.lowercase().replaceFirstChar { it.uppercase() }}")
@@ -267,6 +266,7 @@ class ProfileCommand : CommandExecutor {
                         Kraftwerk.instance.profileHandler.saveProfile(profile)
                         Chat.sendMessage(sender, "${Chat.prefix} Your tag has been set to ${tag.display}&7!")
                     }
+                    index++
                 }
                 index++
                 val none = ItemBuilder(Material.BARRIER)
