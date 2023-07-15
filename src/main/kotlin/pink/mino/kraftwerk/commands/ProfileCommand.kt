@@ -51,10 +51,10 @@ class ProfileCommand : CommandExecutor {
             .addLore(" &7Coins ${Chat.dash} &6⚜ ${floor(profile.coins)}")
             .addLore(" ")
             .make()
-        gui.item(13, misc).onClick runnable@ {
+        gui.item(12, misc).onClick runnable@ {
             it.isCancelled = true
         }
-        gui.item(12, settings).onClick runnable@ { inventoryClickEvent ->
+        gui.item(11, settings).onClick runnable@ { inventoryClickEvent ->
             val player = inventoryClickEvent.whoClicked as Player
             val gui = GuiBuilder().rows(1).name("&4&lPlayer Settings").owner(player)
             val disableRedstonePickup = ItemBuilder(Material.REDSTONE)
@@ -219,10 +219,71 @@ class ProfileCommand : CommandExecutor {
                 }
                 JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.getProfile(player.uniqueId)!!.disableLapisPickup = profile.disableLapisPickup
             }
+            val back = ItemBuilder(Material.BARRIER)
+                .name("&cBack")
+                .addLore("Go back to the previous menu.")
+                .make()
+            gui.item(5, back).onClick runnable@ {
+                Bukkit.dispatchCommand(sender, "profile")
+            }
             sender.openInventory(gui.make())
         }
+        val display = ItemBuilder(Material.REDSTONE)
+            .name(" &4&lDisplay")
+            .addLore(" ")
+            .addLore(" &7Customize certain cosmetic settings for yourself. ")
+            .addLore(" ")
+            .make()
         gui.item(14, stats).onClick runnable@ {
             Bukkit.dispatchCommand(it.whoClicked as Player, "stats")
+        }
+        gui.item(15, display).onClick runnable@ {
+            val gui = GuiBuilder().rows(3).name("&4&lDisplay Settings").owner(sender)
+            val tags = ItemBuilder(Material.NAME_TAG)
+                .name(" &4&lTags")
+                .addLore("&7Grant yourself suffixes at the end of your name!")
+                .make()
+            val arenaBlocks = ItemBuilder(Material.COBBLESTONE)
+                .name(" &4&lArena Blocks")
+                .addLore("&7Customize the blocks given in your arena kit!")
+                .make()
+            gui.item(12, tags).onClick runnable@ {
+                val gui = GuiBuilder().rows(3).name("&4&lTags").owner(sender)
+                val profile = Kraftwerk.instance.profileHandler.getProfile(sender.uniqueId)!!
+                if (profile.unlockedTags.size == 0) {
+                    Chat.sendMessage(sender, "&cYou have no tags unlocked, buy some at the store at &ehttps://applejuice.tebex.io&c!")
+                    return@runnable
+                }
+                var index = 0
+                for (v in profile!!.unlockedTags) {
+                    index++
+                    val tag = Tags.valueOf(v.uppercase())
+                    val display = ItemBuilder(tag.item)
+                        .name(v.lowercase().replaceFirstChar { it.uppercase() })
+                        .addLore("&7Applies ${tag.display}&7 at the end of your name.")
+                        .make()
+                    gui.item(index, display).onClick runnable@ {
+                        profile.selectedTag = v.uppercase()
+                        Kraftwerk.instance.profileHandler.saveProfile(profile)
+                        Chat.sendMessage(sender, "${Chat.prefix} Your tag has been set to ${tag.display}&7!")
+                    }
+                }
+                index++
+                val none = ItemBuilder(Material.BARRIER)
+                    .name("&7None!")
+                    .addLore("&7Removes the currently applied tag.")
+                    .make()
+                gui.item(index, none).onClick runnable@ {
+                    profile.selectedTag = null
+                    Kraftwerk.instance.profileHandler.saveProfile(profile)
+                    Chat.sendMessage(sender, "${Chat.prefix} Removed your currently applied tag!")
+                }
+                sender.openInventory(gui.make())
+            }
+            gui.item(14, arenaBlocks).onClick runnable@ {
+
+            }
+            sender.openInventory(gui.make())
         }
         Chat.sendMessage(sender, "${Chat.prefix} Opening your player profile...")
         sender.openInventory(gui.make())

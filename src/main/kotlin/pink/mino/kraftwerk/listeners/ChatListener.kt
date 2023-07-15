@@ -8,6 +8,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.player.AsyncPlayerChatEvent
+import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.plugin.java.JavaPlugin
 import pink.mino.kraftwerk.Kraftwerk
 import pink.mino.kraftwerk.features.SpecFeature
@@ -17,6 +18,7 @@ import pink.mino.kraftwerk.scenarios.list.MolesScenario
 import pink.mino.kraftwerk.utils.Perk
 import pink.mino.kraftwerk.utils.PerkChecker
 import pink.mino.kraftwerk.utils.PlayerUtils
+import pink.mino.kraftwerk.utils.Tags
 import java.util.*
 
 class ChatListener : Listener {
@@ -40,6 +42,11 @@ class ChatListener : Listener {
 
     val cooldowns = hashMapOf<UUID, Long>()
     val cooldownTime: Int = 3
+
+    @EventHandler
+    fun onPlayerJoin(e: PlayerJoinEvent) {
+        cooldowns[e.player.uniqueId] = System.currentTimeMillis() + 3000
+    }
 
     @EventHandler(priority = EventPriority.HIGH)
     fun onPlayerChat(e: AsyncPlayerChatEvent) {
@@ -131,9 +138,10 @@ class ChatListener : Listener {
             if (!PerkChecker.checkPerks(e.player).contains(Perk.NO_CHAT_DELAY)) {
                 val secondsLeft: Long = cooldowns[e.player.uniqueId]!! / 1000 + cooldownTime - System.currentTimeMillis() / 1000
                 if (secondsLeft > 0) {
+                    e.isCancelled = true
                     pink.mino.kraftwerk.utils.Chat.sendMessage(player, "&cYou are currently on cooldown for ${secondsLeft}s. Skip the cooldown by purchasing a rank at &ehttps://applejuice.tebex.io&c.")
+                    return
                 }
-                return
             }
             e.isCancelled = false
             if (!PerkChecker.checkPerks(e.player).contains(Perk.WHITE_CHAT)) {
@@ -148,11 +156,13 @@ class ChatListener : Listener {
                     }
                 }
             }
-            if (PerkChecker.checkPerks(player).contains(Perk.WHITE_CHAT)) {
-                e.format = prefix + pink.mino.kraftwerk.utils.Chat.colored("${PlayerUtils.getPrefix(player)}%s") + ChatColor.DARK_GRAY + " » " + ChatColor.WHITE + "%s"
-            } else {
-                e.format = prefix + pink.mino.kraftwerk.utils.Chat.colored("${PlayerUtils.getPrefix(player)}%s") + ChatColor.DARK_GRAY + " » " + ChatColor.GRAY + "%s"
+            val color = if (PerkChecker.checkPerks(player).contains(Perk.WHITE_CHAT)) "&f" else "&7"
+            val tag = Kraftwerk.instance.profileHandler.getProfile(player.uniqueId)!!.selectedTag
+            var display = ""
+            if (tag != null) {
+                display = Tags.valueOf(tag.uppercase()).display
             }
+            e.format = prefix + pink.mino.kraftwerk.utils.Chat.colored("${PlayerUtils.getPrefix(player)}%s") + display + ChatColor.DARK_GRAY + " » " + pink.mino.kraftwerk.utils.Chat.colored(color) + "%s"
             cooldowns[player.uniqueId] = System.currentTimeMillis()
         }
     }

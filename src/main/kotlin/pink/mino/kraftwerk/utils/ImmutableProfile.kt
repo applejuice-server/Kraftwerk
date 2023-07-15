@@ -21,7 +21,8 @@ class ImmutableProfile(
     var coins: Double = 0.0,
     var specSocialSpy: Boolean = false,
     var selectedTag: String? = null,
-    var unlockedTags: ArrayList<String> = arrayListOf()
+    var unlockedTags: ArrayList<String> = arrayListOf(),
+    var arenaBlock: String? = "COBBLESTONE"
 ) : Profile {
     override fun getUniqueId(): UUID {
         return this.uniqueId

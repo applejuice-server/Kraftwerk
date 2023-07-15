@@ -90,6 +90,7 @@ class ProfileService {
                 .append("specSocialSpy", profile.specSocialSpy)
                 .append("selectedTag", profile.selectedTag)
                 .append("unlockedTags", profile.unlockedTags)
+                .append("arenaBlock", profile.arenaBlock)
             this.findOneAndReplace(filter, document, FindOneAndReplaceOptions().upsert(true))
         }
     }
@@ -130,7 +131,8 @@ class ProfileService {
                             (document["coins"] as? Double ?: 0.0),
                             (document["specSocialSpy"] as? Boolean ?: false),
                             (document["selectedTag"] as? String),
-                            (document["unlockedTags"] as? ArrayList<String>) ?: arrayListOf()
+                            (document["unlockedTags"] as? ArrayList<String>) ?: arrayListOf(),
+                            (document["arenaBlock"] as? String) ?: "COBBLESTONE"
                         )
                     } else {
                         p = ImmutableProfile(
