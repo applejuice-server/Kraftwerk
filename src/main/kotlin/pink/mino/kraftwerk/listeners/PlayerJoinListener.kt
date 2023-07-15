@@ -1,5 +1,6 @@
 package pink.mino.kraftwerk.listeners
 
+import me.lucko.helper.Schedulers
 import net.md_5.bungee.api.chat.ClickEvent
 import net.md_5.bungee.api.chat.TextComponent
 import org.bukkit.*
@@ -43,7 +44,9 @@ class PlayerJoinListener : Listener {
         val group: String = vaultChat!!.getPrimaryGroup(player)
         val prefix: String = if (vaultChat!!.getGroupPrefix(player.world, group) != "&7") Chat.colored(vaultChat!!.getGroupPrefix(player.world, group)) else Chat.colored("&a")
         e.joinMessage = ChatColor.translateAlternateColorCodes('&', "&8(&2+&8) ${prefix}${player.displayName} &8[&2${Bukkit.getOnlinePlayers().size}&8/&2${Bukkit.getServer().maxPlayers}&8]")
-        Chat.sendMessage(player, "&8➡ &7Please consider donating to the server to keep it up for another month! The store link is &capplejuice.tebex.io&7 or just use &c/buy&7!")
+        Schedulers.sync().runLater({
+            Chat.sendMessage(player, "&8➡ &7Please consider donating to the server to keep it up for another month! The store link is &ehttps://applejuice.tebex.io&7 or just use &c/buy&7!")
+        }, 1L)
         if (GameState.currentState == GameState.LOBBY) {
             Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
                 SpawnFeature.instance.send(player)

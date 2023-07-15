@@ -23,7 +23,7 @@ class DonatorCommand : CommandExecutor {
         }
         val perks = PerkChecker.checkPerks(sender)
         if (perks.isEmpty()) {
-            pink.mino.kraftwerk.utils.Chat.sendMessage(sender, "&cYou do not have any perks, buy some on the store at &eapplejuice.tebex.io&7!")
+            pink.mino.kraftwerk.utils.Chat.sendMessage(sender, "&cYou do not have any perks, buy some on the store at &ehttps://applejuice.tebex.io&7!")
             return true
         }
         val gui = GuiBuilder().rows(perks.size / 9 + 1).name("&2&lDonator Perks").owner(sender)
@@ -39,27 +39,32 @@ class DonatorCommand : CommandExecutor {
                         it.isCancelled = true
                     }
                 }
-                Perk.EMOTES -> {
-                    val item = ItemBuilder(Material.REDSTONE)
-                        .name("&2&lEmotes")
-                        .addLore("&7You are provided some chat emotes to spice up chat!")
-                        .addLore(" ")
-                        .addLore(" &7&lEmotes:")
-                        .addLore(" &7 - &e:star:")
-                        .addLore(" &7 - &c<3")
-                        .addLore(" &7 - &e:shrug:")
-                        .addLore(" &7 - &eo/")
+                Perk.WHITE_CHAT -> {
+                    val item = ItemBuilder(Material.WOOL)
+                        .name("&2&lWhite Chat")
+                        .addLore("&7Your chat messages by default are white instead of gray.")
                         .addLore("&8Automatic")
                         .make()
                     gui.item(index, item).onClick runnable@ {
                         it.isCancelled = true
                     }
                 }
-                Perk.PROJECTILE_PARTICLES -> {
-                    val item = ItemBuilder(Material.ARROW)
-                        .name("&2&lArrow Trails")
-                        .addLore("&7You may customize the arrow particles that are spawned when you shoot a bow!")
-                        .addLore("&8Use /particles to see the available particles!")
+                Perk.NO_CHAT_DELAY -> {
+                    val item = ItemBuilder(Material.CARROT_STICK)
+                        .name("&2&lNo Chat Delay")
+                        .addLore("&7You are exempt from the chat cooldown")
+                        .addLore("&8Automatic")
+                        .make()
+                    gui.item(index, item).onClick runnable@ {
+                        it.isCancelled = true
+                    }
+                }
+                Perk.EMOTES -> {
+                    val item = ItemBuilder(Material.DIAMOND)
+                        .name("&2&lEmotes")
+                        .addLore("&7You are provided some chat emotes to spice up chat!")
+                        .addLore("&7View the list in &e/emotes&7!")
+                        .addLore("&8Automatic")
                         .make()
                     gui.item(index, item).onClick runnable@ {
                         it.isCancelled = true
@@ -69,7 +74,6 @@ class DonatorCommand : CommandExecutor {
                     val item = ItemBuilder(Material.SKULL_ITEM)
                         .name("&2&lRide Players")
                         .addLore("&7You may ride a player by right-clicking them!")
-                        .addLore("&8Automatic")
                         .make()
                     gui.item(index, item).onClick runnable@ {
                         it.isCancelled = true
@@ -95,6 +99,16 @@ class DonatorCommand : CommandExecutor {
                         it.isCancelled = true
                     }
                 }
+                Perk.CHOOSE_ARENA_BLOCKS -> {
+                    val item = ItemBuilder(Material.COBBLESTONE)
+                        .name("&2&lChoose Arena Blocks")
+                        .addLore("&7You may choose the arena blocks you spawn in while in the pre-game &c/arena&7.")
+                        .addLore("&8Choose in /profile!")
+                        .make()
+                    gui.item(index, item).onClick runnable@ {
+                        it.isCancelled = true
+                    }
+                }
                 Perk.TOGGLE_PICKUPS -> {
                     val item = ItemBuilder(Material.LAPIS_BLOCK)
                         .name("&2&lToggle Pickups")
@@ -110,6 +124,7 @@ class DonatorCommand : CommandExecutor {
                         .name("&2&lSpawn Fly")
                         .addLore("&7You may fly in spawn!")
                         .addLore("&8Fly in spawn using /fly")
+                        .addLore("&8Automatic & with /fly")
                         .make()
                     gui.item(index, item).onClick runnable@ {
                         it.isCancelled = true

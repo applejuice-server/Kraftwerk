@@ -11,14 +11,11 @@ import me.lucko.spark.api.Spark
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.entities.Activity
 import org.bukkit.*
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.ShapedRecipe
 import org.bukkit.inventory.ShapelessRecipe
 import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.material.MaterialData
-import org.bukkit.scoreboard.DisplaySlot
-import org.bukkit.scoreboard.Objective
 import pink.mino.kraftwerk.commands.*
 import pink.mino.kraftwerk.config.ConfigOptionHandler
 import pink.mino.kraftwerk.discord.Discord
@@ -29,13 +26,9 @@ import pink.mino.kraftwerk.listeners.donator.MobEggsListener
 import pink.mino.kraftwerk.listeners.lunar.PlayerRegisterListener
 import pink.mino.kraftwerk.scenarios.ScenarioHandler
 import pink.mino.kraftwerk.utils.*
-import twitter4j.Twitter
-import twitter4j.TwitterFactory
-import twitter4j.conf.ConfigurationBuilder
 import java.nio.file.Files
 import java.nio.file.Path
 import javax.security.auth.login.LoginException
-import kotlin.math.floor
 
 
 /*
@@ -60,7 +53,6 @@ class Kraftwerk : ExtendedJavaPlugin() {
     var scattering = false
 
     lateinit var discordInstance: JDA
-    lateinit var twitterInstance: Twitter
     lateinit var statsHandler: StatsHandler
     lateinit var dataSource: MongoClient
     lateinit var spark: Spark
@@ -186,7 +178,7 @@ class Kraftwerk : ExtendedJavaPlugin() {
         getCommand("ping").executor = PingCommand()
         getCommand("voteyes").executor = VoteYesCommand()
         getCommand("voteno").executor = VoteNoCommand()
-        //getCommand("donator").executor = DonatorCommand()
+        getCommand("donator").executor = DonatorCommand()
         getCommand("fullbright").executor = FullbrightCommand()
         getCommand("timers").executor = TimersCommand()
         getCommand("arena").executor = ArenaCommand()
@@ -198,6 +190,9 @@ class Kraftwerk : ExtendedJavaPlugin() {
         getCommand("portalloc").executor = PortalPosCommand()
         getCommand("chat").executor = ChatCommand()
         getCommand("staffchat").executor = StaffChatCommand()
+        getCommand("emotes").executor = EmotesCommand()
+        getCommand("redstone").executor = RedstoneCommand()
+        getCommand("lapis").executor = LapisCommand()
         //getCommand("hotbar").executor = HotbarCommand()
 
         /* ProtocolLib stuff */
@@ -240,20 +235,6 @@ class Kraftwerk : ExtendedJavaPlugin() {
             Discord.main()
         } catch (e: LoginException) {
             Log.severe("Failed to login to discord: " + e.message)
-        }
-        try {
-            val twitterFactory = TwitterFactory(
-                ConfigurationBuilder()
-                    .setDebugEnabled(true)
-                    .setOAuthConsumerKey(SettingsFeature.instance.data!!.getString("twitter.consumerKey"))
-                    .setOAuthConsumerSecret(SettingsFeature.instance.data!!.getString("twitter.consumerSecret"))
-                    .setOAuthAccessToken(SettingsFeature.instance.data!!.getString("twitter.accessToken"))
-                    .setOAuthAccessTokenSecret(SettingsFeature.instance.data!!.getString("twitter.accessTokenSecret"))
-                    .build()
-            )
-            twitterInstance = twitterFactory.instance
-        } catch (e: Exception) {
-            Log.severe("Failed to login to Twitter: " + e.message)
         }
         //twitterInstance.updateStatus("test")
 

@@ -322,7 +322,12 @@ class SpawnFeature : Listener {
             .addLore("&7Right-click to view your profile.")
             .setOwner(p.name)
             .make()
+        val donator = ItemBuilder(Material.EMERALD)
+            .name("&2&lDonator &7(Right Click)")
+            .addLore("&7Right-click to view your donator perks.")
+            .make()
         p.inventory.setItem(3, profile)
+        p.inventory.setItem(1, donator)
         p.inventory.setItem(7, editKit)
         if (ScenarioHandler.getActiveScenarios().contains(ScenarioHandler.getScenario("auction"))) {
             p.inventory.clear()
@@ -379,6 +384,10 @@ class SpawnFeature : Listener {
                     Chat.colored("&cView Stats &7(Right Click)") -> {
                         e.isCancelled = true
                         Bukkit.dispatchCommand(e.player, "stats")
+                    }
+                    Chat.colored("&2&lDonator &7(Right Click)") -> {
+                        e.isCancelled = true
+                        Bukkit.dispatchCommand(e.player, "donator")
                     }
                     Chat.colored("&cUHC Configuration &7(Right Click)") -> {
                         e.isCancelled = true

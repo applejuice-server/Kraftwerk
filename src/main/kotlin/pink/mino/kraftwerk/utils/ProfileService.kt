@@ -88,6 +88,8 @@ class ProfileService {
                 .append("chatMode", profile.chatMode)
                 .append("coins", profile.coins)
                 .append("specSocialSpy", profile.specSocialSpy)
+                .append("selectedTag", profile.selectedTag)
+                .append("unlockedTags", profile.unlockedTags)
             this.findOneAndReplace(filter, document, FindOneAndReplaceOptions().upsert(true))
         }
     }
@@ -126,7 +128,9 @@ class ProfileService {
                             (document["level"] as? Int ?: 1),
                             (document["chatMode"] as? String ?: "PUBLIC"),
                             (document["coins"] as? Double ?: 0.0),
-                            (document["specSocialSpy"] as? Boolean ?: false)
+                            (document["specSocialSpy"] as? Boolean ?: false),
+                            (document["selectedTag"] as? String),
+                            (document["unlockedTags"] as? ArrayList<String>) ?: arrayListOf()
                         )
                     } else {
                         p = ImmutableProfile(
