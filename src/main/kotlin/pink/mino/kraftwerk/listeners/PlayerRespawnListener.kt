@@ -1,19 +1,50 @@
 package pink.mino.kraftwerk.listeners
 
 import me.lucko.helper.Schedulers
-import org.bukkit.Bukkit
+import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerRespawnEvent
-import org.bukkit.plugin.java.JavaPlugin
+import org.bukkit.scheduler.BukkitRunnable
 import pink.mino.kraftwerk.Kraftwerk
-import pink.mino.kraftwerk.config.ConfigOption
 import pink.mino.kraftwerk.config.ConfigOptionHandler
 import pink.mino.kraftwerk.features.SpawnFeature
 import pink.mino.kraftwerk.features.SpecFeature
 import pink.mino.kraftwerk.utils.Chat
+import pink.mino.kraftwerk.utils.Perk
+import pink.mino.kraftwerk.utils.PerkChecker
+import java.util.*
 
-class PlayerRespawnListener : Listener{
+class DeathKick(val player: Player) : BukkitRunnable() {
+    var timer = 60
+
+    fun cancelDeathKick() {
+        timer = 10000000
+        Chat.sendMessage(player, "&cYour death kick has been cancelled.")
+        cancel()
+    }
+
+    override fun run() {
+        if (timer % 10 == 0) {
+            Chat.sendMessage(player, "&cYou will be kicked in ${timer}s...")
+        }
+        if (PerkChecker.checkPerks(player).contains(Perk.BYPASS_DEATH_KICK)) {
+            cancel()
+            Chat.sendMessage(player, "${Chat.prefix} Your death kick has been cancelled to having bypass.")
+        }
+        timer--
+        if (timer <= 0) {
+            player.kickPlayer(Chat.colored("&7Thank you for playing!\n&7Join our discord for more games: &cdsc.gg/apple-juice"))
+            cancel()
+        }
+    }
+}
+
+class PlayerRespawnListener : Listener {
+    companion object {
+        val deathKicks = hashMapOf<UUID, DeathKick>()
+    }
+
     @EventHandler
     fun onPlayerRespawn(e: PlayerRespawnEvent) {
         if (e.player.hasPermission("uhc.staff")) {
@@ -29,11 +60,8 @@ class PlayerRespawnListener : Listener{
             }
         }, 1L)
         if (!ConfigOptionHandler.getOption("private")!!.enabled) {
-            Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                if (!e.player.hasPermission("uhc.staff")) {
-                    e.player.kickPlayer(Chat.colored("&7Thank you for playing!\n&7Join our discord for more games: &cdsc.gg/apple-juice"))
-                }
-            }, 1200L)
+            deathKicks[e.player.uniqueId] = DeathKick(e.player)
+            deathKicks[e.player.uniqueId]!!.runTaskTimer(Kraftwerk.instance, 0L, 20L)
         }
     }
 }

@@ -29,6 +29,16 @@ class DonatorCommand : CommandExecutor {
         val gui = GuiBuilder().rows(perks.size / 9 + 1).name("&2&lDonator Perks").owner(sender)
         for ((index, perk) in perks.withIndex()) {
             when (perk) {
+                Perk.BYPASS_DEATH_KICK -> {
+                    val item = ItemBuilder(Material.IRON_CHESTPLATE)
+                        .name("&2&lBypass Death Kick")
+                        .addLore("&7You will not be kicked automatically after a minute in-game.")
+                        .addLore("&8Automatic")
+                        .make()
+                    gui.item(index, item).onClick runnable@ {
+                        it.isCancelled = true
+                    }
+                }
                 Perk.BODY_SPEC -> {
                     val item = ItemBuilder(Material.IRON_CHESTPLATE)
                         .name("&2&lBody Spectating")
