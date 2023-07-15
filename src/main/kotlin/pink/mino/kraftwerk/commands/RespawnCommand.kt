@@ -17,6 +17,7 @@ import org.bukkit.potion.PotionEffectType
 import pink.mino.kraftwerk.features.SettingsFeature
 import pink.mino.kraftwerk.features.SpecFeature
 import pink.mino.kraftwerk.features.TeamsFeature
+import pink.mino.kraftwerk.listeners.PlayerRespawnListener
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GameState
 import pink.mino.kraftwerk.utils.GuiBuilder
@@ -178,6 +179,7 @@ class RespawnCommand : CommandExecutor {
             player.addPotionEffect(PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 300, 1000, true, false))
             Chat.sendMessage(player, "${Chat.prefix} You have been respawned by &f${sender.name}&7.")
             Chat.sendMessage(sender, "${Chat.prefix} &f${player.name}&7 has been respawned.")
+            PlayerRespawnListener.deathKicks[player.uniqueId]!!.cancelDeathKick()
         }
         return true
     }

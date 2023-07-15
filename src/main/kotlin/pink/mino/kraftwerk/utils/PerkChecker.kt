@@ -12,7 +12,8 @@ enum class Perk {
     SPAWN_FLY,
     WHITE_CHAT,
     NO_CHAT_DELAY,
-    CHOOSE_ARENA_BLOCKS
+    CHOOSE_ARENA_BLOCKS,
+    BYPASS_DEATH_KICK
 }
 
 class PerkChecker {
@@ -48,6 +49,9 @@ class PerkChecker {
             }
             if (player.hasPermission("uhc.donator.spawnFly")) {
                 list.add(Perk.SPAWN_FLY)
+            }
+            if (player.hasPermission("uhc.donator.bypassDeathKick")) {
+                list.add(Perk.BYPASS_DEATH_KICK)
             }
             return list
         }
