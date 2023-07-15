@@ -344,6 +344,8 @@ commands:
     aliases:
       - emote
     description: View your player emotes.
+  granttag:
+    description: Grants a player a tag.
 depend:
   - ProtocolLib
   - Vault
