@@ -88,6 +88,7 @@ class UHCTask : BukkitRunnable() {
 
     var paused = false
     var meetupHappened = false
+    var pvpHappened = false
 
     var pve = 0
 
@@ -273,6 +274,7 @@ class UHCTask : BukkitRunnable() {
             }
             pvp -> {
                 currentEvent = Events.PVP
+                pvpHappened = true
                 for (world in Bukkit.getWorlds()) {
                     world.pvp = true
                 }

@@ -195,6 +195,8 @@ class Kraftwerk : ExtendedJavaPlugin() {
         getCommand("redstone").executor = RedstoneCommand()
         getCommand("lapis").executor = LapisCommand()
         getCommand("granttag").executor = GrantTagCommand()
+        getCommand("thanks").executor = ThanksCommand()
+        getCommand("fight").executor = FightCommand()
         //getCommand("hotbar").executor = HotbarCommand()
 
         /* ProtocolLib stuff */

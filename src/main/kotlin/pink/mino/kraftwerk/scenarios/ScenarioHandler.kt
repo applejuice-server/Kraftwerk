@@ -70,6 +70,9 @@ class ScenarioHandler {
             addScenario(ParafusionScenario())
             addScenario(PotentialMolesScenario())
             scenarios.sortWith(Comparator.comparing(Scenario::name))
+            for (scenario in getActiveScenarios()) {
+                scenario.onToggle(true)
+            }
         }
 
         @JvmName("getScenarios1")

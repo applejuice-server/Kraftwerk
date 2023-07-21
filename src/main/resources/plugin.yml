@@ -346,6 +346,18 @@ commands:
     description: View your player emotes.
   granttag:
     description: Grants a player a tag.
+  fight:
+    aliases:
+      - fightme
+      - lookingforfight
+      - lff
+    description: Sends your coordinates to request to fight.
+  thanks:
+    aliases:
+      - tyfh
+      - thanksforhost
+      - thankhost
+    description: Thanks the host, can be used once per-game.
 depend:
   - ProtocolLib
   - Vault

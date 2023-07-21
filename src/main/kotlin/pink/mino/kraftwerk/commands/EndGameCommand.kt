@@ -66,7 +66,11 @@ class EndGameCommand : CommandExecutor {
                 winnersList.add(player.uniqueId.toString())
                 kills[player.uniqueId.toString()] = SettingsFeature.instance.data!!.getInt("game.kills." + player.name)
                 if (!ConfigOptionHandler.getOption("statless")!!.enabled) XpFeature().add(player, 50.0)
-                if (!ConfigOptionHandler.getOption("statless")!!.enabled) JavaPlugin.getPlugin(Kraftwerk::class.java).statsHandler.lookupStatsPlayer(player).wins++
+                if (!ConfigOptionHandler.getOption("statless")!!.enabled) {
+                    val pr = JavaPlugin.getPlugin(Kraftwerk::class.java).statsHandler.lookupStatsPlayer(player)
+                    pr.wins++
+                    Kraftwerk.instance.statsHandler.savePlayerData(pr)
+                }
             }
         }
 
