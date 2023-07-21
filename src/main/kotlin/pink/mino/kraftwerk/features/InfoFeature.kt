@@ -31,6 +31,8 @@ class InfoFeature : BukkitRunnable() {
         Chat.colored("$prefix Is someone being annoying to you? Use &f/ignore&7!"),
         Chat.colored("$prefix Can't see? Use &f/fb&7 to enable night vision!"),
         Chat.colored("$prefix Team with other players using &f/team&7!"),
+        Chat.colored("$prefix Announce where you are to fight with other players using &f/fight&7!"),
+        Chat.colored("$prefix Thank the host using &f/thanks&7!")
     )
     override fun run() {
         if (Bukkit.getOnlinePlayers().isNotEmpty()) {

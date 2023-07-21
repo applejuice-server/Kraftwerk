@@ -12,14 +12,14 @@ enum class Tags(
     val display: String,
     val item: Material
 ) {
-    FLOWER("&8[&d✿✿✿&8]&r", Material.YELLOW_FLOWER),
-    SMILEY("&b(◕‿◕)&r", Material.POTATO),
-    HEART("&8[&c❤❤❤&8]&r", Material.GOLDEN_APPLE),
+    FLOWER("&8[&d✿&8]&r", Material.YELLOW_FLOWER),
+    SMILEY("&b(◕‿◕)&r", Material.POTATO_ITEM),
+    HEART("&8[&c❤&8]&r", Material.GOLDEN_APPLE),
 
-    MUSICAL("&8[&b♩&d♫&b♩&8]&r", Material.NOTE_BLOCK),
-    STAR("&8[&e✯✯✯&8]&r", Material.GOLD_BLOCK),
-    YIN_YANG("&8[&f☯&0☯&f☯&8]&r", Material.ENDER_PEARL),
-    PEACE("&8[&d☮&5☮&d☮&8]&r", Material.BREWING_STAND_ITEM)
+    MUSICAL("&8[&b♫&8]&r", Material.NOTE_BLOCK),
+    STAR("&8[&e✯&8]&r", Material.GOLD_BLOCK),
+    YIN_YANG("&8[&f☯&8]&r", Material.ENDER_PEARL),
+    PEACE("&8[&d☮&8]&r", Material.BREWING_STAND_ITEM)
 }
 
 class GrantTagCommand : CommandExecutor {
