@@ -12,7 +12,7 @@ import kotlin.random.Random
 
 class PotentialMolesScenario : Scenario(
     "Potential Moles",
-    "At PvP, a random teammate has a random chance to be assigned as a mole, moles must kill their own teammates.",
+    "At PvP, every team has a chance to either have or not have a mole.",
     "potential_moles",
     Material.IRON_SPADE
 ) {
@@ -21,8 +21,8 @@ class PotentialMolesScenario : Scenario(
     fun assignMoles() {
         MolesScenario.instance.moleTeam = TeamsFeature.manager.createTeam()
         for (team in TeamsFeature.manager.getTeams()) {
-            val random = Random.nextInt(0, 2)
-            if (random <= 1) {
+            val random = Random.nextBoolean()
+            if (random == true) {
                 if (team.size != 0) {
                     val list = ArrayList<Player>()
                     for (teammate in team.players) {
