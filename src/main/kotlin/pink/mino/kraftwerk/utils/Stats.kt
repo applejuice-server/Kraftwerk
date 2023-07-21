@@ -53,6 +53,7 @@ class StatsPlayer(val player: OfflinePlayer) : Listener {
     var timesNether = 0
 
     var timeSpectated: Long = 0
+    var thankYous: Int = 0
 }
 
 class Leaderboards : BukkitRunnable() {
@@ -283,6 +284,7 @@ class StatsHandler : Listener {
                     .append("timesEnchanted", statsPlayer.timesEnchanted)
                     .append("timesNether", statsPlayer.timesNether)
                     .append("timeSpectated", statsPlayer.timeSpectated)
+                    .append("thankYous", statsPlayer.thankYous)
                 this.findOneAndReplace(filter, document, FindOneAndReplaceOptions().upsert(true))
                 Log.info("Saved stats for ${statsPlayer.player.name}")
             }
@@ -313,27 +315,28 @@ class StatsHandler : Listener {
             with (JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.getDatabase("applejuice").getCollection("stats")) {
                 val playerData = find(Filters.eq("uuid", uuid)).first()
                 if (playerData != null) {
-                    statsPlayer.diamondsMined = playerData.getInteger("diamondsMined")
-                    statsPlayer.ironMined = playerData.getInteger("ironMined")
-                    statsPlayer.goldMined = playerData.getInteger("goldMined")
-                    statsPlayer.deaths = playerData.getInteger("deaths")
-                    statsPlayer.kills = playerData.getInteger("kills")
-                    statsPlayer.gamesPlayed = playerData.getInteger("gamesPlayed")
-                    statsPlayer.arenaKills = playerData.getInteger("arenaKills")
-                    statsPlayer.arenaDeaths = playerData.getInteger("arenaDeaths")
-                    statsPlayer.damageDealt = playerData.getDouble("damageDealt")
-                    statsPlayer.damageTaken = playerData.getDouble("damageTaken")
-                    statsPlayer.bowShots = playerData.getInteger("bowShots")
-                    statsPlayer.bowMisses = playerData.getInteger("bowMisses")
-                    statsPlayer.bowHits = playerData.getInteger("bowHits")
-                    statsPlayer.meleeHits = playerData.getInteger("meleeHits")
-                    statsPlayer.wins = playerData.getInteger("wins")
-                    statsPlayer.gapplesCrafted = playerData.getInteger("gapplesCrafted")
-                    statsPlayer.gapplesEaten = playerData.getInteger("gapplesEaten")
-                    statsPlayer.timesCrafted = playerData.getInteger("timesCrafted")
-                    statsPlayer.timesEnchanted = playerData.getInteger("timesEnchanted")
-                    statsPlayer.timesNether = playerData.getInteger("timesNether")
-                    statsPlayer.timeSpectated = playerData.getLong("timeSpectated")
+                    statsPlayer.diamondsMined = playerData.getInteger("diamondsMined") ?: 0
+                    statsPlayer.ironMined = playerData.getInteger("ironMined") ?: 0
+                    statsPlayer.goldMined = playerData.getInteger("goldMined") ?: 0
+                    statsPlayer.deaths = playerData.getInteger("deaths") ?: 0
+                    statsPlayer.kills = playerData.getInteger("kills") ?: 0
+                    statsPlayer.gamesPlayed = playerData.getInteger("gamesPlayed") ?: 0
+                    statsPlayer.arenaKills = playerData.getInteger("arenaKills") ?: 0
+                    statsPlayer.arenaDeaths = playerData.getInteger("arenaDeaths") ?: 0
+                    statsPlayer.damageDealt = playerData.getDouble("damageDealt") ?: 0.0
+                    statsPlayer.damageTaken = playerData.getDouble("damageTaken") ?: 0.0
+                    statsPlayer.bowShots = playerData.getInteger("bowShots") ?: 0
+                    statsPlayer.bowMisses = playerData.getInteger("bowMisses") ?: 0
+                    statsPlayer.bowHits = playerData.getInteger("bowHits") ?: 0
+                    statsPlayer.meleeHits = playerData.getInteger("meleeHits") ?: 0
+                    statsPlayer.wins = playerData.getInteger("wins") ?: 0
+                    statsPlayer.gapplesCrafted = playerData.getInteger("gapplesCrafted") ?: 0
+                    statsPlayer.gapplesEaten = playerData.getInteger("gapplesEaten") ?: 0
+                    statsPlayer.timesCrafted = playerData.getInteger("timesCrafted") ?: 0
+                    statsPlayer.timesEnchanted = playerData.getInteger("timesEnchanted") ?: 0
+                    statsPlayer.timesNether = playerData.getInteger("timesNether") ?: 0
+                    statsPlayer.timeSpectated = playerData.getLong("timeSpectated") ?: 0L
+                    statsPlayer.thankYous = playerData.getInteger("thankYous") ?: 0
                     Log.info("Loaded stats for ${statsPlayer.player.name}.")
                 } else {
                     Log.info("Could not load stats for ${statsPlayer.player.name}.")

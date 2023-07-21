@@ -19,7 +19,7 @@ class DeathKick(val player: Player) : BukkitRunnable() {
     var timer = 60
 
     fun cancelDeathKick() {
-        timer = 10000000
+        timer = 999999999
         Chat.sendMessage(player, "&cYour death kick has been cancelled.")
         cancel()
     }
@@ -28,9 +28,12 @@ class DeathKick(val player: Player) : BukkitRunnable() {
         if (timer % 10 == 0) {
             Chat.sendMessage(player, "&cYou will be kicked in ${timer}s...")
         }
+        if (player.isOnline == false) {
+            cancel()
+        }
         if (PerkChecker.checkPerks(player).contains(Perk.BYPASS_DEATH_KICK)) {
             cancel()
-            Chat.sendMessage(player, "${Chat.prefix} Your death kick has been cancelled to having bypass.")
+            Chat.sendMessage(player, "&cYour death kick has been cancelled to having bypass.")
         }
         timer--
         if (timer <= 0) {

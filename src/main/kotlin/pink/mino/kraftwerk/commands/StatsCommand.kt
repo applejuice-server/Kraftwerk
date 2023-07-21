@@ -128,6 +128,7 @@ class StatsCommand : CommandExecutor {
                     .name(" &4&lStaff")
                     .addLore(" ")
                     .addLore(" &7Time Spectated ${Chat.dash} &f${timeToString(round(statsPlayer.timeSpectated.toDouble() / 1000).toLong())} ")
+                    .addLore(" &7Thank Yous ${Chat.dash} &f${statsPlayer.thankYous}")
                     .addLore(" ")
                     .make()
                 gui.item(0, skull).onClick runnable@ {
