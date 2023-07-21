@@ -68,6 +68,7 @@ class ScenarioHandler {
             addScenario(EnemyReconScenario.instance)
             addScenario(RedArrowsScenario())
             addScenario(ParafusionScenario())
+            addScenario(PotentialMolesScenario())
             scenarios.sortWith(Comparator.comparing(Scenario::name))
         }
 
