@@ -28,6 +28,7 @@ class FightCommand : CommandExecutor {
         }
         if (Kraftwerk.instance.game!!.pvpHappened == false) {
             Chat.sendMessage(sender, "&cPvP hasn't occurred yet.")
+            return false
         }
         val cooldownTime = 300
         if (cooldowns.containsKey(sender.uniqueId)) {
