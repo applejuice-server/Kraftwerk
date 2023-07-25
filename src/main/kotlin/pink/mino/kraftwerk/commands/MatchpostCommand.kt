@@ -186,9 +186,9 @@ class ScheduleOpening(private val opening: String) : BukkitRunnable() {
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer cancel")
             val time: Long
             if (SettingsFeature.instance.data!!.getBoolean("matchpost.teamsGame")) {
-                time = 360
+                time = 8 * 60
             } else {
-                time = 180
+                time = 5 * 60
             }
             val host = Bukkit.getOfflinePlayer(SettingsFeature.instance.data!!.getString("game.host"))
             val embed = EmbedBuilder()
