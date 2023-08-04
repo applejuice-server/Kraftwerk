@@ -561,7 +561,7 @@ class TeamCommand : CommandExecutor {
             }
             Chat.sendMessage(
                 sender,
-                "${Chat.prefix} Successfully added &f${target2.name}&7 to &f${target.name}&7's team"
+                "${Chat.prefix} Successfully added &f${target.name}&7 to &f${target2.name}&7's team"
             )
             Chat.sendMessage(target, "${Chat.prefix} You've been added to &f${target2.name}&7's team")
             for (player in team.players) {

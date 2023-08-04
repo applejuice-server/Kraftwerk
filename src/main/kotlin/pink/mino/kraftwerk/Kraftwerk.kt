@@ -290,7 +290,7 @@ class Kraftwerk : ExtendedJavaPlugin() {
         InfoFeature().runTaskTimerAsynchronously(this, 0L, 6000L)
         TabFeature().runTaskTimer(this, 0L, 20L)
 
-        SettingsFeature.instance.data!!.set("whitelist.enabled", true)
+        SettingsFeature.instance.data!!.set("whitelist.enabled", false)
         SettingsFeature.instance.saveData()
         Leaderboards().runTaskTimer(this, 0L, 20L)
         Bukkit.getLogger().info("Kraftwerk enabled.")
