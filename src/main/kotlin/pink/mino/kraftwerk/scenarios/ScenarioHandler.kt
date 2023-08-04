@@ -69,6 +69,10 @@ class ScenarioHandler {
             addScenario(RedArrowsScenario())
             addScenario(ParafusionScenario())
             addScenario(PotentialMolesScenario())
+            addScenario(FuckYouItsAFireballWandScenario())
+            addScenario(SlimyCrackScenario())
+            addScenario(TripleOresScenario())
+            addScenario(PlayerSwapScenario())
             scenarios.sortWith(Comparator.comparing(Scenario::name))
             for (scenario in getActiveScenarios()) {
                 scenario.onToggle(true)

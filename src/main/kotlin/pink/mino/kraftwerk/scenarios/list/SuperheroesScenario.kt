@@ -106,7 +106,7 @@ class SuperheroesScenario : Scenario(
         }
     }
 
-    override fun onStart() {
+    override fun onPvP() {
         if (!enabled) return
         assignPowers()
     }
