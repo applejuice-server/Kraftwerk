@@ -52,13 +52,6 @@ class AvengersScenario : Scenario(
             "Iron Man",
             "Hawkeye"
         )
-        if (TeamsFeature.manager.getTeam(player) == null) {
-            SpecFeature.instance.specChat("&f${player.name}&7 hasn't been late-scattered to a teammate, not giving them any powers.")
-            return
-        }
-        for (teammate in TeamsFeature.manager.getTeam(player)!!.players) {
-            pool.remove(superheroes[teammate])
-        }
         val hero = pool[Random.nextInt(pool.size)]
         superheroes[player] = hero
         giveAvengers(player)
@@ -68,7 +61,7 @@ class AvengersScenario : Scenario(
     fun assignAvengers() {
         for (team in TeamsFeature.manager.getTeams()) {
             if (team.size > 0) {
-                val pool = arrayListOf(
+                var pool = arrayListOf(
                     "Captain America",
                     "Spiderman",
                     "Quicksilver",
@@ -78,7 +71,17 @@ class AvengersScenario : Scenario(
                     "Hawkeye"
                 )
                 for (player in team.players) {
-                    if (pool.size == 0) continue
+                    if (pool.size == 0) {
+                        pool = arrayListOf(
+                            "Captain America",
+                            "Spiderman",
+                            "Quicksilver",
+                            "Hulk",
+                            "Thor",
+                            "Iron Man",
+                            "Hawkeye"
+                        )
+                    }
                     if (player.isOnline) {
                         try {
                             val hero = pool[Random.nextInt(pool.size)]
