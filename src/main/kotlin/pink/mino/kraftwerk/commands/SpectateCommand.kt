@@ -25,6 +25,20 @@ class SpectateCommand : CommandExecutor {
             return false
         }
         if (args.size == 1) {
+            if (args[0].lowercase() == "on") {
+                if (SpecFeature.instance.getSpecs().contains(sender.name)) {
+                    Chat.sendMessage(sender, "${Chat.prefix} You're already in Spectator mode!")
+                } else {
+                    SpecFeature.instance.spec(sender)
+                }
+            }
+            if (args[0].lowercase() == "off") {
+                if (SpecFeature.instance.getSpecs().contains(sender.name)) {
+                    Chat.sendMessage(sender, "${Chat.prefix} You're already not a Spectator!")
+                } else {
+                    SpecFeature.instance.unspec(sender)
+                }
+            }
             val player = sender.server.getPlayer(args[0])
             if (player == null) {
                 Chat.sendMessage(sender, "&cPlayer not found.")
