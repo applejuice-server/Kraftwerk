@@ -13,7 +13,6 @@ import net.dv8tion.jda.api.entities.Activity
 import org.bukkit.*
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.ShapedRecipe
-import org.bukkit.inventory.ShapelessRecipe
 import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.material.MaterialData
 import pink.mino.kraftwerk.commands.*
@@ -348,8 +347,34 @@ class Kraftwerk : ExtendedJavaPlugin() {
         head.itemMeta = meta
         val goldenHead: ShapedRecipe = ShapedRecipe(head).shape("@@@", "@*@", "@@@").setIngredient('@', Material.GOLD_INGOT).setIngredient('*', mater)
         Bukkit.getServer().addRecipe(goldenHead)
-        val string = ShapelessRecipe(ItemStack(Material.STRING)).addIngredient(Material.WOOL).addIngredient(Material.WOOL).addIngredient(Material.WOOL).addIngredient(Material.WOOL)
-        Bukkit.getServer().addRecipe(string)
+
+        val wools = ArrayList(
+            listOf(
+                ItemStack(Material.WOOL, 1, 0),
+                ItemStack(Material.WOOL, 1, 1),
+                ItemStack(Material.WOOL, 1, 2),
+                ItemStack(Material.WOOL, 1, 3),
+                ItemStack(Material.WOOL, 1, 4),
+                ItemStack(Material.WOOL, 1, 5),
+                ItemStack(Material.WOOL, 1, 6),
+                ItemStack(Material.WOOL, 1, 7),
+                ItemStack(Material.WOOL, 1, 8),
+                ItemStack(Material.WOOL, 1, 9),
+                ItemStack(Material.WOOL, 1, 10),
+                ItemStack(Material.WOOL, 1, 11),
+                ItemStack(Material.WOOL, 1, 12),
+                ItemStack(Material.WOOL, 1, 13),
+                ItemStack(Material.WOOL, 1, 14),
+                ItemStack(Material.WOOL, 1, 15)
+            )
+        )
+
+        for (wool in wools) {
+            val recipe = ShapedRecipe(ItemStack(Material.STRING))
+                .shape("AA", "AA")
+                .setIngredient('A', wool.data)
+            Bukkit.addRecipe(recipe)
+        }
     }
 
 }
