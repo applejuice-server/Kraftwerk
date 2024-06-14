@@ -73,11 +73,11 @@ class TabFeature : BukkitRunnable() {
             scenarios.add("Vanilla+")
         }
         val header: IChatBaseComponent = if (!ConfigOptionHandler.getOption("nobranding")!!.enabled) {
-            ChatSerializer.a("{\"text\": \"${Chat.colored(Chat.scoreboardTitle)}\n${Chat.colored("&7TPS: ${checkTps(
+            ChatSerializer.a("{\"text\": \"\n${Chat.colored(Chat.scoreboardTitle)}\n${Chat.colored("&7TPS: ${checkTps(
                 Math.round(tpsLast10Secs * 100.0) / 100.0
             )} &8| &7Ping: &f${checkPing(craftplayer.handle.ping)}")}ms\n${Chat.colored(" &9/discord ")}\n\"}")
         } else {
-            ChatSerializer.a("{\"text\": \"${Chat.colored(Chat.scoreboardTitle)}\n${Chat.colored("&7TPS: ${checkTps(
+            ChatSerializer.a("{\"text\": \"\n${Chat.colored(Chat.scoreboardTitle)}\n${Chat.colored("&7TPS: ${checkTps(
                 Math.round(tpsLast10Secs * 100.0) / 100.0
             )} &8| &7Ping: &f${checkPing(craftplayer.handle.ping)}")}ms\n\"}")
         }
