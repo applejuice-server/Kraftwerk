@@ -24,7 +24,7 @@ class SkyHighIterator : BukkitRunnable() {
                 if (player.location.y < 100) {
                     if (!SpecFeature.instance.getSpecs().contains(player.name) && player.world.name != "Spawn") {
                         player.damage(2.0)
-                        Chat.sendMessage(player, "&cYou've been damaged for not being above y-101.")
+                        Chat.sendMessage(player, "&cYou've been damaged for not being above Y: 101")
                     }
                 }
             }

@@ -85,7 +85,7 @@ class PlayerJoinListener : Listener {
                     }
                 }
 
-                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Automatically late scattered &c${player.name}&7."))
+                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Automatically late scattered ${Chat.primaryColor}${player.name}&7."))
                 player.playSound(player.location, Sound.WOOD_CLICK, 10F, 1F)
                 player.maxHealth = 20.0
                 player.health = player.maxHealth
@@ -138,9 +138,9 @@ class PlayerJoinListener : Listener {
                     Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
                         SpawnFeature.instance.send(player)
                     }, 1L)
-                    SpecFeature.instance.specChat("&f${player.name}&7 hasn't been late-scattered, sending them to spawn.")
+                    SpecFeature.instance.specChat("${Chat.secondaryColor}${player.name}&7 hasn't been late-scattered, sending them to spawn.")
                     val comp = TextComponent(Chat.colored("${Chat.dash} &d&lLatescatter player?"))
-                    val comp2 = TextComponent(Chat.colored("${Chat.dash} &c&lInsert latescatter command?"))
+                    val comp2 = TextComponent(Chat.colored("${Chat.dash} ${Chat.primaryColor}&lInsert latescatter command?"))
                     comp.clickEvent = ClickEvent(
                         ClickEvent.Action.RUN_COMMAND,
                         "/ls ${player.name}"

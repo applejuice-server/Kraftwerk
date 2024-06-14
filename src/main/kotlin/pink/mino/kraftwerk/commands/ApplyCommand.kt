@@ -3,6 +3,7 @@ package pink.mino.kraftwerk.commands
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
+import pink.mino.kraftwerk.features.SettingsFeature
 import pink.mino.kraftwerk.utils.Chat
 
 class ApplyCommand : CommandExecutor {
@@ -12,7 +13,7 @@ class ApplyCommand : CommandExecutor {
         label: String?,
         args: Array<String>
     ): Boolean {
-        sender.sendMessage(Chat.colored("${Chat.prefix} The staff application URL is: &chttps://forms.gle/Z2fYxzqLLNDd3Fjv7"))
+        sender.sendMessage(Chat.colored("${Chat.prefix} The staff application URL is: ${Chat.primaryColor}${if (SettingsFeature.instance.data!!.getString("config.chat.staffAppUrl") != null) SettingsFeature.instance.data!!.getString("config.chat.staffAppUrl") else "no staff app set in config tough tits"}"))
         return true
     }
 }

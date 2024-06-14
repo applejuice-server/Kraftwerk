@@ -24,8 +24,8 @@ class CowboyFeature : Listener {
         if (SpecFeature.instance.isSpec(e.player)) return
         if (e.rightClicked.type == EntityType.PLAYER && PerkChecker.checkPerks(e.player).contains(Perk.RIDE_PLAYERS) && !e.player.isInsideVehicle) {
             e.rightClicked.passenger = e.player
-            Chat.sendMessage(e.player, "&8[&2$$$&8] &7You are now riding &f${e.rightClicked.name}&7.")
-            Chat.sendMessage(e.rightClicked, "&8[&2$$$&8] &f${e.player.name}&7 is now riding you.")
+            Chat.sendMessage(e.player, "&8[&2$$$&8] &7You are now riding ${Chat.secondaryColor}${e.rightClicked.name}&7.")
+            Chat.sendMessage(e.rightClicked, "&8[&2$$$&8] ${Chat.secondaryColor}${e.player.name}&7 is now riding you.")
         }
     }
 
@@ -34,7 +34,7 @@ class CowboyFeature : Listener {
         if (GameState.currentState != GameState.LOBBY || e.player.world.name != "Spawn") return
         if (e.action == Action.LEFT_CLICK_AIR || e.action == Action.LEFT_CLICK_BLOCK) {
             if (e.player.passenger != null && PerkChecker.checkPerks(e.player).contains(Perk.RIDE_PLAYERS)) {
-                Chat.sendMessage(e.player.passenger, "&8[&2$$$&8] &f${e.player.name}&7 has launched you!")
+                Chat.sendMessage(e.player.passenger, "&8[&2$$$&8] ${Chat.secondaryColor}${e.player.name}&7 has launched you!")
                 val passenger = e.player.passenger
                 (e.player).passenger.eject()
                 (e.player).eject()

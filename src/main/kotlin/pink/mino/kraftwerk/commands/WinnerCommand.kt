@@ -35,7 +35,7 @@ class WinnerCommand : CommandExecutor {
             if (winners.isEmpty()) {
                 Chat.sendMessage(sender, "${Chat.prefix} There's no winners at the moment.")
             } else {
-                Chat.sendMessage(sender, "${Chat.prefix} Winners: &f${winners.joinToString(", ")}")
+                Chat.sendMessage(sender, "${Chat.prefix} Winners: ${Chat.secondaryColor}${winners.joinToString(", ")}")
             }
             return false
         }
@@ -50,7 +50,7 @@ class WinnerCommand : CommandExecutor {
                 SettingsFeature.instance.data!!.set("game.winners", winners)
                 Chat.sendMessage(
                     sender,
-                    "${Chat.prefix} &f${player.name}&7 has been removed from the winner list.\n&7New list: &f${
+                    "${Chat.prefix} ${Chat.secondaryColor}${player.name}&7 has been removed from the winner list.\n&7New list: ${Chat.secondaryColor}${
                         winners.joinToString(", ")
                     }"
                 )
@@ -59,7 +59,7 @@ class WinnerCommand : CommandExecutor {
                 SettingsFeature.instance.data!!.set("game.winners", winners)
                 Chat.sendMessage(
                     sender,
-                    "${Chat.prefix} &f${player.name}&7 has been added to the winner list.\n&7New list: &f${
+                    "${Chat.prefix} ${Chat.secondaryColor}${player.name}&7 has been added to the winner list.\n&7New list: ${Chat.secondaryColor}${
                         winners.joinToString(", ")
                     }"
                 )

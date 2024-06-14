@@ -36,14 +36,14 @@ class HelpopListCommand : CommandExecutor {
             }
             if (sender is Player) {
                 val text =
-                    TextComponent(Chat.colored(" ${Chat.dash} &8[&c#${i}&8] &f${HelpOp.helpop[i]?.name} ${Chat.dash}&7 ${HelpOp.helpopContent[i]}"))
+                    TextComponent(Chat.colored(" ${Chat.dash} &8[${Chat.primaryColor}#${i}&8] ${Chat.secondaryColor}${HelpOp.helpop[i]?.name} ${Chat.dash}&7 ${HelpOp.helpopContent[i]}"))
                 text.clickEvent = ClickEvent(
                     ClickEvent.Action.SUGGEST_COMMAND,
                     "/hr ${i} "
                 )
                 sender.spigot().sendMessage(text)
             } else {
-                sender.sendMessage(Chat.colored(" ${Chat.dash} &8[&c#${i}&8] &f${HelpOp.helpop[i]!!.name} ${Chat.dash}&7 ${HelpOp.helpopContent[i]}"))
+                sender.sendMessage(Chat.colored(" ${Chat.dash} &8[${Chat.primaryColor}#${i}&8] ${Chat.secondaryColor}${HelpOp.helpop[i]!!.name} ${Chat.dash}&7 ${HelpOp.helpopContent[i]}"))
             }
         }
         return true

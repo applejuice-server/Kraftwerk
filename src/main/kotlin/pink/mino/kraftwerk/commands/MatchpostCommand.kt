@@ -95,7 +95,7 @@ class ScheduleBroadcast(private val opening: String) : BukkitRunnable() {
             embed.addField("Teams", SettingsFeature.instance.data!!.getString("matchpost.team"), false)
             embed.addField("Scenarios", scenarios.joinToString(", "), false)
             var flag = ":flag_ca:"
-            embed.addField("IP", "$flag `applejuice.games` (1.8.x)", false)
+            embed.addField("IP", "$flag `${if (SettingsFeature.instance.data!!.getString("config.chat.serverIp") != null) SettingsFeature.instance.data!!.getString("config.chat.serverIp") else "no server ip setup in config tough tits"}` (1.8.x)", false)
             Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Matchpost posted on discord & twitter!"))
             embed.addField("Opening", "<t:${fr}:t> (<t:${fr}:R>)", false)
             embed.addField("Matchpost", "[uhc.gg](https://hosts.uhc.gg/m/${SettingsFeature.instance.data!!.getInt("matchpost.id")})", false)
@@ -139,7 +139,7 @@ class Opening(private val closing: Long) : BukkitRunnable() {
     }
 
     private fun displayTimer(player: Player) {
-        ActionBar.sendActionBarMessage(player, "&cWhitelist is enabled in ${Chat.dash} &f${timeToString(closing - timer.toLong())}")
+        ActionBar.sendActionBarMessage(player, "${Chat.primaryColor}Whitelist is enabled in ${Chat.dash} ${Chat.secondaryColor}${timeToString(closing - timer.toLong())}")
     }
 
     override fun run() {
@@ -196,9 +196,9 @@ class ScheduleOpening(private val opening: String) : BukkitRunnable() {
             embed.setColor(Color(255, 61, 61))
             embed.setTitle(SettingsFeature.instance.data!!.getString("matchpost.host"))
             embed.setThumbnail("https://visage.surgeplay.com/bust/512/${host.uniqueId}")
-            embed.addField("Game Open!", "The game is now open at :beverage_box: `applejuice.games`.", false)
+            embed.addField("Game Open!", "The game is now open at `${if (SettingsFeature.instance.data!!.getString("config.chat.serverIp") != null) SettingsFeature.instance.data!!.getString("config.chat.serverIp") else "no server ip setup in config tough tits"}`.", false)
             Discord.instance!!.getTextChannelById(1129309971327221760)!!.sendMessageEmbeds(embed.build()).queue()
-            Bukkit.broadcastMessage(Chat.colored("${Chat.dash} The whitelist has been turned off automatically @ &c${opening}&7."))
+            Bukkit.broadcastMessage(Chat.colored("${Chat.dash} The whitelist has been turned off automatically @ ${Chat.primaryColor}${opening}&7."))
             cancel()
             Opening(time).runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 20L)
             SettingsFeature.instance.data!!.set("whitelist.requests", false)
@@ -347,7 +347,7 @@ class MatchpostCommand : CommandExecutor {
         SettingsFeature.instance.data!!.set("matchpost.server", server)
         ScheduleOpening(opening).runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, (5 * 20).toLong())
         ScheduleBroadcast(opening).runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 300L)
-        Chat.sendMessage(sender, "${Chat.prefix} Set the matchpost to &fhttps://hosts.uhc.gg/m/${id.toInt()}")
+        Chat.sendMessage(sender, "${Chat.prefix} Set the matchpost to ${Chat.secondaryColor}https://hosts.uhc.gg/m/${id.toInt()}")
         Chat.sendMessage(sender, "${Chat.prefix} The server will now begin to check when the matchpost opens.")
         SettingsFeature.instance.saveData()
         return true

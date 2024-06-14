@@ -23,11 +23,11 @@ class TeamInventoryCommand : CommandExecutor {
             return false
         }
         if (!ScenarioHandler.getScenario("teaminventory")!!.enabled) {
-            Chat.sendMessage(sender, "${Chat.prefix} &cTeam Inventory&7 isn't enabled at the moment.")
+            Chat.sendMessage(sender, "${Chat.prefix} ${Chat.primaryColor}Team Inventory&7 isn't enabled at the moment.")
             return false
         }
         if (GameState.currentState != GameState.INGAME) {
-            Chat.sendMessage(sender, "${Chat.prefix} &cTeam Inventory&7 cannot be used at the moment.")
+            Chat.sendMessage(sender, "${Chat.prefix} ${Chat.primaryColor}Team Inventory&7 cannot be used at the moment.")
             return false
         }
 

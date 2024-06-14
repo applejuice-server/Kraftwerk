@@ -21,11 +21,11 @@ class MolesCommand : CommandExecutor {
             return false
         }
         if (!ScenarioHandler.getActiveScenarios().contains(ScenarioHandler.getScenario("moles"))) {
-            Chat.sendMessage(sender, "${Chat.prefix} &cMoles&7 isn't enabled!")
+            Chat.sendMessage(sender, "${Chat.prefix} ${Chat.primaryColor}Moles&7 isn't enabled!")
             return false
         }
         if (GameState.currentState != GameState.INGAME) {
-            Chat.sendMessage(sender, "${Chat.prefix} &cMoles&7 isn't available right now!")
+            Chat.sendMessage(sender, "${Chat.prefix} ${Chat.primaryColor}Moles&7 isn't available right now!")
             return false
         }
         if (MolesScenario.instance.moles[sender.uniqueId] == null) {
@@ -33,11 +33,11 @@ class MolesCommand : CommandExecutor {
             return false
         }
         Chat.sendMessage(sender, Chat.line)
-        Chat.sendCenteredMessage(sender, "&c&lMoles Help")
-        Chat.sendMessage(sender, "${Chat.prefix} &f/molekit [kit] &8-&7 Chooses a mole kit.")
-        Chat.sendMessage(sender, "${Chat.prefix} &f/mcl &8-&7 Sends your location out to other moles.")
-        Chat.sendMessage(sender, "${Chat.prefix} &f/mcc <message> &8-&7 Message other moles.")
-        Chat.sendMessage(sender, "${Chat.prefix} &f/mcp &8-&7 View the list of other moles.")
+        Chat.sendCenteredMessage(sender, "${Chat.primaryColor}&lMoles Help")
+        Chat.sendMessage(sender, "${Chat.prefix} ${Chat.secondaryColor}/molekit [kit] &8-&7 Chooses a mole kit.")
+        Chat.sendMessage(sender, "${Chat.prefix} ${Chat.secondaryColor}/mcl &8-&7 Sends your location out to other moles.")
+        Chat.sendMessage(sender, "${Chat.prefix} ${Chat.secondaryColor}/mcc <message> &8-&7 Message other moles.")
+        Chat.sendMessage(sender, "${Chat.prefix} ${Chat.secondaryColor}/mcp &8-&7 View the list of other moles.")
         Chat.sendMessage(sender, Chat.line)
         return true
     }

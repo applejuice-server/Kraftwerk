@@ -9,6 +9,7 @@ import net.dv8tion.jda.api.utils.MarkdownSanitizer
 import org.bukkit.Bukkit
 import pink.mino.kraftwerk.features.SettingsFeature
 import pink.mino.kraftwerk.scenarios.ScenarioHandler
+import pink.mino.kraftwerk.utils.Chat
 import java.awt.Color
 
 class SlashCommand : ListenerAdapter() {
@@ -21,21 +22,21 @@ class SlashCommand : ListenerAdapter() {
             "online" -> {
                 val embed = EmbedBuilder()
                 embed.setColor(Color(255, 61, 61))
-                embed.setAuthor("applejuice — Online players", "https://dsc.gg/apple-juice", event.jda.selfUser.avatarUrl)
+                embed.setAuthor("${Chat.serverName} — Online players", "https://github.com/applejuice-server/Kraftwerk/blob/master/src/main/kotlin/pink/mino/kraftwerk/discord/listeners/SlashCommand.kt", event.jda.selfUser.avatarUrl)
                 embed.setDescription("There are currently **${Bukkit.getServer().onlinePlayers.size} players** online.")
                 event.replyEmbeds(embed.build()).setEphemeral(false).queue()
             }
             "ip" -> {
                 val embed = EmbedBuilder()
                 embed.setColor(Color(255, 61, 61))
-                embed.setAuthor("applejuice — IP Address", "https://dsc.gg/apple-juice", event.jda.selfUser.avatarUrl)
-                embed.setDescription("The IP address to the server is :beverage_box: `applejuice.games`.")
+                embed.setAuthor("${Chat.serverName} — IP Address", "https://github.com/applejuice-server/Kraftwerk/blob/master/src/main/kotlin/pink/mino/kraftwerk/discord/listeners/SlashCommand.kt", event.jda.selfUser.avatarUrl)
+                embed.setDescription("The IP address to the server is `${if (SettingsFeature.instance.data!!.getString("config.chat.serverIp") != null) SettingsFeature.instance.data!!.getString("config.chat.serverIp") else "no server ip setup in config tough tits"}`.")
                 event.replyEmbeds(embed.build()).setEphemeral(false).queue()
             }
             "togglealerts" -> {
                 val embed = EmbedBuilder()
                 embed.setColor(Color(255, 61, 61))
-                embed.setAuthor("applejuice — Toggle alerts", "https://dsc.gg/apple-juice", event.jda.selfUser.avatarUrl)
+                embed.setAuthor("${Chat.serverName} — Toggle alerts", "https://github.com/applejuice-server/Kraftwerk/blob/master/src/main/kotlin/pink/mino/kraftwerk/discord/listeners/SlashCommand.kt", event.jda.selfUser.avatarUrl)
                 if (member!!.roles.contains(event.jda.getRoleById(1129405126889713692))) {
                     if (guild != null) {
                         guild.getRoleById(1129405126889713692)?.let { guild.removeRoleFromMember(member.id, it) }?.queue()
@@ -57,7 +58,7 @@ class SlashCommand : ListenerAdapter() {
                     Schedulers.sync().run runnable@ {
                         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wl add $player")
                     }
-                    event.reply("**${MarkdownSanitizer.escape(player)}** has been whitelisted on the server, connect using `applejuice.games`.").queue()
+                    event.reply("**${MarkdownSanitizer.escape(player)}** has been whitelisted on the server, connect using `${if (SettingsFeature.instance.data!!.getString("config.chat.serverIp") != null) SettingsFeature.instance.data!!.getString("config.chat.serverIp") else "no server ip setup in config tough tits"}`.").queue()
                 } else {
                     event.reply("Sorry, but whitelists are not available at this time!").setEphemeral(true).queue()
                 }
@@ -69,7 +70,7 @@ class SlashCommand : ListenerAdapter() {
                 }
                 val embed = EmbedBuilder()
                 embed.setColor(Color(255, 61, 61))
-                embed.setAuthor("applejuice — Scenario List", "https://dsc.gg/apple-juice", event.jda.selfUser.avatarUrl)
+                embed.setAuthor("${Chat.serverName} — Scenario List", "https://github.com/applejuice-server/Kraftwerk/blob/master/src/main/kotlin/pink/mino/kraftwerk/discord/listeners/SlashCommand.kt", event.jda.selfUser.avatarUrl)
                 embed.setDescription("Scenarios: `${list.joinToString(", ")}`")
                 event.replyEmbeds(embed.build()).setEphemeral(false).queue()
             }

@@ -73,11 +73,11 @@ class TabFeature : BukkitRunnable() {
             scenarios.add("Vanilla+")
         }
         val header: IChatBaseComponent = if (!ConfigOptionHandler.getOption("nobranding")!!.enabled) {
-            ChatSerializer.a("{\"text\": \"${Chat.colored("\n&capple&ajuice")}\n${Chat.colored("&7TPS: ${checkTps(
+            ChatSerializer.a("{\"text\": \"${Chat.colored(Chat.scoreboardTitle)}\n${Chat.colored("&7TPS: ${checkTps(
                 Math.round(tpsLast10Secs * 100.0) / 100.0
-            )} &8| &7Ping: &f${checkPing(craftplayer.handle.ping)}")}ms\n${Chat.colored(" &b@applejuiceuhc &8- &9/discord ")}\n\"}")
+            )} &8| &7Ping: &f${checkPing(craftplayer.handle.ping)}")}ms\n${Chat.colored(" &9/discord ")}\n\"}")
         } else {
-            ChatSerializer.a("{\"text\": \"${Chat.colored("\n&capple&ajuice")}\n${Chat.colored("&7TPS: ${checkTps(
+            ChatSerializer.a("{\"text\": \"${Chat.colored(Chat.scoreboardTitle)}\n${Chat.colored("&7TPS: ${checkTps(
                 Math.round(tpsLast10Secs * 100.0) / 100.0
             )} &8| &7Ping: &f${checkPing(craftplayer.handle.ping)}")}ms\n\"}")
         }
@@ -86,9 +86,9 @@ class TabFeature : BukkitRunnable() {
             game = "Not set"
         }
         val footer: IChatBaseComponent = if (!ConfigOptionHandler.getOption("nobranding")!!.enabled) {
-            ChatSerializer.a("{\"text\": \"\n${Chat.colored(" &7Game: &f${game} \n &7Scenarios: &f${scenarioTextWrap(scenarios.joinToString(", "), 40).joinToString("\n")} ")}\n\"}")
+            ChatSerializer.a("{\"text\": \"\n${Chat.colored(" &7Game: ${Chat.secondaryColor}${game} \n &7Scenarios: ${Chat.secondaryColor}${scenarioTextWrap(scenarios.joinToString(", "), 40).joinToString("\n")} ")}\n\"}")
         } else {
-            ChatSerializer.a("{\"text\": \"\n${Chat.colored(" &7Scenarios: &f${scenarioTextWrap(scenarios.joinToString(", "), 40).joinToString("\n")} ")}\n\"}")
+            ChatSerializer.a("{\"text\": \"\n${Chat.colored(" &7Scenarios: ${Chat.secondaryColor}${scenarioTextWrap(scenarios.joinToString(", "), 40).joinToString("\n")} ")}\n\"}")
         }
         val packet = PacketPlayOutPlayerListHeaderFooter()
         try {

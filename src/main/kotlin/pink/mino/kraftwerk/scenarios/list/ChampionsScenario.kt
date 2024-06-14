@@ -52,7 +52,7 @@ class ChampionsScenario : Scenario(
     "champions",
     Material.GOLDEN_APPLE
 ), CommandExecutor {
-    val prefix = Chat.colored("&8[&cChampions&8] &7")
+    val prefix = Chat.colored("&8[${Chat.primaryColor}Champions&8] &7")
     val kits = hashMapOf<UUID, String>()
 
     init {
@@ -441,9 +441,9 @@ class ChampionsScenario : Scenario(
             )
             val apprenticeSword = ItemBuilder(Material.IRON_SWORD)
                 .name(ChatColor.DARK_PURPLE.toString() + "Apprentice Sword")
-                .addLore("&7Gains &fSharpness I&7 at Final Heal&7.")
-                .addLore("&7Gains &fSharpness II&7 at PvP&7.")
-                .addLore("&7Gains &fSharpness III&7 at Meetup&7.")
+                .addLore("&7Gains ${Chat.secondaryColor}Sharpness I&7 at Final Heal&7.")
+                .addLore("&7Gains ${Chat.secondaryColor}Sharpness II&7 at PvP&7.")
+                .addLore("&7Gains ${Chat.secondaryColor}Sharpness III&7 at Meetup&7.")
                 .make()
             Bukkit.getServer().addRecipe(
                 ShapedRecipe(apprenticeSword).shape(" R ", " I ", " R ")
@@ -453,9 +453,9 @@ class ChampionsScenario : Scenario(
             )
             val apprenticeBow = ItemBuilder(Material.BOW)
                 .name(ChatColor.DARK_PURPLE.toString() + "Apprentice Bow")
-                .addLore("&7Gains &fPower I&7 at Final Heal&7.")
-                .addLore("&7Gains &fPower II&7 at PvP&7.")
-                .addLore("&7Gains &fPower III&7 at Meetup&7.")
+                .addLore("&7Gains ${Chat.secondaryColor}Power I&7 at Final Heal&7.")
+                .addLore("&7Gains ${Chat.secondaryColor}Power II&7 at PvP&7.")
+                .addLore("&7Gains ${Chat.secondaryColor}Power III&7 at Meetup&7.")
                 .make()
             Bukkit.getServer().addRecipe(
                 ShapedRecipe(apprenticeBow).shape(" RS", "R S", " RS")
@@ -478,7 +478,7 @@ class ChampionsScenario : Scenario(
             )
             val fusionArmor = ItemBuilder(Material.DIAMOND_HELMET)
                 .name(ChatColor.DARK_PURPLE.toString() + "Fusion Armor")
-                .addLore("&7Crafting this item will allow you to receive a random piece of armor with &fProtection IV&7!")
+                .addLore("&7Crafting this item will allow you to receive a random piece of armor with ${Chat.secondaryColor}Protection IV&7!")
                 .make()
             Bukkit.getServer().addRecipe(
                 ShapelessRecipe(fusionArmor)
@@ -1368,9 +1368,9 @@ class ChampionsScenario : Scenario(
                 if (item.itemMeta.displayName == Chat.colored("&5Apprentice Bow")) {
                     val bow = ItemBuilder(Material.BOW)
                         .name("&5Apprentice Bow")
-                        .addLore("&7Gains &fPower I&7 at Final Heal&7.")
-                        .addLore("&7Gains &fPower II&7 at PvP&7.")
-                        .addLore("&7Gains &fPower III&7 at Meetup&7.")
+                        .addLore("&7Gains ${Chat.secondaryColor}Power I&7 at Final Heal&7.")
+                        .addLore("&7Gains ${Chat.secondaryColor}Power II&7 at PvP&7.")
+                        .addLore("&7Gains ${Chat.secondaryColor}Power III&7 at Meetup&7.")
                         .addEnchantment(Enchantment.ARROW_DAMAGE, 1)
                         .make()
                     item.itemMeta = bow.itemMeta
@@ -1379,9 +1379,9 @@ class ChampionsScenario : Scenario(
                     val sword = ItemBuilder(Material.IRON_SWORD)
                         .name("&5Apprentice Sword")
                         .addEnchantment(Enchantment.DAMAGE_ALL, 1)
-                        .addLore("&7Gains &fSharpness I&7 at Final Heal&7.")
-                        .addLore("&7Gains &fSharpness II&7 at PvP&7.")
-                        .addLore("&7Gains &fSharpness III&7 at Meetup&7.")
+                        .addLore("&7Gains ${Chat.secondaryColor}Sharpness I&7 at Final Heal&7.")
+                        .addLore("&7Gains ${Chat.secondaryColor}Sharpness II&7 at PvP&7.")
+                        .addLore("&7Gains ${Chat.secondaryColor}Sharpness III&7 at Meetup&7.")
                         .make()
                     item.itemMeta = sword.itemMeta
                 }
@@ -1398,9 +1398,9 @@ class ChampionsScenario : Scenario(
                 if (item.itemMeta.displayName == Chat.colored("&5Apprentice Bow")) {
                     val bow = ItemBuilder(Material.BOW)
                         .name("&5Apprentice Bow")
-                        .addLore("&7Gains &fPower I&7 at Final Heal&7.")
-                        .addLore("&7Gains &fPower II&7 at PvP&7.")
-                        .addLore("&7Gains &fPower III&7 at Meetup&7.")
+                        .addLore("&7Gains ${Chat.secondaryColor}Power I&7 at Final Heal&7.")
+                        .addLore("&7Gains ${Chat.secondaryColor}Power II&7 at PvP&7.")
+                        .addLore("&7Gains ${Chat.secondaryColor}Power III&7 at Meetup&7.")
                         .addEnchantment(Enchantment.ARROW_DAMAGE, 3)
                         .make()
                     item.itemMeta = bow.itemMeta
@@ -1409,9 +1409,9 @@ class ChampionsScenario : Scenario(
                     val sword = ItemBuilder(Material.IRON_SWORD)
                         .name("&5Apprentice Sword")
                         .addEnchantment(Enchantment.DAMAGE_ALL, 3)
-                        .addLore("&7Gains &fSharpness I&7 at Final Heal&7.")
-                        .addLore("&7Gains &fSharpness II&7 at PvP&7.")
-                        .addLore("&7Gains &fSharpness III&7 at Meetup&7.")
+                        .addLore("&7Gains ${Chat.secondaryColor}Sharpness I&7 at Final Heal&7.")
+                        .addLore("&7Gains ${Chat.secondaryColor}Sharpness II&7 at PvP&7.")
+                        .addLore("&7Gains ${Chat.secondaryColor}Sharpness III&7 at Meetup&7.")
                         .make()
                     item.itemMeta = sword.itemMeta
                 }
@@ -1428,9 +1428,9 @@ class ChampionsScenario : Scenario(
                 if (item.itemMeta.displayName == Chat.colored("&5Apprentice Bow")) {
                     val bow = ItemBuilder(Material.BOW)
                         .name("&5Apprentice Bow")
-                        .addLore("&7Gains &fPower I&7 at Final Heal&7.")
-                        .addLore("&7Gains &fPower II&7 at PvP&7.")
-                        .addLore("&7Gains &fPower III&7 at Meetup&7.")
+                        .addLore("&7Gains ${Chat.secondaryColor}Power I&7 at Final Heal&7.")
+                        .addLore("&7Gains ${Chat.secondaryColor}Power II&7 at PvP&7.")
+                        .addLore("&7Gains ${Chat.secondaryColor}Power III&7 at Meetup&7.")
                         .addEnchantment(Enchantment.ARROW_DAMAGE, 2)
                         .make()
                     item.itemMeta = bow.itemMeta
@@ -1439,9 +1439,9 @@ class ChampionsScenario : Scenario(
                     val sword = ItemBuilder(Material.IRON_SWORD)
                         .name("&5Apprentice Sword")
                         .addEnchantment(Enchantment.DAMAGE_ALL, 2)
-                        .addLore("&7Gains &fSharpness I&7 at Final Heal&7.")
-                        .addLore("&7Gains &fSharpness II&7 at PvP&7.")
-                        .addLore("&7Gains &fSharpness III&7 at Meetup&7.")
+                        .addLore("&7Gains ${Chat.secondaryColor}Sharpness I&7 at Final Heal&7.")
+                        .addLore("&7Gains ${Chat.secondaryColor}Sharpness II&7 at PvP&7.")
+                        .addLore("&7Gains ${Chat.secondaryColor}Sharpness III&7 at Meetup&7.")
                         .make()
                     item.itemMeta = sword.itemMeta
                 }
@@ -1605,9 +1605,9 @@ class ChampionsScenario : Scenario(
                     val sword = ItemBuilder(Material.IRON_SWORD)
                         .name("&5Apprentice Sword")
                         .addEnchantment(Enchantment.DAMAGE_ALL, 1)
-                        .addLore("&7Gains &fSharpness I&7 at Final Heal&7.")
-                        .addLore("&7Gains &fSharpness II&7 at PvP&7.")
-                        .addLore("&7Gains &fSharpness III&7 at Meetup&7.")
+                        .addLore("&7Gains ${Chat.secondaryColor}Sharpness I&7 at Final Heal&7.")
+                        .addLore("&7Gains ${Chat.secondaryColor}Sharpness II&7 at PvP&7.")
+                        .addLore("&7Gains ${Chat.secondaryColor}Sharpness III&7 at Meetup&7.")
                         .make()
                     inv.result = sword
                 }
@@ -1615,9 +1615,9 @@ class ChampionsScenario : Scenario(
                     val sword = ItemBuilder(Material.IRON_SWORD)
                         .name("&5Apprentice Sword")
                         .addEnchantment(Enchantment.DAMAGE_ALL, 2)
-                        .addLore("&7Gains &fSharpness I&7 at Final Heal&7.")
-                        .addLore("&7Gains &fSharpness II&7 at PvP&7.")
-                        .addLore("&7Gains &fSharpness III&7 at Meetup&7.")
+                        .addLore("&7Gains ${Chat.secondaryColor}Sharpness I&7 at Final Heal&7.")
+                        .addLore("&7Gains ${Chat.secondaryColor}Sharpness II&7 at PvP&7.")
+                        .addLore("&7Gains ${Chat.secondaryColor}Sharpness III&7 at Meetup&7.")
                         .make()
                     inv.result = sword
                 }
@@ -1625,9 +1625,9 @@ class ChampionsScenario : Scenario(
                     val sword = ItemBuilder(Material.IRON_SWORD)
                         .name("&5Apprentice Sword")
                         .addEnchantment(Enchantment.DAMAGE_ALL, 3)
-                        .addLore("&7Gains &fSharpness I&7 at Final Heal&7.")
-                        .addLore("&7Gains &fSharpness II&7 at PvP&7.")
-                        .addLore("&7Gains &fSharpness III&7 at Meetup&7.")
+                        .addLore("&7Gains ${Chat.secondaryColor}Sharpness I&7 at Final Heal&7.")
+                        .addLore("&7Gains ${Chat.secondaryColor}Sharpness II&7 at PvP&7.")
+                        .addLore("&7Gains ${Chat.secondaryColor}Sharpness III&7 at Meetup&7.")
                         .make()
                     inv.result = sword
                 }
@@ -1636,9 +1636,9 @@ class ChampionsScenario : Scenario(
         if (name == Chat.colored("&5Apprentice Bow")) {
             val bow = ItemBuilder(Material.BOW)
                 .name("&5Apprentice Bow")
-                .addLore("&7Gains &fPower I&7 at Final Heal&7.")
-                .addLore("&7Gains &fPower II&7 at PvP&7.")
-                .addLore("&7Gains &fPower III&7 at Meetup&7.")
+                .addLore("&7Gains ${Chat.secondaryColor}Power I&7 at Final Heal&7.")
+                .addLore("&7Gains ${Chat.secondaryColor}Power II&7 at PvP&7.")
+                .addLore("&7Gains ${Chat.secondaryColor}Power III&7 at Meetup&7.")
             when (JavaPlugin.getPlugin(Kraftwerk::class.java).game!!.currentEvent) {
                 Events.FINAL_HEAL -> {
                     bow.addEnchantment(Enchantment.ARROW_DAMAGE, 1)

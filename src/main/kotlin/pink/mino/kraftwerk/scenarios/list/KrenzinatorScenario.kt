@@ -20,7 +20,7 @@ class KrenzinatorScenario : Scenario(
     "krenzinator",
     Material.REDSTONE_BLOCK
 ) {
-    val prefix: String = "&8[&cKrenzinator&8]&7"
+    val prefix: String = "&8[${Chat.primaryColor}Krenzinator&8]&7"
 
     override fun onToggle(to: Boolean) {
         if (!to) {

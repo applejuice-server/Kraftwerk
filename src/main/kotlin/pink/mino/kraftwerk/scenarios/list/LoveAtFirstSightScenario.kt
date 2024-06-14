@@ -17,7 +17,7 @@ class LoveAtFirstSightScenario : Scenario(
     "lafs",
     Material.APPLE
 ) {
-    val prefix = "&8[&cLAFS&8]&7"
+    val prefix = "&8[${Chat.primaryColor}LAFS&8]&7"
     @EventHandler
     fun onPlayerDamage(e: EntityDamageByEntityEvent) {
         if (!enabled) return
@@ -31,8 +31,8 @@ class LoveAtFirstSightScenario : Scenario(
                     e.damage = 0.0
                     val team = TeamsFeature.manager.createTeam(player)
                     TeamsFeature.manager.joinTeam(team.name, player)
-                    Chat.sendMessage(player, "$prefix You are now teamed with &f${PlayerUtils.getPrefix(damager)}${damager.name}&7!")
-                    Chat.sendMessage(damager, "$prefix You are now teamed with &f${PlayerUtils.getPrefix(player)}${player.name}&7!")
+                    Chat.sendMessage(player, "$prefix You are now teamed with ${Chat.secondaryColor}${PlayerUtils.getPrefix(damager)}${damager.name}&7!")
+                    Chat.sendMessage(damager, "$prefix You are now teamed with ${Chat.secondaryColor}${PlayerUtils.getPrefix(player)}${player.name}&7!")
                     player.playSound(player.location, Sound.LEVEL_UP, 1f, 1f)
                     damager.playSound(damager.location, Sound.LEVEL_UP, 1f, 1f)
                 }

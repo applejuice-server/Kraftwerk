@@ -68,8 +68,8 @@ class WhitelistCommand : CommandExecutor {
 
         if (args.isEmpty()) {
             sender.sendMessage(Chat.line)
-            Chat.sendMessage(sender as Player,"${Chat.dash} Invalid usage: ${ChatColor.WHITE}/wl <remove/add> <player>")
-            Chat.sendMessage(sender,"${Chat.dash} Invalid usage: ${ChatColor.WHITE}/wl <all/clear/off/on/list>")
+            Chat.sendMessage(sender as Player,"${Chat.dash} Invalid usage: ${Chat.secondaryColor}/wl <remove/add> <player>")
+            Chat.sendMessage(sender,"${Chat.dash} Invalid usage: ${Chat.secondaryColor}/wl <all/clear/off/on/list>")
             sender.sendMessage(Chat.line)
             return false
         }
@@ -83,15 +83,15 @@ class WhitelistCommand : CommandExecutor {
                 val target = Bukkit.getServer().getPlayer(args[1])
                 val offline = Bukkit.getServer().getOfflinePlayer(args[1])
                 if (target == null) {
-                    Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} ${ChatColor.WHITE}${offline.name}${ChatColor.GRAY} has been added to the whitelist."))
+                    Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} ${Chat.secondaryColor}${offline.name}${ChatColor.GRAY} has been added to the whitelist."))
                     addWhitelist(offline.name.lowercase())
                     return true
                 }
-                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} ${ChatColor.WHITE}${target.name}${ChatColor.GRAY} has been added to the whitelist."))
+                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} ${Chat.secondaryColor}${target.name}${ChatColor.GRAY} has been added to the whitelist."))
                 addWhitelist(target.name.lowercase())
             }
             args[0] == "list" -> {
-                Chat.sendMessage(sender, "${Chat.prefix} Whitelist list: &f${SettingsFeature.instance.data!!.getStringList("whitelist.list").joinToString(", ")}&7.")
+                Chat.sendMessage(sender, "${Chat.prefix} Whitelist list: ${Chat.secondaryColor}${SettingsFeature.instance.data!!.getStringList("whitelist.list").joinToString(", ")}&7.")
             }
             args[0] == "remove" -> {
                 if (args.size == 1) {
@@ -101,11 +101,11 @@ class WhitelistCommand : CommandExecutor {
                 val target = Bukkit.getServer().getPlayer(args[1])
                 val offline = Bukkit.getServer().getOfflinePlayer(args[1])
                 if (target == null) {
-                    Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} ${ChatColor.WHITE}${offline.name}${ChatColor.GRAY} has been removed from the whitelist."))
+                    Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} ${Chat.secondaryColor}${offline.name}${ChatColor.GRAY} has been removed from the whitelist."))
                     removeWhitelist(offline.name.lowercase())
                     return true
                 }
-                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} ${ChatColor.WHITE}${target.name}${ChatColor.GRAY} has been removed from the whitelist."))
+                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} ${Chat.secondaryColor}${target.name}${ChatColor.GRAY} has been removed from the whitelist."))
                 removeWhitelist(target.name.lowercase())
             }
             args[0] == "clear" -> {

@@ -96,15 +96,15 @@ class RespawnCommand : CommandExecutor {
             } else if (RespawnFeature.instance.respawnablePlayers.size >= 45) {
                 size = 6
             }
-            val gui = GuiBuilder().rows(size).name(Chat.colored("&cRespawnable Players")).owner(sender as Player)
+            val gui = GuiBuilder().rows(size).name(Chat.colored("${Chat.primaryColor}Respawnable Players")).owner(sender as Player)
             for ((index, player) in RespawnFeature.instance.respawnablePlayers.withIndex()) {
                 val skull = ItemBuilder(Material.SKULL_ITEM)
                     .name("&d${Bukkit.getOfflinePlayer(player).name}")
-                    .addLore("&7Location: &c${floor(RespawnFeature.instance.locations[player]!!.x)}&7, &c${floor(RespawnFeature.instance.locations[player]!!.y)}&7, &c${floor(RespawnFeature.instance.locations[player]!!.z)}")
-                    .addLore("&7Cause: &c${RespawnFeature.instance.causes[player].toString()
+                    .addLore("&7Location: ${Chat.primaryColor}${floor(RespawnFeature.instance.locations[player]!!.x)}&7, ${Chat.primaryColor}${floor(RespawnFeature.instance.locations[player]!!.y)}&7, ${Chat.primaryColor}${floor(RespawnFeature.instance.locations[player]!!.z)}")
+                    .addLore("&7Cause: ${Chat.primaryColor}${RespawnFeature.instance.causes[player].toString()
                         .uppercase(Locale.getDefault())}")
                     .addLore(" ")
-                    .addLore("&cLeft Click&7 to teleport to the player's death location.")
+                    .addLore("${Chat.primaryColor}Left Click&7 to teleport to the player's death location.")
                     .addLore("&aRight Click&7 to respawn the player.")
                     .toSkull()
                     .setOwner(Bukkit.getOfflinePlayer(player).name)
@@ -177,8 +177,8 @@ class RespawnCommand : CommandExecutor {
             SettingsFeature.instance.saveData()
             WhitelistCommand().addWhitelist(player.name.lowercase())
             player.addPotionEffect(PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 300, 1000, true, false))
-            Chat.sendMessage(player, "${Chat.prefix} You have been respawned by &f${sender.name}&7.")
-            Chat.sendMessage(sender, "${Chat.prefix} &f${player.name}&7 has been respawned.")
+            Chat.sendMessage(player, "${Chat.prefix} You have been respawned by ${Chat.secondaryColor}${sender.name}&7.")
+            Chat.sendMessage(sender, "${Chat.prefix} ${Chat.secondaryColor}${player.name}&7 has been respawned.")
             PlayerRespawnListener.deathKicks[player.uniqueId]!!.cancelDeathKick()
         }
         return true

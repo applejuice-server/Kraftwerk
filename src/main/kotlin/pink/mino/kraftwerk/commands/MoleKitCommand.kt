@@ -26,11 +26,11 @@ class MoleKitCommand : CommandExecutor {
             return false
         }
         if (!ScenarioHandler.getActiveScenarios().contains(ScenarioHandler.getScenario("moles"))) {
-            Chat.sendMessage(sender, "${Chat.prefix} &cMoles&7 isn't enabled!")
+            Chat.sendMessage(sender, "${Chat.prefix} ${Chat.primaryColor}Moles&7 isn't enabled!")
             return false
         }
         if (GameState.currentState != GameState.INGAME) {
-            Chat.sendMessage(sender, "${Chat.prefix} &cMoles&7 isn't available right now!")
+            Chat.sendMessage(sender, "${Chat.prefix} ${Chat.primaryColor}Moles&7 isn't available right now!")
             return false
         }
         if (MolesScenario.instance.moles[sender.uniqueId] == null) {
@@ -43,7 +43,7 @@ class MoleKitCommand : CommandExecutor {
         }
         when {
             args.isEmpty() -> {
-                val gui = GuiBuilder().rows(1).name(ChatColor.translateAlternateColorCodes('&', "&4Mole Kits")).owner(sender)
+                val gui = GuiBuilder().rows(1).name(ChatColor.translateAlternateColorCodes('&', "${Chat.primaryColor}Mole Kits")).owner(sender)
                 val troll = ItemBuilder(Material.WEB)
                     .name("&6Troll Kit")
                     .addLore(Chat.guiLine)
@@ -159,7 +159,7 @@ class MoleKitCommand : CommandExecutor {
                 )
                 PlayerUtils.bulkItems(sender, bulk)
                 MolesScenario.instance.moles[sender.uniqueId] = true
-                Chat.sendMessage(sender, "${MolesScenario.instance.prefix} You've been given your &fProjectile&7 kit.")
+                Chat.sendMessage(sender, "${MolesScenario.instance.prefix} You've been given your ${Chat.secondaryColor}Projectile&7 kit.")
             }
             args[0].lowercase() == "healer" -> {
                 val healingPotion = Potion(PotionType.INSTANT_HEAL, 2)
@@ -171,7 +171,7 @@ class MoleKitCommand : CommandExecutor {
                 )
                 PlayerUtils.bulkItems(sender, bulk)
                 MolesScenario.instance.moles[sender.uniqueId] = true
-                Chat.sendMessage(sender, "${MolesScenario.instance.prefix} You've been given your &fHealer&7 kit.")
+                Chat.sendMessage(sender, "${MolesScenario.instance.prefix} You've been given your ${Chat.secondaryColor}Healer&7 kit.")
             }
             args[0].lowercase() == "enchanter" -> {
                 val bulk: ArrayList<ItemStack> = arrayListOf(
@@ -181,7 +181,7 @@ class MoleKitCommand : CommandExecutor {
                 )
                 PlayerUtils.bulkItems(sender, bulk)
                 MolesScenario.instance.moles[sender.uniqueId] = true
-                Chat.sendMessage(sender, "${MolesScenario.instance.prefix} You've been given your &fEnchanter&7 kit.")
+                Chat.sendMessage(sender, "${MolesScenario.instance.prefix} You've been given your ${Chat.secondaryColor}Enchanter&7 kit.")
             }
             args[0].lowercase() == "tank" -> {
                 val helmet = ItemBuilder(Material.DIAMOND_HELMET)
@@ -201,7 +201,7 @@ class MoleKitCommand : CommandExecutor {
                 )
                 PlayerUtils.bulkItems(sender, bulk)
                 MolesScenario.instance.moles[sender.uniqueId] = true
-                Chat.sendMessage(sender, "${MolesScenario.instance.prefix} You've been given your &fTank&7 kit.")
+                Chat.sendMessage(sender, "${MolesScenario.instance.prefix} You've been given your ${Chat.secondaryColor}Tank&7 kit.")
             }
             args[0].lowercase() == "trapper" -> {
                 val bulk: ArrayList<ItemStack> = arrayListOf(
@@ -212,7 +212,7 @@ class MoleKitCommand : CommandExecutor {
                 )
                 PlayerUtils.bulkItems(sender, bulk)
                 MolesScenario.instance.moles[sender.uniqueId] = true
-                Chat.sendMessage(sender, "${MolesScenario.instance.prefix} You've been given your &fTrapper&7 kit.")
+                Chat.sendMessage(sender, "${MolesScenario.instance.prefix} You've been given your ${Chat.secondaryColor}Trapper&7 kit.")
             }
             args[0].lowercase() == "fighter" -> {
                 val bulk: ArrayList<ItemStack> = arrayListOf(
@@ -222,7 +222,7 @@ class MoleKitCommand : CommandExecutor {
                 )
                 PlayerUtils.bulkItems(sender, bulk)
                 MolesScenario.instance.moles[sender.uniqueId] = true
-                Chat.sendMessage(sender, "${MolesScenario.instance.prefix} You've been given your &fFighter&7 kit.")
+                Chat.sendMessage(sender, "${MolesScenario.instance.prefix} You've been given your ${Chat.secondaryColor}Fighter&7 kit.")
             }
             args[0].lowercase() == "potter" -> {
                 val speed2Potion = Potion(PotionType.SPEED, 2)
@@ -239,7 +239,7 @@ class MoleKitCommand : CommandExecutor {
                 )
                 PlayerUtils.bulkItems(sender, bulk)
                 MolesScenario.instance.moles[sender.uniqueId] = true
-                Chat.sendMessage(sender, "${MolesScenario.instance.prefix} You've been given your &fPotter&7 kit.")
+                Chat.sendMessage(sender, "${MolesScenario.instance.prefix} You've been given your ${Chat.secondaryColor}Potter&7 kit.")
             }
             args[0].lowercase() == "troll" -> {
                 val bulk: ArrayList<ItemStack> = arrayListOf(
@@ -249,7 +249,7 @@ class MoleKitCommand : CommandExecutor {
                 )
                 PlayerUtils.bulkItems(sender, bulk)
                 MolesScenario.instance.moles[sender.uniqueId] = true
-                Chat.sendMessage(sender, "${MolesScenario.instance.prefix} You've been given your &fTroll&7 kit.")
+                Chat.sendMessage(sender, "${MolesScenario.instance.prefix} You've been given your ${Chat.secondaryColor}Troll&7 kit.")
             }
         }
         return true

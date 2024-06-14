@@ -32,7 +32,7 @@ class CancelCommand : CommandExecutor {
         Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "restart")
         }, 900L)
-        Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} The game has now been cancelled, the server will restart in &f45 seconds&7.."))
+        Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} The game has now been cancelled, the server will restart in ${Chat.secondaryColor}45 seconds&7.."))
         return true
     }
 

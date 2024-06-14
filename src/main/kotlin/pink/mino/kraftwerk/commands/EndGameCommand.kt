@@ -54,7 +54,7 @@ class EndGameCommand : CommandExecutor {
             if (winners.contains(player.name)) {
                 player.sendTitle(Chat.colored("&6&lVICTORY!"), Chat.colored("&7Congratulations, you won the game!"))
             } else {
-                player.sendTitle(Chat.colored("&c&lGAME OVER!"), Chat.colored("&7The game has concluded!"))
+                player.sendTitle(Chat.colored("${Chat.primaryColor}&lGAME OVER!"), Chat.colored("&7The game has concluded!"))
             }
         }
 
@@ -158,10 +158,10 @@ class EndGameCommand : CommandExecutor {
         for (player in Bukkit.getOnlinePlayers()) {
             if (SpecFeature.instance.isSpec(player)) SpecFeature.instance.unspec(player)
             SpawnFeature.instance.send(player)
-            Chat.sendCenteredMessage(player, "&c&lGAME OVER!")
+            Chat.sendCenteredMessage(player, "${Chat.primaryColor}&lGAME OVER!")
             Chat.sendMessage(player, " ")
-            Chat.sendCenteredMessage(player, "&7Congratulations to the winners: &f${winners.joinToString(", ")}&7!")
-            Chat.sendCenteredMessage(player, "&7The server will restart in &f45 seconds&7.")
+            Chat.sendCenteredMessage(player, "&7Congratulations to the winners: ${Chat.secondaryColor}${winners.joinToString(", ")}&7!")
+            Chat.sendCenteredMessage(player, "&7The server will restart in ${Chat.secondaryColor}45 seconds&7.")
         }
         for (world in Bukkit.getWorlds()) {
             world.pvp = true

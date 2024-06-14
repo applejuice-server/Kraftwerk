@@ -16,7 +16,7 @@ import kotlin.math.roundToInt
 
 class PregenListener : Listener {
 
-    val prefix = "&8[&cServer&8]&7"
+    val prefix = "&8[${Chat.primaryColor}Server&8]&7"
     @EventHandler
     fun on(event: WorldBorderFillStartEvent) {
         object : BukkitRunnable() {
@@ -25,7 +25,7 @@ class PregenListener : Listener {
                     if (!(event.fillTask.refWorld() == null)) {
                         val rounded = (Config.fillTask.percentageCompleted * 100.0).roundToInt() / 100.0
                         for (player in Bukkit.getOnlinePlayers()) {
-                            ActionBar.sendActionBarMessage(player, ChatColor.translateAlternateColorCodes('&', "${Chat.prefix} &7Progress: &c${rounded}% &8| &7World: &8'&c${Config.fillTask.refWorld()}&8'"))
+                            ActionBar.sendActionBarMessage(player, ChatColor.translateAlternateColorCodes('&', "${Chat.prefix} &7Progress: ${Chat.primaryColor}${rounded}% &8| &7World: &8'${Chat.primaryColor}${Config.fillTask.refWorld()}&8'"))
                         }
                     } else {
                         cancel()
@@ -41,7 +41,7 @@ class PregenListener : Listener {
 
     @EventHandler
     fun on(event: WorldBorderFillFinishedEvent) {
-        Bukkit.broadcastMessage(Chat.colored("${prefix} Pregeneration in world '&c${event.world.name}&7' finished."))
-        Bukkit.broadcastMessage(Chat.colored("${prefix} Please wait for TPS to stabilize at &c20 &7before restarting."))
+        Bukkit.broadcastMessage(Chat.colored("${prefix} Pregeneration in world '${Chat.primaryColor}${event.world.name}&7' finished."))
+        Bukkit.broadcastMessage(Chat.colored("${prefix} Please wait for TPS to stabilize at ${Chat.primaryColor}20 &7before restarting."))
     }
 }

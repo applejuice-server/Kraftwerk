@@ -26,7 +26,7 @@ class StaffChatCommand : CommandExecutor {
             val msg = message.toString().trim()
             for (player in Bukkit.getOnlinePlayers()) {
                 if (player.hasPermission("uhc.staff")) {
-                    Chat.sendMessage(player, "&8[&4Staff Chat&8] &f${sender.name} ${Chat.dash} &f&o${msg}")
+                    Chat.sendMessage(player, "&8[${Chat.primaryColor}Staff Chat&8] ${Chat.secondaryColor}${sender.name} ${Chat.dash} &f&o${msg}")
                 }
             }
         } else {

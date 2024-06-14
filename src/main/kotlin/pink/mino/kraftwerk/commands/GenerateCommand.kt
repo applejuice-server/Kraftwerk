@@ -35,7 +35,7 @@ class GenerateTask(val world: World, private val chunks: ArrayList<Location>) : 
             }
         }
         for (player in Bukkit.getOnlinePlayers()) {
-            ActionBar.sendActionBarMessage(player, ChatColor.translateAlternateColorCodes('&', "&8[&4Scenario Generation&8] &7Chunks Left: &c${chunks.size}&8/&c${size} &8| &7World: &8'&c${world.name}&8'"))
+            ActionBar.sendActionBarMessage(player, ChatColor.translateAlternateColorCodes('&', "&8[${Chat.primaryColor}Scenario Generation&8] &7Chunks Left: ${Chat.primaryColor}${chunks.size}&8/${Chat.primaryColor}${size} &8| &7World: &8'${Chat.primaryColor}${world.name}&8'"))
         }
     }
 }
@@ -75,7 +75,7 @@ class GenerateCommand : CommandExecutor {
                 chunks.add(location)
             }
         }
-        Chat.sendMessage(sender, "${Chat.prefix} &7Generating &f${chunks.size}&7 chunks...")
+        Chat.sendMessage(sender, "${Chat.prefix} &7Generating ${Chat.secondaryColor}${chunks.size}&7 chunks...")
         GenerateTask(world, chunks).runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 1L)
         return true
     }

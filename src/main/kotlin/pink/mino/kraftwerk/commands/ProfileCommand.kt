@@ -8,6 +8,7 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 import pink.mino.kraftwerk.Kraftwerk
+import pink.mino.kraftwerk.features.SettingsFeature
 import pink.mino.kraftwerk.utils.*
 import kotlin.math.floor
 
@@ -21,15 +22,15 @@ class ProfileCommand : CommandExecutor {
         if (sender !is Player) {
             return false
         }
-        val gui = GuiBuilder().rows(3).name("&4&lYour Profile").owner(sender)
+        val gui = GuiBuilder().rows(3).name("${Chat.primaryColor}&lYour Profile").owner(sender)
         val settings = ItemBuilder(Material.REDSTONE_COMPARATOR)
-            .name(" &4&lSettings")
+            .name(" ${Chat.primaryColor}&lSettings")
             .addLore(" ")
             .addLore(" &7Click to customize your settings. ")
             .addLore(" ")
             .make()
         val stats = ItemBuilder(Material.DIAMOND)
-            .name(" &4&lStatistics")
+            .name(" ${Chat.primaryColor}&lStatistics")
             .addLore(" ")
             .addLore(" &7Click to view your player stats. ")
             .addLore(" ")
@@ -44,10 +45,10 @@ class ProfileCommand : CommandExecutor {
             0.0
         }
         val misc = ItemBuilder(Material.NETHER_STAR)
-            .name(" &4&lMisc.")
+            .name(" ${Chat.primaryColor}&lMisc.")
             .addLore(" ")
             .addLore(" &7Your Level ${Chat.dash} &a${level} &8(&a${progress.toInt()}%&8)")
-            .addLore(" &7Chat Mode ${Chat.dash} &f${profile.chatMode}")
+            .addLore(" &7Chat Mode ${Chat.dash} ${Chat.secondaryColor}${profile.chatMode}")
             .addLore(" &7Coins ${Chat.dash} &6⚜ ${floor(profile.coins)}")
             .addLore(" ")
             .make()
@@ -56,7 +57,7 @@ class ProfileCommand : CommandExecutor {
         }
         gui.item(11, settings).onClick runnable@ { inventoryClickEvent ->
             val player = inventoryClickEvent.whoClicked as Player
-            val gui = GuiBuilder().rows(1).name("&4&lPlayer Settings").owner(player)
+            val gui = GuiBuilder().rows(1).name("${Chat.primaryColor}&lPlayer Settings").owner(player)
             val disableRedstonePickup = ItemBuilder(Material.REDSTONE)
             if (profile.disableRedstonePickup) {
                 disableRedstonePickup.name("&a&lDisable Redstone Pickup")
@@ -80,12 +81,12 @@ class ProfileCommand : CommandExecutor {
             }
             val projectileMessages = ItemBuilder(Material.ARROW)
                 .name("&e&lProjectile Messages")
-                .addLore("&7Currently ${Chat.dash} &f${profile.projectileMessages}")
+                .addLore("&7Currently ${Chat.dash} ${Chat.secondaryColor}${profile.projectileMessages}")
                 .addLore("&8&oClick to toggle!")
                 .make()
             val borderPreference = ItemBuilder(Material.BEDROCK)
                 .name("&e&lBorder Preference")
-                .addLore("&7Currently ${Chat.dash} &f${profile.borderPreference}")
+                .addLore("&7Currently ${Chat.dash} ${Chat.secondaryColor}${profile.borderPreference}")
                 .addLore("&8&oClick to toggle!")
                 .make()
             val deathMessageOnScreen = ItemBuilder(Material.BOOK_AND_QUILL)
@@ -104,7 +105,7 @@ class ProfileCommand : CommandExecutor {
                     Chat.sendMessage(player, "${Chat.prefix} Set your projectile messages to &8'&eDIAMETER&8'&7.")
                     val meta = projectileMessages.itemMeta
                     meta.lore = listOf(
-                        Chat.colored("&7Currently ${Chat.dash} &fDIAMETER"),
+                        Chat.colored("&7Currently ${Chat.dash} ${Chat.secondaryColor}DIAMETER"),
                         Chat.colored("&8&oClick to toggle!")
                     )
                     it.currentItem.itemMeta = meta
@@ -113,7 +114,7 @@ class ProfileCommand : CommandExecutor {
                     Chat.sendMessage(player, "${Chat.prefix} Set your projectile messages to &8'&eRADIUS&8'&7.")
                     val meta = projectileMessages.itemMeta
                     meta.lore = listOf(
-                        Chat.colored("&7Currently ${Chat.dash} &fRADIUS"),
+                        Chat.colored("&7Currently ${Chat.dash} ${Chat.secondaryColor}RADIUS"),
                         Chat.colored("&8&oClick to toggle!")
                     )
                     it.currentItem.itemMeta = meta
@@ -148,7 +149,7 @@ class ProfileCommand : CommandExecutor {
                     Chat.sendMessage(player, "${Chat.prefix} Set your projectile messages to &8'&eSUBTITLE&8'&7.")
                     val meta = projectileMessages.itemMeta
                     meta.lore = listOf(
-                        Chat.colored("&7Currently ${Chat.dash} &fSUBTITLE"),
+                        Chat.colored("&7Currently ${Chat.dash} ${Chat.secondaryColor}SUBTITLE"),
                         Chat.colored("&8&oClick to toggle!")
                     )
                     it.currentItem.itemMeta = meta
@@ -157,7 +158,7 @@ class ProfileCommand : CommandExecutor {
                     Chat.sendMessage(player, "${Chat.prefix} Set your projectile messages to &8'&eCHAT&8'&7.")
                     val meta = projectileMessages.itemMeta
                     meta.lore = listOf(
-                        Chat.colored("&7Currently ${Chat.dash} &fCHAT"),
+                        Chat.colored("&7Currently ${Chat.dash} ${Chat.secondaryColor}CHAT"),
                         Chat.colored("&8&oClick to toggle!")
                     )
                     it.currentItem.itemMeta = meta
@@ -193,7 +194,7 @@ class ProfileCommand : CommandExecutor {
             }
             gui.item(1, disableLapisPickup.make()).onClick runnable@ {
                 if (!PerkChecker.checkPerks(player).contains(Perk.TOGGLE_PICKUPS)) {
-                    Chat.sendMessage(player, "&cThis setting is locked to &6Gold&c players. &cBuy it at &ehttps://applejuice.tebex.io&c.")
+                    Chat.sendMessage(player, "&cThis setting is locked to &6Gold&c players. &cBuy it at &e${if (SettingsFeature.instance.data!!.getString("config.chat.storeUrl") != null) SettingsFeature.instance.data!!.getString("config.chat.storeUrl") else "no store url setup in config tough tits"}&c.")
                     return@runnable
                 }
                 if (profile.disableLapisPickup) {
@@ -229,7 +230,7 @@ class ProfileCommand : CommandExecutor {
             sender.openInventory(gui.make())
         }
         val display = ItemBuilder(Material.REDSTONE)
-            .name(" &4&lDisplay")
+            .name(" ${Chat.primaryColor}&lDisplay")
             .addLore(" ")
             .addLore(" &7Customize certain cosmetic settings for yourself. ")
             .addLore(" ")
@@ -238,24 +239,24 @@ class ProfileCommand : CommandExecutor {
             Bukkit.dispatchCommand(it.whoClicked as Player, "stats")
         }
         gui.item(15, display).onClick runnable@ {
-            val gui = GuiBuilder().rows(3).name("&4&lDisplay Settings").owner(sender)
+            val gui = GuiBuilder().rows(3).name("${Chat.primaryColor}&lDisplay Settings").owner(sender)
             val tags = ItemBuilder(Material.NAME_TAG)
-                .name(" &4&lTags")
+                .name(" ${Chat.primaryColor}&lTags")
                 .addLore("&7Grant yourself suffixes at the end of your name!")
                 .make()
             val arenaBlocks = ItemBuilder(Material.COBBLESTONE)
-                .name(" &4&lArena Blocks")
+                .name(" ${Chat.primaryColor}&lArena Blocks")
                 .addLore("&7Customize the blocks given in your arena kit!")
                 .make()
             gui.item(12, tags).onClick runnable@ {
-                val gui = GuiBuilder().rows(3).name("&4&lTags").owner(sender)
+                val gui = GuiBuilder().rows(3).name("${Chat.primaryColor}&lTags").owner(sender)
                 val profile = Kraftwerk.instance.profileHandler.getProfile(sender.uniqueId)!!
                 if (profile.unlockedTags.size == 0) {
-                    Chat.sendMessage(sender, "&cYou have no tags unlocked, buy some at the store at &ehttps://applejuice.tebex.io&c!")
+                    Chat.sendMessage(sender, "&cYou have no tags unlocked, buy some at the store at &e${if (SettingsFeature.instance.data!!.getString("config.chat.storeUrl") != null) SettingsFeature.instance.data!!.getString("config.chat.storeUrl") else "no store url setup in config tough tits"}&c!")
                     return@runnable
                 }
                 var index = 0
-                for (v in profile!!.unlockedTags) {
+                for (v in profile.unlockedTags) {
                     val tag = Tags.valueOf(v.uppercase())
                     val display = ItemBuilder(tag.item)
                         .name("&d${v.lowercase().replaceFirstChar { it.uppercase() }}")

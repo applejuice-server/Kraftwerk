@@ -34,10 +34,10 @@ class EditConfigCommand : CommandExecutor {
         var gui: GuiBuilder? = null
         var size: Int = 35
         if (args.isEmpty()) {
-            gui = GuiBuilder().rows(2).name(ChatColor.translateAlternateColorCodes('&', "&4Edit UHC Config")).owner(sender)
+            gui = GuiBuilder().rows(2).name(ChatColor.translateAlternateColorCodes('&', "${Chat.primaryColor}Edit UHC Config")).owner(sender)
             size = 17
             val rates = ItemBuilder(Material.FLINT)
-                .name("&cRates")
+                .name("${Chat.primaryColor}Rates")
                 .addLore("&7Click here to edit rates.")
                 .make()
             gui.item(0, rates).onClick runnable@ {
@@ -46,7 +46,7 @@ class EditConfigCommand : CommandExecutor {
                 Bukkit.dispatchCommand(player, "editconfig rates")
             }
             val settings = ItemBuilder(Material.LAVA_BUCKET)
-                .name("&cSettings")
+                .name("${Chat.primaryColor}Settings")
                 .addLore("&7Click here to edit general options.")
                 .make()
             gui.item(1, settings).onClick runnable@ {
@@ -55,7 +55,7 @@ class EditConfigCommand : CommandExecutor {
                 Bukkit.dispatchCommand(player, "editconfig options")
             }
             val teams = ItemBuilder(Material.DIAMOND_SWORD)
-                .name("&cTeams")
+                .name("${Chat.primaryColor}Teams")
                 .addLore("&7Click here to edit teams.")
                 .make()
             gui.item(2, teams).onClick runnable@ {
@@ -64,7 +64,7 @@ class EditConfigCommand : CommandExecutor {
                 Bukkit.dispatchCommand(player, "editconfig teams")
             }
             val starterFood = ItemBuilder(Material.COOKED_BEEF)
-                .name("&cStarter Food")
+                .name("${Chat.primaryColor}Starter Food")
                 .addLore("&7Click here to edit starter food.")
                 .make()
             gui.item(3, starterFood).onClick runnable@ {
@@ -73,7 +73,7 @@ class EditConfigCommand : CommandExecutor {
                 Bukkit.dispatchCommand(player, "editconfig starterfood")
             }
             val host = ItemBuilder(Material.COMPASS)
-                .name("&cHost")
+                .name("${Chat.primaryColor}Host")
                 .addLore("&7Click here to set yourself as the host.")
                 .make()
             gui.item(4, host).onClick runnable@ {
@@ -82,7 +82,7 @@ class EditConfigCommand : CommandExecutor {
                 Bukkit.dispatchCommand(player, "editconfig host")
             }
             val events = ItemBuilder(Material.WATCH)
-                .name("&cEvents")
+                .name("${Chat.primaryColor}Events")
                 .addLore("&7Click here to edit events.")
                 .make()
             gui.item(5, events).onClick runnable@ {
@@ -91,7 +91,7 @@ class EditConfigCommand : CommandExecutor {
                 Bukkit.dispatchCommand(player, "editconfig events")
             }
             val nether = ItemBuilder(Material.NETHER_STAR)
-                .name("&cNether")
+                .name("${Chat.primaryColor}Nether")
                 .addLore("&7Click here to edit nether options.")
                 .make()
             gui.item(6, nether).onClick runnable@ {
@@ -100,7 +100,7 @@ class EditConfigCommand : CommandExecutor {
                 Bukkit.dispatchCommand(player, "editconfig nether")
             }
             val rules = ItemBuilder(Material.PAPER)
-                .name("&cRules")
+                .name("${Chat.primaryColor}Rules")
                 .addLore("&7Click here to edit rules.")
                 .make()
             gui.item(7, rules).onClick runnable@ {
@@ -109,7 +109,7 @@ class EditConfigCommand : CommandExecutor {
                 Bukkit.dispatchCommand(player, "editconfig rules")
             }
             val specials = ItemBuilder(Material.BLAZE_POWDER)
-                .name("&cSpecial Options")
+                .name("${Chat.primaryColor}Special Options")
                 .addLore("&7Click here to edit special options.")
                 .make()
             gui.item(8, specials).onClick runnable@ {
@@ -118,7 +118,7 @@ class EditConfigCommand : CommandExecutor {
                 Bukkit.dispatchCommand(player, "editconfig specials")
             }
         } else if (args[0].lowercase() == "options") {
-            gui = GuiBuilder().rows(3).name(ChatColor.translateAlternateColorCodes('&', "&4Edit UHC Config")).owner(sender)
+            gui = GuiBuilder().rows(3).name(ChatColor.translateAlternateColorCodes('&', "${Chat.primaryColor}Edit UHC Config")).owner(sender)
             size = 17
             var iterator = 0
             for (option in ConfigOptionHandler.configOptions) {
@@ -143,7 +143,7 @@ class EditConfigCommand : CommandExecutor {
                 }
             }
         } else if (args[0].lowercase() == "nether") {
-            gui = GuiBuilder().rows(1).name(ChatColor.translateAlternateColorCodes('&', "&4Edit UHC Config")).owner(sender)
+            gui = GuiBuilder().rows(1).name(ChatColor.translateAlternateColorCodes('&', "${Chat.primaryColor}Edit UHC Config")).owner(sender)
             size = 8
             var iterator = 0
             for (option in ConfigOptionHandler.configOptions) {
@@ -168,7 +168,7 @@ class EditConfigCommand : CommandExecutor {
                 }
             }
         } else if (args[0].lowercase() == "rules") {
-            gui = GuiBuilder().rows(2).name(ChatColor.translateAlternateColorCodes('&', "&4Edit UHC Config")).owner(sender)
+            gui = GuiBuilder().rows(2).name(ChatColor.translateAlternateColorCodes('&', "${Chat.primaryColor}Edit UHC Config")).owner(sender)
             size = 17
             var iterator = 0
             for (option in ConfigOptionHandler.configOptions) {
@@ -193,7 +193,7 @@ class EditConfigCommand : CommandExecutor {
                 }
             }
         } else if (args[0] == "events") {
-            gui = GuiBuilder().rows(1).name(ChatColor.translateAlternateColorCodes('&', "&4Edit UHC Config")).owner(sender)
+            gui = GuiBuilder().rows(1).name(ChatColor.translateAlternateColorCodes('&', "${Chat.primaryColor}Edit UHC Config")).owner(sender)
             size = 8
             val finalHeal = ItemStack(Material.REDSTONE)
             val pvp = ItemStack(Material.IRON_SWORD)
@@ -207,19 +207,19 @@ class EditConfigCommand : CommandExecutor {
             muMeta.displayName = Chat.colored("&cMeetup")
 
             fhMeta.lore = listOf(
-                Chat.colored("&7Final Heal happens in &c${SettingsFeature.instance.data!!.getInt("game.events.final-heal")} minutes&7."),
+                Chat.colored("&7Final Heal happens in ${Chat.primaryColor}${SettingsFeature.instance.data!!.getInt("game.events.final-heal")} minutes&7."),
                 "",
                 Chat.colored("&8Left Click&7 to add &aone&7."),
                 Chat.colored("&8Right Click&7 to subtract &cone&7.")
             )
             pvpMeta.lore = listOf(
-                Chat.colored("&7PvP happens in &c${SettingsFeature.instance.data!!.getInt("game.events.pvp") + SettingsFeature.instance.data!!.getInt("game.events.final-heal")} minutes&7."),
+                Chat.colored("&7PvP happens in ${Chat.primaryColor}${SettingsFeature.instance.data!!.getInt("game.events.pvp") + SettingsFeature.instance.data!!.getInt("game.events.final-heal")} minutes&7."),
                 "",
                 Chat.colored("&8Left Click&7 to add &aone&7."),
                 Chat.colored("&8Right Click&7 to subtract &cone&7.")
             )
             muMeta.lore = listOf(
-                Chat.colored("&7Meetup happens in &c${SettingsFeature.instance.data!!.getInt("game.events.pvp") + SettingsFeature.instance.data!!.getInt("game.events.final-heal") + SettingsFeature.instance.data!!.getInt("game.events.meetup")} minutes&7."),
+                Chat.colored("&7Meetup happens in ${Chat.primaryColor}${SettingsFeature.instance.data!!.getInt("game.events.pvp") + SettingsFeature.instance.data!!.getInt("game.events.final-heal") + SettingsFeature.instance.data!!.getInt("game.events.meetup")} minutes&7."),
                 "",
                 Chat.colored("&8Left Click&7 to add &aone&7."),
                 Chat.colored("&8Right Click&7 to subtract &cone&7.")
@@ -227,7 +227,7 @@ class EditConfigCommand : CommandExecutor {
 
             val bs = ItemBuilder(Material.BEDROCK)
                 .name("&cBorder Shrinks")
-                .addLore("&7The border begins to shrink in &c${SettingsFeature.instance.data!!.getInt("game.events.pvp") + SettingsFeature.instance.data!!.getInt("game.events.final-heal") + SettingsFeature.instance.data!!.getInt("game.events.borderShrink")} minutes&7.")
+                .addLore("&7The border begins to shrink in ${Chat.primaryColor}${SettingsFeature.instance.data!!.getInt("game.events.pvp") + SettingsFeature.instance.data!!.getInt("game.events.final-heal") + SettingsFeature.instance.data!!.getInt("game.events.borderShrink")} minutes&7.")
                 .addLore(" ")
                 .addLore("&8Left Click&7 to add &aone&7.")
                 .addLore("&8Right Click&7 to subtract &cone&7.")
@@ -243,7 +243,7 @@ class EditConfigCommand : CommandExecutor {
                     SettingsFeature.instance.saveData()
                     val meta = it.currentItem.itemMeta
                     meta.lore = listOf(
-                        Chat.colored(Chat.colored("&7Final Heal happens in &c${SettingsFeature.instance.data!!.getInt("game.events.final-heal")} minutes&7.")),
+                        Chat.colored(Chat.colored("&7Final Heal happens in ${Chat.primaryColor}${SettingsFeature.instance.data!!.getInt("game.events.final-heal")} minutes&7.")),
                         "",
                         Chat.colored("&8Left Click&7 to add &aone&7."),
                         Chat.colored("&8Right Click&7 to subtract &cone&7.")
@@ -258,7 +258,7 @@ class EditConfigCommand : CommandExecutor {
                     SettingsFeature.instance.saveData()
                     val meta = it.currentItem.itemMeta
                     meta.lore = listOf(
-                        Chat.colored(Chat.colored("&7Final Heal happens in &c${SettingsFeature.instance.data!!.getInt("game.events.final-heal")} minutes&7.")),
+                        Chat.colored(Chat.colored("&7Final Heal happens in ${Chat.primaryColor}${SettingsFeature.instance.data!!.getInt("game.events.final-heal")} minutes&7.")),
                         "",
                         Chat.colored("&8Left Click&7 to add &aone&7."),
                         Chat.colored("&8Right Click&7 to subtract &cone&7.")
@@ -274,7 +274,7 @@ class EditConfigCommand : CommandExecutor {
                     val meta = it.currentItem.itemMeta
                     meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES)
                     meta.lore = listOf(
-                        Chat.colored(Chat.colored("&7PvP happens in &c${SettingsFeature.instance.data!!.getInt("game.events.final-heal") + SettingsFeature.instance.data!!.getInt("game.events.pvp")} minutes&7.")),
+                        Chat.colored(Chat.colored("&7PvP happens in ${Chat.primaryColor}${SettingsFeature.instance.data!!.getInt("game.events.final-heal") + SettingsFeature.instance.data!!.getInt("game.events.pvp")} minutes&7.")),
                         "",
                         Chat.colored("&8Left Click&7 to add &aone&7."),
                         Chat.colored("&8Right Click&7 to subtract &cone&7.")
@@ -290,7 +290,7 @@ class EditConfigCommand : CommandExecutor {
                     val meta = it.currentItem.itemMeta
                     meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES)
                     meta.lore = listOf(
-                        Chat.colored(Chat.colored("&7PvP happens in &c${SettingsFeature.instance.data!!.getInt("game.events.final-heal") + SettingsFeature.instance.data!!.getInt("game.events.pvp")} minutes&7.")),
+                        Chat.colored(Chat.colored("&7PvP happens in ${Chat.primaryColor}${SettingsFeature.instance.data!!.getInt("game.events.final-heal") + SettingsFeature.instance.data!!.getInt("game.events.pvp")} minutes&7.")),
                         "",
                         Chat.colored("&8Left Click&7 to add &aone&7."),
                         Chat.colored("&8Right Click&7 to subtract &cone&7.")
@@ -305,7 +305,7 @@ class EditConfigCommand : CommandExecutor {
                     SettingsFeature.instance.saveData()
                     val meta = it.currentItem.itemMeta
                     meta.lore = listOf(
-                        Chat.colored(Chat.colored("&7Meetup happens in &c${SettingsFeature.instance.data!!.getInt("game.events.pvp") + SettingsFeature.instance.data!!.getInt("game.events.final-heal") + SettingsFeature.instance.data!!.getInt("game.events.meetup")} minutes&7.")),
+                        Chat.colored(Chat.colored("&7Meetup happens in ${Chat.primaryColor}${SettingsFeature.instance.data!!.getInt("game.events.pvp") + SettingsFeature.instance.data!!.getInt("game.events.final-heal") + SettingsFeature.instance.data!!.getInt("game.events.meetup")} minutes&7.")),
                         "",
                         Chat.colored("&8Left Click&7 to add &aone&7."),
                         Chat.colored("&8Right Click&7 to subtract &cone&7.")
@@ -320,7 +320,7 @@ class EditConfigCommand : CommandExecutor {
                     SettingsFeature.instance.saveData()
                     val meta = it.currentItem.itemMeta
                     meta.lore = listOf(
-                        Chat.colored(Chat.colored("&7Meetup happens in &c${SettingsFeature.instance.data!!.getInt("game.events.pvp") + SettingsFeature.instance.data!!.getInt("game.events.final-heal") + SettingsFeature.instance.data!!.getInt("game.events.meetup")} minutes&7.")),
+                        Chat.colored(Chat.colored("&7Meetup happens in ${Chat.primaryColor}${SettingsFeature.instance.data!!.getInt("game.events.pvp") + SettingsFeature.instance.data!!.getInt("game.events.final-heal") + SettingsFeature.instance.data!!.getInt("game.events.meetup")} minutes&7.")),
                         "",
                         Chat.colored("&8Left Click&7 to add &aone&7."),
                         Chat.colored("&8Right Click&7 to subtract &cone&7.")
@@ -335,7 +335,7 @@ class EditConfigCommand : CommandExecutor {
                     SettingsFeature.instance.saveData()
                     val meta = it.currentItem.itemMeta
                     meta.lore = listOf(
-                        Chat.colored("&7The border begins to shrink in &c${SettingsFeature.instance.data!!.getInt("game.events.pvp") + SettingsFeature.instance.data!!.getInt("game.events.final-heal") + SettingsFeature.instance.data!!.getInt("game.events.borderShrink")} minutes&7."),
+                        Chat.colored("&7The border begins to shrink in ${Chat.primaryColor}${SettingsFeature.instance.data!!.getInt("game.events.pvp") + SettingsFeature.instance.data!!.getInt("game.events.final-heal") + SettingsFeature.instance.data!!.getInt("game.events.borderShrink")} minutes&7."),
                         "",
                         Chat.colored("&8Left Click&7 to add &aone&7."),
                         Chat.colored("&8Right Click&7 to subtract &cone&7.")
@@ -350,7 +350,7 @@ class EditConfigCommand : CommandExecutor {
                     SettingsFeature.instance.saveData()
                     val meta = it.currentItem.itemMeta
                     meta.lore = listOf(
-                        Chat.colored("&7The border begins to shrink in &c${SettingsFeature.instance.data!!.getInt("game.events.pvp") + SettingsFeature.instance.data!!.getInt("game.events.final-heal") + SettingsFeature.instance.data!!.getInt("game.events.borderShrink")} minutes&7."),
+                        Chat.colored("&7The border begins to shrink in ${Chat.primaryColor}${SettingsFeature.instance.data!!.getInt("game.events.pvp") + SettingsFeature.instance.data!!.getInt("game.events.final-heal") + SettingsFeature.instance.data!!.getInt("game.events.borderShrink")} minutes&7."),
                         "",
                         Chat.colored("&8Left Click&7 to add &aone&7."),
                         Chat.colored("&8Right Click&7 to subtract &cone&7.")
@@ -365,13 +365,13 @@ class EditConfigCommand : CommandExecutor {
             player.playSound(player.location, Sound.LEVEL_UP, 10.toFloat(), 1.toFloat())
             return true
         } else if (args[0].lowercase() == "starterfood") {
-            gui = GuiBuilder().rows(1).name(ChatColor.translateAlternateColorCodes('&', "&4Edit UHC Config")).owner(sender)
+            gui = GuiBuilder().rows(1).name(ChatColor.translateAlternateColorCodes('&', "${Chat.primaryColor}Edit UHC Config")).owner(sender)
             size = 8
             val starterFood = ItemStack(Material.COOKED_BEEF)
             val starterFoodMeta = starterFood.itemMeta
-            starterFoodMeta.displayName = Chat.colored("&4Starter Food")
+            starterFoodMeta.displayName = Chat.colored("${Chat.primaryColor}Starter Food")
             starterFoodMeta.lore = listOf(
-                Chat.colored(Chat.colored("&7Starter Food ${Chat.dash} &c${SettingsFeature.instance.data!!.getInt("game.starterfood")}")),
+                Chat.colored(Chat.colored("&7Starter Food ${Chat.dash} ${Chat.primaryColor}${SettingsFeature.instance.data!!.getInt("game.starterfood")}")),
                 "",
                 Chat.colored("&8Left Click&7 to add &aone&7."),
                 Chat.colored("&8Right Click&7 to subtract &cone&7.")
@@ -384,7 +384,7 @@ class EditConfigCommand : CommandExecutor {
                     SettingsFeature.instance.saveData()
                     val meta = it.currentItem.itemMeta
                     meta.lore = listOf(
-                        Chat.colored(Chat.colored("&7Starter Food ${Chat.dash} &c${SettingsFeature.instance.data!!.getInt("game.starterfood")}")),
+                        Chat.colored(Chat.colored("&7Starter Food ${Chat.dash} ${Chat.primaryColor}${SettingsFeature.instance.data!!.getInt("game.starterfood")}")),
                         "",
                         Chat.colored("&8Left Click&7 to add &aone&7."),
                         Chat.colored("&8Right Click&7 to subtract &cone&7.")
@@ -399,7 +399,7 @@ class EditConfigCommand : CommandExecutor {
                     SettingsFeature.instance.saveData()
                     val meta = it.currentItem.itemMeta
                     meta.lore = listOf(
-                        Chat.colored(Chat.colored("&7Starter Food ${Chat.dash} &c${SettingsFeature.instance.data!!.getInt("game.starterfood")}")),
+                        Chat.colored(Chat.colored("&7Starter Food ${Chat.dash} ${Chat.primaryColor}${SettingsFeature.instance.data!!.getInt("game.starterfood")}")),
                         "",
                         Chat.colored("&8Left Click&7 to add &aone&7."),
                         Chat.colored("&8Right Click&7 to subtract &cone&7.")
@@ -408,14 +408,14 @@ class EditConfigCommand : CommandExecutor {
                 }
             }
         } else if (args[0].lowercase() == "teams") {
-            gui = GuiBuilder().rows(3).name(ChatColor.translateAlternateColorCodes('&', "&4Edit UHC Config")).owner(sender)
+            gui = GuiBuilder().rows(3).name(ChatColor.translateAlternateColorCodes('&', "${Chat.primaryColor}Edit UHC Config")).owner(sender)
             size = 26
             val teamSize = ItemStack(Material.IRON_SWORD, SettingsFeature.instance.data!!.getInt("game.teamSize"))
             val teamSizeMeta = teamSize.itemMeta
-            teamSizeMeta.displayName = Chat.colored("&cTeam Size")
+            teamSizeMeta.displayName = Chat.colored("${Chat.primaryColor}Team Size")
             teamSizeMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES)
             teamSizeMeta.lore = listOf(
-                Chat.colored("&7Team Size ${Chat.dash} &c${SettingsFeature.instance.data!!.getInt("game.teamSize")}"),
+                Chat.colored("&7Team Size ${Chat.dash} ${Chat.primaryColor}${SettingsFeature.instance.data!!.getInt("game.teamSize")}"),
                 "",
                 Chat.colored("&8Left Click&7 to add &aone&7."),
                 Chat.colored("&8Right Click&7 to subtract &cone&7.")
@@ -432,9 +432,9 @@ class EditConfigCommand : CommandExecutor {
                     SettingsFeature.instance.saveData()
                     val meta = it.currentItem.itemMeta
                     val item = ItemStack(it.currentItem.type, SettingsFeature.instance.data!!.getInt("game.teamSize"))
-                    meta.displayName = Chat.colored("&cTeam Size")
+                    meta.displayName = Chat.colored("${Chat.primaryColor}Team Size")
                     meta.lore = listOf(
-                        Chat.colored("&7Team Size ${Chat.dash} &c${SettingsFeature.instance.data!!.getInt("game.teamSize")}"),
+                        Chat.colored("&7Team Size ${Chat.dash} ${Chat.primaryColor}${SettingsFeature.instance.data!!.getInt("game.teamSize")}"),
                         "",
                         Chat.colored("&8Left Click&7 to add &aone&7."),
                         Chat.colored("&8Right Click&7 to subtract &cone&7.")
@@ -450,9 +450,9 @@ class EditConfigCommand : CommandExecutor {
                     SettingsFeature.instance.saveData()
                     val meta = it.currentItem.itemMeta
                     val item = ItemStack(it.currentItem.type, SettingsFeature.instance.data!!.getInt("game.teamSize"))
-                    meta.displayName = Chat.colored("&cTeam Size")
+                    meta.displayName = Chat.colored("${Chat.primaryColor}Team Size")
                     meta.lore = listOf(
-                        Chat.colored("&7Team Size ${Chat.dash} &c${SettingsFeature.instance.data!!.getInt("game.teamSize")}"),
+                        Chat.colored("&7Team Size ${Chat.dash} ${Chat.primaryColor}${SettingsFeature.instance.data!!.getInt("game.teamSize")}"),
                         "",
                         Chat.colored("&8Left Click&7 to add &aone&7."),
                         Chat.colored("&8Right Click&7 to subtract &cone&7.")
@@ -467,7 +467,7 @@ class EditConfigCommand : CommandExecutor {
                 ItemStack(Material.WOOL, 1, 5)
             }
             val teamManagementMeta = teamManagement.itemMeta
-            teamManagementMeta.displayName = Chat.colored("&cTeam Management")
+            teamManagementMeta.displayName = Chat.colored("${Chat.primaryColor}Team Management")
             var status = if (SettingsFeature.instance.data!!.getBoolean("game.ffa")) {
                 "&cDisabled"
             } else {
@@ -503,14 +503,14 @@ class EditConfigCommand : CommandExecutor {
                     "",
                     Chat.colored("&8Left Click&7 to toggle.")
                 )
-                meta.displayName = Chat.colored("&cTeam Management")
+                meta.displayName = Chat.colored("${Chat.primaryColor}Team Management")
                 it.currentItem.itemMeta = meta
             }
             val randomizeTeams = ItemStack(Material.EYE_OF_ENDER)
             val randomizeTeamsMeta = randomizeTeams.itemMeta
-            randomizeTeamsMeta.displayName = Chat.colored("&cRandomize Teams")
+            randomizeTeamsMeta.displayName = Chat.colored("${Chat.primaryColor}Randomize Teams")
             randomizeTeamsMeta.lore = listOf(
-                Chat.colored("&7Click to randomize all players into teams of &c${SettingsFeature.instance.data!!.getInt("game.teamSize")}&7."),
+                Chat.colored("&7Click to randomize all players into teams of ${Chat.primaryColor}${SettingsFeature.instance.data!!.getInt("game.teamSize")}&7."),
                 "",
                 Chat.colored("&4&lWARNING&7 All players that are not"),
                 Chat.colored("&7going to play must be in Spectator mode.")
@@ -523,7 +523,7 @@ class EditConfigCommand : CommandExecutor {
 
             val resetTeams = ItemStack(Material.BARRIER)
             val resetTeamsMeta = randomizeTeams.itemMeta
-            resetTeamsMeta.displayName = Chat.colored("&cReset Teams")
+            resetTeamsMeta.displayName = Chat.colored("${Chat.primaryColor}Reset Teams")
             resetTeamsMeta.lore = listOf(
                 Chat.colored("&7Click to reset all teams."),
                 "",
@@ -535,13 +535,13 @@ class EditConfigCommand : CommandExecutor {
                 Bukkit.dispatchCommand(player, "team reset")
             }
         } else if (args[0].lowercase() == "rates") {
-            gui = GuiBuilder().rows(1).name(ChatColor.translateAlternateColorCodes('&', "&4Edit UHC Config")).owner(sender)
+            gui = GuiBuilder().rows(1).name(ChatColor.translateAlternateColorCodes('&', "${Chat.primaryColor}Edit UHC Config")).owner(sender)
             size = 8
             val flintRates = ItemStack(Material.FLINT)
             val flintRatesMeta = flintRates.itemMeta
-            flintRatesMeta.displayName = Chat.colored("&4Flint Rates")
+            flintRatesMeta.displayName = Chat.colored("${Chat.primaryColor}Flint Rates")
             flintRatesMeta.lore = listOf(
-                Chat.colored(Chat.colored("&7Flint Rates ${Chat.dash} &c${SettingsFeature.instance.data!!.getInt("game.rates.flint")}%")),
+                Chat.colored(Chat.colored("&7Flint Rates ${Chat.dash} ${Chat.primaryColor}${SettingsFeature.instance.data!!.getInt("game.rates.flint")}%")),
                 "",
                 Chat.colored("&8Left Click&7 to add &aone&7."),
                 Chat.colored("&8Right Click&7 to subtract &cone&7.")
@@ -558,7 +558,7 @@ class EditConfigCommand : CommandExecutor {
                     SettingsFeature.instance.saveData()
                     val meta = it.currentItem.itemMeta
                     meta.lore = listOf(
-                        Chat.colored(Chat.colored("&7Flint Rates ${Chat.dash} &c${SettingsFeature.instance.data!!.getInt("game.rates.flint")}%")),
+                        Chat.colored(Chat.colored("&7Flint Rates ${Chat.dash} ${Chat.primaryColor}${SettingsFeature.instance.data!!.getInt("game.rates.flint")}%")),
                         "",
                         Chat.colored("&8Left Click&7 to add &aone&7."),
                         Chat.colored("&8Right Click&7 to subtract &cone&7.")
@@ -573,7 +573,7 @@ class EditConfigCommand : CommandExecutor {
                     SettingsFeature.instance.saveData()
                     val meta = it.currentItem.itemMeta
                     meta.lore = listOf(
-                        Chat.colored(Chat.colored("&7Flint Rates ${Chat.dash} &c${SettingsFeature.instance.data!!.getInt("game.rates.flint")}%")),
+                        Chat.colored(Chat.colored("&7Flint Rates ${Chat.dash} ${Chat.primaryColor}${SettingsFeature.instance.data!!.getInt("game.rates.flint")}%")),
                         "",
                         Chat.colored("&8Left Click&7 to add &aone&7."),
                         Chat.colored("&8Right Click&7 to subtract &cone&7.")
@@ -583,9 +583,9 @@ class EditConfigCommand : CommandExecutor {
             }
             val appleRates = ItemStack(Material.APPLE)
             val appleRatesMeta = appleRates.itemMeta
-            appleRatesMeta.displayName = Chat.colored("&4Apple Rates")
+            appleRatesMeta.displayName = Chat.colored("${Chat.primaryColor}Apple Rates")
             appleRatesMeta.lore = listOf(
-                Chat.colored(Chat.colored("&7Apple Rates ${Chat.dash} &c${SettingsFeature.instance.data!!.getInt("game.rates.apple")}%")),
+                Chat.colored(Chat.colored("&7Apple Rates ${Chat.dash} ${Chat.primaryColor}${SettingsFeature.instance.data!!.getInt("game.rates.apple")}%")),
                 "",
                 Chat.colored("&8Left Click&7 to add &aone&7."),
                 Chat.colored("&8Right Click&7 to subtract &cone&7.")
@@ -602,7 +602,7 @@ class EditConfigCommand : CommandExecutor {
                     SettingsFeature.instance.saveData()
                     val meta = it.currentItem.itemMeta
                     meta.lore = listOf(
-                        Chat.colored(Chat.colored("&7Apple Rates ${Chat.dash} &c${SettingsFeature.instance.data!!.getInt("game.rates.apple")}%")),
+                        Chat.colored(Chat.colored("&7Apple Rates ${Chat.dash} ${Chat.primaryColor}${SettingsFeature.instance.data!!.getInt("game.rates.apple")}%")),
                         "",
                         Chat.colored("&8Left Click&7 to add &aone&7."),
                         Chat.colored("&8Right Click&7 to subtract &cone&7.")
@@ -617,7 +617,7 @@ class EditConfigCommand : CommandExecutor {
                     SettingsFeature.instance.saveData()
                     val meta = it.currentItem.itemMeta
                     meta.lore = listOf(
-                        Chat.colored(Chat.colored("&7Apple Rates ${Chat.dash} &c${SettingsFeature.instance.data!!.getInt("game.rates.apple")}%")),
+                        Chat.colored(Chat.colored("&7Apple Rates ${Chat.dash} ${Chat.primaryColor}${SettingsFeature.instance.data!!.getInt("game.rates.apple")}%")),
                         "",
                         Chat.colored("&8Left Click&7 to add &aone&7."),
                         Chat.colored("&8Right Click&7 to subtract &cone&7.")
@@ -626,7 +626,7 @@ class EditConfigCommand : CommandExecutor {
                 }
             }
         }  else if (args[0].lowercase() == "specials") {
-            gui = GuiBuilder().rows(1).name(ChatColor.translateAlternateColorCodes('&', "&4Edit UHC Config")).owner(sender)
+            gui = GuiBuilder().rows(1).name(ChatColor.translateAlternateColorCodes('&', "${Chat.primaryColor}Edit UHC Config")).owner(sender)
             size = 8
             var iterator = 0
             for (option in ConfigOptionHandler.configOptions) {

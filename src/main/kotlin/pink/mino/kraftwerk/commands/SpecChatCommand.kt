@@ -27,7 +27,7 @@ class SpecChatCommand : CommandExecutor {
                 message.append("${ChatColor.GRAY}${element}").append(" " + ChatColor.GRAY)
             }
             val msg = message.toString().trim()
-            SpecFeature.instance.specChat("&8[&cSpec Chat&8] &f${sender.name} ${Chat.dash} &f${msg}")
+            SpecFeature.instance.specChat("&8[${Chat.primaryColor}Spec Chat&8] &f${sender.name} ${Chat.dash} &f${msg}")
         } else {
             sender.sendMessage(Chat.colored("&cYou aren't in spectator mode!"))
             return false

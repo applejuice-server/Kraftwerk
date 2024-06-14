@@ -24,11 +24,11 @@ class HelpOpReplyCommand : CommandExecutor {
             }
         }
         if (args.isEmpty() || args.size <= 1) {
-            Chat.sendMessage(sender, "${Chat.prefix} Invalid usage: &f/hr <id> <reply>&7.")
+            Chat.sendMessage(sender, "${Chat.prefix} Invalid usage: ${Chat.secondaryColor}/hr <id> <reply>&7.")
             return false
         }
         if (args[0].toIntOrNull() == null) {
-            Chat.sendMessage(sender, "${Chat.prefix} Invalid ID: &f/hr <id> <reply>&7.")
+            Chat.sendMessage(sender, "${Chat.prefix} Invalid ID: ${Chat.secondaryColor}/hr <id> <reply>&7.")
             return false
         }
         val message = StringBuilder()
@@ -38,15 +38,15 @@ class HelpOpReplyCommand : CommandExecutor {
         val msg = message.toString().trim()
         val player = HelpOp.getHelpop(args[0].toInt())
         if (player == null) {
-            Chat.sendMessage(sender, "${Chat.prefix} Invalid ID: &f/hr <id> <reply>&7.")
+            Chat.sendMessage(sender, "${Chat.prefix} Invalid ID: ${Chat.secondaryColor}/hr <id> <reply>&7.")
             return false
         }
-        Chat.sendMessage(player, "&8[&4Help-OP&8]&f ${sender.name}&7 replied with ${Chat.dash} &f&o${msg}")
-        Chat.sendMessage(sender, "&8[&4Help-OP&8]&7 Successfully responded to &f${player.name} ${Chat.dash} &f&o${msg}")
+        Chat.sendMessage(player, "&8[${Chat.primaryColor}Help-OP&8]${Chat.secondaryColor} ${sender.name}&7 replied with ${Chat.dash} &f&o${msg}")
+        Chat.sendMessage(sender, "&8[${Chat.primaryColor}Help-OP&8]&7 Successfully responded to ${Chat.secondaryColor}${player.name} ${Chat.dash} &f&o${msg}")
         HelpOp.answered(args[0].toInt())
         for (p in Bukkit.getOnlinePlayers()) {
             if (SpecFeature.instance.getSpecs().contains(p.name) && p != sender) {
-                if (player.name !== sender.name) Chat.sendMessage(p, "&8[&4Help-OP&8]&f ${sender.name}&7 responded to &f${player.name}&7 ${Chat.dash} &f&o${msg}")
+                if (player.name !== sender.name) Chat.sendMessage(p, "&8[${Chat.primaryColor}Help-OP&8]${Chat.secondaryColor} ${sender.name}&7 responded to ${Chat.secondaryColor}${player.name}&7 ${Chat.dash} &f&o${msg}")
             }
         }
         return true

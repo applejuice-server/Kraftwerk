@@ -48,7 +48,7 @@ class PMOresCommand : CommandExecutor {
 
             for (team in sender.scoreboard.getPlayerTeam(sender).players) {
                 if (team is Player) {
-                    team.sendMessage("§8[§4Team Chat§8] ${ChatColor.WHITE}${sender.name} §7has ${iron} iron, §6${gold} gold§7, and §b${diamond} diamonds§7.")
+                    team.sendMessage(Chat.colored("§8[${Chat.primaryColor}Team Chat§8] ${ChatColor.WHITE}${sender.name} §7has ${iron} iron, §6${gold} gold§7, and §b${diamond} diamonds§7."))
                 }
             }
         }

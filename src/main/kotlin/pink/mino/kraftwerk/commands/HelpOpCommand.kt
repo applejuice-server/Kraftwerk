@@ -45,8 +45,8 @@ class HelpOpCommand : CommandExecutor {
         }
         val msg = message.toString().trim()
         val id = HelpOp.addHelpop(sender, msg)
-        Chat.sendMessage(sender, "${Chat.prefix} Successfully sent your &chelp-op&7, please wait for someone to answer it!")
-        val text = TextComponent(Chat.colored("&8[&4Help-OP&8] &8[&c#${id}&8] &f${sender.name} ${Chat.dash}&7 $msg"))
+        Chat.sendMessage(sender, "${Chat.prefix} Successfully sent your ${Chat.primaryColor}help-op&7, please wait for someone to answer it!")
+        val text = TextComponent(Chat.colored("&8[${Chat.primaryColor}Help-OP&8] &8[${Chat.primaryColor}#${id}&8] ${Chat.secondaryColor}${sender.name} ${Chat.dash}&7 $msg"))
         text.clickEvent = ClickEvent(
             ClickEvent.Action.SUGGEST_COMMAND,
             "/hr $id "

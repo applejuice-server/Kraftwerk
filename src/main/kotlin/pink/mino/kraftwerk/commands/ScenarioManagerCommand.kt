@@ -42,7 +42,7 @@ class ScenarioManagerCommand : CommandExecutor {
             }
             args[0].toInt()
         }
-        val gui = GuiBuilder().rows(4).name(Chat.colored("&4Scenario Manager")).owner(sender)
+        val gui = GuiBuilder().rows(4).name(Chat.colored("${Chat.primaryColor}Scenario Manager")).owner(sender)
         var i = 0
         for ((index, scenario) in ScenarioHandler.getScenarios().withIndex()) {
             if (page == 0) {

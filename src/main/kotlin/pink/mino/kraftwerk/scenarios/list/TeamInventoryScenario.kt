@@ -29,7 +29,7 @@ class TeamInventoryScenario : Scenario(
         val instance = TeamInventoryScenario()
     }
 
-    val prefix = "&8[&cTeam Inventory&8]&7"
+    val prefix = "&8[${Chat.primaryColor}Team Inventory&8]&7"
 
     fun aliveTeammates(player: Player): ArrayList<Player> {
         val teammates = ArrayList<Player>()
@@ -57,7 +57,7 @@ class TeamInventoryScenario : Scenario(
                     e.drops.add(item)
                 }
                 teamInventories!![team]!!.clear()
-                Chat.sendMessage(e.entity.killer, "$prefix The contents of their &f&oTeam Inventory&7 have been dropped as well.")
+                Chat.sendMessage(e.entity.killer, "$prefix The contents of their ${Chat.secondaryColor}&oTeam Inventory&7 have been dropped as well.")
             }
         } else {
             if (soloInventories!![player.uniqueId] != null) {
@@ -65,7 +65,7 @@ class TeamInventoryScenario : Scenario(
                     e.drops.add(item)
                 }
                 soloInventories!![player.uniqueId]!!.clear()
-                Chat.sendMessage(e.entity.killer, "$prefix The contents of their &f&oTeam Inventory&7 have been dropped as well.")
+                Chat.sendMessage(e.entity.killer, "$prefix The contents of their ${Chat.secondaryColor}&oTeam Inventory&7 have been dropped as well.")
             }
         }
     }

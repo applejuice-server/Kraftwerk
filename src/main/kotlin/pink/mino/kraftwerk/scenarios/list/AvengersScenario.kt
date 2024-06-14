@@ -34,7 +34,7 @@ class AvengersScenario : Scenario(
     Material.DIAMOND_SWORD
 ) {
     val superheroes: HashMap<Player, String> = hashMapOf()
-    val prefix = "&8[&cAvengers&8]&7"
+    val prefix = "&8[${Chat.primaryColor}Avengers&8]&7"
     var cooldowns = HashMap<String, Long>()
     var pvpEnabled: Boolean = false
 
@@ -53,7 +53,7 @@ class AvengersScenario : Scenario(
             "Hawkeye"
         )
         if (TeamsFeature.manager.getTeam(player) == null) {
-            SpecFeature.instance.specChat("&f${player.name}&7 hasn't been late-scattered to a teammate, not giving them any powers.")
+            SpecFeature.instance.specChat("${Chat.secondaryColor}${player.name}&7 hasn't been late-scattered to a teammate, not giving them any powers.")
             return
         }
         for (teammate in TeamsFeature.manager.getTeam(player)!!.players) {
@@ -62,7 +62,7 @@ class AvengersScenario : Scenario(
         val hero = pool[Random.nextInt(pool.size)]
         superheroes[player] = hero
         giveAvengers(player)
-        Chat.sendMessage(player, "$prefix Your assigned Avenger is: &f${hero}&7.")
+        Chat.sendMessage(player, "$prefix Your assigned Avenger is: ${Chat.secondaryColor}${hero}&7.")
     }
 
     fun assignAvengers() {
@@ -84,7 +84,7 @@ class AvengersScenario : Scenario(
                             val hero = pool[Random.nextInt(pool.size)]
                             superheroes[player as Player] = hero
                             pool.remove(hero)
-                            Chat.sendMessage(player, "$prefix Your assigned Avenger is: &f${hero}&7.")
+                            Chat.sendMessage(player, "$prefix Your assigned Avenger is: ${Chat.secondaryColor}${hero}&7.")
                         } catch(_: Error) {}
                     }
                 }
@@ -108,11 +108,11 @@ class AvengersScenario : Scenario(
                 shieldMeta.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 5, true)
                 shieldMeta.addEnchant(Enchantment.THORNS, 2, true)
                 shieldMeta.spigot().isUnbreakable = true
-                shieldMeta.displayName = Chat.colored("&cShield")
+                shieldMeta.displayName = Chat.colored("${Chat.primaryColor}Shield")
                 shield.itemMeta = shieldMeta
                 val superSoldier = ItemStack(Material.BLAZE_POWDER)
                 val superSoldierMeta = superSoldier.itemMeta
-                superSoldierMeta.displayName = Chat.colored("&cSuper Soldier Serum")
+                superSoldierMeta.displayName = Chat.colored("${Chat.primaryColor}Super Soldier Serum")
                 superSoldierMeta.lore = listOf(
                     Chat.colored("&7Right-click: Gives all your teammates strength for 10s."),
                     Chat.colored("&7Cooldown: 40 seconds")
@@ -128,7 +128,7 @@ class AvengersScenario : Scenario(
                 player.addPotionEffect(PotionEffect(PotionEffectType.JUMP, 99999999, 2, false, false))
                 val spideySense = ItemStack(Material.WATCH)
                 val spideySenseMeta = spideySense.itemMeta
-                spideySenseMeta.displayName = Chat.colored("&cSpidey Sense")
+                spideySenseMeta.displayName = Chat.colored("${Chat.primaryColor}Spidey Sense")
                 spideySenseMeta.lore = listOf(
                     Chat.colored("&7Right-click: View all players within a 150 block radius."),
                     Chat.colored("&7Cooldown: 20 seconds")
@@ -136,7 +136,7 @@ class AvengersScenario : Scenario(
                 spideySense.itemMeta = spideySenseMeta
                 val webShooter = ItemStack(Material.WEB)
                 val webShooterMeta = webShooter.itemMeta
-                webShooterMeta.displayName = Chat.colored("&cWeb Shooter")
+                webShooterMeta.displayName = Chat.colored("${Chat.primaryColor}Web Shooter")
                 webShooterMeta.lore = listOf(
                     Chat.colored("&7Right-click: Gives slowness to nearby enemies."),
                     Chat.colored("&7Passive: Makes a webcage whenever you kill someone.")
@@ -151,15 +151,15 @@ class AvengersScenario : Scenario(
                 player.addPotionEffect(PotionEffect(PotionEffectType.FAST_DIGGING, 99999999, 0, false, false))
                 val combatBoots = ItemStack(Material.IRON_BOOTS)
                 val combatBootsMeta = combatBoots.itemMeta
-                combatBootsMeta.displayName = Chat.colored("&cCombat Boots")
+                combatBootsMeta.displayName = Chat.colored("${Chat.primaryColor}Combat Boots")
                 combatBootsMeta.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 1, true)
                 combatBootsMeta.addEnchant(Enchantment.DEPTH_STRIDER, 3, true)
                 combatBoots.itemMeta = combatBootsMeta
                 val bloodRush = ItemStack(Material.REDSTONE)
                 val bloodRushMeta = bloodRush.itemMeta
-                bloodRushMeta.displayName = Chat.colored("&cBlood Rush")
+                bloodRushMeta.displayName = Chat.colored("${Chat.primaryColor}Blood Rush")
                 bloodRushMeta.lore = listOf(
-                    Chat.colored("&7Right-click: Receive &c12 seconds&7 of Speed IV & Jump Boost II&7."),
+                    Chat.colored("&7Right-click: Receive ${Chat.primaryColor}12 seconds&7 of Speed IV & Jump Boost II&7."),
                     Chat.colored("&7Cooldown: 50 seconds")
                 )
                 bloodRush.itemMeta = bloodRushMeta
@@ -177,7 +177,7 @@ class AvengersScenario : Scenario(
                 player.addPotionEffect(PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 99999999, 0, false, false))
                 val stormbreaker = ItemStack(Material.IRON_AXE)
                 val stormbreakerMeta = stormbreaker.itemMeta
-                stormbreakerMeta.displayName = Chat.colored("&cStormbreaker")
+                stormbreakerMeta.displayName = Chat.colored("${Chat.primaryColor}Stormbreaker")
                 stormbreakerMeta.spigot().isUnbreakable = true
                 stormbreakerMeta.lore = listOf(
                     Chat.colored("&7Right-click: Smite everyone within a 7 block radius."),
@@ -194,9 +194,9 @@ class AvengersScenario : Scenario(
                 player.addPotionEffect(PotionEffect(PotionEffectType.SPEED, 99999999, 0, false, false))
                 val repulsorTech = ItemStack(Material.MAGMA_CREAM)
                 val repulsorTechMeta = repulsorTech.itemMeta
-                repulsorTechMeta.displayName = Chat.colored("&cRepulsor Tech Mark LXXXV")
+                repulsorTechMeta.displayName = Chat.colored("${Chat.primaryColor}Repulsor Tech Mark LXXXV")
                 repulsorTechMeta.lore = listOf(
-                    Chat.colored("&Right-click: Grants flight for &d5 seconds&7 & all players &cfire resistance&7 for &d20 seconds&7."),
+                    Chat.colored("&Right-click: Grants flight for &d5 seconds&7 & all players ${Chat.primaryColor}fire resistance&7 for &d20 seconds&7."),
                     Chat.colored("&760 second cooldown")
                 )
                 repulsorTech.itemMeta = repulsorTechMeta
@@ -208,17 +208,17 @@ class AvengersScenario : Scenario(
                 bowMeta.spigot().isUnbreakable = true
                 bowMeta.addEnchant(Enchantment.ARROW_INFINITE, 1, false)
                 bowMeta.addEnchant(Enchantment.ARROW_DAMAGE, 2, false)
-                bowMeta.displayName = Chat.colored("&cHoyt Gamemaster 2")
+                bowMeta.displayName = Chat.colored("${Chat.primaryColor}Hoyt Gamemaster 2")
                 bowMeta.lore = listOf(
-                    Chat.colored("&7Left-click: Has a 50% chance to fire &cFireball&7."),
-                    Chat.colored("&7Passive: Heals &c2%&7 of your health upon shooting someone with an arrow.")
+                    Chat.colored("&7Left-click: Has a 50% chance to fire ${Chat.primaryColor}Fireball&7."),
+                    Chat.colored("&7Passive: Heals ${Chat.primaryColor}2%&7 of your health upon shooting someone with an arrow.")
                 )
                 val chestplate = ItemStack(Material.IRON_CHESTPLATE)
                 val chestplateMeta = chestplate.itemMeta
                 chestplateMeta.spigot().isUnbreakable = true
                 chestplateMeta.addEnchant(Enchantment.PROTECTION_PROJECTILE, 4, true)
                 chestplateMeta.addEnchant(Enchantment.PROTECTION_EXPLOSIONS, 1, true)
-                chestplateMeta.displayName = Chat.colored("&fHawkeye's Chestplate")
+                chestplateMeta.displayName = Chat.colored("${Chat.secondaryColor}Hawkeye's Chestplate")
                 chestplate.itemMeta = chestplateMeta
                 bow.itemMeta = bowMeta
                 player.inventory.addItem(chestplate)
@@ -245,7 +245,7 @@ class AvengersScenario : Scenario(
         if (e.entity.killer == null) return
         if (superheroes[e.entity.killer] == "Spiderman") {
             val location: Location = e.entity.location
-            val blocks: ArrayList<Block>? = BlockUtil().getBlocks(location.block, 10)
+            val blocks: ArrayList<Block> = BlockUtil().getBlocks(location.block, 10)
             blocks!!.stream().filter { block: Block ->
                 floor(
                     block.location.distance(location)
@@ -271,7 +271,7 @@ class AvengersScenario : Scenario(
         if (!enabled) return
         when (superheroes[e.player]) {
             "Captain America" -> {
-                if (e.item != null && e.item.itemMeta.displayName == Chat.colored("&cSuper Soldier Serum")) {
+                if (e.item != null && e.item.itemMeta.displayName == Chat.colored("${Chat.primaryColor}Super Soldier Serum")) {
                     e.isCancelled = true
                     val cooldownTime = 40
                     if (cooldowns.containsKey(e.player.name)) {
@@ -284,7 +284,7 @@ class AvengersScenario : Scenario(
                     cooldowns[e.player.name] = System.currentTimeMillis()
                     for (teammate in TeamsFeature.manager.getTeam(e.player)!!.players) {
                         if (teammate.isOnline) {
-                            Chat.sendMessage((teammate as Player), "$prefix Your teammate &f${e.player.name}&7 has given your &cStrength I&7 for 10 seconds.")
+                            Chat.sendMessage((teammate as Player), "$prefix Your teammate ${Chat.secondaryColor}${e.player.name}&7 has given your ${Chat.primaryColor}Strength I&7 for 10 seconds.")
                             teammate.addPotionEffect(PotionEffect(PotionEffectType.INCREASE_DAMAGE, 200, 0, true, true))
                         }
                     }
@@ -292,7 +292,7 @@ class AvengersScenario : Scenario(
             }
             "Spiderman" -> {
                 if (e.item != null) {
-                    if (e.item.itemMeta.displayName == Chat.colored("&cSpidey Sense")) {
+                    if (e.item.itemMeta.displayName == Chat.colored("${Chat.primaryColor}Spidey Sense")) {
                         e.isCancelled = true
                         val cooldownTime = 25
                         if (cooldowns.containsKey(e.player.name)) {
@@ -309,14 +309,14 @@ class AvengersScenario : Scenario(
                                 nearbyPlayers.add(entity as Player)
                             }
                         }
-                        Chat.sendMessage(e.player, "$prefix There are &f${nearbyPlayers.size} players&7 near you.")
+                        Chat.sendMessage(e.player, "$prefix There are ${Chat.secondaryColor}${nearbyPlayers.size} players&7 near you.")
                         if (nearbyPlayers.size == 0) {
                             Chat.sendMessage(e.player, "$prefix No players found nearby...")
                             return
                         }
                         cooldowns[e.player.name] = System.currentTimeMillis()
                     }
-                    if (e.item.itemMeta.displayName == Chat.colored("&cWeb Shooter")) {
+                    if (e.item.itemMeta.displayName == Chat.colored("${Chat.primaryColor}Web Shooter")) {
                         e.isCancelled = true
                         val cooldownTime = 25
                         if (cooldowns.containsKey(e.player.name)) {
@@ -350,7 +350,7 @@ class AvengersScenario : Scenario(
             }
             "Thor" -> {
                 if (e.item != null) {
-                    if (e.item.itemMeta.displayName == Chat.colored("&cStormbreaker") && e.action == Action.RIGHT_CLICK_AIR) {
+                    if (e.item.itemMeta.displayName == Chat.colored("${Chat.primaryColor}Stormbreaker") && e.action == Action.RIGHT_CLICK_AIR) {
                         val cooldownTime = 10
                         if (cooldowns.containsKey(e.player.name)) {
                             val secondsLeft: Long = cooldowns[e.player.name]!! / 1000 + cooldownTime - System.currentTimeMillis() / 1000
@@ -384,7 +384,7 @@ class AvengersScenario : Scenario(
             }
             "Quicksilver" -> {
                 if (e.item != null) {
-                    if (e.item.itemMeta.displayName == Chat.colored("&cBlood Rush")) {
+                    if (e.item.itemMeta.displayName == Chat.colored("${Chat.primaryColor}Blood Rush")) {
                         e.isCancelled = true
                         val cooldownTime = 50
                         if (cooldowns.containsKey(e.player.name)) {
@@ -409,7 +409,7 @@ class AvengersScenario : Scenario(
             }
             "Iron Man" -> {
                 if (e.item != null) {
-                    if (e.item.itemMeta.displayName == Chat.colored("&cRepulsor Tech Mark LXXXV")) {
+                    if (e.item.itemMeta.displayName == Chat.colored("${Chat.primaryColor}Repulsor Tech Mark LXXXV")) {
                         e.isCancelled = true
                         val cooldownTime = 60
                         if (cooldowns.containsKey(e.player.name)) {
@@ -422,11 +422,11 @@ class AvengersScenario : Scenario(
                         cooldowns[e.player.name] = System.currentTimeMillis()
                         e.player.allowFlight = true
                         e.player.isFlying = true
-                        Chat.sendMessage(e.player, "$prefix You've been given &c5 seconds&7 of flight.")
+                        Chat.sendMessage(e.player, "$prefix You've been given ${Chat.primaryColor}5 seconds&7 of flight.")
                         for (player in Bukkit.getOnlinePlayers()) {
                             if (player == e.player) continue
                             if (TeamsFeature.manager.getTeam(player) != null && TeamsFeature.manager.getTeam(player) == TeamsFeature.manager.getTeam(e.player)) {
-                                Chat.sendMessage(player, "$prefix You've been given &c20 seconds&7 of Fire Resistance by &f${e.player.name}&7.")
+                                Chat.sendMessage(player, "$prefix You've been given ${Chat.primaryColor}20 seconds&7 of Fire Resistance by ${Chat.secondaryColor}${e.player.name}&7.")
                                 player.addPotionEffect(PotionEffect(PotionEffectType.FIRE_RESISTANCE, 400, 0, true, false))
                             }
                         }
@@ -439,7 +439,7 @@ class AvengersScenario : Scenario(
             }
             "Hawkeye" -> {
                 if (e.item != null) {
-                    if (e.item.itemMeta.displayName == Chat.colored("&cHoyt Gamemaster 2") && e.action == Action.LEFT_CLICK_AIR) {
+                    if (e.item.itemMeta.displayName == Chat.colored("${Chat.primaryColor}Hoyt Gamemaster 2") && e.action == Action.LEFT_CLICK_AIR) {
                         if (Random.nextBoolean()) e.player.launchProjectile(Fireball::class.java)
                     }
                 }

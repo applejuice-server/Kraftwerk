@@ -14,16 +14,16 @@ import pink.mino.kraftwerk.utils.Chat
 
 class WeakestLinkLogic : BukkitRunnable() {
     var timer = 600
-    val prefix = "&8[&cWeakest Link&8]&7"
+    val prefix = "&8[${Chat.primaryColor}Weakest Link&8]&7"
     override fun run() {
         if (timer == 0) {
             timer = 600
             if (WeakestLinkScenario().isAllSameHealth()) {
-                Bukkit.broadcastMessage(Chat.colored("$prefix &fEveryone&7 was spared for now."))
+                Bukkit.broadcastMessage(Chat.colored("$prefix ${Chat.secondaryColor}Everyone&7 was spared for now."))
             } else {
                 val player = WeakestLinkScenario().getLowestHealth()
                 player.damage(999999.9)
-                Bukkit.broadcastMessage(Chat.colored("$prefix &f${player.name}&7 was the &eWeakest Link&7!"))
+                Bukkit.broadcastMessage(Chat.colored("$prefix ${Chat.secondaryColor}${player.name}&7 was the &eWeakest Link&7!"))
             }
         }
         timer -= 1

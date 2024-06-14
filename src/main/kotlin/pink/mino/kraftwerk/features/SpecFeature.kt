@@ -61,11 +61,11 @@ class InvSeeFeature(private val player: Player, private val target: Player) : Bu
             .addLore(" ")
             .addLore("&cStatistics: ")
             .addLore(" ${Chat.dot} Health ${Chat.dash} ${PlayerUtils.getHealth(target)}")
-            .addLore(" ${Chat.dot} Hunger ${Chat.dash} &c${target.foodLevel / 2}")
-            .addLore(" ${Chat.dot} XP Level ${Chat.dash} &c${target.level} &8(&c${round(target.exp * 100)}%&8)")
-            .addLore(" ${Chat.dot} Kills ${Chat.dash} &c${SettingsFeature.instance.data!!.getInt("game.kills." + target.name)}")
-            .addLore(" ${Chat.dot} Location ${Chat.dash} &c${target.location.blockX}, ${target.location.blockY}, ${target.location.blockZ}")
-            .addLore(" ${Chat.dot} World ${Chat.dash} &c${target.location.world.name}")
+            .addLore(" ${Chat.dot} Hunger ${Chat.dash} ${Chat.primaryColor}${target.foodLevel / 2}")
+            .addLore(" ${Chat.dot} XP Level ${Chat.dash} ${Chat.primaryColor}${target.level} &8(${Chat.primaryColor}${round(target.exp * 100)}%&8)")
+            .addLore(" ${Chat.dot} Kills ${Chat.dash} ${Chat.primaryColor}${SettingsFeature.instance.data!!.getInt("game.kills." + target.name)}")
+            .addLore(" ${Chat.dot} Location ${Chat.dash} ${Chat.primaryColor}${target.location.blockX}, ${target.location.blockY}, ${target.location.blockZ}")
+            .addLore(" ${Chat.dot} World ${Chat.dash} ${Chat.primaryColor}${target.location.world.name}")
             .addLore(" ")
             .addLore("&cMining: ")
             .addLore(" ${Chat.dot} Diamond ${Chat.dash} &b${SpecFeature.instance.diamondsMined[target.uniqueId] ?: 0}")
@@ -73,10 +73,10 @@ class InvSeeFeature(private val player: Player, private val target: Player) : Bu
             .addLore(" ")
             .addLore("&cPotion Effects: ")
         if (target.activePotionEffects.isEmpty()) {
-            info.addLore(" ${Chat.dot} &cNone.")
+            info.addLore(" ${Chat.dot} ${Chat.primaryColor}None.")
         } else {
             for (eff in target.activePotionEffects) {
-                info.addLore(" ${Chat.dot} &c${InvseeUtils().getPotionName(eff.type).uppercase()} ${InvseeUtils().integerToRoman(eff.amplifier + 1)} &8(&c${InvseeUtils().potionDurationToString(eff.duration / 20)}&8)")
+                info.addLore(" ${Chat.dot} ${Chat.primaryColor}${InvseeUtils().getPotionName(eff.type).uppercase()} ${InvseeUtils().integerToRoman(eff.amplifier + 1)} &8(&c${InvseeUtils().potionDurationToString(eff.duration / 20)}&8)")
             }
         }
         info.addLore(" ")
@@ -100,16 +100,16 @@ class SpecClickFeature : PacketAdapter(JavaPlugin.getPlugin(Kraftwerk::class.jav
                         Bukkit.dispatchCommand(p, "nearby")
                     }
                     22 -> {
-                        if (JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.lookupProfile(p.uniqueId)!!.get().specSocialSpy) {
-                            JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.lookupProfile(p.uniqueId)!!.get().specSocialSpy = false
+                        if (JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.lookupProfile(p.uniqueId).get().specSocialSpy) {
+                            JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.lookupProfile(p.uniqueId).get().specSocialSpy = false
                             Chat.sendMessage(p, "${SpecFeature.instance.prefix} Disabled &5Social Spy&7!")
                         } else {
-                            JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.lookupProfile(p.uniqueId)!!.get().specSocialSpy = true
+                            JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.lookupProfile(p.uniqueId).get().specSocialSpy = true
                             Chat.sendMessage(p, "${SpecFeature.instance.prefix} Enabled &5Social Spy&7!")
                         }
                         val socialSpy = ItemBuilder(Material.NAME_TAG)
                             .addLore("&7Click to view social commands.")
-                        val pref = JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.lookupProfile(p.uniqueId)!!.get().specSocialSpy
+                        val pref = JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.lookupProfile(p.uniqueId).get().specSocialSpy
                         if (pref) {
                             socialSpy.name("&aSocial Spy")
                         } else {
@@ -129,7 +129,7 @@ class SpecClickFeature : PacketAdapter(JavaPlugin.getPlugin(Kraftwerk::class.jav
                             return
                         }
                         Chat.sendMessage(p, Chat.line)
-                        Chat.sendCenteredMessage(p, "&c&lPlayer Locations")
+                        Chat.sendCenteredMessage(p, "${Chat.primaryColor}&lPlayer Locations")
                         for (player in list) {
                             Chat.sendMessage(
                                 p,
@@ -158,7 +158,7 @@ class SpecFeature : Listener {
     companion object {
         val instance = SpecFeature()
     }
-    val prefix = "&8[&cSpec&8]&7"
+    val prefix = "&8[${Chat.primaryColor}Spec&8]&7"
     val specStartTimes: HashMap<UUID, Long> = hashMapOf()
 
     fun joinSpec(p: Player) {
@@ -184,28 +184,28 @@ class SpecFeature : Listener {
         SettingsFeature.instance.data!!.set("game.specs", list)
         SettingsFeature.instance.saveData()
 
-        specChat("&f${p.name}&7 has entered spectator mode.", p)
+        specChat("${Chat.secondaryColor}${p.name}&7 has entered spectator mode.", p)
         Scoreboard.setScore(Chat.colored("${Chat.dash} &7Playing..."), PlayerUtils.getPlayingPlayers().size)
 
         val teleportTo00 = ItemBuilder(Material.EYE_OF_ENDER)
-            .name("&cTeleport to 0,0")
+            .name("${Chat.primaryColor}Teleport to 0,0")
             .addLore("&7Click the item to teleport yourself to &c0,0&7.")
             .make()
         val nearby = ItemBuilder(Material.COMPASS)
-            .name("&cNearby Players")
+            .name("${Chat.primaryColor}Nearby Players")
             .addLore("&7Click the item to see a list of nearby players.")
             .make()
         val locations = ItemBuilder(Material.MAP)
-            .name("&cPlayer Locations")
+            .name("${Chat.primaryColor}Player Locations")
             .addLore("&7Click the item to see a list of player locations.")
             .make()
         val respawn = ItemBuilder(Material.BONE)
-            .name("&cRespawn Players")
+            .name("${Chat.primaryColor}Respawn Players")
             .addLore("&7Click to view a list of dead players that can be respawned.")
             .make()
         val socialSpy = ItemBuilder(Material.NAME_TAG)
             .addLore("&7Click to view social commands.")
-        val pref = JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.lookupProfile(p.uniqueId)!!.get().specSocialSpy
+        val pref = JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.lookupProfile(p.uniqueId).get().specSocialSpy
         if (pref) {
             socialSpy.name("&aSocial Spy")
         } else {
@@ -245,7 +245,8 @@ class SpecFeature : Listener {
         if (commands.contains(message[0])) {
             for (spectator in getSpecs()) {
                 val player = Bukkit.getPlayer(spectator)
-                if (player != null && JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.lookupProfile(player.uniqueId)!!.get().specSocialSpy) {
+                if (player != null && JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.lookupProfile(player.uniqueId)
+                        .get().specSocialSpy) {
                     Chat.sendMessage(player, "&e&o${e.player.name} ${Chat.dash} &7${message.joinToString(" ")}")
                 }
              }
@@ -276,28 +277,28 @@ class SpecFeature : Listener {
         SettingsFeature.instance.data!!.set("game.specs", list)
         SettingsFeature.instance.saveData()
 
-        specChat("&f${p.name}&7 has entered spectator mode.", p)
+        specChat("${Chat.secondaryColor}${p.name}&7 has entered spectator mode.", p)
         Scoreboard.setScore(Chat.colored("${Chat.dash} &7Playing..."), PlayerUtils.getPlayingPlayers().size)
 
         val teleportTo00 = ItemBuilder(Material.EYE_OF_ENDER)
-            .name("&cTeleport to 0,0")
+            .name("${Chat.primaryColor}Teleport to 0,0")
             .addLore("&7Click the item to teleport yourself to &c0,0&7.")
             .make()
         val nearby = ItemBuilder(Material.COMPASS)
-            .name("&cNearby Players")
+            .name("${Chat.primaryColor}Nearby Players")
             .addLore("&7Click the item to see a list of nearby players.")
             .make()
         val locations = ItemBuilder(Material.MAP)
-            .name("&cPlayer Locations")
+            .name("${Chat.primaryColor}Player Locations")
             .addLore("&7Click the item to see a list of player locations.")
             .make()
         val respawn = ItemBuilder(Material.BONE)
-            .name("&cRespawn Players")
+            .name("${Chat.primaryColor}Respawn Players")
             .addLore("&7Click to view a list of dead players that can be respawned.")
             .make()
         val socialSpy = ItemBuilder(Material.NAME_TAG)
             .addLore("&7Click to view social commands.")
-        val pref = JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.lookupProfile(p.uniqueId)!!.get().specSocialSpy
+        val pref = JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.lookupProfile(p.uniqueId).get().specSocialSpy
         if (pref) {
             socialSpy.name("&aSocial Spy")
         } else {
@@ -348,7 +349,7 @@ class SpecFeature : Listener {
         SettingsFeature.instance.data!!.set("game.specs", list)
         SettingsFeature.instance.saveData()
 
-        specChat("&f${p.name}&7 has left spectator mode.", p)
+        specChat("${Chat.secondaryColor}${p.name}&7 has left spectator mode.", p)
         Chat.sendMessage(p, "${prefix} You are no longer in spectator mode.")
         Scoreboard.setScore(Chat.colored("${Chat.dash} &7Playing..."), PlayerUtils.getPlayingPlayers().size)
 
@@ -387,14 +388,14 @@ class SpecFeature : Listener {
             e.isCancelled = true
             if (e.currentItem != null && e.currentItem.type != Material.AIR) {
                 when (e.currentItem.itemMeta.displayName) {
-                    "&cTeleport to 0,0" -> {
+                    "${Chat.primaryColor}Teleport to 0,0" -> {
                         p.teleport(Location(p.world, 0.0, 100.0, 0.0))
                         Chat.sendMessage(p, "${prefix} You have been teleported to 0,0.")
                     }
-                    "&cNearby Players" -> {
+                    "${Chat.primaryColor}Nearby Players" -> {
                         Bukkit.dispatchCommand(p, "nearby")
                     }
-                    "&cPlayer Locations" -> {
+                    "${Chat.primaryColor}Player Locations" -> {
                         val list = ArrayList<Player>()
                         for (player in Bukkit.getOnlinePlayers()) {
                             if (player != p && !isSpec(player)) {
@@ -405,13 +406,13 @@ class SpecFeature : Listener {
                             Chat.sendMessage(p, "${prefix} There are no players online.")
                         }
                         Chat.sendMessage(p, Chat.line)
-                        Chat.sendCenteredMessage(p, "&c&lPlayer Locations")
+                        Chat.sendCenteredMessage(p, "${Chat.primaryColor}&lPlayer Locations")
                         for (player in list) {
                             Chat.sendMessage(p, "${prefix} &7${player.name} &7is at &b${floor(player.location.x)}, &7${floor(player.location.y)}, &7${floor(player.location.z)}")
                         }
                         Chat.sendMessage(p, Chat.line)
                     }
-                    "&cRespawn Players" -> {
+                    "${Chat.primaryColor}Respawn Players" -> {
                         Bukkit.dispatchCommand(p, "respawn")
                     }
                 }
@@ -436,7 +437,7 @@ class SpecFeature : Listener {
                     }
                     val target = list.random()
                     e.player.teleport(target.location)
-                    Chat.sendMessage(e.player, "${prefix} Teleported to &f${target.name}&7!")
+                    Chat.sendMessage(e.player, "${prefix} Teleported to ${Chat.secondaryColor}${target.name}&7!")
                 }
             }
         }

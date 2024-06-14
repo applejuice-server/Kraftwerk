@@ -151,85 +151,85 @@ class TeamCommand : CommandExecutor {
             Chat.sendMessage(sender as Player, Chat.line)
             Chat.sendMessage(
                 sender,
-                "${Chat.dash} &f/team create ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Creates a team."
+                "${Chat.dash} ${Chat.secondaryColor}/team create ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Creates a team."
             )
             Chat.sendMessage(
                 sender,
-                "${Chat.dash} &f/team invite <player> ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Invites a player to your team."
+                "${Chat.dash} ${Chat.secondaryColor}/team invite <player> ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Invites a player to your team."
             )
             Chat.sendMessage(
                 sender,
-                "${Chat.dash} &f/team leave ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Leave your team."
+                "${Chat.dash} ${Chat.secondaryColor}/team leave ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Leave your team."
             )
             Chat.sendMessage(
                 sender,
-                "${Chat.dash} &f/team accept <player> ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Accept a player's team invite."
+                "${Chat.dash} ${Chat.secondaryColor}/team accept <player> ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Accept a player's team invite."
             )
             Chat.sendMessage(
                 sender,
-                "${Chat.dash} &f/team list ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Brings a list of teams and their members."
+                "${Chat.dash} ${Chat.secondaryColor}/team list ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Brings a list of teams and their members."
             )
             Chat.sendMessage(
                 sender,
-                "${Chat.dash} &f/pm <message> ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Talk in team chat."
+                "${Chat.dash} ${Chat.secondaryColor}/pm <message> ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Talk in team chat."
             )
             Chat.sendMessage(
                 sender,
-                "${Chat.dash} &f/team color <color> [bold] [italic] [underline] &8(&6GOLD AND ABOVE&8) ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Changes your team color."
+                "${Chat.dash} ${Chat.secondaryColor}/team color <color> [bold] [italic] [underline] &8(&6GOLD AND ABOVE&8) ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Changes your team color."
             )
             Chat.sendMessage(
                 sender,
-                "${Chat.dash} &f/pmc ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Send your coordinates."
+                "${Chat.dash} ${Chat.secondaryColor}/pmc ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Send your coordinates."
             )
             Chat.sendMessage(sender, Chat.line)
             if (sender.hasPermission("uhc.staff.team")) {
                 Chat.sendMessage(
                     sender,
-                    "${Chat.dash} &f/team reset ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Reset all teams."
+                    "${Chat.dash} ${Chat.secondaryColor}/team reset ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Reset all teams."
                 )
                 Chat.sendMessage(
                     sender,
-                    "${Chat.dash} &f/team management <on/off> ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Enable/disable team management."
+                    "${Chat.dash} ${Chat.secondaryColor}/team management <on/off> ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Enable/disable team management."
                 )
                 Chat.sendMessage(
                     sender,
-                    "${Chat.dash} &f/team size <size> ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Set the size of teams."
+                    "${Chat.dash} ${Chat.secondaryColor}/team size <size> ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Set the size of teams."
                 )
                 Chat.sendMessage(
                     sender,
-                    "${Chat.dash} &f/team set <player1> <player2> ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Sets Player 1 to the Player 2's team."
+                    "${Chat.dash} ${Chat.secondaryColor}/team set <player1> <player2> ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Sets Player 1 to the Player 2's team."
                 )
                 Chat.sendMessage(
                     sender,
-                    "${Chat.dash} &f/team bulk <list of players> ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Adds a list of players to a team."
+                    "${Chat.dash} ${Chat.secondaryColor}/team bulk <list of players> ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Adds a list of players to a team."
                 )
                 Chat.sendMessage(
                     sender,
-                    "${Chat.dash} &f/team remove <player> ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Removes a player from a team."
+                    "${Chat.dash} ${Chat.secondaryColor}/team remove <player> ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Removes a player from a team."
                 )
                 Chat.sendMessage(
                     sender,
-                    "${Chat.dash} &f/team delete <team name> ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Deletes the provided team."
+                    "${Chat.dash} ${Chat.secondaryColor}/team delete <team name> ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Deletes the provided team."
                 )
                 Chat.sendMessage(
                     sender,
-                    "${Chat.dash} &f/team friendlyfire <on/off> ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Toggles friendly fire."
+                    "${Chat.dash} ${Chat.secondaryColor}/team friendlyfire <on/off> ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Toggles friendly fire."
                 )
                 Chat.sendMessage(
                     sender,
-                    "${Chat.dash} &f/team kickunder <number> ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Kicks all solos/teams under a certain threshold."
+                    "${Chat.dash} ${Chat.secondaryColor}/team kickunder <number> ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Kicks all solos/teams under a certain threshold."
                 )
                 Chat.sendMessage(
                     sender,
-                    "${Chat.dash} &f/team randomize ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Randomizes all players that aren't Spectators into a team."
+                    "${Chat.dash} ${Chat.secondaryColor}/team randomize ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Randomizes all players that aren't Spectators into a team."
                 )
                 Chat.sendMessage(
                     sender,
-                    "${Chat.dash} &f/team setcolor <team> <color> ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Recolors the provided team to the one of your choosing."
+                    "${Chat.dash} ${Chat.secondaryColor}/team setcolor <team> <color> ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Recolors the provided team to the one of your choosing."
                 )
                 Chat.sendMessage(
                     sender,
-                    "${Chat.dash} &f/team rvb ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Randomizes all players that aren't Spectators into a two teams together."
+                    "${Chat.dash} ${Chat.secondaryColor}/team rvb ${ChatColor.DARK_GRAY}-${ChatColor.GRAY} Randomizes all players that aren't Spectators into a two teams together."
                 )
                 Chat.sendMessage(sender, Chat.line)
             }
@@ -251,7 +251,7 @@ class TeamCommand : CommandExecutor {
             val team = TeamsFeature.manager.createTeam(player)
 
             SendTeamView(team).runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 20L)
-            Chat.sendMessage(sender, "${Chat.prefix} Successfully created &f${team.displayName}&7!")
+            Chat.sendMessage(sender, "${Chat.prefix} Successfully created ${Chat.secondaryColor}${team.displayName}&7!")
         } else if (args[0] == "invite") {
             val player = sender as Player
             var team = TeamsFeature.manager.getTeam(player)
@@ -260,7 +260,7 @@ class TeamCommand : CommandExecutor {
                 return true
             }
             if (args.size == 1) {
-                Chat.sendMessage(player, "${Chat.prefix} Usage: &f/team invite <player>")
+                Chat.sendMessage(player, "${Chat.prefix} Usage: ${Chat.secondaryColor}/team invite <player>")
                 return false
             }
             if (team == null) {
@@ -299,7 +299,7 @@ class TeamCommand : CommandExecutor {
             if (!invites.containsKey(player)) invites[player] = ArrayList()
             invites[player]!!.add(target)
             val text =
-                TextComponent(Chat.colored("${Chat.prefix} §7To accept, type ${ChatColor.WHITE}/team accept ${player.name}${ChatColor.GRAY} or &f&nclick here&7."))
+                TextComponent(Chat.colored("${Chat.prefix} §7To accept, type ${ChatColor.WHITE}/team accept ${player.name}${ChatColor.GRAY} or ${Chat.secondaryColor}&nclick here&7."))
             text.clickEvent = ClickEvent(
                 ClickEvent.Action.RUN_COMMAND,
                 "/team accept ${player.name}"
@@ -330,7 +330,7 @@ class TeamCommand : CommandExecutor {
             settings.saveData()
             Chat.sendMessage(
                 sender,
-                "${Chat.prefix} ${ChatColor.GRAY}The teamsize has been set to ${ChatColor.WHITE}${args[1]}${ChatColor.GRAY}."
+                "${Chat.prefix} ${ChatColor.GRAY}The teamsize has been set to ${Chat.secondaryColor}${args[1]}${ChatColor.GRAY}."
             )
         } else if (args[0] == "accept") {
             val player = sender as Player
@@ -357,7 +357,7 @@ class TeamCommand : CommandExecutor {
                     player.sendMessage("${ChatColor.RED}That team is too full to join!")
                     return false
                 }
-                Chat.sendMessage(player, "${Chat.prefix} &7You have joined &f${team.displayName}&7!")
+                Chat.sendMessage(player, "${Chat.prefix} &7You have joined ${Chat.secondaryColor}${team.displayName}&7!")
                 TeamsFeature.manager.joinTeam(team.name, player)
                 for (players in team.players) {
                     if (players is Player && players != player) {
@@ -446,7 +446,7 @@ class TeamCommand : CommandExecutor {
             }
         } else if (args[0] == "list") {
             Chat.sendMessage(sender, Chat.line)
-            Chat.sendCenteredMessage(sender, "&c&lTeams List")
+            Chat.sendCenteredMessage(sender, "${Chat.primaryColor}&lTeams List")
             Chat.sendMessage(sender, " ")
             val teamList = ArrayList<Team>()
             if (ScenarioHandler.getActiveScenarios().contains(ScenarioHandler.getScenario("moles"))) {
@@ -459,7 +459,7 @@ class TeamCommand : CommandExecutor {
                         }
                         Chat.sendMessage(
                             sender,
-                            "${team.displayName} &8(&f${list.size}&8) ${Chat.dash} &f${list.joinToString(", ")}"
+                            "${team.displayName} &8(${Chat.secondaryColor}${list.size}&8) ${Chat.dash} ${Chat.secondaryColor}${list.joinToString(", ")}"
                         )
                     }
                 }
@@ -480,7 +480,7 @@ class TeamCommand : CommandExecutor {
                                 list.add("&c${teammate.name}")
                             }
                         }
-                        Chat.sendMessage(sender, "${team.displayName} &8(&f${TeamsFeature.manager.teamMap[it]!!.size}&8) ${Chat.dash} &f${list.joinToString(", ")}")
+                        Chat.sendMessage(sender, "${team.displayName} &8(${Chat.secondaryColor}${TeamsFeature.manager.teamMap[it]!!.size}&8) ${Chat.dash} ${Chat.secondaryColor}${list.joinToString(", ")}")
                     }
                 }
                 if (keys.isEmpty()) {
@@ -534,7 +534,7 @@ class TeamCommand : CommandExecutor {
             if (args.size < 3) {
                 Chat.sendMessage(
                     sender,
-                    "${Chat.prefix} Invalid usage: &f/team set <Player1> <Player2>&7. &8(&fPlayer 2 has to be the one with the team.&8)"
+                    "${Chat.prefix} Invalid usage: ${Chat.secondaryColor}/team set <Player1> <Player2>&7. &8(${Chat.secondaryColor}Player 2 has to be the one with the team.&8)"
                 )
                 return false
             }
@@ -543,7 +543,7 @@ class TeamCommand : CommandExecutor {
             if (target2 == null || target == null) {
                 Chat.sendMessage(
                     sender,
-                    "${Chat.prefix} Invalid players: &f/team set <Player1> <Player2>&7. &8(&fPlayer 2 has to be the one with the team.&8)"
+                    "${Chat.prefix} Invalid players: ${Chat.secondaryColor}/team set <Player1> <Player2>&7. &8(${Chat.secondaryColor}Player 2 has to be the one with the team.&8)"
                 )
                 return false
             }
@@ -561,12 +561,12 @@ class TeamCommand : CommandExecutor {
             }
             Chat.sendMessage(
                 sender,
-                "${Chat.prefix} Successfully added &f${target.name}&7 to &f${target2.name}&7's team"
+                "${Chat.prefix} Successfully added ${Chat.secondaryColor}${target.name}&7 to ${Chat.secondaryColor}${target2.name}&7's team"
             )
-            Chat.sendMessage(target, "${Chat.prefix} You've been added to &f${target2.name}&7's team")
+            Chat.sendMessage(target, "${Chat.prefix} You've been added to ${Chat.secondaryColor}${target2.name}&7's team")
             for (player in team.players) {
                 if (player.isOnline) {
-                    Chat.sendMessage(player as Player, "${Chat.prefix} &f${target.name}&7 has been added to your team.")
+                    Chat.sendMessage(player as Player, "${Chat.prefix} ${Chat.secondaryColor}${target.name}&7 has been added to your team.")
                 }
             }
         } else if (args[0] == "bulk" || args[0] == "ct") {
@@ -577,7 +577,7 @@ class TeamCommand : CommandExecutor {
                 }
             }
             if (args.size < 2) {
-                Chat.sendMessage(sender, "${Chat.dash} Invalid usage: &f/team bulk <list of players>&7.")
+                Chat.sendMessage(sender, "${Chat.dash} Invalid usage: ${Chat.secondaryColor}/team bulk <list of players>&7.")
                 return false
             }
             val t: Team = TeamsFeature.manager.createTeam()
@@ -604,12 +604,12 @@ class TeamCommand : CommandExecutor {
                 }
             }
             if (args.size < 2) {
-                Chat.sendMessage(sender, "${Chat.prefix} Invalid usage: &f/team remove <Player>&7.")
+                Chat.sendMessage(sender, "${Chat.prefix} Invalid usage: ${Chat.secondaryColor}/team remove <Player>&7.")
                 return false
             }
             val target = Bukkit.getPlayer(args[1])
             if (target == null) {
-                Chat.sendMessage(sender, "${Chat.prefix} Invalid player: &f${args[1]}&7.")
+                Chat.sendMessage(sender, "${Chat.prefix} Invalid player: ${Chat.secondaryColor}${args[1]}&7.")
                 return false
             }
             val team = TeamsFeature.manager.getTeam(target)
@@ -620,7 +620,7 @@ class TeamCommand : CommandExecutor {
             TeamsFeature.manager.leaveTeam(target)
             Chat.sendMessage(
                 sender,
-                "${Chat.prefix} Successfully removed &f${target.name}&7 from &f${team.name}&7's team"
+                "${Chat.prefix} Successfully removed ${Chat.secondaryColor}${target.name}&7 from ${Chat.secondaryColor}${team.name}&7's team"
             )
             if (team.size == 0) {
                 TeamsFeature.manager.deleteTeam(team)
@@ -633,11 +633,11 @@ class TeamCommand : CommandExecutor {
                 }
             }
             if (args.size == 1) {
-                Chat.sendMessage(sender, "${Chat.prefix} Invalid usage: &f/team friendlyfire <on/off>&7.")
+                Chat.sendMessage(sender, "${Chat.prefix} Invalid usage: ${Chat.secondaryColor}/team friendlyfire <on/off>&7.")
                 return false
             }
             if (args[1] != "on" && args[1] != "off") {
-                Chat.sendMessage(sender, "${Chat.prefix} Invalid arguments: &f/team friendlyfire <on/off>&7.")
+                Chat.sendMessage(sender, "${Chat.prefix} Invalid arguments: ${Chat.secondaryColor}/team friendlyfire <on/off>&7.")
                 return false
             }
             if (args[1] == "on") {
@@ -646,7 +646,7 @@ class TeamCommand : CommandExecutor {
                     SettingsFeature.instance.data!!.set("game.friendlyFire", true)
                     SettingsFeature.instance.saveData()
                 }
-                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Friendly fire has been enabled by &f${sender.name}&7."))
+                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Friendly fire has been enabled by ${Chat.secondaryColor}${sender.name}&7."))
             }
             if (args[1] == "off") {
                 for (team in TeamsFeature.manager.getTeams()) {
@@ -654,7 +654,7 @@ class TeamCommand : CommandExecutor {
                     SettingsFeature.instance.data!!.set("game.friendlyFire", false)
                     SettingsFeature.instance.saveData()
                 }
-                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Friendly fire has been disabled by &f${sender.name}&7."))
+                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Friendly fire has been disabled by ${Chat.secondaryColor}${sender.name}&7."))
             }
         } else if (args[0] == "kickunder") {
             if (sender is Player) {
@@ -664,11 +664,11 @@ class TeamCommand : CommandExecutor {
                 }
             }
             if (args.size == 1) {
-                Chat.sendMessage(sender, "${Chat.prefix} Invalid usage: &f/team kickunder <number>&7.")
+                Chat.sendMessage(sender, "${Chat.prefix} Invalid usage: ${Chat.secondaryColor}/team kickunder <number>&7.")
                 return false
             }
             if (args[1].toIntOrNull() == null) {
-                Chat.sendMessage(sender, "${Chat.prefix} Invalid number: &f/team kickunder <number>&7.")
+                Chat.sendMessage(sender, "${Chat.prefix} Invalid number: ${Chat.secondaryColor}/team kickunder <number>&7.")
                 return false
             }
             for (player in Bukkit.getOnlinePlayers()) {
@@ -693,7 +693,7 @@ class TeamCommand : CommandExecutor {
             TeamsFeature.manager.resetTeams()
             Bukkit.broadcastMessage(
                 Chat.colored(
-                    "${Chat.dash} Randomizing all players into teams of &c${
+                    "${Chat.dash} Randomizing all players into teams of ${Chat.primaryColor}${
                         SettingsFeature.instance.data!!.getInt(
                             "game.teamSize"
                         )
@@ -718,7 +718,7 @@ class TeamCommand : CommandExecutor {
                 for (player in templist) {
                     Chat.sendMessage(
                         player,
-                        "${Chat.prefix} You've been added to ${team.prefix}${team.name}&7, check &f/team list&7 for the members of your team."
+                        "${Chat.prefix} You've been added to ${team.prefix}${team.name}&7, check ${Chat.secondaryColor}/team list&7 for the members of your team."
                     )
                     TeamsFeature.manager.joinTeam(team.name, player)
                 }
@@ -753,7 +753,7 @@ class TeamCommand : CommandExecutor {
             Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} &cRed&7 vs &9Blue&7 teams have been randomized."))
         } else if (args[0] == "color") {
             if (!PerkChecker.checkPerk(sender as Player, "uhc.donator.teamColors")) {
-                Chat.sendMessage(sender, "&cBuy &6Gold&c to use this perk. &eapplejuice.tebex.io")
+                Chat.sendMessage(sender, "&cBuy &6Gold&c to use this perk. &e${if (SettingsFeature.instance.data!!.getString("config.chat.storeUrl") != null) SettingsFeature.instance.data!!.getString("config.chat.storeUrl") else "no store url setup in config tough tits"}}")
                 return false
             }
             if (TeamsFeature.manager.getTeam(sender) == null) {
@@ -763,14 +763,14 @@ class TeamCommand : CommandExecutor {
             if (args.size == 1) {
                 Chat.sendMessage(
                     sender,
-                    "${Chat.prefix} Invalid usage: &f/team color <color> [bold] [italic] [underline]&7."
+                    "${Chat.prefix} Invalid usage: ${Chat.secondaryColor}/team color <color> [bold] [italic] [underline]&7."
                 )
                 return false
             }
             if (args.size > 5) {
                 Chat.sendMessage(
                     sender,
-                    "${Chat.prefix} Invalid usage: &f/team color <color> [bold] [italic] [underline]&7."
+                    "${Chat.prefix} Invalid usage: ${Chat.secondaryColor}/team color <color> [bold] [italic] [underline]&7."
                 )
                 return false
             }
@@ -780,7 +780,7 @@ class TeamCommand : CommandExecutor {
                 try {
                     colors.add(ChatColor.valueOf(arg.uppercase()))
                 } catch (e: Exception) {
-                    Chat.sendMessage(sender, "${Chat.prefix} Invalid color: &f$arg&7.")
+                    Chat.sendMessage(sender, "${Chat.prefix} Invalid color: ${Chat.secondaryColor}$arg&7.")
                     Chat.sendMessage(
                         sender,
                         "${Chat.prefix} Valid colors: &0black&7, &1dark_blue&7, &2dark_green&7, &3dark_aqua&7, &4dark_red&7, &5dark_purple&7, &6gold&7, &7gray&7, &8dark_gray&7, &9blue&7, &agreen&7, &baqua&7, &cred&7, &dlight_purple&7, &eyellow&7, &fwhite&7."
@@ -792,7 +792,7 @@ class TeamCommand : CommandExecutor {
             if (colors.size == 0) {
                 Chat.sendMessage(
                     sender,
-                    "${Chat.prefix} Invalid usage: &f/team color <color> [bold] [italic] [underline]&7."
+                    "${Chat.prefix} Invalid usage: ${Chat.secondaryColor}/team color <color> [bold] [italic] [underline]&7."
                 )
                 return false
             }
@@ -812,7 +812,7 @@ class TeamCommand : CommandExecutor {
             if (colors.isEmpty()) {
                 Chat.sendMessage(
                     sender,
-                    "${Chat.prefix} Invalid usage: &f/team color <color> [bold] [italic] [underline]&7."
+                    "${Chat.prefix} Invalid usage: ${Chat.secondaryColor}/team color <color> [bold] [italic] [underline]&7."
                 )
                 return false
             }
@@ -824,7 +824,7 @@ class TeamCommand : CommandExecutor {
                 TeamsFeature.manager.colors.add(TeamsFeature.manager.getTeam(sender)!!.prefix)
                 TeamsFeature.manager.colors.remove(selectedColor)
                 TeamsFeature.manager.getTeam(sender)!!.prefix = selectedColor
-                Bukkit.broadcastMessage(Chat.colored("&8[&2$$$&8] &f${PlayerUtils.getPrefix(sender)}${sender.name} &7has selected &f$selectedColor${args[1]}&7 as their team color."))
+                Bukkit.broadcastMessage(Chat.colored("&8[&2$$$&8] ${Chat.secondaryColor}${PlayerUtils.getPrefix(sender)}${sender.name} &7has selected ${Chat.secondaryColor}$selectedColor${args[1]}&7 as their team color."))
             }
         } else if (args[0] == "recolor") {
             if (!sender.hasPermission("uhc.staff.team")) {
@@ -834,14 +834,14 @@ class TeamCommand : CommandExecutor {
             if (args.size == 2) {
                 Chat.sendMessage(
                     sender,
-                    "${Chat.prefix} Invalid usage: &f/team recolor <team> <color> [bold] [italic] [underline]&7."
+                    "${Chat.prefix} Invalid usage: ${Chat.secondaryColor}/team recolor <team> <color> [bold] [italic] [underline]&7."
                 )
                 return false
             }
             if (args.size > 6) {
                 Chat.sendMessage(
                     sender,
-                    "${Chat.prefix} Invalid usage: &f/team recolor <team> <color> [bold] [italic] [underline]&7."
+                    "${Chat.prefix} Invalid usage: ${Chat.secondaryColor}/team recolor <team> <color> [bold] [italic] [underline]&7."
                 )
                 return false
             }
@@ -851,7 +851,7 @@ class TeamCommand : CommandExecutor {
                 try {
                     colors.add(ChatColor.valueOf(arg.uppercase()))
                 } catch (e: Exception) {
-                    Chat.sendMessage(sender, "${Chat.prefix} Invalid color: &f$arg&7.")
+                    Chat.sendMessage(sender, "${Chat.prefix} Invalid color: ${Chat.secondaryColor}$arg&7.")
                     Chat.sendMessage(
                         sender,
                         "${Chat.prefix} Valid colors: &0black&7, &1dark_blue&7, &2dark_green&7, &3dark_aqua&7, &4dark_red&7, &5dark_purple&7, &6gold&7, &7gray&7, &8dark_gray&7, &9blue&7, &agreen&7, &baqua&7, &cred&7, &dlight_purple&7, &eyellow&7, &fwhite&7."
@@ -863,7 +863,7 @@ class TeamCommand : CommandExecutor {
             if (colors.size == 0) {
                 Chat.sendMessage(
                     sender,
-                    "${Chat.prefix} Invalid usage: &f/team recolor <team> <color> [bold] [italic] [underline]&7."
+                    "${Chat.prefix} Invalid usage: ${Chat.secondaryColor}/team recolor <team> <color> [bold] [italic] [underline]&7."
                 )
                 return false
             }
@@ -883,14 +883,14 @@ class TeamCommand : CommandExecutor {
             if (colors.isEmpty()) {
                 Chat.sendMessage(
                     sender,
-                    "${Chat.prefix} Invalid usage: &f/team recolor <team> <color> [bold] [italic] [underline]&7."
+                    "${Chat.prefix} Invalid usage: ${Chat.secondaryColor}/team recolor <team> <color> [bold] [italic] [underline]&7."
                 )
                 return false
             }
 
             val team = TeamsFeature.manager.getTeam(args[1])
             if (team == null) {
-                Chat.sendMessage(sender, "${Chat.prefix} Invalid team: &f${args[1]}&7.")
+                Chat.sendMessage(sender, "${Chat.prefix} Invalid team: ${Chat.secondaryColor}${args[1]}&7.")
                 return false
             }
 
@@ -904,14 +904,14 @@ class TeamCommand : CommandExecutor {
                 team.prefix = selectedColor
                 Chat.sendMessage(
                     sender,
-                    "${Chat.prefix} You have changed the team color of ${team.prefix}${team.name}&7 to &f$selectedColor${args[2]}&7."
+                    "${Chat.prefix} You have changed the team color of ${team.prefix}${team.name}&7 to ${Chat.secondaryColor}$selectedColor${args[2]}&7."
                 )
                 for (entry in team.entries) {
                     val player = Bukkit.getPlayer(entry)
                     if (player != null) {
                         Chat.sendMessage(
                             player,
-                            "${Chat.prefix} Your team color has been changed to &f$selectedColor${args[2]}&7."
+                            "${Chat.prefix} Your team color has been changed to ${Chat.secondaryColor}$selectedColor${args[2]}&7."
                         )
                     }
                 }

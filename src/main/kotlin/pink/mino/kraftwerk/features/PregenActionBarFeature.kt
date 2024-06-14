@@ -14,7 +14,7 @@ class PregenActionBarFeature : BukkitRunnable() {
             val players = Bukkit.getServer().onlinePlayers
             val rounded = (Config.fillTask.percentageCompleted * 100.0).roundToInt() / 100.0
             for (player in players) {
-                ActionBar.sendActionBarMessage(player, ChatColor.translateAlternateColorCodes('&', "${Chat.prefix} &7Progress: &c${rounded}% &8| &7World: &8'&c${Config.fillTask.refWorld()}&8'"))
+                ActionBar.sendActionBarMessage(player, ChatColor.translateAlternateColorCodes('&', "${Chat.prefix} &7Progress: ${Chat.primaryColor}${rounded}% &8| &7World: &8'${Chat.primaryColor}${Config.fillTask.refWorld()}&8'"))
             }
         } else {
             Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "${Chat.prefix} &7Pregeneration is now finished."))

@@ -1,12 +1,12 @@
 package pink.mino.kraftwerk.commands
 
 import org.bukkit.ChatColor
-import org.bukkit.Material
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import pink.mino.kraftwerk.features.SpecFeature
+import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GameState
 
 /**
@@ -34,7 +34,7 @@ class PMMOresCommand : CommandExecutor {
 
             for (team in sender.scoreboard.getPlayerTeam(sender).players) {
                 if (team is Player) {
-                    team.sendMessage("§8[§4Team Chat§8] ${ChatColor.WHITE}${sender.name} §7has mined §6${if (SpecFeature.instance.goldMined[sender.uniqueId] == null) "0" else "${SpecFeature.instance.goldMined[sender.uniqueId]}"} gold§7, and §b${if (SpecFeature.instance.diamondsMined[sender.uniqueId] == null) "0" else "${SpecFeature.instance.diamondsMined[sender.uniqueId]}"} diamonds§7.")
+                    team.sendMessage(Chat.colored("§8[${Chat.primaryColor}Team Chat§8] ${ChatColor.WHITE}${sender.name} §7has mined §6${if (SpecFeature.instance.goldMined[sender.uniqueId] == null) "0" else "${SpecFeature.instance.goldMined[sender.uniqueId]}"} gold§7, and §b${if (SpecFeature.instance.diamondsMined[sender.uniqueId] == null) "0" else "${SpecFeature.instance.diamondsMined[sender.uniqueId]}"} diamonds§7."))
                 }
             }
         }

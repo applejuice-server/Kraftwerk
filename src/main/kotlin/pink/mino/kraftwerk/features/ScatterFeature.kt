@@ -27,7 +27,7 @@ class FFAScatterTask(
         if (!SpecFeature.instance.getSpecs().contains(players[i].name)) {
             if (players[i].isOnline) {
                 players[i].teleport(scatterList[players[i]])
-                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Scattering &c${players[i].name}&8 (&c${i + 1}&8/&c${players.size}&8)"))
+                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Scattering ${Chat.primaryColor}${players[i].name}&8 (${Chat.primaryColor}${i + 1}&8/${Chat.primaryColor}${players.size}&8)"))
             }
         }
         i++
@@ -50,10 +50,10 @@ class TeamScatterTask(
                 val team = TeamsFeature.manager.getTeam(players[i])
                 if (team == null) {
                     players[i].teleport(solosList[players[i]])
-                    Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Scattering solo &c${players[i].name}&8 (&c${i + 1}&8/&c${players.size}&8)"))
+                    Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Scattering solo ${Chat.primaryColor}${players[i].name}&8 (${Chat.primaryColor}${i + 1}&8/${Chat.primaryColor}${players.size}&8)"))
                 } else {
                     players[i].teleport(teamsList[team])
-                    Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Scattering ${team.prefix}${team.name}&7 teammate &c${players[i].name}&8 (&c${i + 1}&8/&c${players.size}&8)"))
+                    Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Scattering ${team.prefix}${team.name}&7 teammate ${Chat.primaryColor}${players[i].name}&8 (${Chat.primaryColor}${i + 1}&8/${Chat.primaryColor}${players.size}&8)"))
                 }
             }
         }
@@ -130,7 +130,7 @@ class ScatterFeature : Listener {
                     val teamLocations: HashMap<Team, Location> = HashMap()
                     val solosLocations: HashMap<Player, Location> = HashMap()
                     scattering = true
-                    Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Preparing to scatter players, please standby, this might take a bit. &8(&7Mode: &cTeams&8 | &7Radius: &c${radius}x${radius}&8)"))
+                    Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Preparing to scatter players, please standby, this might take a bit. &8(&7Mode: ${Chat.primaryColor}Teams&8 | &7Radius: ${Chat.primaryColor}${radius}x${radius}&8)"))
                     for (player in Bukkit.getOnlinePlayers()) {
                         if (!SpecFeature.instance.getSpecs().contains(player.name)) {
                             val team = TeamsFeature.manager.getTeam(player)

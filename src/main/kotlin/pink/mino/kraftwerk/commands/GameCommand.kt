@@ -33,21 +33,21 @@ class GameCommand : CommandExecutor {
             Chat.sendMessage(sender, "&cThere is no game running!")
             return true
         }
-        val gui = GuiBuilder().name("&cGame Manager").owner(sender).rows(3)
+        val gui = GuiBuilder().name("${Chat.primaryColor}Game Manager").owner(sender).rows(3)
         var pause = ItemBuilder(Material.TRIPWIRE_HOOK)
-            .name("&cPause Game")
+            .name("${Chat.primaryColor}Pause Game")
             .addLore("&7Click here to temporarily pause the game.")
             .addLore("&7If the game is already paused, this will unpause it.")
             .make()
         var cancel = ItemBuilder(Material.BARRIER)
-            .name("&cCancel Game")
+            .name("${Chat.primaryColor}Cancel Game")
             .addLore("&7Click here to cancel the game.")
             .addLore("&7This will stop the game task, but it will not kick any players.")
             .make()
         var timer = ItemBuilder(Material.WATCH)
-            .name("&cGame Information")
-            .addLore("&7Time Elapsed: &f${MiscUtils.timeToString(JavaPlugin.getPlugin(Kraftwerk::class.java).game!!.timer.toLong())}")
-            .addLore("&7Current Event: &f${JavaPlugin.getPlugin(Kraftwerk::class.java).game!!.currentEvent.name}")
+            .name("${Chat.primaryColor}Game Information")
+            .addLore("&7Time Elapsed: ${Chat.secondaryColor}${MiscUtils.timeToString(JavaPlugin.getPlugin(Kraftwerk::class.java).game!!.timer.toLong())}")
+            .addLore("&7Current Event: ${Chat.secondaryColor}${JavaPlugin.getPlugin(Kraftwerk::class.java).game!!.currentEvent.name}")
         if (JavaPlugin.getPlugin(Kraftwerk::class.java).game!!.paused) {
             timer.addLore("&c&lTHE GAME IS PAUSED")
         }
@@ -95,10 +95,10 @@ class GameCommand : CommandExecutor {
                     .make()
                 timer = ItemBuilder(Material.WATCH)
                     .name("&cGame Information")
-                    .addLore("&7Time Elapsed: &f${MiscUtils.timeToString(JavaPlugin.getPlugin(Kraftwerk::class.java).game!!.timer.toLong())}")
-                    .addLore("&7Current Event: &f${JavaPlugin.getPlugin(Kraftwerk::class.java).game!!.currentEvent.name}")
+                    .addLore("&7Time Elapsed: ${Chat.secondaryColor}${MiscUtils.timeToString(JavaPlugin.getPlugin(Kraftwerk::class.java).game!!.timer.toLong())}")
+                    .addLore("&7Current Event: ${Chat.secondaryColor}${JavaPlugin.getPlugin(Kraftwerk::class.java).game!!.currentEvent.name}")
                 if (JavaPlugin.getPlugin(Kraftwerk::class.java).game!!.paused) {
-                    timer.addLore("&c&lTHE GAME IS PAUSED")
+                    timer.addLore("${Chat.primaryColor}&lTHE GAME IS PAUSED")
                 }
                 sender.openInventory.topInventory.setItem(10, pause)
                 sender.openInventory.topInventory.setItem(16, cancel)

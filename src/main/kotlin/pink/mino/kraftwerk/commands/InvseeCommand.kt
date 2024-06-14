@@ -31,7 +31,7 @@ class InvseeCommand : CommandExecutor {
         }
 
         if (args!!.size != 1) {
-            Chat.sendMessage(sender, "${Chat.dash} Usage: &c/invsee <player>")
+            Chat.sendMessage(sender, "${Chat.dash} Usage: ${Chat.primaryColor}/invsee <player>")
             return false
         }
 
@@ -50,7 +50,7 @@ class InvseeCommand : CommandExecutor {
         val gui = GuiBuilder().rows(5).name(ChatColor.translateAlternateColorCodes('&', "${target.name}'s Inventory"))
         sender.openInventory(gui.make())
         InvSeeFeature(sender, target).runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0, 20L)
-        Chat.sendMessage(sender, "${Chat.prefix} You have opened the inventory of &c${target.name}&7.")
+        Chat.sendMessage(sender, "${Chat.prefix} You have opened the inventory of ${Chat.primaryColor}${target.name}&7.")
         return true
     }
 
