@@ -28,7 +28,7 @@ class Scoreboard {
             if (sb.getObjective("killboard") == null) {
                 kills = sb.registerNewObjective("killboard", "dummy")
             }
-            kills!!.displayName = Chat.colored("&capple&ajuice")
+            kills!!.displayName = Chat.colored(Chat.scoreboardTitle)
             kills!!.displaySlot = DisplaySlot.SIDEBAR
         }
     }

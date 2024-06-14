@@ -66,6 +66,8 @@ class Kraftwerk : ExtendedJavaPlugin() {
     }
 
     override fun enable() {
+        SettingsFeature.instance.setup(this)
+
         /* Registering listeners */
         instance = this
         Bukkit.getServer().pluginManager.registerEvents(ServerListPingListener(), this)
@@ -212,7 +214,6 @@ class Kraftwerk : ExtendedJavaPlugin() {
         CustomPayloadFixerFeature(this)
 
         /* Sets up misc features */
-        SettingsFeature.instance.setup(this)
         setupDataSource()
         TeamsFeature.manager.setupColors()
         Scoreboard.setup()
@@ -237,27 +238,26 @@ class Kraftwerk : ExtendedJavaPlugin() {
         /* Discord */
         try {
             Discord.main()
+            if (!SettingsFeature.instance.data!!.getBoolean("matchpost.posted")) SettingsFeature.instance.data!!.set("whitelist.requests", false)
+            SettingsFeature.instance.saveData()
+            if (!SettingsFeature.instance.data!!.getBoolean("matchpost.cancelled")) {
+                if (SettingsFeature.instance.data!!.getString("matchpost.opens") != null) {
+                    ScheduleBroadcast(SettingsFeature.instance.data!!.getString("matchpost.opens")).runTaskTimer(this, 0L, 300L)
+                    ScheduleOpening(SettingsFeature.instance.data!!.getString("matchpost.opens")).runTaskTimer(this, 0L, 300L)
+                }
+                if (SettingsFeature.instance.data!!.getString("matchpost.host") == null) {
+                    Discord.instance!!.presence.activity = Activity.playing(if (SettingsFeature.instance.data!!.getString("config.chat.serverIp") != null) SettingsFeature.instance.data!!.getString("config.chat.serverIp") else "no server ip setup in config tough tits")
+                }
+                else Discord.instance!!.presence.activity = Activity.playing(SettingsFeature.instance.data!!.getString("matchpost.host"))
+            } else {
+                Discord.instance!!.presence.activity = Activity.playing(if (SettingsFeature.instance.data!!.getString("config.chat.serverIp") != null) SettingsFeature.instance.data!!.getString("config.chat.serverIp") else "no server ip setup in config tough tits")
+                SettingsFeature.instance.data!!.set("matchpost.cancelled", null)
+                SettingsFeature.instance.saveData()
+            }
         } catch (e: LoginException) {
             Log.severe("Failed to login to discord: " + e.message)
         }
         //twitterInstance.updateStatus("test")
-
-        if (!SettingsFeature.instance.data!!.getBoolean("matchpost.posted")) SettingsFeature.instance.data!!.set("whitelist.requests", false)
-        SettingsFeature.instance.saveData()
-        if (!SettingsFeature.instance.data!!.getBoolean("matchpost.cancelled")) {
-            if (SettingsFeature.instance.data!!.getString("matchpost.opens") != null) {
-                ScheduleBroadcast(SettingsFeature.instance.data!!.getString("matchpost.opens")).runTaskTimer(this, 0L, 300L)
-                ScheduleOpening(SettingsFeature.instance.data!!.getString("matchpost.opens")).runTaskTimer(this, 0L, 300L)
-            }
-            if (SettingsFeature.instance.data!!.getString("matchpost.host") == null) {
-                Discord.instance!!.presence.activity = Activity.playing("applejuice.games")
-            }
-            else Discord.instance!!.presence.activity = Activity.playing(SettingsFeature.instance.data!!.getString("matchpost.host"))
-        } else {
-            Discord.instance!!.presence.activity = Activity.playing("applejuice.games")
-            SettingsFeature.instance.data!!.set("matchpost.cancelled", null)
-            SettingsFeature.instance.saveData()
-        }
 
 
         GameState.setState(GameState.LOBBY)
