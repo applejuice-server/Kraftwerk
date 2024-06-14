@@ -137,7 +137,11 @@ class EndGameCommand : CommandExecutor {
             }
         }
         embed.addField("Matchpost", "https://hosts.uhc.gg/m/${SettingsFeature.instance.data!!.getInt("matchpost.id")}", false)
-        Discord.instance!!.getTextChannelById(1129309991124357140)!!.sendMessageEmbeds(embed.build()).queue()
+        try {
+            Discord.instance!!.getTextChannelById(1129309991124357140)!!.sendMessageEmbeds(embed.build()).queue()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
 
         SettingsFeature.instance.data!!.set("game.winners", ArrayList<String>())
         SettingsFeature.instance.data!!.set("game.list", ArrayList<String>())
