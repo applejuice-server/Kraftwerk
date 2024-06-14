@@ -30,28 +30,33 @@ class SuperheroesScenario : Scenario(
     val prefix = "&8[&cSuperheroes&8]&7"
 
     override fun givePlayer(player: Player) {
-        val pool = arrayListOf(
-            PotionEffectType.HEALTH_BOOST,
-            PotionEffectType.SPEED,
-            PotionEffectType.FAST_DIGGING,
-            PotionEffectType.DAMAGE_RESISTANCE,
-            PotionEffectType.INCREASE_DAMAGE,
-        )
-        if (SettingsFeature.instance.data!!.getInt("game.teamSize") >= 6) {
-            pool.add(PotionEffectType.INVISIBILITY)
-        }
-        if (SettingsFeature.instance.data!!.getInt("game.teamSize") >= 5) {
-            pool.add(PotionEffectType.JUMP)
-        }
-        if (TeamsFeature.manager.getTeam(player) != null) {
-            for (teammate in TeamsFeature.manager.getTeam(player)!!.players) {
-                pool.remove(superheroes[teammate])
+        if (superheroes[player] != null) {
+            givePower(player)
+            Chat.sendMessage(player, "$prefix Your assigned power is: &f${superheroes[player]!!.name}&7.")
+        } else {
+            val pool = arrayListOf(
+                PotionEffectType.HEALTH_BOOST,
+                PotionEffectType.SPEED,
+                PotionEffectType.FAST_DIGGING,
+                PotionEffectType.DAMAGE_RESISTANCE,
+                PotionEffectType.INCREASE_DAMAGE,
+            )
+            if (SettingsFeature.instance.data!!.getInt("game.teamSize") >= 6) {
+                pool.add(PotionEffectType.INVISIBILITY)
             }
+            if (SettingsFeature.instance.data!!.getInt("game.teamSize") >= 5) {
+                pool.add(PotionEffectType.JUMP)
+            }
+            if (TeamsFeature.manager.getTeam(player) != null) {
+                for (teammate in TeamsFeature.manager.getTeam(player)!!.players) {
+                    pool.remove(superheroes[teammate])
+                }
+            }
+            val hero = pool[Random.nextInt(pool.size)]
+            superheroes[player] = hero
+            givePower(player)
+            Chat.sendMessage(player, "$prefix Your assigned power is: &f${hero.name}&7.")
         }
-        val hero = pool[Random.nextInt(pool.size)]
-        superheroes[player] = hero
-        givePower(player)
-        Chat.sendMessage(player, "$prefix Your assigned power is: &f${hero.name}&7.")
     }
 
     fun assignPowers() {
@@ -106,9 +111,12 @@ class SuperheroesScenario : Scenario(
         }
     }
 
-    override fun onPvP() {
+    override fun onStart() {
         if (!enabled) return
-        assignPowers()
+        Chat.broadcast("${Chat.prefix} Powers will be assigned in ${Chat.secondaryColor}10 seconds&7.")
+        Schedulers.sync().runLater({
+            assignPowers()
+        }, 20 * 10L)
     }
 
     @EventHandler
@@ -132,7 +140,7 @@ class SuperheroesScenario : Scenario(
         if (e.item.type == Material.MILK_BUCKET) {
             Schedulers.sync().runLater({
                 givePower(e.player)
-            }, 1L)
+            }, 20L)
         }
     }
 
@@ -171,6 +179,9 @@ class SuperheroesScenario : Scenario(
     fun givePower(player: Player) {
         if (SpecFeature.instance.isSpec(player)) return
         val absorption = SettingsFeature.instance.data!!.getBoolean("game.options.absorption")
+        for (effect in player.activePotionEffects) {
+            player.removePotionEffect(effect.type)
+        }
         when (superheroes[player]) {
             PotionEffectType.HEALTH_BOOST -> {
                 player.addPotionEffect(PotionEffect(PotionEffectType.HEALTH_BOOST, 99999, 4))
