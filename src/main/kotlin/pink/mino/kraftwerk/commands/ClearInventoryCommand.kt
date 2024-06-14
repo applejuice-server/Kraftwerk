@@ -59,7 +59,7 @@ class ClearInventoryCommand : CommandExecutor {
                     if (openInventory.type == InventoryType.CRAFTING) {
                         openInventory.topInventory.clear()
                     }
-                    Chat.sendMessage(online, "${Chat.prefix} &7Your inventory has been cleared by §c${sender.name}§7.")
+                    Chat.sendMessage(online, "${Chat.prefix} &7Your inventory has been cleared by ${Chat.primaryColor}${sender.name}§7.")
                 }
                 Chat.sendMessage(sender as Player, "${Chat.prefix} &7You've cleared all players' inventories.")
                 return true
@@ -83,8 +83,8 @@ class ClearInventoryCommand : CommandExecutor {
                     openInventory.topInventory.clear()
                 }
 
-                Chat.sendMessage(target, "${Chat.prefix} &7Your inventory has been cleared by &c${sender.name}&7.")
-                Chat.sendMessage(sender as Player, "${Chat.prefix} &7Cleared &c${target.name}'s&7 inventory.")
+                Chat.sendMessage(target, "${Chat.prefix} &7Your inventory has been cleared by ${Chat.primaryColor}${sender.name}&7.")
+                Chat.sendMessage(sender as Player, "${Chat.prefix} &7Cleared ${Chat.primaryColor}${target.name}'s&7 inventory.")
                 return true
             }
         }

@@ -33,10 +33,10 @@ class KillTopCommand : CommandExecutor {
         ) { o1, o2 -> o1!!.value - o2!!.value }
         Collections.reverse(entries)
         Chat.sendMessage(sender, Chat.line)
-        Chat.sendCenteredMessage(sender, "&c&lKill Leaderboard")
+        Chat.sendCenteredMessage(sender, "${Chat.primaryColor}&lKill Leaderboard")
         Chat.sendMessage(sender , " ")
         for ((key, value) in entries) {
-            Chat.sendCenteredMessage(sender, "&7${key} ${Chat.dash} &f${value}")
+            Chat.sendCenteredMessage(sender, "&7${key} ${Chat.dash} ${Chat.secondaryColor}${value}")
         }
         Chat.sendMessage(sender, Chat.line)
         return true

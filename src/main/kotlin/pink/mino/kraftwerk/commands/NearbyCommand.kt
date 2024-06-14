@@ -31,17 +31,17 @@ class NearbyCommand : CommandExecutor {
             }
         }
         Chat.sendMessage(sender, Chat.line)
-        Chat.sendCenteredMessage(sender, "&c&lNearby Players")
+        Chat.sendCenteredMessage(sender, "${Chat.primaryColor}&lNearby Players")
         if (players.isEmpty()) {
             Chat.sendCenteredMessage(sender, "&7No players nearby!")
         } else {
             for (player in players) {
-                val text = TextComponent(Chat.colored("&c${floor(player.location.x)}, ${floor(player.location.y)}, ${floor(player.location.z)} &8- &f${PlayerUtils.getPrefix(player)}${player.name} &8(&c${floor(sender.location.distance(player.location))}m&8)"))
+                val text = TextComponent(Chat.colored("${Chat.primaryColor}${floor(player.location.x)}, ${floor(player.location.y)}, ${floor(player.location.z)} &8- ${Chat.secondaryColor}${PlayerUtils.getPrefix(player)}${player.name} &8(${Chat.primaryColor}${floor(sender.location.distance(player.location))}m&8)"))
                 text.clickEvent = ClickEvent(
                     ClickEvent.Action.SUGGEST_COMMAND,
                     "/tp ${player.name}"
                 )
-                Chat.sendMessage(sender, "&c${floor(player.location.x)}, ${floor(player.location.y)}, ${floor(player.location.z)} &8- &f${PlayerUtils.getPrefix(player)}${player.name} &8(&c${floor(sender.location.distance(player.location))}m&8)")
+                Chat.sendMessage(sender, "${Chat.primaryColor}${floor(player.location.x)}, ${floor(player.location.y)}, ${floor(player.location.z)} &8- ${Chat.secondaryColor}${PlayerUtils.getPrefix(player)}${player.name} &8(${Chat.primaryColor}${floor(sender.location.distance(player.location))}m&8)")
             }
         }
         Chat.sendMessage(sender, Chat.line)

@@ -23,7 +23,7 @@ class GoneFishingScenario : Scenario(
         meta.addEnchant(Enchantment.LURE, 8, true)
         meta.addEnchant(Enchantment.LUCK, 100, true)
         meta.spigot().isUnbreakable = true
-        meta.displayName = Chat.colored("&cGone Fishin'!")
+        meta.displayName = Chat.colored("${Chat.primaryColor}Gone Fishin'!")
         fishingRod.itemMeta = meta
         for (player in Bukkit.getOnlinePlayers()) {
             if (!SpecFeature.instance.getSpecs().contains(player.name)) {
@@ -40,7 +40,7 @@ class GoneFishingScenario : Scenario(
         meta.addEnchant(Enchantment.LURE, 8, true)
         meta.addEnchant(Enchantment.LUCK, 100, true)
         meta.spigot().isUnbreakable = true
-        meta.displayName = Chat.colored("&cGone Fishin'!")
+        meta.displayName = Chat.colored("${Chat.primaryColor}Gone Fishin'!")
         fishingRod.itemMeta = meta
         player.level = 25000
         player.inventory.addItem(fishingRod)

@@ -7,22 +7,19 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import pink.mino.kraftwerk.utils.Chat
 
-class ClearPotionEffectsCommand : CommandExecutor {
-
-    override fun onCommand(sender: CommandSender, cmd: Command, lbl: String, args: Array<String>): Boolean {
+class ResetHealthCommand : CommandExecutor {
+    override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
         if (sender is Player) {
-            if (!sender.hasPermission("uhc.staff.ce")) {
+            if (!sender.hasPermission("uhc.staff.resethealth")) {
                 Chat.sendMessage(sender, "&cYou don't have permission to use this command.")
                 return false
             }
         }
         if (args.isEmpty()) {
             if (sender is Player) {
-                val effects = sender.activePotionEffects
-                for (effect in effects) {
-                    sender.removePotionEffect(effect.type)
-                }
-                Chat.sendMessage(sender, "${Chat.prefix} Your effects have been cleared.")
+                sender.maxHealth = 20.0
+                sender.health = 20.0
+                Chat.sendMessage(sender, "${Chat.prefix} Your health has been reset.")
             } else {
                 sender.sendMessage("You can't use this command as you technically aren't a player.")
             }
@@ -30,13 +27,11 @@ class ClearPotionEffectsCommand : CommandExecutor {
         } else {
             if (args[0] == "*") {
                 for (online in ArrayList(Bukkit.getServer().onlinePlayers)) {
-                    val effects = online.activePotionEffects
-                    for (effect in effects) {
-                        online.removePotionEffect(effect.type)
-                    }
-                    Chat.sendMessage(online, "${Chat.prefix} &7Your effects have been cleared by ${Chat.primaryColor}${sender.name}&7.")
+                    online.maxHealth = 20.0
+                    online.health = 20.0
+                    Chat.sendMessage(online, "${Chat.prefix} &7Your health has been reset by ${Chat.primaryColor}${sender.name}&7.")
                 }
-                Chat.sendMessage(sender as Player, "${Chat.prefix} &7Cleared the effects of all players.")
+                Chat.sendMessage(sender as Player, "${Chat.prefix} &7Reset the health of all players.")
                 return true
             } else {
                 val target = Bukkit.getServer().getPlayer(args[0])
@@ -54,4 +49,5 @@ class ClearPotionEffectsCommand : CommandExecutor {
             }
         }
     }
+
 }

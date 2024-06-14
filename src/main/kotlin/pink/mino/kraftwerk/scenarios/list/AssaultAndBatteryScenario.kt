@@ -19,7 +19,7 @@ class AssaultAndBatteryScenario : Scenario(
 ) {
     val melee = arrayListOf<UUID>()
     val ranged = arrayListOf<UUID>()
-    val prefix = "&8[&cAssault and Battery&8]&7"
+    val prefix = "&8[${Chat.primaryColor}Assault and Battery&8]&7"
 
     override fun onStart() {
         for (team in TeamsFeature.manager.getTeams()) {

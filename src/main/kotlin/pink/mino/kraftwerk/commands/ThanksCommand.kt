@@ -33,7 +33,7 @@ class ThanksCommand : CommandExecutor {
         val player = Bukkit.getOfflinePlayer(Kraftwerk.instance.game!!.host)
         Kraftwerk.instance.statsHandler.lookupStatsPlayer(player).thankYous++
         thanked.add(sender.uniqueId)
-        Chat.broadcast("${Chat.prefix} &f${sender.name}&7 has &dthanked&7 the host! &8(&f${thanked.size}&8)")
+        Chat.broadcast("${Chat.prefix} ${Chat.secondaryColor}${sender.name}&7 has &dthanked&7 the host! &8(${Chat.secondaryColor}${thanked.size}&8)")
         return true
     }
 }

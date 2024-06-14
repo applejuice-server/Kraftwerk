@@ -39,7 +39,7 @@ class PlayerSwapTimer : BukkitRunnable() {
             val loc2 = player2.location
             player1.teleport(loc2)
             player2.teleport(loc1)
-            Chat.broadcast("${PlayerSwapScenario.prefix} &f${PlayerUtils.getPrefix(player1)}${player1.name}&7 has swapped with &f${PlayerUtils.getPrefix(player2)}${player2.name}&7! View &f/timer&7 for the next swap.")
+            Chat.broadcast("${PlayerSwapScenario.prefix} ${Chat.secondaryColor}${PlayerUtils.getPrefix(player1)}${player1.name}&7 has swapped with &f${PlayerUtils.getPrefix(player2)}${player2.name}&7! View ${Chat.secondaryColor}/timer&7 for the next swap.")
         }
     }
 }
@@ -52,7 +52,7 @@ class PlayerSwapScenario : Scenario(
 ) {
     companion object {
         var task: PlayerSwapTimer? = null
-        var prefix = "&8[&cPlayer Swap&8]&7"
+        var prefix = "&8[${Chat.primaryColor}Player Swap&8]&7"
     }
 
     override fun onStart() {

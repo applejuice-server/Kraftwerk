@@ -28,7 +28,7 @@ class HealthCommand : CommandExecutor {
             val health = floor(sender.health / 2 * 10 + el.absorptionHearts / 2 * 10)
             val color = HealthChatColorer.returnHealth(health)
             Chat.sendMessage(sender,
-                "${Chat.prefix} ${ChatColor.WHITE}${sender.displayName}${ChatColor.GRAY} is at ${color}${health}%${ChatColor.GRAY}.")
+                "${Chat.prefix} ${Chat.secondaryColor}${sender.displayName}${ChatColor.GRAY} is at ${color}${health}%${ChatColor.GRAY}.")
             return true
         } else {
             val target = Bukkit.getServer().getPlayer(args[0])
@@ -38,7 +38,7 @@ class HealthCommand : CommandExecutor {
             val el: EntityLiving = (target as CraftPlayer).handle
             val health = floor(target.health / 2 * 10 + el.absorptionHearts / 2 * 10)
             val color = HealthChatColorer.returnHealth(health)
-            Chat.sendMessage(sender as Player, "${Chat.prefix} ${ChatColor.WHITE}${target.displayName}${ChatColor.GRAY} is at ${color}${health}%${ChatColor.GRAY}.")
+            Chat.sendMessage(sender as Player, "${Chat.prefix} ${Chat.secondaryColor}${target.displayName}${ChatColor.GRAY} is at ${color}${health}%${ChatColor.GRAY}.")
             return true
         }
     }

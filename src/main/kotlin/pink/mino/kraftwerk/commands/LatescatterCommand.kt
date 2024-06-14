@@ -38,7 +38,7 @@ class LatescatterCommand : CommandExecutor {
             return false
         }
         if (args.isEmpty()) {
-            Chat.sendMessage(sender, "${Chat.prefix} Invalid usage: &f/ls <player> [teammate]")
+            Chat.sendMessage(sender, "${Chat.prefix} Invalid usage: ${Chat.secondaryColor}/ls <player> [teammate]")
             return false
         }
         val player: Player
@@ -79,7 +79,7 @@ class LatescatterCommand : CommandExecutor {
             }
             WhitelistCommand().addWhitelist(player.name.lowercase())
             list.add(player.name)
-            Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} &f${player.name}&7 has been late-scattered&7."))
+            Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} ${Chat.secondaryColor}${player.name}&7 has been late-scattered&7."))
             Chat.sendMessage(player, "${Chat.prefix} You've successfully been added to the game.")
         } else if (args.size == 2) {
             player = Bukkit.getPlayer(args[0])
@@ -122,8 +122,8 @@ class LatescatterCommand : CommandExecutor {
             WhitelistCommand().addWhitelist(player.name.lowercase())
             list.add(player.name)
 
-            Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} &f${player.name}&7 has been late-scattered to their teammate &f${teammate.name}&7."))
-            Chat.sendMessage(player, "${Chat.prefix} You've successfully been added to the game, you've also been teamed with &f${teammate.name}&7")
+            Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} ${Chat.secondaryColor}${player.name}&7 has been late-scattered to their teammate ${Chat.secondaryColor}${teammate.name}&7."))
+            Chat.sendMessage(player, "${Chat.prefix} You've successfully been added to the game, you've also been teamed with ${Chat.secondaryColor}${teammate.name}&7")
         }
         SettingsFeature.instance.data!!.set("game.list", list)
         SettingsFeature.instance.saveData()

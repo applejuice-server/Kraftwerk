@@ -24,7 +24,7 @@ class FuckYouItsAFireballWandScenario : Scenario(
         for (player in Bukkit.getOnlinePlayers()) {
             if (!SpecFeature.instance.getSpecs().contains(player.name)) {
                 val stick = ItemBuilder(Material.STICK)
-                    .name("&cFireball Wand")
+                    .name("${Chat.primaryColor}Fireball Wand")
                     .make()
                 val list = arrayListOf(
                     stick
@@ -37,7 +37,7 @@ class FuckYouItsAFireballWandScenario : Scenario(
     @EventHandler
     fun onPlayerInteract(e: PlayerInteractEvent) {
         if (!enabled) return
-        if (e.item != null && e.item.itemMeta.displayName == Chat.colored("&cFireball Wand")) {
+        if (e.item != null && e.item.itemMeta.displayName == Chat.colored("${Chat.primaryColor}Fireball Wand")) {
             val fb = e.player.launchProjectile(Fireball::class.java)
             fb.setIsIncendiary(true)
             fb.velocity = e.player.location.direction.multiply(2)
@@ -62,7 +62,7 @@ class FuckYouItsAFireballWandScenario : Scenario(
 
     override fun givePlayer(player: Player) {
         val stick = ItemBuilder(Material.STICK)
-            .name("&cFireball Wand")
+            .name("${Chat.primaryColor}Fireball Wand")
             .make()
         val list = arrayListOf(
             stick

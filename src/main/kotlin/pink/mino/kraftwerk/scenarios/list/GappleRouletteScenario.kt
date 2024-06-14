@@ -39,7 +39,7 @@ class GappleRouletteScenario : Scenario(
         PotionEffectType.WITHER
     )
 
-    val prefix = "&8[&cGapple Roulette&8]&7"
+    val prefix = "&8[${Chat.primaryColor}Gapple Roulette&8]&7"
 
     @EventHandler
     fun onPlayerConsume(e: PlayerItemConsumeEvent) {
@@ -50,7 +50,7 @@ class GappleRouletteScenario : Scenario(
                 val effect = potionEffects.random()
                 val seconds = Random().nextInt(90)
                 e.player.addPotionEffect(PotionEffect(effect, 20 * seconds, 0))
-                Chat.sendMessage(e.player, "${prefix} You got &f${effect.name}&7 for &f${seconds} seconds&7!")
+                Chat.sendMessage(e.player, "${prefix} You got ${Chat.secondaryColor}${effect.name}&7 for ${Chat.secondaryColor}${seconds} seconds&7!")
             }, 1L)
         }
     }

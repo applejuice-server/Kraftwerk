@@ -102,6 +102,10 @@ commands:
     aliases:
       - startuhc
     description: Starts a UHC game.
+  resethealth:
+    aliases:
+      - rh
+    description: Resets the desired player's maximum health back to 10 hearts.
   end:
     aliases:
       - endgame

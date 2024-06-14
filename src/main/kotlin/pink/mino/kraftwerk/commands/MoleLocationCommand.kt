@@ -23,11 +23,11 @@ class MoleLocationCommand : CommandExecutor {
             return false
         }
         if (!ScenarioHandler.getActiveScenarios().contains(ScenarioHandler.getScenario("moles"))) {
-            Chat.sendMessage(sender, "${Chat.prefix} &cMoles&7 isn't enabled!")
+            Chat.sendMessage(sender, "${Chat.prefix} ${Chat.primaryColor}Moles&7 isn't enabled!")
             return false
         }
         if (GameState.currentState != GameState.INGAME) {
-            Chat.sendMessage(sender, "${Chat.prefix} &cMoles&7 isn't available right now!")
+            Chat.sendMessage(sender, "${Chat.prefix} ${Chat.primaryColor}Moles&7 isn't available right now!")
             return false
         }
         if (MolesScenario.instance.moles[sender.uniqueId] == null) {
@@ -37,7 +37,7 @@ class MoleLocationCommand : CommandExecutor {
         val x = (sender.location.x * 100.0).roundToInt() / 100.0
         val y = (sender.location.y * 100.0).roundToInt() / 100.0
         val z = (sender.location.z * 100.0).roundToInt() / 100.0
-        MolesScenario.instance.sendMoles("&8[&cMole Chat&8]&f ${PlayerUtils.getPrefix(sender)}${sender.name}&7's location: &f${x}, ${y}, ${z}&7. &8| &7Dimension: &c${sender.location.world.worldType}&7.")
+        MolesScenario.instance.sendMoles("&8[${Chat.primaryColor}Mole Chat&8]&f ${PlayerUtils.getPrefix(sender)}${sender.name}&7's location: ${Chat.secondaryColor}${x}, ${y}, ${z}&7. &8| &7Dimension: ${Chat.primaryColor}${sender.location.world.worldType}&7.")
         return true
     }
 }

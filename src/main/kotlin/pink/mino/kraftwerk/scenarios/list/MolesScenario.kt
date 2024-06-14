@@ -23,7 +23,7 @@ class MolesScenario : Scenario(
         val instance = MolesScenario()
     }
 
-    val prefix = "&8[&cMoles&8]&7"
+    val prefix = "&8[${Chat.primaryColor}Moles&8]&7"
     val moles: HashMap<UUID, Boolean> = HashMap()
     var moleTeam: Team? = null
 
@@ -72,7 +72,7 @@ class MolesScenario : Scenario(
                 for ((index, teammate) in list.withIndex()) {
                     if (index == teammateIndex) {
                         moles[teammate.uniqueId] = false
-                        Chat.sendMessage(teammate, "$prefix You are the &fmole&7! Use &f/mole help&7 to see mole commands.")
+                        Chat.sendMessage(teammate, "$prefix You are the ${Chat.secondaryColor}mole&7! Use ${Chat.secondaryColor}/mole help&7 to see mole commands.")
                     }
                 }
             }

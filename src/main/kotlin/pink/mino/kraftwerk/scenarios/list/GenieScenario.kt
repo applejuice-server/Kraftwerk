@@ -26,7 +26,7 @@ class GenieScenario : Scenario(
     "genie",
     Material.EXP_BOTTLE
 ), CommandExecutor {
-    val prefix = Chat.colored("&8[&cGenie&8]&7")
+    val prefix = Chat.colored("&8[${Chat.primaryColor}Genie&8]&7")
     val wishes = hashMapOf<UUID, Int>()
 
     init {
@@ -37,14 +37,14 @@ class GenieScenario : Scenario(
         for (player in Bukkit.getOnlinePlayers()) {
             if (!SpecFeature.instance.isSpec(player)) {
                 wishes[player.uniqueId] = 3
-                Chat.sendMessage(player, "$prefix You have &f3 wishes&7! Use &f/genie&7 to redeem them now or wait until you have kills.")
+                Chat.sendMessage(player, "$prefix You have ${Chat.secondaryColor}3 wishes&7! Use ${Chat.secondaryColor}/genie&7 to redeem them now or wait until you have kills.")
             }
         }
     }
 
     override fun givePlayer(player: Player) {
         wishes[player.uniqueId] = 3
-        Chat.sendMessage(player, "$prefix You have &f3 wishes&7! Use &f/genie&7 to redeem them now or wait until you have kills.")
+        Chat.sendMessage(player, "$prefix You have ${Chat.secondaryColor}3 wishes&7! Use ${Chat.secondaryColor}/genie&7 to redeem them now or wait until you have kills.")
     }
 
     fun calculateRewards(player: Player): ArrayList<ItemStack> {
@@ -124,13 +124,13 @@ class GenieScenario : Scenario(
             Chat.sendMessage(sender, "$prefix You do not have any wishes!")
             return true
         }
-        val gui = GuiBuilder().name("&4Genie Menu").rows(2).owner(sender)
+        val gui = GuiBuilder().name("${Chat.primaryColor}Genie Menu").rows(2).owner(sender)
         val rewards = calculateRewards(sender)
         for ((index, reward) in rewards.withIndex()) {
             gui.item(index, reward).onClick {
                 wishes[sender.uniqueId] = wishes[sender.uniqueId]!! - 1
                 PlayerUtils.bulkItems(sender, arrayListOf(reward))
-                Chat.sendMessage(sender, "$prefix You have redeemed a wish! You now have &f${wishes[sender.uniqueId]}&7 wishes left!")
+                Chat.sendMessage(sender, "$prefix You have redeemed a wish! You now have ${Chat.secondaryColor}${wishes[sender.uniqueId]}&7 wishes left!")
                 sender.closeInventory()
             }
         }

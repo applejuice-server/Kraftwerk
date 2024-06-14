@@ -101,27 +101,27 @@ class Leaderboards : BukkitRunnable() {
                         hologram.clearLines()
                     }
                 }
-                gamesPlayed.appendTextLine(Chat.colored("&c&lGames Played"))
+                gamesPlayed.appendTextLine(Chat.colored("${Chat.primaryColor}&lGames Played"))
                 gamesPlayed.appendTextLine(Chat.guiLine)
-                wins.appendTextLine(Chat.colored("&c&lWins"))
+                wins.appendTextLine(Chat.colored("${Chat.primaryColor}&lWins"))
                 wins.appendTextLine(Chat.guiLine)
-                kills.appendTextLine(Chat.colored("&c&lKills"))
+                kills.appendTextLine(Chat.colored("${Chat.primaryColor}&lKills"))
                 kills.appendTextLine(Chat.guiLine)
-                diamondsMined.appendTextLine(Chat.colored("&c&lDiamonds Mined"))
+                diamondsMined.appendTextLine(Chat.colored("${Chat.primaryColor}&lDiamonds Mined"))
                 diamondsMined.appendTextLine(Chat.guiLine)
-                goldMined.appendTextLine(Chat.colored("&c&lGold Mined"))
+                goldMined.appendTextLine(Chat.colored("${Chat.primaryColor}&lGold Mined"))
                 goldMined.appendTextLine(Chat.guiLine)
-                gapplesEaten.appendTextLine(Chat.colored("&c&lGapples Eaten"))
+                gapplesEaten.appendTextLine(Chat.colored("${Chat.primaryColor}&lGapples Eaten"))
                 gapplesEaten.appendTextLine(Chat.guiLine)
-                highestLevel.appendTextLine(Chat.colored("&b&lHighest Level"))
+                highestLevel.appendTextLine(Chat.colored("${Chat.primaryColor}&lHighest Level"))
                 highestLevel.appendTextLine(Chat.guiLine)
-                latestMatch.appendTextLine(Chat.colored("&c&lLatest Match"))
+                latestMatch.appendTextLine(Chat.colored("${Chat.primaryColor}&lLatest Match"))
                 latestMatch.appendTextLine(Chat.guiLine)
                 with (JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.getDatabase("applejuice").getCollection("stats")) {
                     val gp = this.find().sort(descending("gamesPlayed")).limit(10)
                     for ((index, document) in gp.withIndex()) {
                         val profile = JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.lookupProfile(document["uuid"] as UUID).get()
-                        if (document["gamesPlayed"] as Int != 0) gamesPlayed.appendTextLine(Chat.colored("&e${index + 1}. &f${profile.name} &8- &b${document["gamesPlayed"] as Int}"))
+                        if (document["gamesPlayed"] as Int != 0) gamesPlayed.appendTextLine(Chat.colored("&e${index + 1}. ${Chat.secondaryColor}${profile.name} &8- &b${document["gamesPlayed"] as Int}"))
                     }
                     if (gamesPlayed.size() == 2) {
                         gamesPlayed.appendTextLine(Chat.colored("&7No data yet x_x"))
@@ -129,7 +129,7 @@ class Leaderboards : BukkitRunnable() {
                     val w = this.find().sort(descending("wins")).limit(10)
                     for ((index, document) in w.withIndex()) {
                         val profile = JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.lookupProfile(document["uuid"] as UUID).get()
-                        if (document["wins"] as Int != 0) wins.appendTextLine(Chat.colored("&e${index + 1}. &f${profile.name} &8- &b${document["wins"] as Int}"))
+                        if (document["wins"] as Int != 0) wins.appendTextLine(Chat.colored("&e${index + 1}. ${Chat.secondaryColor}${profile.name} &8- &b${document["wins"] as Int}"))
                     }
                     if (wins.size() == 2) {
                         wins.appendTextLine(Chat.colored("&7No data yet x_x"))
@@ -137,7 +137,7 @@ class Leaderboards : BukkitRunnable() {
                     val k = this.find().sort(descending("kills")).limit(10)
                     for ((index, document) in k.withIndex()) {
                         val profile = JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.lookupProfile(document["uuid"] as UUID).get()
-                        if (document["kills"] as Int != 0) kills.appendTextLine(Chat.colored("&e${index + 1}. &f${profile.name} &8- &b${document["kills"] as Int}"))
+                        if (document["kills"] as Int != 0) kills.appendTextLine(Chat.colored("&e${index + 1}. ${Chat.secondaryColor}${profile.name} &8- &b${document["kills"] as Int}"))
                     }
                     if (kills.size() == 2) {
                         kills.appendTextLine(Chat.colored("&7No data yet x_x"))
@@ -145,7 +145,7 @@ class Leaderboards : BukkitRunnable() {
                     val d = this.find().sort(descending("diamondsMined")).limit(10)
                     for ((index, document) in d.withIndex()) {
                         val profile = JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.lookupProfile(document["uuid"] as UUID).get()
-                        if (document["diamondsMined"] as Int != 0) diamondsMined.appendTextLine(Chat.colored("&e${index + 1}. &f${profile.name} &8- &b${document["diamondsMined"] as Int}"))
+                        if (document["diamondsMined"] as Int != 0) diamondsMined.appendTextLine(Chat.colored("&e${index + 1}. ${Chat.secondaryColor}${profile.name} &8- &b${document["diamondsMined"] as Int}"))
                     }
                     if (diamondsMined.size() == 2) {
                         diamondsMined.appendTextLine(Chat.colored("&7No data yet x_x"))
@@ -153,7 +153,7 @@ class Leaderboards : BukkitRunnable() {
                     val g = this.find().sort(descending("gapplesEaten")).limit(10)
                     for ((index, document) in g.withIndex()) {
                         val profile = JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.lookupProfile(document["uuid"] as UUID).get()
-                        if (document["gapplesEaten"] as Int != 0) gapplesEaten.appendTextLine(Chat.colored("&e${index + 1}. &f${profile.name} &8- &b${document["gapplesEaten"] as Int}"))
+                        if (document["gapplesEaten"] as Int != 0) gapplesEaten.appendTextLine(Chat.colored("&e${index + 1}. ${Chat.secondaryColor}${profile.name} &8- &b${document["gapplesEaten"] as Int}"))
                     }
                     if (gapplesEaten.size() == 2) {
                         gapplesEaten.appendTextLine(Chat.colored("&7No data yet x_x"))
@@ -161,7 +161,7 @@ class Leaderboards : BukkitRunnable() {
                     val gm = this.find().sort(descending("goldMined")).limit(10)
                     for ((index, document) in gm.withIndex()) {
                         val profile = JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.lookupProfile(document["uuid"] as UUID).get()
-                        if (document["goldMined"] as Int != 0) goldMined.appendTextLine(Chat.colored("&e${index + 1}. &f${profile.name} &8- &b${document["goldMined"] as Int}"))
+                        if (document["goldMined"] as Int != 0) goldMined.appendTextLine(Chat.colored("&e${index + 1}. ${Chat.secondaryColor}${profile.name} &8- &b${document["goldMined"] as Int}"))
                     }
                     if (goldMined.size() == 2) {
                         goldMined.appendTextLine(Chat.colored("&7No data yet x_x"))
@@ -171,7 +171,7 @@ class Leaderboards : BukkitRunnable() {
                     val t = this.find().sort(descending("level")).limit(10)
                     for ((index, document) in t.withIndex()) {
                         val profile = JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.lookupProfile(document["uuid"] as UUID).get()
-                        if (document["level"] as Int != 0) highestLevel.appendTextLine(Chat.colored("&e${index + 1}. &f${profile.name} &8- &aLevel ${profile.level}"))
+                        if (document["level"] as Int != 0) highestLevel.appendTextLine(Chat.colored("&e${index + 1}. ${Chat.secondaryColor}${profile.name} &8- &aLevel ${profile.level}"))
                     }
                     if (highestLevel.size() == 2) {
                         highestLevel.appendTextLine(Chat.colored("&7No data yet x_x"))
@@ -192,7 +192,7 @@ class Leaderboards : BukkitRunnable() {
                 for (match in matches) {
                     latestMatch.appendTextLine(Chat.colored("&e${match.getString("title")}"))
                     latestMatch.appendTextLine(Chat.colored(" "))
-                    latestMatch.appendTextLine(Chat.colored("&7Teamsize ${Chat.dash} &f${match.getString("teams")}"))
+                    latestMatch.appendTextLine(Chat.colored("&7Teamsize ${Chat.dash} ${Chat.secondaryColor}${match.getString("teams")}"))
                     latestMatch.appendTextLine(Chat.colored("&7Scenarios (${(match["scenarios"] as List<*>).size}) ${Chat.dash} "))
                     for (scenario in match["scenarios"] as List<*>) {
                         latestMatch.appendTextLine(Chat.colored(" §8●§7 &f${scenario}&8"))
@@ -219,7 +219,7 @@ class Leaderboards : BukkitRunnable() {
                             latestMatch.appendTextLine(Chat.colored("&7&o(${winnerMap.size - 10} more winners&f&o)"))
                             break
                         }
-                        latestMatch.appendTextLine(Chat.colored(" ${Chat.dot} §f${entry.key} &8(&e${entry.value}&8)"))
+                        latestMatch.appendTextLine(Chat.colored(" ${Chat.dot} ${Chat.secondaryColor}${entry.key} &8(&e${entry.value}&8)"))
                         winnerLimited--
                     }
 

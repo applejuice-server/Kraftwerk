@@ -5,6 +5,7 @@ import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
+import pink.mino.kraftwerk.features.SettingsFeature
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GameState
 import pink.mino.kraftwerk.utils.Perk
@@ -49,14 +50,14 @@ class FlyCommand : CommandExecutor {
                 return if (!target.allowFlight) {
                     target.allowFlight = true
                     target.isFlying = true
-                    Chat.sendMessage(target, "${Chat.prefix} &7Your flight has been enabled by &c${sender.name}&7.")
-                    Chat.sendMessage(sender, "${Chat.prefix} &7Enabled &c${target.name}'s&7 flight.")
+                    Chat.sendMessage(target, "${Chat.prefix} &7Your flight has been enabled by ${Chat.primaryColor}${sender.name}&7.")
+                    Chat.sendMessage(sender, "${Chat.prefix} &7Enabled ${Chat.primaryColor}${target.name}'s&7 flight.")
                     true
                 } else {
                     target.allowFlight = false
                     target.isFlying = false
-                    Chat.sendMessage(target, "${Chat.prefix} &7Your flight has been disabled by &c${sender.name}&7.")
-                    Chat.sendMessage(sender, "${Chat.prefix} &7Disabled &c${target.name}'s&7 flight.")
+                    Chat.sendMessage(target, "${Chat.prefix} &7Your flight has been disabled by ${Chat.primaryColor}${sender.name}&7.")
+                    Chat.sendMessage(sender, "${Chat.prefix} &7Disabled ${Chat.primaryColor}${target.name}'s&7 flight.")
                     true
                 }
             }
@@ -77,7 +78,7 @@ class FlyCommand : CommandExecutor {
                 }
                 return true
             } else {
-                Chat.sendMessage(sender, "&6Gold&7 ranks and above can fly in spawn. Buy it at the store &eapplejuice.tebex.io")
+                Chat.sendMessage(sender, "&6Gold&7 ranks and above can fly in spawn. Buy it at the store &e${if (SettingsFeature.instance.data!!.getString("config.chat.storeUrl") != null) SettingsFeature.instance.data!!.getString("config.chat.storeUrl") else "no store url setup in config tough tits"}")
                 return false
             }
         }

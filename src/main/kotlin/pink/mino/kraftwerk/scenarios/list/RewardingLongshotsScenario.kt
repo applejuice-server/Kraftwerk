@@ -20,7 +20,7 @@ class RewardingLongshotsScenario : Scenario(
     "rewardinglongshots",
     Material.ARROW
 ) {
-    val prefix = "&8[&4Longshots&8]&7"
+    val prefix = "&8[${Chat.primaryColor}Longshots&8]&7"
 
     @EventHandler
     fun onPlayerShoot(e: EntityDamageByEntityEvent) {
@@ -48,7 +48,7 @@ class RewardingLongshotsScenario : Scenario(
                 prizes.add(ItemStack(Material.GOLD_INGOT, 3))
                 prizes.add(ItemStack(Material.DIAMOND, 5))
             }
-            if (broadcast) Bukkit.broadcastMessage(Chat.colored("$prefix &7${PlayerUtils.getPrefix((((e.damager as Arrow).shooter) as Player))}${(((e.damager as Arrow).shooter) as Player).name}&7 hit &7${e.entity.name} from over &f${floor(distance)} &7blocks away!"))
+            if (broadcast) Bukkit.broadcastMessage(Chat.colored("$prefix &7${PlayerUtils.getPrefix((((e.damager as Arrow).shooter) as Player))}${(((e.damager as Arrow).shooter) as Player).name}&7 hit ${Chat.secondaryColor}${e.entity.name} from over ${Chat.secondaryColor}${floor(distance)} &7blocks away!"))
             if (prizes.isNotEmpty()) {
                 Chat.sendMessage((((e.damager as Arrow).shooter) as Player), prefix + "You got &a${prizes.size} &7prizes!")
                 PlayerUtils.bulkItems((((e.damager as Arrow).shooter) as Player), prizes)

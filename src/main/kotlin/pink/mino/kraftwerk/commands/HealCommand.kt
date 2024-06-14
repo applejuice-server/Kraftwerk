@@ -28,7 +28,7 @@ class HealCommand : CommandExecutor {
             if (args[0] == "*") {
                 for (online in ArrayList(Bukkit.getServer().onlinePlayers)) {
                     online.health = online.maxHealth
-                    Chat.sendMessage(online, "${Chat.prefix} &7You have been healed by §c${sender.name}§7.")
+                    Chat.sendMessage(online, "${Chat.prefix} &7You have been healed by ${Chat.primaryColor}${sender.name}§7.")
                 }
                 Chat.sendMessage(sender as Player, "${Chat.prefix} &7You've healed all players.")
                 return true
@@ -39,8 +39,8 @@ class HealCommand : CommandExecutor {
                     return true
                 }
                 target.health = target.maxHealth
-                Chat.sendMessage(target, "${Chat.prefix} &7You've been healed by &c${sender.name}&7.")
-                Chat.sendMessage(sender as Player, "${Chat.prefix} &7Healed &c${target.name}&7.")
+                Chat.sendMessage(target, "${Chat.prefix} &7You've been healed by ${Chat.primaryColor}${sender.name}&7.")
+                Chat.sendMessage(sender as Player, "${Chat.prefix} &7Healed ${Chat.primaryColor}${target.name}&7.")
                 return true
             }
         }

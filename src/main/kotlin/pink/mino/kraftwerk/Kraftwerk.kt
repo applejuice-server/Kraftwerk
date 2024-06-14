@@ -196,6 +196,7 @@ class Kraftwerk : ExtendedJavaPlugin() {
         getCommand("granttag").executor = GrantTagCommand()
         getCommand("thanks").executor = ThanksCommand()
         getCommand("fight").executor = FightCommand()
+        getCommand("resethealth").executor = ResetHealthCommand()
         //getCommand("hotbar").executor = HotbarCommand()
 
         /* ProtocolLib stuff */

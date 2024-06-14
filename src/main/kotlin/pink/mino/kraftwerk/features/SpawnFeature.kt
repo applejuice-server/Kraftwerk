@@ -43,7 +43,7 @@ class SpawnFeature : Listener {
     val spawnLocation = Location(Bukkit.getWorld("Spawn"), -221.5, 95.0, -140.5)
     val editorList = ArrayList<UUID>()
 
-    val prefix = "&8[&cServer&8]&7"
+    val prefix = "&8[${Chat.primaryColor}Server&8]&7"
     companion object {
         val instance = SpawnFeature()
     }
@@ -288,37 +288,37 @@ class SpawnFeature : Listener {
         p.level = 0
 
         val stats = ItemBuilder(Material.WRITTEN_BOOK)
-            .name("&cView Stats &7(Right Click)")
+            .name("${Chat.primaryColor}View Stats &7(Right Click)")
             .addLore("&7Right-click to view your stats.")
             .make()
         p.inventory.setItem(5, stats)
 
         val config = ItemBuilder(Material.GOLDEN_APPLE)
-            .name("&cUHC Configuration &7(Right Click)")
+            .name("${Chat.primaryColor}UHC Configuration &7(Right Click)")
             .addLore("&7Right-click to view the UHC Configuration.")
             .make()
 
         val scenarios = ItemBuilder(Material.CHEST)
-            .name("&cActive Scenarios &7(Right Click)")
+            .name("${Chat.primaryColor}Active Scenarios &7(Right Click)")
             .addLore("&7Right-click to view active scenarios.")
             .make()
         p.inventory.setItem(8, scenarios)
         val championsKit = ItemBuilder(Material.NETHER_STAR)
-            .name("&cChampions Kit &7(Right Click)")
+            .name("${Chat.primaryColor}Champions Kit &7(Right Click)")
             .addLore("&7Right-click to view the Champions kit selector.")
             .make()
         val arenaSword = ItemBuilder(Material.IRON_SWORD)
-            .name("&cFFA Arena &7(Right Click)")
+            .name("${Chat.primaryColor}FFA Arena &7(Right Click)")
             .addLore("&7Right-click to join the FFA Arena.")
             .make()
         p.inventory.setItem(4, arenaSword)
         val editKit = ItemBuilder(Material.ENDER_CHEST)
-            .name("&cEdit Arena Kit &7(Right Click)")
+            .name("${Chat.primaryColor}Edit Arena Kit &7(Right Click)")
             .addLore("&7Right-click to edit your kit for the FFA Arena.")
             .make()
         val profile = ItemBuilder(Material.SKULL_ITEM)
             .toSkull()
-            .name("&cYour Profile &7(Right Click)")
+            .name("${Chat.primaryColor}Your Profile &7(Right Click)")
             .addLore("&7Right-click to view your profile.")
             .setOwner(p.name)
             .make()
@@ -381,7 +381,7 @@ class SpawnFeature : Listener {
         if (e.player.world.name == "Spawn") {
             if (e.item !== null) {
                 when (e.item.itemMeta.displayName) {
-                    Chat.colored("&cView Stats &7(Right Click)") -> {
+                    Chat.colored("${Chat.primaryColor}View Stats &7(Right Click)") -> {
                         e.isCancelled = true
                         Bukkit.dispatchCommand(e.player, "stats")
                     }
@@ -389,31 +389,31 @@ class SpawnFeature : Listener {
                         e.isCancelled = true
                         Bukkit.dispatchCommand(e.player, "donator")
                     }
-                    Chat.colored("&cUHC Configuration &7(Right Click)") -> {
+                    Chat.colored("${Chat.primaryColor}UHC Configuration &7(Right Click)") -> {
                         e.isCancelled = true
                         Bukkit.dispatchCommand(e.player, "uhc")
                     }
-                    Chat.colored("&cActive Scenarios &7(Right Click)") -> {
+                    Chat.colored("${Chat.primaryColor}Active Scenarios &7(Right Click)") -> {
                         e.isCancelled = true
                         Bukkit.dispatchCommand(e.player, "scen")
                     }
-                    Chat.colored("&cFFA Arena &7(Right Click)") -> {
+                    Chat.colored("${Chat.primaryColor}FFA Arena &7(Right Click)") -> {
                         e.isCancelled = true
                         Bukkit.dispatchCommand(e.player, "a")
                     }
-                    Chat.colored("&cDonator Menu &7(Right Click)") -> {
+                    Chat.colored("${Chat.primaryColor}Donator Menu &7(Right Click)") -> {
                         e.isCancelled = true
                         Bukkit.dispatchCommand(e.player, "donator")
                     }
-                    Chat.colored("&cChampions Kit &7(Right Click)") -> {
+                    Chat.colored("${Chat.primaryColor}Champions Kit &7(Right Click)") -> {
                         e.isCancelled = true
                         Bukkit.dispatchCommand(e.player, "ckit")
                     }
-                    Chat.colored("&cYour Profile &7(Right Click)") -> {
+                    Chat.colored("${Chat.primaryColor}Your Profile &7(Right Click)") -> {
                         e.isCancelled = true
                         Bukkit.dispatchCommand(e.player, "profile")
                     }
-                    Chat.colored("&cEdit Arena Kit &7(Right Click)") -> {
+                    Chat.colored("${Chat.primaryColor}Edit Arena Kit &7(Right Click)") -> {
                         e.isCancelled = true
                         sendEditor(e.player)
                     }

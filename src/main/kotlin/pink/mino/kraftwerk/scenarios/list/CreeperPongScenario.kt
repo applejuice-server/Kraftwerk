@@ -8,6 +8,7 @@ import org.bukkit.entity.Player
 import org.bukkit.material.SpawnEgg
 import pink.mino.kraftwerk.features.SpecFeature
 import pink.mino.kraftwerk.scenarios.Scenario
+import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.ItemBuilder
 import pink.mino.kraftwerk.utils.PlayerUtils
 
@@ -23,7 +24,7 @@ class CreeperPongScenario : Scenario(
                 val spawnEgg = SpawnEgg(EntityType.CREEPER).toItemStack()
                 spawnEgg.amount = 64
                 val stick = ItemBuilder(Material.STICK)
-                    .name("&cKnockybacky Stick")
+                    .name("${Chat.primaryColor}Knockybacky Stick")
                     .addEnchantment(Enchantment.KNOCKBACK, 10)
                     .make()
                 val list = arrayListOf(
@@ -39,7 +40,7 @@ class CreeperPongScenario : Scenario(
         val spawnEgg = SpawnEgg(EntityType.CREEPER).toItemStack()
         spawnEgg.amount = 64
         val stick = ItemBuilder(Material.STICK)
-            .name("&cKnockybacky Stick")
+            .name("${Chat.primaryColor}Knockybacky Stick")
             .addEnchantment(Enchantment.KNOCKBACK, 10)
             .make()
         val list = arrayListOf(

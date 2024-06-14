@@ -27,7 +27,7 @@ class EditPregenCommand : CommandExecutor {
             return false
         }
         if (args.isEmpty()) {
-            Chat.sendMessage(sender, "${Chat.prefix} &7Usage: &f/editpregen <border/generation/settings>&7.")
+            Chat.sendMessage(sender, "${Chat.prefix} &7Usage: ${Chat.secondaryColor}/editpregen <border/generation/settings>&7.")
             return false
         }
         val pregenConfig = PregenConfigHandler.getConfig(sender as OfflinePlayer)
@@ -35,10 +35,10 @@ class EditPregenCommand : CommandExecutor {
             Chat.sendMessage(sender, "${Chat.prefix} &7You don't have a pregeneration configuration set up yet.")
             return false
         }
-        val gui = GuiBuilder().rows(1).name(ChatColor.translateAlternateColorCodes('&', "&4Edit Pregen Config")).owner(sender)
+        val gui = GuiBuilder().rows(1).name(ChatColor.translateAlternateColorCodes('&', "${Chat.primaryColor}Edit Pregen Config")).owner(sender)
         if (args[0] == "border") {
             val border = ItemBuilder(Material.BEDROCK)
-                .name("&7Border: &c±${pregenConfig.border}")
+                .name("&7Border: ${Chat.primaryColor}±${pregenConfig.border}")
                 .addLore("&7Click to change the border size.")
                 .addLore(" ")
                 .addLore("&8Left Click: &a+50")
@@ -50,18 +50,18 @@ class EditPregenCommand : CommandExecutor {
                 if (it.isLeftClick) {
                     pregenConfig.border += 50
                     val meta = it.currentItem.itemMeta
-                    meta.displayName = Chat.colored("&7Border: &c±${pregenConfig.border}")
+                    meta.displayName = Chat.colored("&7Border: ${Chat.primaryColor}±${pregenConfig.border}")
                     it.currentItem.itemMeta = meta
                 } else {
                     pregenConfig.border -= 50
                     val meta = it.currentItem.itemMeta
-                    meta.displayName = Chat.colored("&7Border: &c±${pregenConfig.border}")
+                    meta.displayName = Chat.colored("&7Border: ${Chat.primaryColor}±${pregenConfig.border}")
                     it.currentItem.itemMeta = meta
                 }
             }
         } else if (args[0] == "generation") {
             val type = ItemBuilder(Material.GRASS)
-                .name("&7World Environment: &c${pregenConfig.type}")
+                .name("&7World Environment: ${Chat.primaryColor}${pregenConfig.type}")
                 .addLore("&7Click to change the generation type.")
                 .addLore(" ")
                 .addLore("&8Left Click &7to toggle between the types.")
@@ -84,12 +84,12 @@ class EditPregenCommand : CommandExecutor {
                     }
                 }
                 val meta = it.currentItem.itemMeta
-                meta.displayName = Chat.colored("&7World Environment: &c${pregenConfig.type}")
+                meta.displayName = Chat.colored("&7World Environment: ${Chat.primaryColor}${pregenConfig.type}")
                 it.currentItem.itemMeta = meta
-                Chat.sendMessage(sender, "${Chat.prefix} &7World environment set to &c${pregenConfig.type.name.uppercase()}&7.")
+                Chat.sendMessage(sender, "${Chat.prefix} &7World environment set to ${Chat.primaryColor}${pregenConfig.type.name.uppercase()}&7.")
             }
             val generator = ItemBuilder(Material.DIAMOND_BLOCK)
-                .name("&7Generator: &c${pregenConfig.generator}")
+                .name("&7Generator: ${Chat.primaryColor}${pregenConfig.generator}")
                 .addLore("&7Click to change the generator type.")
                 .addLore(" ")
                 .addLore("&8Left Click &7to toggle between the generator types.")
@@ -106,34 +106,34 @@ class EditPregenCommand : CommandExecutor {
                     }
                 }
                 val meta = it.currentItem.itemMeta
-                meta.displayName = Chat.colored("&7Generator: &c${pregenConfig.generator}")
+                meta.displayName = Chat.colored("&7Generator: ${Chat.primaryColor}${pregenConfig.generator}")
                 it.currentItem.itemMeta = meta
-                Chat.sendMessage(sender, "${Chat.prefix} &7Generator set to &c${pregenConfig.generator.name.uppercase()}&7.")
+                Chat.sendMessage(sender, "${Chat.prefix} &7Generator set to ${Chat.primaryColor}${pregenConfig.generator.name.uppercase()}&7.")
             }
         } else if (args[0] == "settings") {
             val oresOutsideCaves = ItemBuilder(Material.DIAMOND_PICKAXE)
-                .name("&7Ores Outside Caves: &c${pregenConfig.oresOutsideCaves}")
+                .name("&7Ores Outside Caves: ${Chat.primaryColor}${pregenConfig.oresOutsideCaves}")
                 .addLore("&7Click to toggle spawning ores outside caves.")
                 .addLore(" ")
                 .addLore("&8Left Click &7to toggle spawning ores outside caves.")
                 .addLore(" ")
                 .make()
             val clearTrees = ItemBuilder(Material.LEAVES)
-                .name("&7Clear Trees: &c${pregenConfig.clearTrees}")
+                .name("&7Clear Trees: ${Chat.primaryColor}${pregenConfig.clearTrees}")
                 .addLore("&7Click to toggle clearing trees.")
                 .addLore(" ")
                 .addLore("&8Left Click &7to toggle clearing trees.")
                 .addLore(" ")
                 .make()
             val clearWater = ItemBuilder(Material.WATER_BUCKET)
-                .name("&7Clear Water: &c${pregenConfig.clearWater}")
+                .name("&7Clear Water: ${Chat.primaryColor}${pregenConfig.clearWater}")
                 .addLore("&7Click to toggle clearing water.")
                 .addLore(" ")
                 .addLore("&8Left Click &7to toggle clearing water.")
                 .addLore(" ")
                 .make()
             val diaRates = ItemBuilder(Material.DIAMOND_ORE)
-                .name("&7Diamond Ore Rates: &c${pregenConfig.diamondore}% Removed")
+                .name("&7Diamond Ore Rates: ${Chat.primaryColor}${pregenConfig.diamondore}% Removed")
                 .addLore("&7Click to change the diamond ore rates.")
                 .addLore(" ")
                 .addLore("&8Left Click: &a+5")
@@ -141,7 +141,7 @@ class EditPregenCommand : CommandExecutor {
                 .addLore(" ")
                 .make()
             val goldRates = ItemBuilder(Material.GOLD_ORE)
-                .name("&7Gold Ore Rates: &c${pregenConfig.goldore}% Removed")
+                .name("&7Gold Ore Rates: ${Chat.primaryColor}${pregenConfig.goldore}% Removed")
                 .addLore("&7Click to change the gold ore rates.")
                 .addLore(" ")
                 .addLore("&8Left Click: &a+5")
@@ -149,7 +149,7 @@ class EditPregenCommand : CommandExecutor {
                 .addLore(" ")
                 .make()
             val caneRates = ItemBuilder(Material.SUGAR_CANE)
-                .name("&7Cane Rates: &c${pregenConfig.canerate}% Increased")
+                .name("&7Cane Rates: ${Chat.primaryColor}${pregenConfig.canerate}% Increased")
                 .addLore("&7Click to change the cane rates.")
                 .addLore(" ")
                 .addLore("&8Left Click: &a+5")
@@ -160,25 +160,25 @@ class EditPregenCommand : CommandExecutor {
                 it.isCancelled = true
                 pregenConfig.oresOutsideCaves = !pregenConfig.oresOutsideCaves
                 val meta = it.currentItem.itemMeta
-                meta.displayName = Chat.colored("&7Ores Outside Caves: &c${pregenConfig.oresOutsideCaves}")
+                meta.displayName = Chat.colored("&7Ores Outside Caves: ${Chat.primaryColor}${pregenConfig.oresOutsideCaves}")
                 it.currentItem.itemMeta = meta
-                Chat.sendMessage(sender, "${Chat.prefix} &7Ores outside caves set to &c${pregenConfig.oresOutsideCaves}&7.")
+                Chat.sendMessage(sender, "${Chat.prefix} &7Ores outside caves set to ${Chat.primaryColor}${pregenConfig.oresOutsideCaves}&7.")
             }
             gui.item(2, clearTrees).onClick {
                 it.isCancelled = true
                 pregenConfig.clearTrees = !pregenConfig.clearTrees
                 val meta = it.currentItem.itemMeta
-                meta.displayName = Chat.colored("&7Clear Trees: &c${pregenConfig.clearTrees}")
+                meta.displayName = Chat.colored("&7Clear Trees: ${Chat.primaryColor}${pregenConfig.clearTrees}")
                 it.currentItem.itemMeta = meta
-                Chat.sendMessage(sender, "${Chat.prefix} &7Clear trees set to &c${pregenConfig.clearTrees}&7.")
+                Chat.sendMessage(sender, "${Chat.prefix} &7Clear trees set to ${Chat.primaryColor}${pregenConfig.clearTrees}&7.")
             }
             gui.item(3, clearWater).onClick {
                 it.isCancelled = true
                 pregenConfig.clearWater = !pregenConfig.clearWater
                 val meta = it.currentItem.itemMeta
-                meta.displayName = Chat.colored("&7Clear Water: &c${pregenConfig.clearWater}")
+                meta.displayName = Chat.colored("&7Clear Water: ${Chat.primaryColor}${pregenConfig.clearWater}")
                 it.currentItem.itemMeta = meta
-                Chat.sendMessage(sender, "${Chat.prefix} &7Clear water set to &c${pregenConfig.clearWater}&7.")
+                Chat.sendMessage(sender, "${Chat.prefix} &7Clear water set to ${Chat.primaryColor}${pregenConfig.clearWater}&7.")
             }
             gui.item(4, diaRates).onClick {
                 it.isCancelled = true
@@ -188,7 +188,7 @@ class EditPregenCommand : CommandExecutor {
                         pregenConfig.diamondore = 100
                     }
                     val meta = it.currentItem.itemMeta
-                    meta.displayName = Chat.colored("&7Diamond Ore Rates: &c${pregenConfig.diamondore}% Removed")
+                    meta.displayName = Chat.colored("&7Diamond Ore Rates: ${Chat.primaryColor}${pregenConfig.diamondore}% Removed")
                     it.currentItem.itemMeta = meta
                 } else {
                     pregenConfig.diamondore -= 5
@@ -196,7 +196,7 @@ class EditPregenCommand : CommandExecutor {
                         pregenConfig.diamondore = 0
                     }
                     val meta = it.currentItem.itemMeta
-                    meta.displayName = Chat.colored("&7Diamond Ore Rates: &c${pregenConfig.diamondore}% Removed")
+                    meta.displayName = Chat.colored("&7Diamond Ore Rates: ${Chat.primaryColor}${pregenConfig.diamondore}% Removed")
                     it.currentItem.itemMeta = meta
                 }
             }
@@ -208,7 +208,7 @@ class EditPregenCommand : CommandExecutor {
                         pregenConfig.goldore = 100
                     }
                     val meta = it.currentItem.itemMeta
-                    meta.displayName = Chat.colored("&7Gold Ore Rates: &c${pregenConfig.goldore}% Removed")
+                    meta.displayName = Chat.colored("&7Gold Ore Rates: ${Chat.primaryColor}${pregenConfig.goldore}% Removed")
                     it.currentItem.itemMeta = meta
                 } else {
                     pregenConfig.goldore -= 5
@@ -216,7 +216,7 @@ class EditPregenCommand : CommandExecutor {
                         pregenConfig.goldore = 0
                     }
                     val meta = it.currentItem.itemMeta
-                    meta.displayName = Chat.colored("&7Gold Ore Rates: &c${pregenConfig.goldore}% Removed")
+                    meta.displayName = Chat.colored("&7Gold Ore Rates: ${Chat.primaryColor}${pregenConfig.goldore}% Removed")
                     it.currentItem.itemMeta = meta
                 }
             }
@@ -228,7 +228,7 @@ class EditPregenCommand : CommandExecutor {
                         pregenConfig.canerate = 100
                     }
                     val meta = it.currentItem.itemMeta
-                    meta.displayName = Chat.colored("&7Cane Rates: &c${pregenConfig.canerate}% Increased")
+                    meta.displayName = Chat.colored("&7Cane Rates: ${Chat.primaryColor}${pregenConfig.canerate}% Increased")
                     it.currentItem.itemMeta = meta
                 } else {
                     pregenConfig.canerate -= 5
@@ -236,7 +236,7 @@ class EditPregenCommand : CommandExecutor {
                         pregenConfig.canerate = 0
                     }
                     val meta = it.currentItem.itemMeta
-                    meta.displayName = Chat.colored("&7Cane Rates: &c${pregenConfig.canerate}% Increased")
+                    meta.displayName = Chat.colored("&7Cane Rates: ${Chat.primaryColor}${pregenConfig.canerate}% Increased")
                     it.currentItem.itemMeta = meta
                 }
             }

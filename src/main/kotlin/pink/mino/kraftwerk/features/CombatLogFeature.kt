@@ -140,7 +140,7 @@ class CombatLogFeature : Listener {
                             entity.maxHealth = e.player.maxHealth
                         }
                     }, 20L)
-                    Bukkit.broadcastMessage(Chat.colored("${Chat.dash} &f${e.player.name}&7 has been removed from the game for combat logging."))
+                    Bukkit.broadcastMessage(Chat.colored("${Chat.dash} ${Chat.secondaryColor}${e.player.name}&7 has been removed from the game for combat logging."))
                 }
             }
         }

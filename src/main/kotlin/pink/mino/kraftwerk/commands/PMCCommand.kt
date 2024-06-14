@@ -48,7 +48,7 @@ class PMCCommand : CommandExecutor {
                             ))
                         }
                     }
-                    Chat.sendMessage(team, "§8[§4Team Chat§8] ${ChatColor.WHITE}${sender.name} ${Chat.dash} &c${player.name}'s&7 location: &c${x}&7, &c${y}&7, &c${z} &8| &7Dimension: &c${player.world.worldType.toString().uppercase()}")
+                    Chat.sendMessage(team, "§8[${Chat.primaryColor}Team Chat§8] ${ChatColor.WHITE}${sender.name} ${Chat.dash} ${Chat.primaryColor}${player.name}'s&7 location: ${Chat.primaryColor}${x}&7, ${Chat.primaryColor}${y}&7, ${Chat.primaryColor}${z} &8| &7Dimension: ${Chat.primaryColor}${player.world.worldType.toString().uppercase()}")
                 }
             }
         }

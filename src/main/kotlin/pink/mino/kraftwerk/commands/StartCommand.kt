@@ -23,7 +23,7 @@ class StartCommand : CommandExecutor {
             }
         }
         if (args.isEmpty()) {
-            sender.sendMessage(Chat.colored("${Chat.prefix} Invalid usage: &f/start <ffa/teams>"))
+            sender.sendMessage(Chat.colored("${Chat.prefix} Invalid usage: ${Chat.secondaryColor}/start <ffa/teams>"))
             return false
         }
         if (GameState.currentState != GameState.LOBBY) {
@@ -37,7 +37,7 @@ class StartCommand : CommandExecutor {
         if (args[0] == "ffa" || args[0] == "teams") {
             UHCFeature().start(args[0])
         } else {
-            sender.sendMessage(Chat.colored("${Chat.prefix} Invalid mode: &f/start <ffa/teams>"))
+            sender.sendMessage(Chat.colored("${Chat.prefix} Invalid mode: ${Chat.secondaryColor}/start <ffa/teams>"))
             return false
         }
         return true

@@ -31,7 +31,7 @@ class FeedCommand : CommandExecutor {
                 for (online in ArrayList(Bukkit.getServer().onlinePlayers)) {
                     online.foodLevel = 20
                     online.saturation = 20F
-                    Chat.sendMessage(online, "${Chat.prefix} You have been fed by &c${sender.name}&7.")
+                    Chat.sendMessage(online, "${Chat.prefix} You have been fed by ${Chat.primaryColor}${sender.name}&7.")
                 }
                 Chat.sendMessage(sender as Player, "${Chat.prefix} &7You've fed all players.")
                 return true
@@ -43,8 +43,8 @@ class FeedCommand : CommandExecutor {
                 }
                 target.foodLevel = 20
                 target.saturation = 20F
-                Chat.sendMessage(target, "${Chat.prefix} You've been fed by &c${sender.name}&7.")
-                Chat.sendMessage(sender as Player, "${Chat.prefix} Fed &c${target.name}&7.")
+                Chat.sendMessage(target, "${Chat.prefix} You've been fed by ${Chat.primaryColor}${sender.name}&7.")
+                Chat.sendMessage(sender as Player, "${Chat.prefix} Fed ${Chat.primaryColor}${target.name}&7.")
                 return true
             }
         }

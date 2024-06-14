@@ -29,7 +29,7 @@ import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 import pink.mino.kraftwerk.Kraftwerk
 import pink.mino.kraftwerk.utils.*
-import java.util.UUID
+import java.util.*
 import kotlin.math.floor
 
 
@@ -37,7 +37,7 @@ class ArenaFeature : Listener {
     companion object {
         val instance = ArenaFeature()
     }
-    val prefix = "&8[&cArena&8]&7"
+    val prefix = "&8[${Chat.primaryColor}Arena&8]&7"
 
     fun unbreakableItem(material: Material): ItemStack {
         val item = ItemStack(material)
@@ -221,8 +221,8 @@ class ArenaFeature : Listener {
                         val el: EntityLiving = (killer as CraftPlayer).handle
                         val health = floor(killer.health / 2 * 10 + el.absorptionHearts / 2 * 10)
                         val color = HealthChatColorer.returnHealth(health)
-                        killer.sendMessage(Chat.colored("$prefix &7You killed &f${victim.name}&7!"))
-                        victim.sendMessage(Chat.colored("$prefix &7You were killed by &f${killer.name} &8(${color}${health}❤&8)"))
+                        killer.sendMessage(Chat.colored("$prefix &7You killed ${Chat.secondaryColor}${victim.name}&7!"))
+                        victim.sendMessage(Chat.colored("$prefix &7You were killed by ${Chat.secondaryColor}${killer.name} &8(${color}${health}❤&8)"))
                         Killstreak.addKillstreak(killer)
                         if (Killstreak.getKillstreak(killer) > JavaPlugin.getPlugin(Kraftwerk::class.java).statsHandler.getStatsPlayer(killer)!!.highestArenaKs) {
                             JavaPlugin.getPlugin(Kraftwerk::class.java).statsHandler.getStatsPlayer(killer)!!.highestArenaKs = Killstreak.getKillstreak(killer)
@@ -231,14 +231,14 @@ class ArenaFeature : Listener {
                         JavaPlugin.getPlugin(Kraftwerk::class.java).statsHandler.getStatsPlayer(victim)!!.arenaDeaths++
                         Log.info("${killer.name} now has a killstreak of ${Killstreak.getKillstreak(killer)}.")
                         if (Killstreak.getKillstreak(victim) >= 5) {
-                            sendToPlayers("${prefix}&f ${victim.name}&7 lost their killstreak of &f${
+                            sendToPlayers("${prefix}${Chat.secondaryColor} ${victim.name}&7 lost their killstreak of ${Chat.secondaryColor}${
                                 Killstreak.getKillstreak(
                                     victim
                                 )
-                            } kills&7 to &f${killer.name}&7!")
+                            } kills&7 to ${Chat.secondaryColor}${killer.name}&7!")
                         }
                         if (Killstreak.getKillstreak(killer) > 3) {
-                            sendToPlayers(Chat.colored("$prefix &f${killer.name}&7 now has a killstreak of &f${
+                            sendToPlayers(Chat.colored("$prefix ${Chat.secondaryColor}${killer.name}&7 now has a killstreak of ${Chat.secondaryColor}${
                                 Killstreak.getKillstreak(
                                     killer
                                 )
@@ -259,19 +259,19 @@ class ArenaFeature : Listener {
                         val el: EntityLiving = (killer as CraftPlayer).handle
                         val health = floor(killer.health / 2 * 10 + el.absorptionHearts / 2 * 10)
                         val color = HealthChatColorer.returnHealth(health)
-                        killer.sendMessage(Chat.colored("$prefix &7You killed &f${victim.name}&7!"))
-                        victim.sendMessage(Chat.colored("$prefix &7You were killed by &f${killer.name} &8(${color}${health}❤&8)"))
+                        killer.sendMessage(Chat.colored("$prefix &7You killed ${Chat.secondaryColor}${victim.name}&7!"))
+                        victim.sendMessage(Chat.colored("$prefix &7You were killed by ${Chat.secondaryColor}${killer.name} &8(${color}${health}❤&8)"))
                         Killstreak.addKillstreak(killer)
                         print("${killer.name} now has a killstreak of ${Killstreak.getKillstreak(killer)}.")
                         if (Killstreak.getKillstreak(victim) >= 5) {
-                            sendToPlayers("${prefix}&f ${victim.name}&7 lost their killstreak of &f${
+                            sendToPlayers("${prefix}${Chat.secondaryColor} ${victim.name}&7 lost their killstreak of ${Chat.secondaryColor}${
                                 Killstreak.getKillstreak(
                                     victim
                                 )
-                            } kills&7 to &f${killer.name}&7!")
+                            } kills&7 to ${Chat.secondaryColor}${killer.name}&7!")
                         }
                         if (Killstreak.getKillstreak(killer) > 3) {
-                            sendToPlayers(Chat.colored("$prefix &f${killer.name}&7 now has a killstreak of &f${
+                            sendToPlayers(Chat.colored("$prefix ${Chat.secondaryColor}${killer.name}&7 now has a killstreak of ${Chat.secondaryColor}${
                                 Killstreak.getKillstreak(
                                     killer
                                 )
@@ -284,7 +284,7 @@ class ArenaFeature : Listener {
                     JavaPlugin.getPlugin(Kraftwerk::class.java).statsHandler.getStatsPlayer(e.entity as Player)!!.arenaDeaths++
                     Chat.sendMessage((e.entity as Player), "$prefix You died!")
                     if (Killstreak.getKillstreak((e.entity as Player)) >= 5) {
-                        sendToPlayers("${prefix}&f ${(e.entity as Player).name}&7 lost their killstreak of &f${
+                        sendToPlayers("${prefix}${Chat.secondaryColor} ${(e.entity as Player).name}&7 lost their killstreak of ${Chat.secondaryColor}${
                             Killstreak.getKillstreak(
                                 (e.entity as Player)
                             )

@@ -115,7 +115,7 @@ class OrganizedFightsCommand : CommandExecutor {
             }
         }
         if (args.isEmpty()) {
-            Chat.sendMessage(sender, "${Chat.prefix} Usage: &c/orgs <assign/unassign/clear/start/stop>")
+            Chat.sendMessage(sender, "${Chat.prefix} Usage: ${Chat.primaryColor}/orgs <assign/unassign/clear/start/stop>")
             return true
         }
         if (args[0] == "start") {
@@ -123,7 +123,7 @@ class OrganizedFightsCommand : CommandExecutor {
             for (player in Bukkit.getOnlinePlayers()) {
                 Chat.sendMessage(player, Chat.colored(Chat.line))
                 Chat.sendMessage(player, " ")
-                Chat.sendCenteredMessage(player, "&c&lORGANIZED FIGHTS HAS BEEN ENABLED!")
+                Chat.sendCenteredMessage(player, "${Chat.primaryColor}&lORGANIZED FIGHTS HAS BEEN ENABLED!")
                 Chat.sendMessage(player, "&7Organized Fights has been enabled, PvP is now disabled. Please standby for more instructions.")
                 Chat.sendMessage(player, " ")
                 Chat.sendMessage(player, Chat.colored(Chat.line))
@@ -134,7 +134,7 @@ class OrganizedFightsCommand : CommandExecutor {
             for (player in Bukkit.getOnlinePlayers()) {
                 Chat.sendMessage(player, Chat.colored(Chat.line))
                 Chat.sendMessage(player, " ")
-                Chat.sendCenteredMessage(player, "&c&lORGANIZED FIGHTS HAS BEEN DISABLED!")
+                Chat.sendCenteredMessage(player, "${Chat.primaryColor}&lORGANIZED FIGHTS HAS BEEN DISABLED!")
                 Chat.sendMessage(player, "&7Organized Fights has been disabled, PvP is now enabled.")
                 Chat.sendMessage(player, " ")
                 Chat.sendMessage(player, Chat.colored(Chat.line))
@@ -142,7 +142,7 @@ class OrganizedFightsCommand : CommandExecutor {
             }
         } else if (args[0] == "assign") {
             if (args.size < 2) {
-                Chat.sendMessage(sender, "${Chat.prefix} Usage: &c/orgs assign <player>")
+                Chat.sendMessage(sender, "${Chat.prefix} Usage: ${Chat.primaryColor}/orgs assign <player>")
                 return true
             }
             val player = Bukkit.getPlayer(args[1])
@@ -153,7 +153,7 @@ class OrganizedFightsCommand : CommandExecutor {
             OrganizedFights.instance.addPlayer(player)
         } else if (args[0] == "unassign") {
             if (args.size < 2) {
-                Chat.sendMessage(sender, "${Chat.prefix} Usage: &c/orgs unassign <player>")
+                Chat.sendMessage(sender, "${Chat.prefix} Usage: ${Chat.primaryColor}/orgs unassign <player>")
                 return true
             }
             val player = Bukkit.getPlayer(args[1])

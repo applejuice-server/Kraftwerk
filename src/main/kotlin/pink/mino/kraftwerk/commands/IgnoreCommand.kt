@@ -46,11 +46,11 @@ class IgnoreCommand : CommandExecutor {
         if (list.contains(player.uniqueId)) {
             list.remove(player.uniqueId)
             JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.getProfile(sender.uniqueId)!!.ignored = list
-            Chat.sendMessage(sender, "${Chat.prefix} Successfully removed &8'&f${player.name}&8'&7 from your ignored list.")
+            Chat.sendMessage(sender, "${Chat.prefix} Successfully removed &8'${Chat.secondaryColor}${player.name}&8'&7 from your ignored list.")
         } else {
             list.add(player.uniqueId)
             JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.getProfile(sender.uniqueId)!!.ignored = list
-            Chat.sendMessage(sender, "${Chat.prefix} Successfully added &8'&f${player.name}&8'&7 to your ignored list.")
+            Chat.sendMessage(sender, "${Chat.prefix} Successfully added &8'${Chat.secondaryColor}${player.name}&8'&7 to your ignored list.")
         }
 
         return true

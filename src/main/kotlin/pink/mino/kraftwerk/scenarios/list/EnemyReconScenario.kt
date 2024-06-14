@@ -10,7 +10,7 @@ import org.bukkit.event.entity.PlayerDeathEvent
 import pink.mino.kraftwerk.scenarios.Scenario
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GameState
-import java.util.UUID
+import java.util.*
 
 class EnemyReconScenario : Scenario(
     "Enemy Recon",
@@ -22,7 +22,7 @@ class EnemyReconScenario : Scenario(
         val instance = EnemyReconScenario()
     }
 
-    val prefix = "&8[&cEnemy Recon&8]&7"
+    val prefix = "&8[${Chat.primaryColor}Enemy Recon&8]&7"
     var recons: HashMap<UUID, Int> = hashMapOf()
 
     override fun onStart() {
@@ -46,7 +46,7 @@ class EnemyReconScenario : Scenario(
             } else {
                 recons[killer.uniqueId] = recons[killer.uniqueId]!! + 1
             }
-            Chat.sendMessage(killer, "$prefix You have gained an extra recon! (Recons: &f${recons[killer.uniqueId]}&7)")
+            Chat.sendMessage(killer, "$prefix You have gained an extra recon! (Recons: ${Chat.secondaryColor}${recons[killer.uniqueId]}&7)")
         } else if (e.entity.killer.type == EntityType.ARROW && (e.entity as Arrow).shooter is Player) {
             val killer = (e.entity as Arrow).shooter as Player
             if (recons[killer.uniqueId] == null) {
@@ -54,7 +54,7 @@ class EnemyReconScenario : Scenario(
             } else {
                 recons[killer.uniqueId] = recons[killer.uniqueId]!! + 1
             }
-            Chat.sendMessage(killer, "$prefix You have gained an extra recon! (Recons: &f${recons[killer.uniqueId]})")
+            Chat.sendMessage(killer, "$prefix You have gained an extra recon! (Recons: ${Chat.secondaryColor}${recons[killer.uniqueId]})")
         } else {
             return
         }

@@ -23,11 +23,11 @@ class TimersCommand : CommandExecutor {
         }
         val valid = arrayListOf<Scenario>()
         Chat.sendMessage(sender, Chat.line)
-        Chat.sendCenteredMessage(sender, "&c&lScenario Timers")
+        Chat.sendCenteredMessage(sender, "${Chat.primaryColor}&lScenario Timers")
         for (scenario in ScenarioHandler.getActiveScenarios()) {
             if (scenario.returnTimer() != null) {
                 valid.add(scenario)
-                Chat.sendCenteredMessage(sender, "&7${scenario.name} &8- &f${MiscUtils.timeToString(scenario.returnTimer()!!.toLong())}")
+                Chat.sendCenteredMessage(sender, "&7${scenario.name} &8- ${Chat.secondaryColor}${MiscUtils.timeToString(scenario.returnTimer()!!.toLong())}")
             }
         }
         if (valid.isEmpty()) {

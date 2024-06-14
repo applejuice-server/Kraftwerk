@@ -24,7 +24,7 @@ class ExtremeSkyHighIterator : BukkitRunnable() {
                 if (player.location.y < 200) {
                     if (!SpecFeature.instance.getSpecs().contains(player.name) && player.world.name != "Spawn") {
                         player.damage(4.0)
-                        Chat.sendMessage(player, "&cYou've been damaged for not being above y-200.")
+                        Chat.sendMessage(player, "&cYou've been damaged for not being above Y: 200.")
                     }
                 }
             }
@@ -54,11 +54,11 @@ class ExtremeSkyHighScenario : Scenario(
         }
     }
 
-    val prefix = "&8[&cExtreme SkyHigh&8]&7"
+    val prefix = "&8[${Chat.primaryColor}Extreme SkyHigh&8]&7"
     override fun onPvP() {
         task = ExtremeSkyHighIterator()
         task!!.runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 20L)
-        Bukkit.broadcastMessage(Chat.colored("${prefix} The damage tick for &fExtreme SkyHigh&7 has started, the damage tick happen every 45 seconds."))
+        Bukkit.broadcastMessage(Chat.colored("${prefix} The damage tick for ${Chat.secondaryColor}Extreme SkyHigh&7 has started, the damage tick happen every 45 seconds."))
     }
 
     override fun onStart() {

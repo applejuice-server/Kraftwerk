@@ -31,9 +31,9 @@ class ShootListener : Listener {
                     return@runTaskLater
                 } else {
                     if (preference == "CHAT") {
-                        Chat.sendMessage(shooter, "${Chat.dash} &f${victim.name}&7 is at ${color}${health}%&7!")
+                        Chat.sendMessage(shooter, "${Chat.dash} ${Chat.secondaryColor}${victim.name}&7 is at ${color}${health}%&7!")
                     } else if (preference == "SUBTITLE") {
-                        shooter.sendTitle(Chat.colored("&7"), Chat.colored("&f${victim.name}&7 is at ${color}${health}%&7!"))
+                        shooter.sendTitle(Chat.colored("&7"), Chat.colored("${Chat.secondaryColor}${victim.name}&7 is at ${color}${health}%&7!"))
                     }
                 }
             }, 1L)

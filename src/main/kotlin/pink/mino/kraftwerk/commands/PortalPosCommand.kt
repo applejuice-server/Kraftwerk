@@ -40,8 +40,8 @@ class PortalPosCommand : CommandExecutor {
             Chat.sendMessage(sender, "&cThis player has yet to enter the nether.")
             return false
         }
-        Chat.sendMessage(sender, "${Chat.prefix} Teleported to &f${target.name}&7's last portal location.")
-        Chat.sendMessage(sender, "${Chat.prefix} Coordinates: &cX: ${floor(location.x)}, Y: ${floor(location.y)}, &cZ: ${floor(location.z)}")
+        Chat.sendMessage(sender, "${Chat.prefix} Teleported to ${Chat.secondaryColor}${target.name}&7's last portal location.")
+        Chat.sendMessage(sender, "${Chat.prefix} Coordinates: ${Chat.primaryColor}X: ${floor(location.x)}, ${Chat.primaryColor}Y: ${floor(location.y)}, ${Chat.primaryColor}Z: ${floor(location.z)}")
 
         return true
     }
