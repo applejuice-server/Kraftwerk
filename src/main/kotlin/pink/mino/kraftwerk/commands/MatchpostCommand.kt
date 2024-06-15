@@ -96,17 +96,27 @@ class ScheduleBroadcast(private val opening: String) : BukkitRunnable() {
             embed.addField("Scenarios", scenarios.joinToString(", "), false)
             var flag = ":flag_ca:"
             embed.addField("IP", "$flag `${if (SettingsFeature.instance.data!!.getString("config.chat.serverIp") != null) SettingsFeature.instance.data!!.getString("config.chat.serverIp") else "no server ip setup in config tough tits"}` (1.8.x)", false)
-            Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Matchpost posted on discord & twitter!"))
             embed.addField("Opening", "<t:${fr}:t> (<t:${fr}:R>)", false)
             embed.addField("Matchpost", "[uhc.gg](https://hosts.uhc.gg/m/${SettingsFeature.instance.data!!.getInt("matchpost.id")})", false)
-            Discord.instance!!.getTextChannelById(1129309971327221760)!!.sendMessage("<@&1129405126889713692> (Use `/togglematches` to toggle matchpost alerts)").queue()
-            Discord.instance!!.getTextChannelById(1129309971327221760)!!.sendMessageEmbeds(embed.build()).queue()
+            if (Kraftwerk.instance.gameAlertsChannelId != null) {
+                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Matchpost posted on discord!"))
+                if (Kraftwerk.instance.alertsRoleId != null) {
+                    Discord.instance!!.getTextChannelById(Kraftwerk.instance.gameAlertsChannelId!!)!!.sendMessage("<@&${Kraftwerk.instance.alertsRoleId!!}> (Use `/togglematches` to toggle matchpost alerts)").queue()
+                } else {
+                    Discord.instance!!.getTextChannelById(Kraftwerk.instance.gameAlertsChannelId!!)!!.sendMessage("@everyone (Use `/togglematches` to toggle matchpost alerts)").queue()
+                }
+                Discord.instance!!.getTextChannelById(Kraftwerk.instance.gameAlertsChannelId!!)!!.sendMessageEmbeds(embed.build()).queue()
+            } else {
+                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} A matchpost is coming in ${Chat.secondaryColor}15 minutes&7 but there's no configured game alerts channel!"))
+            }
             embed = EmbedBuilder()
             embed.setColor(Color(255, 61, 61))
             embed.setTitle(SettingsFeature.instance.data!!.getString("matchpost.host"))
             embed.setThumbnail("https://visage.surgeplay.com/bust/512/${host.uniqueId}")
             embed.addField("Pre-whitelists are on!", "You are now allowed to use the command `/wl` to request to pre-whitelist yourself in the server!", false)
-            Discord.instance!!.getTextChannelById(1129308837187436574)!!.sendMessageEmbeds(embed.build()).queue()
+            if (Kraftwerk.instance.preWhitelistChannelId != null) {
+                Discord.instance!!.getTextChannelById(Kraftwerk.instance.preWhitelistChannelId!!)!!.sendMessageEmbeds(embed.build()).queue()
+            }
             SettingsFeature.instance.data!!.set("whitelist.requests", true)
             SettingsFeature.instance.data!!.set("matchpost.posted", true)
             SettingsFeature.instance.saveData()
@@ -197,7 +207,11 @@ class ScheduleOpening(private val opening: String) : BukkitRunnable() {
             embed.setTitle(SettingsFeature.instance.data!!.getString("matchpost.host"))
             embed.setThumbnail("https://visage.surgeplay.com/bust/512/${host.uniqueId}")
             embed.addField("Game Open!", "The game is now open at `${if (SettingsFeature.instance.data!!.getString("config.chat.serverIp") != null) SettingsFeature.instance.data!!.getString("config.chat.serverIp") else "no server ip setup in config tough tits"}`.", false)
-            Discord.instance!!.getTextChannelById(1129309971327221760)!!.sendMessageEmbeds(embed.build()).queue()
+            if (Kraftwerk.instance.gameAlertsChannelId != null) {
+                Discord.instance!!.getTextChannelById(Kraftwerk.instance.gameAlertsChannelId!!)!!.sendMessageEmbeds(embed.build()).queue()
+            } else {
+                Chat.broadcast("${Chat.dash} Couldn't post game opening in discord because there's no game alerts channel ID configured.")
+            }
             Bukkit.broadcastMessage(Chat.colored("${Chat.dash} The whitelist has been turned off automatically @ ${Chat.primaryColor}${opening}&7."))
             cancel()
             Opening(time).runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 20L)
