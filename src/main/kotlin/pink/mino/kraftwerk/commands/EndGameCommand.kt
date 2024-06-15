@@ -138,7 +138,11 @@ class EndGameCommand : CommandExecutor {
         }
         embed.addField("Matchpost", "https://hosts.uhc.gg/m/${SettingsFeature.instance.data!!.getInt("matchpost.id")}", false)
         try {
-            Discord.instance!!.getTextChannelById(1129309991124357140)!!.sendMessageEmbeds(embed.build()).queue()
+            if (Kraftwerk.instance.winnersChannelId != null) {
+                Discord.instance!!.getTextChannelById(Kraftwerk.instance.winnersChannelId!!)!!.sendMessageEmbeds(embed.build()).queue()
+            } else {
+                Chat.broadcast("Couldn't post winners to Discord because there isn't a channel ID configured.")
+            }
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -185,8 +189,16 @@ class EndGameCommand : CommandExecutor {
         Bukkit.broadcastMessage(Chat.colored(Chat.line))
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wl off")
         val log = File("./logs/latest.log")
-        Discord.instance!!.getTextChannelById(1129315297657106504)!!.sendMessage("**${gameTitle}**").queue()
-        Discord.instance!!.getTextChannelById(1129315297657106504)!!.sendFile(log, "game.log").queue()
+        try {
+            if (Kraftwerk.instance.gameLogsChannelId != null) {
+                Discord.instance!!.getTextChannelById(Kraftwerk.instance.gameLogsChannelId!!)!!.sendMessage("**${gameTitle}**").queue()
+                Discord.instance!!.getTextChannelById(Kraftwerk.instance.gameLogsChannelId!!)!!.sendFile(log, "game.log").queue()
+            } else {
+                Log.info("Couldn't post logs to Discord because there's no game logs channel ID configured.")
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
 
         return true
     }

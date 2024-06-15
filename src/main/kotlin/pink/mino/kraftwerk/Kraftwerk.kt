@@ -57,6 +57,13 @@ class Kraftwerk : ExtendedJavaPlugin() {
     lateinit var spark: Spark
     lateinit var profileHandler: ProfileService
 
+    var welcomeChannelId: Long? = null
+    var alertsRoleId: Long? = null
+    var gameAlertsChannelId: Long? = null
+    var winnersChannelId: Long? = null
+    var preWhitelistChannelId: Long? = null
+    var gameLogsChannelId: Long? = null
+
     companion object {
         lateinit var instance: Kraftwerk
     }
@@ -256,6 +263,25 @@ class Kraftwerk : ExtendedJavaPlugin() {
             }
         } catch (e: LoginException) {
             Log.severe("Failed to login to discord: " + e.message)
+        }
+
+        if (SettingsFeature.instance.data!!.getLong("config.discord.welcomeChannelId") != null) {
+            welcomeChannelId = SettingsFeature.instance.data!!.getLong("config.discord.welcomeChannelId")
+        }
+        if (SettingsFeature.instance.data!!.getLong("config.discord.alertsRoleId") != null) {
+            alertsRoleId = SettingsFeature.instance.data!!.getLong("config.discord.alertsRoleId")
+        }
+        if (SettingsFeature.instance.data!!.getLong("config.discord.gameAlertsChannelId") != null) {
+            gameAlertsChannelId = SettingsFeature.instance.data!!.getLong("config.discord.gameAlertsChannelId")
+        }
+        if (SettingsFeature.instance.data!!.getLong("config.discord.winnersChannelId") != null) {
+            winnersChannelId = SettingsFeature.instance.data!!.getLong("config.discord.winnersChannelId")
+        }
+        if (SettingsFeature.instance.data!!.getLong("config.discord.preWhitelistChannelId") != null) {
+            preWhitelistChannelId = SettingsFeature.instance.data!!.getLong("config.discord.preWhitelistChannelId")
+        }
+        if (SettingsFeature.instance.data!!.getLong("config.discord.gameLogsChannelId") != null) {
+            gameLogsChannelId = SettingsFeature.instance.data!!.getLong("config.discord.gameLogsChannelId")
         }
         //twitterInstance.updateStatus("test")
 
