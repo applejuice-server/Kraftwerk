@@ -31,6 +31,7 @@ class SpectateCommand : CommandExecutor {
                 } else {
                     SpecFeature.instance.spec(sender)
                 }
+                return true
             }
             if (args[0].lowercase() == "off") {
                 if (SpecFeature.instance.getSpecs().contains(sender.name)) {
@@ -38,6 +39,7 @@ class SpectateCommand : CommandExecutor {
                 } else {
                     SpecFeature.instance.unspec(sender)
                 }
+                return true
             }
             val player = sender.server.getPlayer(args[0])
             if (player == null) {
