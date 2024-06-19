@@ -364,21 +364,21 @@ class SpawnFeature : Listener {
 
     @EventHandler
     fun onBucketEmpty(e: PlayerBucketEmptyEvent) {
-        if (e.player.world.name == "Spawn") {
+        if (e.player.world.name == "Spawn" && (Kraftwerk.instance.buildMode[e.player.uniqueId] == false || Kraftwerk.instance.buildMode[e.player.uniqueId] == null)) {
             e.isCancelled = true
         }
     }
 
     @EventHandler
     fun onPlayerConsume(e: PlayerItemConsumeEvent) {
-        if (e.player.world.name == "Spawn") {
+        if (e.player.world.name == "Spawn" && (Kraftwerk.instance.buildMode[e.player.uniqueId] == false || Kraftwerk.instance.buildMode[e.player.uniqueId] == null)) {
             e.isCancelled = true
         }
     }
 
     @EventHandler
     fun onRightClick(e: PlayerInteractEvent) {
-        if (e.player.world.name == "Spawn") {
+        if (e.player.world.name == "Spawn" && (Kraftwerk.instance.buildMode[e.player.uniqueId] == false || Kraftwerk.instance.buildMode[e.player.uniqueId] == null)) {
             if (e.item !== null) {
                 when (e.item.itemMeta.displayName) {
                     Chat.colored("${Chat.primaryColor}View Stats &7(Right Click)") -> {
@@ -424,7 +424,7 @@ class SpawnFeature : Listener {
 
     @EventHandler
     fun onInventoryClick(e: InventoryClickEvent) {
-        if (e.whoClicked.world.name == "Spawn") {
+        if (e.whoClicked.world.name == "Spawn" && (Kraftwerk.instance.buildMode[e.whoClicked.uniqueId] == false || Kraftwerk.instance.buildMode[e.whoClicked.uniqueId] == null)) {
             if (!editorList.contains(e.whoClicked.uniqueId)) {
                 e.isCancelled = true
             }
@@ -433,21 +433,21 @@ class SpawnFeature : Listener {
 
     @EventHandler
     fun onItemDrop(e: PlayerDropItemEvent) {
-        if (e.player.world.name == "Spawn") {
+        if (e.player.world.name == "Spawn" && (Kraftwerk.instance.buildMode[e.player.uniqueId] == false || Kraftwerk.instance.buildMode[e.player.uniqueId] == null)) {
             e.isCancelled = true
         }
     }
 
     @EventHandler
     fun onBlockBreak(e: BlockBreakEvent) {
-        if (e.player.world.name == "Spawn") {
+        if (e.player.world.name == "Spawn" && (Kraftwerk.instance.buildMode[e.player.uniqueId] == false || Kraftwerk.instance.buildMode[e.player.uniqueId] == null)) {
             e.isCancelled = true
         }
     }
 
     @EventHandler
     fun onBlockPlace(e: BlockPlaceEvent) {
-        if (e.player.world.name == "Spawn") {
+        if (e.player.world.name == "Spawn" && (Kraftwerk.instance.buildMode[e.player.uniqueId] == false || Kraftwerk.instance.buildMode[e.player.uniqueId] == null)) {
             e.isCancelled = true
         }
     }
@@ -455,7 +455,7 @@ class SpawnFeature : Listener {
     @EventHandler
     fun onPlayerDamage(e: EntityDamageEvent) {
         if (e.entity.type == EntityType.PLAYER) {
-            if (e.entity.world.name == "Spawn") {
+            if (e.entity.world.name == "Spawn" && (Kraftwerk.instance.buildMode[e.entity.uniqueId] == false || Kraftwerk.instance.buildMode[e.entity.uniqueId] == null)) {
                 e.isCancelled = true
             }
         }
@@ -464,7 +464,7 @@ class SpawnFeature : Listener {
     @EventHandler
     fun onPlayerFoodChange(e: FoodLevelChangeEvent) {
         if (e.entity.type == EntityType.PLAYER) {
-            if (e.entity.world.name == "Spawn") {
+            if (e.entity.world.name == "Spawn" && (Kraftwerk.instance.buildMode[e.entity.uniqueId] == false || Kraftwerk.instance.buildMode[e.entity.uniqueId] == null)) {
                 e.isCancelled = true
             }
         }

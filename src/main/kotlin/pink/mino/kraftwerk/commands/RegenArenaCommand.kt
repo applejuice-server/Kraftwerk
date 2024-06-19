@@ -20,8 +20,10 @@ class RegenArenaCommand : CommandExecutor {
         args: Array<String>
     ): Boolean {
         if (sender is Player) {
-            Chat.sendMessage(sender, "&cOnly console senders can execute this command.")
-            return false
+            if (!sender.hasPermission("uhc.admin.regenarena")) {
+                Chat.sendMessage(sender, "&cOnly admins can execute this command.")
+                return false
+            }
         }
         var world = Bukkit.getWorld("Arena")
         if (world != null) {

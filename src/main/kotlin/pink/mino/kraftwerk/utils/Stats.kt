@@ -22,6 +22,7 @@ import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.scheduler.BukkitRunnable
 import pink.mino.kraftwerk.Kraftwerk
+import pink.mino.kraftwerk.features.SettingsFeature
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -60,29 +61,37 @@ class Leaderboards : BukkitRunnable() {
     var timer = 1
     val plugin = JavaPlugin.getPlugin(Kraftwerk::class.java)
     val gamesPlayed =
-        HologramsAPI.createHologram(plugin, Location(Bukkit.getWorld("Spawn"), -697.5, 108.5, 278.5))
+        HologramsAPI.createHologram(plugin, generateThingLocationFromConfig("games_played_holo"))
     val wins =
-        HologramsAPI.createHologram(plugin, Location(Bukkit.getWorld("Spawn"), -696.5, 108.5, 281.5))
+        HologramsAPI.createHologram(plugin, generateThingLocationFromConfig("wins_holo"))
     val kills =
-        HologramsAPI.createHologram(plugin, Location(Bukkit.getWorld("Spawn"), -695.5, 108.5, 284.5))
+        HologramsAPI.createHologram(plugin, generateThingLocationFromConfig("kills_holo"))
     val diamondsMined =
-        HologramsAPI.createHologram(plugin, Location(Bukkit.getWorld("Spawn"), -695.5, 108.5, 287.5))
+        HologramsAPI.createHologram(plugin, generateThingLocationFromConfig("diamonds_mined_holo"))
     val goldMined = HologramsAPI.createHologram(
         plugin,
-        Location(Bukkit.getWorld("Spawn"), -695.5, 108.5, 290.5)
+        generateThingLocationFromConfig("gold_mined_holo")
     )
     val gapplesEaten = HologramsAPI.createHologram(
         plugin,
-        Location(Bukkit.getWorld("Spawn"), -696.5, 108.5, 293.5)
+        generateThingLocationFromConfig("gapples_eaten_holo")
     )
     val highestLevel = HologramsAPI.createHologram(
         plugin,
-        Location(Bukkit.getWorld("Spawn"), -697.5, 108.5, 296.5)
+        generateThingLocationFromConfig("highest_level_holo")
     )
     val latestMatch = HologramsAPI.createHologram(
         plugin,
-        Location(Bukkit.getWorld("Spawn"), -711.5, 109.0, 264.5)
+        generateThingLocationFromConfig("latest_match_holo")
     )
+
+    fun generateThingLocationFromConfig(value: String): Location {
+        if (SettingsFeature.instance.data!!.getDouble("config.thing.${value}.x") == null || SettingsFeature.instance.data!!.getDouble("config.thing.${value}.y") == null || SettingsFeature.instance.data!!.getDouble("config.thing.${value}.z") == null || SettingsFeature.instance.data!!.getString("config.thing.${value}.world") == null) {
+            return Location(Bukkit.getWorld("Spawn"), 0.0, 0.0, 0.0)
+        } else {
+            return Location(Bukkit.getWorld(SettingsFeature.instance.data!!.getString("config.thing.${value}.world")), SettingsFeature.instance.data!!.getDouble("config.thing.${value}.x"), SettingsFeature.instance.data!!.getDouble("config.thing.${value}.y"), SettingsFeature.instance.data!!.getDouble("config.thing.${value}.z"))
+        }
+    }
 
     override fun run() {
         timer -= 1

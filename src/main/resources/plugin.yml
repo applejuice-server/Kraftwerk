@@ -18,6 +18,17 @@ commands:
       - ce
   fly:
     description: Toggles you or a given player's flight.
+  buildmode:
+    description: Toggles building in Spawn.
+    aliases:
+      - bm
+      - buildm
+      - turnonbuilding
+  setthing:
+    description: Sets the location of a thing in spawn.
+    aliases:
+      - setthething
+      - dothething
   gm:
     description: Changes you or a provided player's gamemode.
   gamemode:
