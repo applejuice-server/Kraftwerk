@@ -27,6 +27,7 @@ import pink.mino.kraftwerk.scenarios.ScenarioHandler
 import pink.mino.kraftwerk.utils.*
 import java.nio.file.Files
 import java.nio.file.Path
+import java.util.*
 import javax.security.auth.login.LoginException
 
 
@@ -45,6 +46,7 @@ class Kraftwerk : ExtendedJavaPlugin() {
     var database: Boolean = false
     var discord: Boolean = false
     var arena: Boolean = true
+    var buildMode: HashMap<UUID, Boolean> = hashMapOf()
 
     val fullbright: MutableSet<String> = mutableSetOf()
 
@@ -206,6 +208,8 @@ class Kraftwerk : ExtendedJavaPlugin() {
         getCommand("thanks").executor = ThanksCommand()
         getCommand("fight").executor = FightCommand()
         getCommand("resethealth").executor = ResetHealthCommand()
+        getCommand("buildmode").executor = BuildModeCommand()
+        getCommand("setthing").executor = SetThingCommand()
         //getCommand("hotbar").executor = HotbarCommand()
 
         /* ProtocolLib stuff */
