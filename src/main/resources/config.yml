@@ -1,0 +1,98 @@
+chat:
+  prefix: '&8[&cUHC&8]&7'
+  secondaryColor: '&f'
+  primaryColor: '&c'
+  motd: '&capple&ajuice'
+  scoreboardTitle: '&capple&ajuice'
+  serverName: 'applejuice'
+
+  rulesUrl: Don't really care to put one.
+  storeUrl: Who'd buy from this server?
+  mediaUrl: Give up.
+  staffAppUrl: Give up.
+  discordUrl: https://discord.gg/TRrBGP2v3D
+  serverIp: applejuice.bar
+
+  deathKick: Thanks for playing! Join the discord using /discord to get more games!
+options:
+  whitelist-after-restart: false
+  whitelist-timer-ffa: 3 # In a hosted FFA game, the whitelist automatically turns on after 3 minutes (by default).
+  whitelist-timer-teams: 6 # In a hosted Teams game, the whitelist automatically turns on after 6 minutes (by default).
+discord:
+  welcomeChannelId: 1284249349651697756
+  alertsRoleId: 1284249796751790113
+  gameAlertsChannelId: 1284249277157347358
+  winnersChannelId: 1284249293582106624
+  preWhitelistChannelId: 1284248799556145222
+  gameLogsChannelId: 1284249710919548991
+  token: # This is ideally where you would put a token.
+buycraft:
+  scan: false # Scans every 15 minutes using API to get highest donator or whatever.
+  token: # This is ideally where you would put a token.
+database:
+  uri: # THIS IS IDEALLY WHERE YOU WOULD PUT A URI!
+void:
+  enabled: true
+  level: 75 # y-level to get teleported at.
+spawn:
+  x: -733.5
+  y: 106.5
+  z: 287.5
+  yaw: -90.0
+  pitch: 0.0
+  world: Spawn
+thing:
+  recent_purchase_holo:
+    x: -722.5
+    y: 106.5
+    z: 282.5
+    yaw: 61.5
+    pitch: -1.5
+    world: Spawn
+  highest_purchase_holo:
+    x: -724.5
+    y: 106.5
+    z: 280.5
+    yaw: 45.5
+    pitch: 1.5
+    world: Spawn
+  games_played_holo:
+    x: -697.5
+    y: 108.5
+    z: 278.5
+    world: Spawn
+  wins_holo:
+    x: -696.5
+    y: 108.5
+    z: 281.5
+    world: Spawn
+  kills_holo:
+    x: -695.5
+    y: 108.5
+    z: 284.5
+    world: Spawn
+  diamonds_mined_holo:
+    x: -695.5
+    y: 108.5
+    z: 287.5
+    world: Spawn
+  gold_mined_holo:
+    x: -695.5
+    y: 108.5
+    z: 290.5
+    world: Spawn
+  gapples_eaten_holo:
+    x: -696.5
+    y: 108.5
+    z: 293.5
+    world: Spawn
+  highest_level_holo:
+    x: -697.5
+    y: 108.5
+    z: 296.5
+    world: Spawn
+  latest_match_holo:
+    x: -711.5
+    y: 109.0
+    z: 264.5
+    world: Spawn
