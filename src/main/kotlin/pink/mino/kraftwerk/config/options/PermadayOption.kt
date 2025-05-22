@@ -3,7 +3,7 @@ package pink.mino.kraftwerk.config.options
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import pink.mino.kraftwerk.config.ConfigOption
-import pink.mino.kraftwerk.features.SettingsFeature
+import pink.mino.kraftwerk.features.ConfigFeature
 import pink.mino.kraftwerk.utils.Chat
 
 class PermadayOption : ConfigOption(
@@ -14,7 +14,7 @@ class PermadayOption : ConfigOption(
     Material.YELLOW_FLOWER
 ) {
     override fun onToggle(to: Boolean) {
-        val world = Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world"))
+        val world = Bukkit.getWorld(ConfigFeature.instance.data!!.getString("pregen.world"))
         if (world == null) {
             Bukkit.broadcastMessage("${Chat.prefix} Permaday cannot be toggled while there is no overworld world!")
             return
