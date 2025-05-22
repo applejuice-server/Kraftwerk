@@ -63,7 +63,7 @@ class InvSeeFeature(private val player: Player, private val target: Player) : Bu
             .addLore(" ${Chat.dot} Health ${Chat.dash} ${PlayerUtils.getHealth(target)}")
             .addLore(" ${Chat.dot} Hunger ${Chat.dash} ${Chat.primaryColor}${target.foodLevel / 2}")
             .addLore(" ${Chat.dot} XP Level ${Chat.dash} ${Chat.primaryColor}${target.level} &8(${Chat.primaryColor}${round(target.exp * 100)}%&8)")
-            .addLore(" ${Chat.dot} Kills ${Chat.dash} ${Chat.primaryColor}${SettingsFeature.instance.data!!.getInt("game.kills." + target.name)}")
+            .addLore(" ${Chat.dot} Kills ${Chat.dash} ${Chat.primaryColor}${ConfigFeature.instance.data!!.getInt("game.kills." + target.name)}")
             .addLore(" ${Chat.dot} Location ${Chat.dash} ${Chat.primaryColor}${target.location.blockX}, ${target.location.blockY}, ${target.location.blockZ}")
             .addLore(" ${Chat.dot} World ${Chat.dash} ${Chat.primaryColor}${target.location.world.name}")
             .addLore(" ")
@@ -100,22 +100,36 @@ class SpecClickFeature : PacketAdapter(JavaPlugin.getPlugin(Kraftwerk::class.jav
                         Bukkit.dispatchCommand(p, "nearby")
                     }
                     22 -> {
-                        if (JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.lookupProfile(p.uniqueId).get().specSocialSpy) {
-                            JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.lookupProfile(p.uniqueId).get().specSocialSpy = false
-                            Chat.sendMessage(p, "${SpecFeature.instance.prefix} Disabled &5Social Spy&7!")
-                        } else {
-                            JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.lookupProfile(p.uniqueId).get().specSocialSpy = true
-                            Chat.sendMessage(p, "${SpecFeature.instance.prefix} Enabled &5Social Spy&7!")
+                        val profile = JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.lookupProfile(p.uniqueId).get()
+
+// Cycle through modes: 0 -> 1 -> 2 -> 0
+                        profile.specSocialSpy = (profile.specSocialSpy + 1) % 3
+
+                        val mode = profile.specSocialSpy
+                        val modeText = when (mode) {
+                            1 -> "&aSocial Spy &7(Social)"
+                            2 -> "&aSocial Spy &7(All)"
+                            else -> "&cSocial Spy &7(Off)"
                         }
-                        val socialSpy = ItemBuilder(Material.NAME_TAG)
-                            .addLore("&7Click to view social commands.")
-                        val pref = JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.lookupProfile(p.uniqueId).get().specSocialSpy
-                        if (pref) {
-                            socialSpy.name("&aSocial Spy")
-                        } else {
-                            socialSpy.name("&cSocial Spy")
+
+                        val statusText = when (mode) {
+                            0 -> "Disabled"
+                            1 -> "Enabled for &dsocial&7 commands"
+                            2 -> "Enabled for &dall&7 commands"
+                            else -> "Unknown"
                         }
-                        p.inventory.setItem(22, socialSpy.make())
+
+                        Chat.sendMessage(p, "${SpecFeature.instance.prefix} $statusText!")
+
+
+
+                        val socialSpyItem = ItemBuilder(Material.NAME_TAG)
+                            .name(modeText)
+                            .addLore("&7Click to cycle social spy modes.")
+                            .make()
+
+                        p.inventory.setItem(22, socialSpyItem)
+
                     }
                     23 -> {
                         val list = ArrayList<Player>()
@@ -176,13 +190,13 @@ class SpecFeature : Listener {
         p.inventory.armorContents = null
         p.gameMode = GameMode.SPECTATOR
 
-        var list = SettingsFeature.instance.data!!.getStringList("game.list")
+        var list = ConfigFeature.instance.data!!.getStringList("game.list")
         if (list.contains(p.name)) list.remove(p.name)
-        SettingsFeature.instance.data!!.set("game.list", list)
-        list = SettingsFeature.instance.data!!.getStringList("game.specs")
+        ConfigFeature.instance.data!!.set("game.list", list)
+        list = ConfigFeature.instance.data!!.getStringList("game.specs")
         if (!list.contains(p.name)) list.add(p.name)
-        SettingsFeature.instance.data!!.set("game.specs", list)
-        SettingsFeature.instance.saveData()
+        ConfigFeature.instance.data!!.set("game.specs", list)
+        ConfigFeature.instance.saveData()
 
         specChat("${Chat.secondaryColor}${p.name}&7 has entered spectator mode.", p)
         Scoreboard.setScore(Chat.colored("${Chat.dash} &7Playing..."), PlayerUtils.getPlayingPlayers().size)
@@ -203,18 +217,21 @@ class SpecFeature : Listener {
             .name("${Chat.primaryColor}Respawn Players")
             .addLore("&7Click to view a list of dead players that can be respawned.")
             .make()
-        val socialSpy = ItemBuilder(Material.NAME_TAG)
-            .addLore("&7Click to view social commands.")
-        val pref = JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.lookupProfile(p.uniqueId).get().specSocialSpy
-        if (pref) {
-            socialSpy.name("&aSocial Spy")
-        } else {
-            socialSpy.name("&cSocial Spy")
+        val mode = JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.lookupProfile(p.uniqueId).get().specSocialSpy
+        val modeText = when (mode) {
+            1 -> "&aSocial Spy &7(Social)"
+            2 -> "&aSocial Spy &7(All)"
+            else -> "&cSocial Spy &7(Off)"
         }
+
+        val socialSpyItem = ItemBuilder(Material.NAME_TAG)
+            .name(modeText)
+            .addLore("&7Click to cycle social spy modes.")
+            .make()
 
         p.inventory.setItem(19, teleportTo00)
         p.inventory.setItem(21, nearby)
-        p.inventory.setItem(22, socialSpy.make())
+        p.inventory.setItem(22, socialSpyItem)
         p.inventory.setItem(23, locations)
         p.inventory.setItem(25, respawn)
 
@@ -241,17 +258,28 @@ class SpecFeature : Listener {
 
     @EventHandler
     fun onPlayerCommand(e: PlayerCommandPreprocessEvent) {
-        val message = e.message.lowercase().split(" ")
-        if (commands.contains(message[0])) {
-            for (spectator in getSpecs()) {
-                val player = Bukkit.getPlayer(spectator)
-                if (player != null && JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.lookupProfile(player.uniqueId)
-                        .get().specSocialSpy) {
-                    Chat.sendMessage(player, "&e&o${e.player.name} ${Chat.dash} &7${message.joinToString(" ")}")
+        val messageParts = e.message.lowercase().split(" ")
+        val baseCommand = messageParts[0]
+
+        for (spectator in getSpecs()) {
+            val player = Bukkit.getPlayer(spectator) ?: continue
+
+            val profile = JavaPlugin.getPlugin(Kraftwerk::class.java)
+                .profileHandler.lookupProfile(player.uniqueId).get()
+
+            when (profile.specSocialSpy) {
+                1 -> { // Mode 1: Social only
+                    if (baseCommand in commands) {
+                        Chat.sendMessage(player, "&e&o${e.player.name} ${Chat.dash} &7${messageParts.joinToString(" ")}")
+                    }
                 }
-             }
+                2 -> { // Mode 2: All commands
+                    Chat.sendMessage(player, "&e&o${e.player.name} ${Chat.dash} &7${messageParts.joinToString(" ")}")
+                }
+            }
         }
     }
+
 
     fun spec(p: Player) {
         specStartTimes[p.uniqueId] = Date().time
@@ -269,13 +297,13 @@ class SpecFeature : Listener {
         p.inventory.armorContents = null
         p.gameMode = GameMode.SPECTATOR
 
-        var list = SettingsFeature.instance.data!!.getStringList("game.list")
+        var list = ConfigFeature.instance.data!!.getStringList("game.list")
         if (list.contains(p.name)) list.remove(p.name)
-        SettingsFeature.instance.data!!.set("game.list", list)
-        list = SettingsFeature.instance.data!!.getStringList("game.specs")
+        ConfigFeature.instance.data!!.set("game.list", list)
+        list = ConfigFeature.instance.data!!.getStringList("game.specs")
         if (!list.contains(p.name)) list.add(p.name)
-        SettingsFeature.instance.data!!.set("game.specs", list)
-        SettingsFeature.instance.saveData()
+        ConfigFeature.instance.data!!.set("game.specs", list)
+        ConfigFeature.instance.saveData()
 
         specChat("${Chat.secondaryColor}${p.name}&7 has entered spectator mode.", p)
         Scoreboard.setScore(Chat.colored("${Chat.dash} &7Playing..."), PlayerUtils.getPlayingPlayers().size)
@@ -296,18 +324,21 @@ class SpecFeature : Listener {
             .name("${Chat.primaryColor}Respawn Players")
             .addLore("&7Click to view a list of dead players that can be respawned.")
             .make()
-        val socialSpy = ItemBuilder(Material.NAME_TAG)
-            .addLore("&7Click to view social commands.")
-        val pref = JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.lookupProfile(p.uniqueId).get().specSocialSpy
-        if (pref) {
-            socialSpy.name("&aSocial Spy")
-        } else {
-            socialSpy.name("&cSocial Spy")
+        val mode = JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.lookupProfile(p.uniqueId).get().specSocialSpy
+        val modeText = when (mode) {
+            1 -> "&aSocial Spy &7(Social)"
+            2 -> "&aSocial Spy &7(All)"
+            else -> "&cSocial Spy &7(Off)"
         }
+
+        val socialSpyItem = ItemBuilder(Material.NAME_TAG)
+            .name(modeText)
+            .addLore("&7Click to cycle social spy modes.")
+            .make()
 
         p.inventory.setItem(19, teleportTo00)
         p.inventory.setItem(21, nearby)
-        p.inventory.setItem(22, socialSpy.make())
+        p.inventory.setItem(22, socialSpyItem)
         p.inventory.setItem(23, locations)
         p.inventory.setItem(25, respawn)
 
@@ -341,13 +372,13 @@ class SpecFeature : Listener {
         p.inventory.armorContents = null
 
         SpawnFeature.instance.send(p)
-        var list = SettingsFeature.instance.data!!.getStringList("game.list")
+        var list = ConfigFeature.instance.data!!.getStringList("game.list")
         if (!list.contains(p.name)) list.add(p.name)
-        SettingsFeature.instance.data!!.set("game.list", list)
-        list = SettingsFeature.instance.data!!.getStringList("game.specs")
+        ConfigFeature.instance.data!!.set("game.list", list)
+        list = ConfigFeature.instance.data!!.getStringList("game.specs")
         list.remove(p.name)
-        SettingsFeature.instance.data!!.set("game.specs", list)
-        SettingsFeature.instance.saveData()
+        ConfigFeature.instance.data!!.set("game.specs", list)
+        ConfigFeature.instance.saveData()
 
         specChat("${Chat.secondaryColor}${p.name}&7 has left spectator mode.", p)
         Chat.sendMessage(p, "${prefix} You are no longer in spectator mode.")
@@ -363,7 +394,7 @@ class SpecFeature : Listener {
     }
 
     fun getSpecs(): List<String> {
-        return SettingsFeature.instance.data!!.getStringList("game.specs")
+        return ConfigFeature.instance.data!!.getStringList("game.specs")
     }
 
     fun isSpec(p: OfflinePlayer): Boolean {
