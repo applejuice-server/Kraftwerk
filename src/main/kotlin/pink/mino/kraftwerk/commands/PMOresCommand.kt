@@ -39,9 +39,9 @@ class PMOresCommand : CommandExecutor {
             for (item in sender.inventory.contents) {
                 if (item == null) continue
                 when (item.type) {
-                    Material.IRON_ORE, Material.IRON_INGOT -> iron++
-                    Material.GOLD_ORE, Material.GOLD_INGOT -> gold++
-                    Material.DIAMOND_ORE, Material.DIAMOND -> diamond++
+                    Material.IRON_ORE, Material.IRON_INGOT -> iron += item.amount
+                    Material.GOLD_ORE, Material.GOLD_INGOT -> gold += item.amount
+                    Material.DIAMOND_ORE, Material.DIAMOND -> diamond += item.amount
                     else -> continue
                 }
             }
