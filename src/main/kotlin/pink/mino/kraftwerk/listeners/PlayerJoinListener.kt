@@ -25,7 +25,7 @@ class PlayerJoinListener : Listener {
     private var vaultChat: VaultChat? = null
 
     init {
-        vaultChat = Bukkit.getServer().servicesManager.load(Chat::class.java)
+        vaultChat = Bukkit.getServer().servicesManager.load(VaultChat::class.java)
     }
 
     @EventHandler
