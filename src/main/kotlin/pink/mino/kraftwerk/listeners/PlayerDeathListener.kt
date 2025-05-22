@@ -10,7 +10,7 @@ import org.bukkit.plugin.java.JavaPlugin
 import pink.mino.kraftwerk.Kraftwerk
 import pink.mino.kraftwerk.config.ConfigOptionHandler
 import pink.mino.kraftwerk.features.CombatLogFeature
-import pink.mino.kraftwerk.features.SettingsFeature
+import pink.mino.kraftwerk.features.ConfigFeature
 import pink.mino.kraftwerk.features.TeamsFeature
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GameState
@@ -32,8 +32,8 @@ class PlayerDeathListener : Listener {
             if (GameState.currentState == GameState.INGAME) {
                 val killer = e.entity.killer
                 if (killer != null) {
-                    val o = SettingsFeature.instance.data!!.getInt("game.kills.${killer.name}")
-                    SettingsFeature.instance.data!!.set("game.kills.${killer.name}", o + 1)
+                    val o = ConfigFeature.instance.data!!.getInt("game.kills.${killer.name}")
+                    ConfigFeature.instance.data!!.set("game.kills.${killer.name}", o + 1)
                     val color: String = if (TeamsFeature.manager.getTeam(killer) != null) {
                         TeamsFeature.manager.getTeam(killer)!!.prefix
                     } else {
@@ -44,11 +44,11 @@ class PlayerDeathListener : Listener {
                     JavaPlugin.getPlugin(Kraftwerk::class.java).game!!.pve++
                     Scoreboard.setScore(Chat.colored("${Chat.dash} &aPvE"), JavaPlugin.getPlugin(Kraftwerk::class.java).game!!.pve)
                 }
-                val list = SettingsFeature.instance.data!!.getStringList("game.list")
+                val list = ConfigFeature.instance.data!!.getStringList("game.list")
                 list.remove(player.name)
-                SettingsFeature.instance.data!!.set("game.list", list)
-                SettingsFeature.instance.saveData()
-                val kills = SettingsFeature.instance.data!!.getInt("game.kills.${player.name}")
+                ConfigFeature.instance.data!!.set("game.list", list)
+                ConfigFeature.instance.saveData()
+                val kills = ConfigFeature.instance.data!!.getInt("game.kills.${player.name}")
                 val color: String = if (TeamsFeature.manager.getTeam(player) != null) {
                     TeamsFeature.manager.getTeam(player)!!.prefix
                 } else {
@@ -63,6 +63,10 @@ class PlayerDeathListener : Listener {
                 }
                 e.droppedExp = e.droppedExp * 2
                 if (TeamsFeature.manager.getTeam(player) != null) TeamsFeature.manager.getTeam(player)!!.removePlayer(player)
+                val preference = JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.getProfile(player.uniqueId)!!.deathMessageOnScreen
+                if (preference) {
+                    player.sendTitle(Chat.colored("&4&lYOU DIED!"), Chat.colored("&7${e.deathMessage}"))
+                }
             }
             Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
                 player.spigot().respawn()
@@ -76,8 +80,8 @@ class PlayerDeathListener : Listener {
                 e.deathMessage =
                     ChatColor.translateAlternateColorCodes('&', "&8»&f ${killer.name} has killed ${npc.name}")
                 if (killer != null) {
-                    val o = SettingsFeature.instance.data!!.getInt("game.kills.${killer.name}")
-                    SettingsFeature.instance.data!!.set("game.kills.${killer.name}", o + 1)
+                    val o = ConfigFeature.instance.data!!.getInt("game.kills.${killer.name}")
+                    ConfigFeature.instance.data!!.set("game.kills.${killer.name}", o + 1)
                     val color: String = if (TeamsFeature.manager.getTeam(killer) != null) {
                         TeamsFeature.manager.getTeam(killer)!!.prefix
                     } else {
@@ -85,10 +89,10 @@ class PlayerDeathListener : Listener {
                     }
                     Scoreboard.setScore(Chat.colored(" ${color}${killer.name}"), o + 1)
                 }
-                val list = SettingsFeature.instance.data!!.getStringList("game.list")
+                val list = ConfigFeature.instance.data!!.getStringList("game.list")
                 list.remove(player.name)
-                SettingsFeature.instance.data!!.set("game.list", list)
-                SettingsFeature.instance.saveData()
+                ConfigFeature.instance.data!!.set("game.list", list)
+                ConfigFeature.instance.saveData()
             }
         }
     }

@@ -25,7 +25,7 @@ class PlayerJoinListener : Listener {
     private var vaultChat: VaultChat? = null
 
     init {
-        vaultChat = Bukkit.getServer().servicesManager.load(net.milkbowl.vault.chat.Chat::class.java)
+        vaultChat = Bukkit.getServer().servicesManager.load(Chat::class.java)
     }
 
     @EventHandler
@@ -107,17 +107,17 @@ class PlayerJoinListener : Listener {
                     player.removePotionEffect(effect.type)
                 }
                 player.addPotionEffect(PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 300, 1000, true, false))
-                player.inventory.setItem(0, ItemStack(Material.COOKED_BEEF, SettingsFeature.instance.data!!.getInt("game.starterfood")))
+                player.inventory.setItem(0, ItemStack(Material.COOKED_BEEF, ConfigFeature.instance.data!!.getInt("game.starterfood")))
                 JavaPlugin.getPlugin(Kraftwerk::class.java).statsHandler.getStatsPlayer(player)!!.gamesPlayed++
                 for (scenario in ScenarioHandler.getActiveScenarios()) {
                     scenario.givePlayer(player)
                 }
                 WhitelistCommand().addWhitelist(player.name.lowercase())
-                var list = SettingsFeature.instance.data!!.getStringList("game.list")
+                var list = ConfigFeature.instance.data!!.getStringList("game.list")
                 if (list == null) list = ArrayList<String>()
                 list.add(player.name)
-                SettingsFeature.instance.data!!.set("game.list", list)
-                SettingsFeature.instance.saveData()
+                ConfigFeature.instance.data!!.set("game.list", list)
+                ConfigFeature.instance.saveData()
                 return
             }
             if (GameState.currentState == GameState.WAITING) {
@@ -131,7 +131,7 @@ class PlayerJoinListener : Listener {
                     SpecFeature.instance.joinSpec(player)
                     return
                 }
-                if (!SettingsFeature.instance.data!!.getStringList("game.list").contains(player.name)) {
+                if (!ConfigFeature.instance.data!!.getStringList("game.list").contains(player.name)) {
                     if (SpecFeature.instance.getSpecs().contains(player.name)) {
                         return
                     }
