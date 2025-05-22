@@ -78,7 +78,9 @@ class LatescatterCommand : CommandExecutor {
                 scenario.givePlayer(player)
             }
             WhitelistCommand().addWhitelist(player.name.lowercase())
-            list.add(player.name)
+            if (!list.contains(player.name)) {
+                list.add(player.name)
+            }
             Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} ${Chat.secondaryColor}${player.name}&7 has been late-scattered&7."))
             Chat.sendMessage(player, "${Chat.prefix} You've successfully been added to the game.")
         } else if (args.size == 2) {
@@ -120,8 +122,9 @@ class LatescatterCommand : CommandExecutor {
                 scenario.givePlayer(player)
             }
             WhitelistCommand().addWhitelist(player.name.lowercase())
-            list.add(player.name)
-
+            if (!list.contains(player.name)) {
+                list.add(player.name)
+            }
             Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} ${Chat.secondaryColor}${player.name}&7 has been late-scattered to their teammate ${Chat.secondaryColor}${teammate.name}&7."))
             Chat.sendMessage(player, "${Chat.prefix} You've successfully been added to the game, you've also been teamed with ${Chat.secondaryColor}${teammate.name}&7")
         }

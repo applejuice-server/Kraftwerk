@@ -115,7 +115,9 @@ class PlayerJoinListener : Listener {
                 WhitelistCommand().addWhitelist(player.name.lowercase())
                 var list = ConfigFeature.instance.data!!.getStringList("game.list")
                 if (list == null) list = ArrayList<String>()
-                list.add(player.name)
+                if (!list.contains(player.name)) {
+                    list.add(player.name)
+                }
                 ConfigFeature.instance.data!!.set("game.list", list)
                 ConfigFeature.instance.saveData()
                 return
