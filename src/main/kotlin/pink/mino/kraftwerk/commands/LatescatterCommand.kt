@@ -11,8 +11,8 @@ import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 import pink.mino.kraftwerk.Kraftwerk
+import pink.mino.kraftwerk.features.ConfigFeature
 import pink.mino.kraftwerk.features.ScatterFeature
-import pink.mino.kraftwerk.features.SettingsFeature
 import pink.mino.kraftwerk.features.TeamsFeature
 import pink.mino.kraftwerk.scenarios.ScenarioHandler
 import pink.mino.kraftwerk.utils.Chat
@@ -43,11 +43,11 @@ class LatescatterCommand : CommandExecutor {
         }
         val player: Player
         val teammate: Player
-        var list = SettingsFeature.instance.data!!.getStringList("game.list")
+        var list = ConfigFeature.instance.data!!.getStringList("game.list")
         if (list == null) list = ArrayList<String>()
         if (args.size == 1) {
             player = Bukkit.getPlayer(args[0])
-            if (SettingsFeature.instance.data!!.getInt("game.teamSize") != 1) {
+            if (ConfigFeature.instance.data!!.getInt("game.teamSize") != 1) {
                 TeamsFeature.manager.createTeam(player)
             }
             player.playSound(player.location, Sound.WOOD_CLICK, 10F, 1F)
@@ -71,8 +71,8 @@ class LatescatterCommand : CommandExecutor {
                 player.removePotionEffect(effect.type)
             }
             player.addPotionEffect(PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 300, 1000, true, false))
-            ScatterFeature.scatterSolo(player, Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world")), SettingsFeature.instance.data!!.getInt("pregen.border"))
-            player.inventory.setItem(0, ItemStack(Material.COOKED_BEEF, SettingsFeature.instance.data!!.getInt("game.starterfood")))
+            ScatterFeature.scatterSolo(player, Bukkit.getWorld(ConfigFeature.instance.data!!.getString("pregen.world")), ConfigFeature.instance.data!!.getInt("pregen.border"))
+            player.inventory.setItem(0, ItemStack(Material.COOKED_BEEF, ConfigFeature.instance.data!!.getInt("game.starterfood")))
             JavaPlugin.getPlugin(Kraftwerk::class.java).statsHandler.getStatsPlayer(player)!!.gamesPlayed++
             for (scenario in ScenarioHandler.getActiveScenarios()) {
                 scenario.givePlayer(player)
@@ -114,7 +114,7 @@ class LatescatterCommand : CommandExecutor {
             }
             player.addPotionEffect(PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 300, 1000, true, false))
             player.teleport(teammate.location)
-            player.inventory.setItem(0, ItemStack(Material.COOKED_BEEF, SettingsFeature.instance.data!!.getInt("game.starterfood")))
+            player.inventory.setItem(0, ItemStack(Material.COOKED_BEEF, ConfigFeature.instance.data!!.getInt("game.starterfood")))
             JavaPlugin.getPlugin(Kraftwerk::class.java).statsHandler.getStatsPlayer(player)!!.gamesPlayed++
             for (scenario in ScenarioHandler.getActiveScenarios()) {
                 scenario.givePlayer(player)
@@ -125,8 +125,8 @@ class LatescatterCommand : CommandExecutor {
             Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} ${Chat.secondaryColor}${player.name}&7 has been late-scattered to their teammate ${Chat.secondaryColor}${teammate.name}&7."))
             Chat.sendMessage(player, "${Chat.prefix} You've successfully been added to the game, you've also been teamed with ${Chat.secondaryColor}${teammate.name}&7")
         }
-        SettingsFeature.instance.data!!.set("game.list", list)
-        SettingsFeature.instance.saveData()
+        ConfigFeature.instance.data!!.set("game.list", list)
+        ConfigFeature.instance.saveData()
         Scoreboard.setScore(Chat.colored("${Chat.dash} &7Playing..."), PlayerUtils.getPlayingPlayers().size)
         return true
     }

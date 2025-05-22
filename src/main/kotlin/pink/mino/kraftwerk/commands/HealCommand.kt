@@ -25,7 +25,7 @@ class HealCommand : CommandExecutor {
             Chat.sendMessage(sender, "${Chat.prefix} &7You have healed yourself.")
             return true
         } else {
-            if (args[0] == "*") {
+            if (args[0] == "*" || args[0] == "all") {
                 for (online in ArrayList(Bukkit.getServer().onlinePlayers)) {
                     online.health = online.maxHealth
                     Chat.sendMessage(online, "${Chat.prefix} &7You have been healed by ${Chat.primaryColor}${sender.name}§7.")

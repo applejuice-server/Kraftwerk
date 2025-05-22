@@ -8,7 +8,7 @@ import org.bukkit.event.player.PlayerRespawnEvent
 import org.bukkit.scheduler.BukkitRunnable
 import pink.mino.kraftwerk.Kraftwerk
 import pink.mino.kraftwerk.config.ConfigOptionHandler
-import pink.mino.kraftwerk.features.SettingsFeature
+import pink.mino.kraftwerk.features.ConfigFeature
 import pink.mino.kraftwerk.features.SpawnFeature
 import pink.mino.kraftwerk.features.SpecFeature
 import pink.mino.kraftwerk.utils.Chat
@@ -38,7 +38,7 @@ class DeathKick(val player: Player) : BukkitRunnable() {
         }
         timer--
         if (timer <= 0) {
-            player.kickPlayer(Chat.colored(if (SettingsFeature.instance.data!!.getString("config.chat.deathKick") != null) SettingsFeature.instance.data!!.getString("config.chat.deathKick") else "no death kick message sent but... thanks for playing :3"))
+            player.kickPlayer(Chat.colored(if (ConfigFeature.instance.config!!.getString("chat.deathKick") != null) ConfigFeature.instance.config!!.getString("chat.deathKick") else "no death kick message sent but... thanks for playing :3"))
             cancel()
         }
     }

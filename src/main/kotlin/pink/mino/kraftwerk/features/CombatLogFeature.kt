@@ -30,7 +30,7 @@ class CombatLog(val player: Player) : BukkitRunnable() {
         if (combatTimer == 0) {
             cancel()
             CombatLogFeature.instance.removeCombatLog(player.name)
-            var list = SettingsFeature.instance.data!!.getStringList("game.combatloggers")
+            var list = ConfigFeature.instance.data!!.getStringList("game.combatloggers")
             if (list == null) list = ArrayList<String>()
             if (list.contains(player.name)) {
                 Bukkit.getLogger().info("${player.name} has been removed from the combat log.")
@@ -47,23 +47,23 @@ class CombatLogFeature : Listener {
     val dropsHash: HashMap<NPC, ArrayList<ItemStack>> = HashMap()
 
     private fun addCombatLog(player: String) {
-        var list = SettingsFeature.instance.data!!.getStringList("game.combatloggers")
+        var list = ConfigFeature.instance.data!!.getStringList("game.combatloggers")
         if (list == null) list = ArrayList<String>()
         if (!list.contains(player)) {
             list.add(player)
         }
-        SettingsFeature.instance.data!!.set("game.combatloggers", list)
+        ConfigFeature.instance.data!!.set("game.combatloggers", list)
     }
 
     fun removeCombatLog(player: String) {
-        var list = SettingsFeature.instance.data!!.getStringList("game.combatloggers")
+        var list = ConfigFeature.instance.data!!.getStringList("game.combatloggers")
         if (list == null) list = ArrayList<String>()
         list.remove(player)
-        SettingsFeature.instance.data!!.set("game.combatloggers", list)
+        ConfigFeature.instance.data!!.set("game.combatloggers", list)
     }
 
     private fun getCombatLogList(): List<String> {
-        return SettingsFeature.instance.data!!.getStringList("game.combatloggers")
+        return ConfigFeature.instance.data!!.getStringList("game.combatloggers")
     }
 
     @EventHandler
@@ -107,10 +107,10 @@ class CombatLogFeature : Listener {
             if (e.player.world.name != "Spawn") {
                 if (getCombatLogList().contains(e.player.name)) {
                     WhitelistCommand().removeWhitelist(e.player.name)
-                    val list = SettingsFeature.instance.data!!.getStringList("game.list")
+                    val list = ConfigFeature.instance.data!!.getStringList("game.list")
                     list.remove(e.player.name)
-                    SettingsFeature.instance.data!!.set("game.list", list)
-                    SettingsFeature.instance.saveData()
+                    ConfigFeature.instance.data!!.set("game.list", list)
+                    ConfigFeature.instance.saveData()
                     removeCombatLog(e.player.name)
                     val npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER, e.player.name)
                     npc.spawn(e.player.location)

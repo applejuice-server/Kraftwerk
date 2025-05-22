@@ -2,7 +2,6 @@ package pink.mino.kraftwerk.scenarios.list
 
 import org.bukkit.Bukkit
 import org.bukkit.Material
-import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Chicken
 import org.bukkit.entity.Egg
 import org.bukkit.entity.EntityType
@@ -10,21 +9,15 @@ import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.block.Action
 import org.bukkit.event.entity.EntityDeathEvent
-import org.bukkit.event.entity.EntityTameEvent
 import org.bukkit.event.entity.ProjectileHitEvent
-import org.bukkit.event.entity.ProjectileLaunchEvent
-import org.bukkit.event.player.PlayerEggThrowEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
-import org.bukkit.plugin.java.JavaPlugin
-import pink.mino.kraftwerk.Kraftwerk
-import pink.mino.kraftwerk.features.SettingsFeature
+import pink.mino.kraftwerk.features.ConfigFeature
 import pink.mino.kraftwerk.features.SpecFeature
 import pink.mino.kraftwerk.scenarios.Scenario
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GameState
 import java.util.*
-import kotlin.collections.ArrayList
 
 class EggsScenario : Scenario(
     "Eggs",
@@ -94,7 +87,7 @@ class EggsScenario : Scenario(
         val loc = event.entity.location
         val world = event.entity.world
 
-        val gameWorld = Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world"))
+        val gameWorld = Bukkit.getWorld(ConfigFeature.instance.data!!.getString("pregen.world"))
 
         if (world != gameWorld) return
 

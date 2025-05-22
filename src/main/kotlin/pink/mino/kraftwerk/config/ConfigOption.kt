@@ -4,7 +4,7 @@ import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.command.CommandExecutor
 import org.bukkit.event.Listener
-import pink.mino.kraftwerk.features.SettingsFeature
+import pink.mino.kraftwerk.features.ConfigFeature
 import pink.mino.kraftwerk.utils.Chat
 
 
@@ -21,12 +21,12 @@ abstract class ConfigOption(
 ): Listener {
 
     init {
-        if (SettingsFeature.instance.data!!.getString("game.$category.$id").isNullOrEmpty()) {
+        if (ConfigFeature.instance.data!!.getString("game.$category.$id").isNullOrEmpty()) {
             enabled = false
-            SettingsFeature.instance.data!!.set("game.$category.$id", enabled)
-            SettingsFeature.instance.saveData()
+            ConfigFeature.instance.data!!.set("game.$category.$id", enabled)
+            ConfigFeature.instance.saveData()
         }
-        enabled = SettingsFeature.instance.data!!.getBoolean("game.$category.$id")
+        enabled = ConfigFeature.instance.data!!.getBoolean("game.$category.$id")
     }
 
     fun toggle() {
@@ -46,8 +46,8 @@ abstract class ConfigOption(
         }
         onToggle(enabled)
         Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} &e$name&7 is now $changerText&7."))
-        SettingsFeature.instance.data!!.set("game.$category.$id", enabled)
-        SettingsFeature.instance.saveData()
+        ConfigFeature.instance.data!!.set("game.$category.$id", enabled)
+        ConfigFeature.instance.saveData()
     }
 
     @JvmName("setEnabled1")
@@ -68,8 +68,8 @@ abstract class ConfigOption(
         }
         onToggle(to)
         Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} &e$name&7 is now $changerText&7."))
-        SettingsFeature.instance.data!!.set("game.$category.$id", to)
-        SettingsFeature.instance.saveData()
+        ConfigFeature.instance.data!!.set("game.$category.$id", to)
+        ConfigFeature.instance.saveData()
     }
 
     open fun onToggle(to: Boolean) {}

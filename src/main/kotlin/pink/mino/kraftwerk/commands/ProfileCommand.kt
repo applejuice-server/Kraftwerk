@@ -8,9 +8,28 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 import pink.mino.kraftwerk.Kraftwerk
-import pink.mino.kraftwerk.features.SettingsFeature
+import pink.mino.kraftwerk.features.ConfigFeature
 import pink.mino.kraftwerk.utils.*
 import kotlin.math.floor
+
+val availableArenaBlocks = listOf(
+    Material.COBBLESTONE,
+    Material.DIAMOND_BLOCK,
+    Material.EMERALD_BLOCK,
+    Material.DIAMOND_ORE,
+    Material.EMERALD_ORE,
+    Material.BOOKSHELF,
+    Material.HAY_BLOCK,
+    Material.SANDSTONE,
+    Material.RED_SANDSTONE,
+    Material.GLASS,
+    Material.SEA_LANTERN,
+    Material.BEDROCK,
+    Material.OBSIDIAN,
+    Material.WOOL,
+    Material.MOSSY_COBBLESTONE,
+    Material.GLOWSTONE
+)
 
 class ProfileCommand : CommandExecutor {
     override fun onCommand(
@@ -166,7 +185,7 @@ class ProfileCommand : CommandExecutor {
             }
             gui.item(0, disableRedstonePickup.make()).onClick runnable@ {
                 if (!PerkChecker.checkPerks(player).contains(Perk.TOGGLE_PICKUPS)) {
-                    Chat.sendMessage(player, "&cThis setting is locked to &6Gold&c players. &cBuy it at &ehttps://applejuice.tebex.io&c.")
+                    Chat.sendMessage(player, "&cThis setting is locked to &6Gold&c players. &cBuy it at &e${if (ConfigFeature.instance.config!!.getString("chat.storeUrl") != null) ConfigFeature.instance.config!!.getString("chat.storeUrl") else "no store url setup in config tough tits"}&c.")
                     return@runnable
                 }
                 if (profile.disableRedstonePickup) {
@@ -194,7 +213,7 @@ class ProfileCommand : CommandExecutor {
             }
             gui.item(1, disableLapisPickup.make()).onClick runnable@ {
                 if (!PerkChecker.checkPerks(player).contains(Perk.TOGGLE_PICKUPS)) {
-                    Chat.sendMessage(player, "&cThis setting is locked to &6Gold&c players. &cBuy it at &e${if (SettingsFeature.instance.data!!.getString("config.chat.storeUrl") != null) SettingsFeature.instance.data!!.getString("config.chat.storeUrl") else "no store url setup in config tough tits"}&c.")
+                    Chat.sendMessage(player, "&cThis setting is locked to &6Gold&c players. &cBuy it at &e${if (ConfigFeature.instance.config!!.getString("chat.storeUrl") != null) ConfigFeature.instance.config!!.getString("chat.storeUrl") else "no store url setup in config tough tits"}&c.")
                     return@runnable
                 }
                 if (profile.disableLapisPickup) {
@@ -252,7 +271,7 @@ class ProfileCommand : CommandExecutor {
                 val gui = GuiBuilder().rows(3).name("${Chat.primaryColor}&lTags").owner(sender)
                 val profile = Kraftwerk.instance.profileHandler.getProfile(sender.uniqueId)!!
                 if (profile.unlockedTags.size == 0) {
-                    Chat.sendMessage(sender, "&cYou have no tags unlocked, buy some at the store at &e${if (SettingsFeature.instance.data!!.getString("config.chat.storeUrl") != null) SettingsFeature.instance.data!!.getString("config.chat.storeUrl") else "no store url setup in config tough tits"}&c!")
+                    Chat.sendMessage(sender, "&cYou have no tags unlocked, buy some at the store at &e${if (ConfigFeature.instance.config!!.getString("chat.storeUrl") != null) ConfigFeature.instance.config!!.getString("chat.storeUrl") else "no store url setup in config tough tits"}&c!")
                     return@runnable
                 }
                 var index = 0
@@ -279,10 +298,49 @@ class ProfileCommand : CommandExecutor {
                     Kraftwerk.instance.profileHandler.saveProfile(profile)
                     Chat.sendMessage(sender, "${Chat.prefix} Removed your currently applied tag!")
                 }
+                index++
+                val back = ItemBuilder(Material.BARRIER)
+                    .name("&cBack")
+                    .addLore("Go back to the previous menu.")
+                    .make()
+                gui.item(26, back).onClick runnable@ {
+                    Bukkit.dispatchCommand(sender, "profile")
+                }
                 sender.openInventory(gui.make())
             }
             gui.item(14, arenaBlocks).onClick runnable@ {
-
+                if (!PerkChecker.checkPerks(sender).contains(Perk.CHOOSE_ARENA_BLOCKS)) {
+                    Chat.sendMessage(sender, "&cYou cannot use this feature, buy a rank on the store @ &e${if (ConfigFeature.instance.config!!.getString("chat.storeUrl") != null) ConfigFeature.instance.config!!.getString("chat.storeUrl") else "no store url setup in config tough tits"}&c!")
+                    return@runnable
+                }
+                val gui = GuiBuilder().rows(2).name("${Chat.primaryColor}&lArena Blocks").owner(sender)
+                val profile = Kraftwerk.instance.profileHandler.getProfile(sender.uniqueId)!!
+                var index = 0
+                for (block in availableArenaBlocks) {
+                    val display = ItemBuilder(block)
+                    if (Material.valueOf(profile.arenaBlock!!) == block) {
+                        display.name("&a${block.name.uppercase()}")
+                        display.addLore("&8Currently selected!")
+                    } else {
+                        display.name("&c${block.name.uppercase()}")
+                        display.addLore("&eClick to select!")
+                    }
+                    gui.item(index, display.make()).onClick runnable@ {
+                        profile.arenaBlock = block.name
+                        Kraftwerk.instance.profileHandler.saveProfile(profile)
+                        Chat.sendMessage(sender, "${Chat.prefix} Your arena block has been set to ${block.name}&7!")
+                    }
+                    index++
+                }
+                index++
+                val back = ItemBuilder(Material.BARRIER)
+                    .name("&cBack")
+                    .addLore("Go back to the previous menu.")
+                    .make()
+                gui.item(index, back).onClick runnable@ {
+                    Bukkit.dispatchCommand(sender, "profile")
+                }
+                sender.openInventory(gui.make())
             }
             sender.openInventory(gui.make())
         }

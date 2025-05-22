@@ -9,7 +9,7 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 import pink.mino.kraftwerk.Kraftwerk
-import pink.mino.kraftwerk.features.SettingsFeature
+import pink.mino.kraftwerk.features.ConfigFeature
 import pink.mino.kraftwerk.utils.BlockUtil
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GuiBuilder
@@ -74,8 +74,8 @@ class PregenCommand : CommandExecutor {
         val wc = WorldCreator(pregenConfig.name)
         wc.environment(pregenConfig.type)
         if (pregenConfig.type === World.Environment.NETHER) {
-            SettingsFeature.instance.data!!.set("game.nether.nether", true)
-            SettingsFeature.instance.saveData()
+            ConfigFeature.instance.data!!.set("game.nether.nether", true)
+            ConfigFeature.instance.saveData()
         }
         wc.type(WorldType.NORMAL)
 
@@ -85,16 +85,16 @@ class PregenCommand : CommandExecutor {
         val world = wc.createWorld()
         world.difficulty = Difficulty.HARD
         Log.info("Created world ${pregenConfig.name}.")
-        if (pregenConfig.type != World.Environment.NETHER && pregenConfig.type != World.Environment.THE_END) SettingsFeature.instance.data!!.set("pregen.world", world.name)
-        SettingsFeature.instance.worlds!!.set("${world.name}.name", world.name)
-        SettingsFeature.instance.worlds!!.set("${world.name}.madeby", pregenConfig.player.uniqueId.toString())
-        SettingsFeature.instance.worlds!!.set("${world.name}.date", Date().toString())
-        SettingsFeature.instance.worlds!!.set("${world.name}.type", pregenConfig.type.toString().uppercase())
-        SettingsFeature.instance.worlds!!.set("${world.name}.orerates.gold", pregenConfig.goldore)
-        SettingsFeature.instance.worlds!!.set("${world.name}.orerates.diamond", pregenConfig.diamondore)
-        SettingsFeature.instance.worlds!!.set("${world.name}.canerate", pregenConfig.canerate)
-        SettingsFeature.instance.worlds!!.set("${world.name}.oresOutsideCaves", pregenConfig.oresOutsideCaves)
-        SettingsFeature.instance.saveWorlds()
+        if (pregenConfig.type != World.Environment.NETHER && pregenConfig.type != World.Environment.THE_END) ConfigFeature.instance.data!!.set("pregen.world", world.name)
+        ConfigFeature.instance.worlds!!.set("${world.name}.name", world.name)
+        ConfigFeature.instance.worlds!!.set("${world.name}.madeby", pregenConfig.player.uniqueId.toString())
+        ConfigFeature.instance.worlds!!.set("${world.name}.date", Date().toString())
+        ConfigFeature.instance.worlds!!.set("${world.name}.type", pregenConfig.type.toString().uppercase())
+        ConfigFeature.instance.worlds!!.set("${world.name}.orerates.gold", pregenConfig.goldore)
+        ConfigFeature.instance.worlds!!.set("${world.name}.orerates.diamond", pregenConfig.diamondore)
+        ConfigFeature.instance.worlds!!.set("${world.name}.canerate", pregenConfig.canerate)
+        ConfigFeature.instance.worlds!!.set("${world.name}.oresOutsideCaves", pregenConfig.oresOutsideCaves)
+        ConfigFeature.instance.saveWorlds()
 
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
             "wb shape rectangular"
@@ -134,13 +134,13 @@ class PregenCommand : CommandExecutor {
                 }
             }
         }
-        var list = SettingsFeature.instance.data!!.getStringList("world.list")
+        var list = ConfigFeature.instance.data!!.getStringList("world.list")
         if (list == null) list = ArrayList<String>()
         list.add(pregenConfig.name)
         PregenConfigHandler.removeConfig(pregenConfig.player)
-        SettingsFeature.instance.data!!.set("pregen.border", pregenConfig.border)
-        SettingsFeature.instance.data!!.set("world.list", list)
-        SettingsFeature.instance.saveData()
+        ConfigFeature.instance.data!!.set("pregen.border", pregenConfig.border)
+        ConfigFeature.instance.data!!.set("world.list", list)
+        ConfigFeature.instance.saveData()
         if (pregenConfig.player.isOnline) Chat.sendMessage(pregenConfig.player as Player, "${Chat.prefix} &7Your world has been set as the default UHC world, to change this, use ${Chat.secondaryColor}/w worlds&7.")
 
     }

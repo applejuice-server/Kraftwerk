@@ -10,7 +10,7 @@ import org.bukkit.event.entity.EntityPortalEvent
 import org.bukkit.event.player.PlayerPortalEvent
 import org.bukkit.plugin.java.JavaPlugin
 import pink.mino.kraftwerk.Kraftwerk
-import pink.mino.kraftwerk.features.SettingsFeature
+import pink.mino.kraftwerk.features.ConfigFeature
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.LocationUtils
 
@@ -42,7 +42,7 @@ class PortalListener : Listener {
             Chat.sendMessage(player, Chat.prefix + "&7The nether hasn't been generated for this world.")
             return
         }
-        if (!SettingsFeature.instance.data!!.getBoolean("game.nether.nether")) {
+        if (!ConfigFeature.instance.data!!.getBoolean("game.nether.nether")) {
             Chat.sendMessage(player, Chat.prefix + "&7The nether is currently disabled.")
             return
         }

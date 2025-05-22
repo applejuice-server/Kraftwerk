@@ -5,7 +5,7 @@ import org.bukkit.Material
 import org.bukkit.block.Block
 import org.bukkit.entity.Player
 import org.bukkit.event.Listener
-import pink.mino.kraftwerk.features.SettingsFeature
+import pink.mino.kraftwerk.features.ConfigFeature
 import pink.mino.kraftwerk.utils.Chat
 
 abstract class Scenario(
@@ -17,12 +17,12 @@ abstract class Scenario(
     var enabled: Boolean = false
 ): Listener {
     init {
-        if (SettingsFeature.instance.data!!.getString("game.scenarios.$id").isNullOrEmpty()) {
+        if (ConfigFeature.instance.data!!.getString("game.scenarios.$id").isNullOrEmpty()) {
             enabled = false
-            SettingsFeature.instance.data!!.set("game.scenarios.$id", enabled)
-            SettingsFeature.instance.saveData()
+            ConfigFeature.instance.data!!.set("game.scenarios.$id", enabled)
+            ConfigFeature.instance.saveData()
         }
-        enabled = SettingsFeature.instance.data!!.getBoolean("game.scenarios.$id")
+        enabled = ConfigFeature.instance.data!!.getBoolean("game.scenarios.$id")
     }
 
     fun toggle() {
@@ -34,8 +34,8 @@ abstract class Scenario(
         }
         onToggle(enabled)
         Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} &e$name&7 has been $changerText&7."))
-        SettingsFeature.instance.data!!.set("game.scenarios.$id", enabled)
-        SettingsFeature.instance.saveData()
+        ConfigFeature.instance.data!!.set("game.scenarios.$id", enabled)
+        ConfigFeature.instance.saveData()
     }
 
     @JvmName("setEnabled1")
@@ -48,8 +48,8 @@ abstract class Scenario(
             }
         onToggle(to)
         Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} &d$name&7 has been $changerText&7."))
-        SettingsFeature.instance.data!!.set("game.scenarios.$id", to)
-        SettingsFeature.instance.saveData()
+        ConfigFeature.instance.data!!.set("game.scenarios.$id", to)
+        ConfigFeature.instance.saveData()
     }
 
     open fun onPvP() {}

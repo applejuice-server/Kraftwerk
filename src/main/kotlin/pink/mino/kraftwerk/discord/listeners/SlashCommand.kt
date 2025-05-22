@@ -7,7 +7,7 @@ import net.dv8tion.jda.api.events.interaction.SlashCommandEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import net.dv8tion.jda.api.utils.MarkdownSanitizer
 import org.bukkit.Bukkit
-import pink.mino.kraftwerk.features.SettingsFeature
+import pink.mino.kraftwerk.features.ConfigFeature
 import pink.mino.kraftwerk.scenarios.ScenarioHandler
 import pink.mino.kraftwerk.utils.Chat
 import java.awt.Color
@@ -30,7 +30,7 @@ class SlashCommand : ListenerAdapter() {
                 val embed = EmbedBuilder()
                 embed.setColor(Color(255, 61, 61))
                 embed.setAuthor("${Chat.serverName} — IP Address", "https://github.com/applejuice-server/Kraftwerk/blob/master/src/main/kotlin/pink/mino/kraftwerk/discord/listeners/SlashCommand.kt", event.jda.selfUser.avatarUrl)
-                embed.setDescription("The IP address to the server is `${if (SettingsFeature.instance.data!!.getString("config.chat.serverIp") != null) SettingsFeature.instance.data!!.getString("config.chat.serverIp") else "no server ip setup in config tough tits"}`.")
+                embed.setDescription("The IP address to the server is `${if (ConfigFeature.instance.config!!.getString("chat.serverIp") != null) ConfigFeature.instance.config!!.getString("chat.serverIp") else "no server ip setup in config tough tits"}`.")
                 event.replyEmbeds(embed.build()).setEphemeral(false).queue()
             }
             "togglealerts" -> {
@@ -54,11 +54,11 @@ class SlashCommand : ListenerAdapter() {
                 val player = event.getOption("ign")!!.asString
                 val target = Bukkit.getOfflinePlayer(player)
                 if (target == null) event.reply("Invalid player!").setEphemeral(true).queue()
-                if (SettingsFeature.instance.data!!.getBoolean("whitelist.requests")) {
+                if (ConfigFeature.instance.data!!.getBoolean("whitelist.requests")) {
                     Schedulers.sync().run runnable@ {
                         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wl add $player")
                     }
-                    event.reply("**${MarkdownSanitizer.escape(player)}** has been whitelisted on the server, connect using `${if (SettingsFeature.instance.data!!.getString("config.chat.serverIp") != null) SettingsFeature.instance.data!!.getString("config.chat.serverIp") else "no server ip setup in config tough tits"}`.").queue()
+                    event.reply("**${MarkdownSanitizer.escape(player)}** has been whitelisted on the server, connect using `${if (ConfigFeature.instance.config!!.getString("chat.serverIp") != null) ConfigFeature.instance.config!!.getString("chat.serverIp") else "no server ip setup in config tough tits"}`.").queue()
                 } else {
                     event.reply("Sorry, but whitelists are not available at this time!").setEphemeral(true).queue()
                 }

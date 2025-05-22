@@ -22,7 +22,7 @@ import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.scheduler.BukkitRunnable
 import pink.mino.kraftwerk.Kraftwerk
-import pink.mino.kraftwerk.features.SettingsFeature
+import pink.mino.kraftwerk.features.ConfigFeature
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -86,10 +86,10 @@ class Leaderboards : BukkitRunnable() {
     )
 
     fun generateThingLocationFromConfig(value: String): Location {
-        if (SettingsFeature.instance.data!!.getDouble("config.thing.${value}.x") == null || SettingsFeature.instance.data!!.getDouble("config.thing.${value}.y") == null || SettingsFeature.instance.data!!.getDouble("config.thing.${value}.z") == null || SettingsFeature.instance.data!!.getString("config.thing.${value}.world") == null) {
+        if (ConfigFeature.instance.config!!.getDouble("thing.${value}.x") == null || ConfigFeature.instance.config!!.getDouble("thing.${value}.y") == null || ConfigFeature.instance.config!!.getDouble("thing.${value}.z") == null || ConfigFeature.instance.config!!.getString("thing.${value}.world") == null) {
             return Location(Bukkit.getWorld("Spawn"), 0.0, 0.0, 0.0)
         } else {
-            return Location(Bukkit.getWorld(SettingsFeature.instance.data!!.getString("config.thing.${value}.world")), SettingsFeature.instance.data!!.getDouble("config.thing.${value}.x"), SettingsFeature.instance.data!!.getDouble("config.thing.${value}.y"), SettingsFeature.instance.data!!.getDouble("config.thing.${value}.z"))
+            return Location(Bukkit.getWorld(ConfigFeature.instance.config!!.getString("thing.${value}.world")), ConfigFeature.instance.config!!.getDouble("thing.${value}.x"), ConfigFeature.instance.config!!.getDouble("thing.${value}.y"), ConfigFeature.instance.config!!.getDouble("thing.${value}.z"))
         }
     }
 

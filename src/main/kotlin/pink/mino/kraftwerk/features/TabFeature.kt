@@ -81,8 +81,8 @@ class TabFeature : BukkitRunnable() {
                 Math.round(tpsLast10Secs * 100.0) / 100.0
             )} &8| &7Ping: &f${checkPing(craftplayer.handle.ping)}")}ms\n\"}")
         }
-        var game = "${SettingsFeature.instance.data!!.getString("game.host")}'s ${SettingsFeature.instance.data!!.getString("matchpost.team")}"
-        if (SettingsFeature.instance.data!!.getString("matchpost.team") == null) {
+        var game = "${ConfigFeature.instance.data!!.getString("game.host")}'s ${ConfigFeature.instance.data!!.getString("matchpost.team")}"
+        if (ConfigFeature.instance.data!!.getString("matchpost.team") == null) {
             game = "Not set"
         }
         val footer: IChatBaseComponent = if (!ConfigOptionHandler.getOption("nobranding")!!.enabled) {

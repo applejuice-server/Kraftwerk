@@ -112,7 +112,7 @@ class TeamsFeature private constructor() : Listener {
         team!!.prefix = color
         team.suffix = "§r"
         team.displayName = color + "Team #${teamCount}"
-        if (SettingsFeature.instance.data!!.getBoolean("game.friendlyFire")) team.setAllowFriendlyFire(true)
+        if (ConfigFeature.instance.data!!.getBoolean("game.friendlyFire")) team.setAllowFriendlyFire(true)
         else team.setAllowFriendlyFire(false)
         team.setCanSeeFriendlyInvisibles(true)
 

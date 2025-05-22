@@ -3,7 +3,7 @@ package pink.mino.kraftwerk.commands
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
-import pink.mino.kraftwerk.features.SettingsFeature
+import pink.mino.kraftwerk.features.ConfigFeature
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GameState
 import java.util.*
@@ -20,13 +20,13 @@ class KillTopCommand : CommandExecutor {
             Chat.sendMessage(sender, "&cYou can't use this command right now.")
             return false
         }
-        if (SettingsFeature.instance.data!!.get("game.kills") == null) {
+        if (ConfigFeature.instance.data!!.get("game.kills") == null) {
             Chat.sendMessage(sender, "&cThere are no kills yet.")
             return false
         }
         val map = LinkedHashMap<String, Int>()
-        for (key in SettingsFeature.instance.data!!.getConfigurationSection("game.kills").getKeys(false)) {
-            map[key] = SettingsFeature.instance.data!!.getInt("game.kills.${key}")
+        for (key in ConfigFeature.instance.data!!.getConfigurationSection("game.kills").getKeys(false)) {
+            map[key] = ConfigFeature.instance.data!!.getInt("game.kills.${key}")
         }
         val entries: List<Map.Entry<String, Int>> = ArrayList<Map.Entry<String, Int>>(map.entries)
         Collections.sort(entries

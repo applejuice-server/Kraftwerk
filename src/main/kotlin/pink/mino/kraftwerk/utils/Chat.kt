@@ -4,18 +4,18 @@ import DefaultFontInfo
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.command.CommandSender
-import pink.mino.kraftwerk.features.SettingsFeature
+import pink.mino.kraftwerk.features.ConfigFeature
 import pink.mino.kraftwerk.features.SpecFeature
 
 class Chat {
     companion object {
         private const val CENTER_PX = 154
 
-        val secondaryColor = if (SettingsFeature.instance.data!!.getString("config.chat.secondaryColor") != null) SettingsFeature.instance.data!!.getString("config.chat.secondaryColor") else "&f"
-        val primaryColor = if (SettingsFeature.instance.data!!.getString("config.chat.primaryColor") != null) SettingsFeature.instance.data!!.getString("config.chat.primaryColor") else "&c"
-        val serverName = if (SettingsFeature.instance.data!!.getString("config.chat.serverName") != null) SettingsFeature.instance.data!!.getString("config.chat.serverName") else "applejuice"
-        val scoreboardTitle = if (SettingsFeature.instance.data!!.getString("config.chat.scoreboardTitle") != null) SettingsFeature.instance.data!!.getString("config.chat.scoreboardTitle") else "&capple&ajuice"
-        val prefix = if (SettingsFeature.instance.data!!.getString("config.chat.prefix") != null) (SettingsFeature.instance.data!!.getString("config.chat.prefix")) else "&8[&cUHC&8]&7"
+        val secondaryColor = if (ConfigFeature.instance.config!!.getString("chat.secondaryColor") != null) ConfigFeature.instance.config!!.getString("chat.secondaryColor") else "&f"
+        val primaryColor = if (ConfigFeature.instance.config!!.getString("chat.primaryColor") != null) ConfigFeature.instance.config!!.getString("chat.primaryColor") else "&c"
+        val serverName = if (ConfigFeature.instance.config!!.getString("chat.serverName") != null) ConfigFeature.instance.config!!.getString("chat.serverName") else "applejuice"
+        val scoreboardTitle = if (ConfigFeature.instance.config!!.getString("chat.scoreboardTitle") != null) ConfigFeature.instance.config!!.getString("chat.scoreboardTitle") else "&capple&ajuice"
+        val prefix = if (ConfigFeature.instance.config!!.getString("chat.prefix") != null) (ConfigFeature.instance.config!!.getString("chat.prefix")) else "&8[&cUHC&8]&7"
         const val dash = "§8»&7"
         const val dot = "§8●§7"
         const val line = "§8§m-----------------------------------------------------"

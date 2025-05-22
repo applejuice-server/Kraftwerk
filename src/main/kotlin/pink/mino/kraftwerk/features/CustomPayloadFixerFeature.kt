@@ -93,7 +93,7 @@ class CustomPayloadFixerFeature(plugin: Kraftwerk) {
             ) {
                 JavaPlugin.getPlugin(Kraftwerk::class.java).server.dispatchCommand(
                     JavaPlugin.getPlugin(Kraftwerk::class.java).server.consoleSender,
-                    "litebans:ban " + player.name + " crash_glitch"
+                    "ban " + player.name + " crash_glitch"
                 )
             }
             JavaPlugin.getPlugin(Kraftwerk::class.java).server.logger

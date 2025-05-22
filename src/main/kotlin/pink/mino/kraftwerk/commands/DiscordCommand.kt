@@ -12,7 +12,7 @@ class DiscordCommand : CommandExecutor {
         label: String?,
         args: Array<String>
     ): Boolean {
-        sender.sendMessage(Chat.colored("${Chat.prefix} The discord URL is: ${Chat.secondaryColor}${if (pink.mino.kraftwerk.features.SettingsFeature.instance.data!!.getString("config.chat.discordUrl") != null) pink.mino.kraftwerk.features.SettingsFeature.instance.data!!.getString("config.chat.discordUrl") else "no discord url set in config tough tits"}"))
+        sender.sendMessage(Chat.colored("${Chat.prefix} The discord URL is: ${Chat.secondaryColor}${if (pink.mino.kraftwerk.features.ConfigFeature.instance.config!!.getString("chat.discordUrl") != null) pink.mino.kraftwerk.features.ConfigFeature.instance.config!!.getString("chat.discordUrl") else "no discord url set in config tough tits"}"))
         return false
     }
 }

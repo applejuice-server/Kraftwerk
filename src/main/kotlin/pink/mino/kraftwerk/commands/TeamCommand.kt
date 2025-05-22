@@ -15,7 +15,7 @@ import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.scoreboard.Team
 import pink.mino.kraftwerk.Kraftwerk
-import pink.mino.kraftwerk.features.SettingsFeature
+import pink.mino.kraftwerk.features.ConfigFeature
 import pink.mino.kraftwerk.features.SpecFeature
 import pink.mino.kraftwerk.features.TeamsFeature
 import pink.mino.kraftwerk.scenarios.ScenarioHandler
@@ -66,7 +66,7 @@ class SendTeamView(val team: Team) : BukkitRunnable() {
 class TeamCommand : CommandExecutor {
 
     private var invites = HashMap<Player, ArrayList<Player>>()
-    private val settings: SettingsFeature = SettingsFeature.instance
+    private val settings: ConfigFeature = ConfigFeature.instance
     val colors = listOf(
         "black",
         "dark_blue",
@@ -134,13 +134,13 @@ class TeamCommand : CommandExecutor {
 
         if (sender is Player) {
             if (!sender.hasPermission("uhc.staff.team")) {
-                if (SettingsFeature.instance.data!!.getString("game.ffa").toBoolean()) {
+                if (ConfigFeature.instance.data!!.getString("game.ffa").toBoolean()) {
                     Chat.sendMessage(
                         sender,
                         "${ChatColor.RED}You can't use this command at the moment. (It's an FFA game or Random teams)"
                     )
                     return false
-                } else if (GameState.valueOf(SettingsFeature.instance.data!!.getString("game.state")) != GameState.LOBBY) {
+                } else if (GameState.valueOf(ConfigFeature.instance.data!!.getString("game.state")) != GameState.LOBBY) {
                     Chat.sendMessage(sender, "${ChatColor.RED}You can't use this command at the moment.")
                     return false
                 }
@@ -239,11 +239,11 @@ class TeamCommand : CommandExecutor {
                 Chat.sendMessage(player, "&cYou're already on a team.")
                 return true
             }
-            if (SettingsFeature.instance.data!!.getString("game.ffa").toBoolean()) {
+            if (ConfigFeature.instance.data!!.getString("game.ffa").toBoolean()) {
                 Chat.sendMessage(player, "&cTeam management is disabled at the moment.")
                 return true
             }
-            if (GameState.valueOf(SettingsFeature.instance.data!!.getString("game.state")) != GameState.LOBBY) {
+            if (GameState.valueOf(ConfigFeature.instance.data!!.getString("game.state")) != GameState.LOBBY) {
                 Chat.sendMessage(player, "&cYou can't manage teams while the game is running!")
                 return true
             }
@@ -255,7 +255,7 @@ class TeamCommand : CommandExecutor {
         } else if (args[0] == "invite") {
             val player = sender as Player
             var team = TeamsFeature.manager.getTeam(player)
-            if (SettingsFeature.instance.data!!.getString("game.ffa").toBoolean()) {
+            if (ConfigFeature.instance.data!!.getString("game.ffa").toBoolean()) {
                 Chat.sendMessage(player, "${Chat.prefix} Team management is disabled at the moment.")
                 return true
             }
@@ -267,7 +267,7 @@ class TeamCommand : CommandExecutor {
                 team = TeamsFeature.manager.createTeam(player)
                 SendTeamView(team).runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 20L)
             }
-            if (team.size >= SettingsFeature.instance.data!!.getString("game.teamSize").toInt()) {
+            if (team.size >= ConfigFeature.instance.data!!.getString("game.teamSize").toInt()) {
                 Chat.sendMessage(player, "&cYour team is too full to invite anyone!")
                 return true
             }
@@ -340,7 +340,7 @@ class TeamCommand : CommandExecutor {
             }
             val target = Bukkit.getServer().getPlayer(args[1])
             val team = target.scoreboard.getPlayerTeam(target)
-            if (SettingsFeature.instance.data!!.getString("game.ffa").toBoolean()) {
+            if (ConfigFeature.instance.data!!.getString("game.ffa").toBoolean()) {
                 player.sendMessage("${ChatColor.RED}This is an FFA game.")
                 return true
             }
@@ -353,7 +353,7 @@ class TeamCommand : CommandExecutor {
                 return false
             }
             if (invites.containsKey(target) && invites[target]!!.contains(player)) {
-                if (team.size >= SettingsFeature.instance.data!!.getString("game.teamSize").toInt()) {
+                if (team.size >= ConfigFeature.instance.data!!.getString("game.teamSize").toInt()) {
                     player.sendMessage("${ChatColor.RED}That team is too full to join!")
                     return false
                 }
@@ -416,7 +416,7 @@ class TeamCommand : CommandExecutor {
         } else if (args[0] == "leave") {
             val player = sender as Player
             val team = player.scoreboard.getPlayerTeam(player)
-            if (SettingsFeature.instance.data!!.getString("game.ffa").toBoolean()) {
+            if (ConfigFeature.instance.data!!.getString("game.ffa").toBoolean()) {
                 player.sendMessage("${ChatColor.RED}You can't do this command at the moment.")
                 return true
             }
@@ -450,7 +450,7 @@ class TeamCommand : CommandExecutor {
             Chat.sendMessage(sender, " ")
             val teamList = ArrayList<Team>()
             if (ScenarioHandler.getActiveScenarios().contains(ScenarioHandler.getScenario("moles"))) {
-                for ((index, team) in TeamsFeature.manager.getTeams().withIndex()) {
+                for ((_, team) in TeamsFeature.manager.getTeams().withIndex()) {
                     if (team.players.size != 0) {
                         teamList.add(team)
                         val list = ArrayList<String>()
@@ -643,16 +643,16 @@ class TeamCommand : CommandExecutor {
             if (args[1] == "on") {
                 for (team in TeamsFeature.manager.getTeams()) {
                     team.setAllowFriendlyFire(true)
-                    SettingsFeature.instance.data!!.set("game.friendlyFire", true)
-                    SettingsFeature.instance.saveData()
+                    ConfigFeature.instance.data!!.set("game.friendlyFire", true)
+                    ConfigFeature.instance.saveData()
                 }
                 Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Friendly fire has been enabled by ${Chat.secondaryColor}${sender.name}&7."))
             }
             if (args[1] == "off") {
                 for (team in TeamsFeature.manager.getTeams()) {
                     team.setAllowFriendlyFire(false)
-                    SettingsFeature.instance.data!!.set("game.friendlyFire", false)
-                    SettingsFeature.instance.saveData()
+                    ConfigFeature.instance.data!!.set("game.friendlyFire", false)
+                    ConfigFeature.instance.saveData()
                 }
                 Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Friendly fire has been disabled by ${Chat.secondaryColor}${sender.name}&7."))
             }
@@ -694,7 +694,7 @@ class TeamCommand : CommandExecutor {
             Bukkit.broadcastMessage(
                 Chat.colored(
                     "${Chat.dash} Randomizing all players into teams of ${Chat.primaryColor}${
-                        SettingsFeature.instance.data!!.getInt(
+                        ConfigFeature.instance.data!!.getInt(
                             "game.teamSize"
                         )
                     }&7."
@@ -707,7 +707,7 @@ class TeamCommand : CommandExecutor {
                 }
             }
             valid.shuffle()
-            val teams = splitList(valid, SettingsFeature.instance.data!!.getInt("game.teamSize"))
+            val teams = splitList(valid, ConfigFeature.instance.data!!.getInt("game.teamSize"))
             var templist: ArrayList<Player>
             for (list in teams) {
                 templist = ArrayList()
@@ -753,7 +753,7 @@ class TeamCommand : CommandExecutor {
             Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} &cRed&7 vs &9Blue&7 teams have been randomized."))
         } else if (args[0] == "color") {
             if (!PerkChecker.checkPerk(sender as Player, "uhc.donator.teamColors")) {
-                Chat.sendMessage(sender, "&cBuy &6Gold&c to use this perk. &e${if (SettingsFeature.instance.data!!.getString("config.chat.storeUrl") != null) SettingsFeature.instance.data!!.getString("config.chat.storeUrl") else "no store url setup in config tough tits"}}")
+                Chat.sendMessage(sender, "&cBuy &6Gold&c to use this perk. &e${if (ConfigFeature.instance.config!!.getString("chat.storeUrl") != null) ConfigFeature.instance.config!!.getString("chat.storeUrl") else "no store url setup in config tough tits"}}")
                 return false
             }
             if (TeamsFeature.manager.getTeam(sender) == null) {

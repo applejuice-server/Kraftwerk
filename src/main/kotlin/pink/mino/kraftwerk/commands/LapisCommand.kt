@@ -6,7 +6,7 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 import pink.mino.kraftwerk.Kraftwerk
-import pink.mino.kraftwerk.features.SettingsFeature
+import pink.mino.kraftwerk.features.ConfigFeature
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.Perk
 import pink.mino.kraftwerk.utils.PerkChecker
@@ -23,7 +23,7 @@ class LapisCommand : CommandExecutor {
             return false
         }
         if (!PerkChecker.checkPerks(sender).contains(Perk.TOGGLE_PICKUPS)) {
-            Chat.sendMessage(sender, "&cYou must be &6Gold&c to use this command. Buy it at &e${if (SettingsFeature.instance.data!!.getString("config.chat.storeUrl") != null) SettingsFeature.instance.data!!.getString("config.chat.storeUrl") else "no store url setup in config tough tits"}")
+            Chat.sendMessage(sender, "&cYou must be &6Gold&c to use this command. Buy it at &e${if (ConfigFeature.instance.config!!.getString("chat.storeUrl") != null) ConfigFeature.instance.config!!.getString("chat.storeUrl") else "no store url setup in config tough tits"}")
             return false
         }
         if (JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.getProfile(sender.uniqueId)!!.disableLapisPickup) {

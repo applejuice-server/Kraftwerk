@@ -16,7 +16,7 @@ import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.scheduler.BukkitRunnable
 import pink.mino.kraftwerk.Kraftwerk
 import pink.mino.kraftwerk.discord.Discord
-import pink.mino.kraftwerk.features.SettingsFeature
+import pink.mino.kraftwerk.features.ConfigFeature
 import pink.mino.kraftwerk.scenarios.ScenarioHandler
 import pink.mino.kraftwerk.utils.ActionBar
 import pink.mino.kraftwerk.utils.Chat
@@ -77,27 +77,27 @@ class ScheduleBroadcast(private val opening: String) : BukkitRunnable() {
 
     override fun run() {
         print("Checking if the time corresponds with the broadcast time... ${removeFifteenMinutes(opening)} & ${getTime()}")
-        if (SettingsFeature.instance.data!!.getString("matchpost.opens") == null) {
+        if (ConfigFeature.instance.data!!.getString("matchpost.opens") == null) {
             cancel()
         }
-        if (SettingsFeature.instance.data!!.getBoolean("matchpost.cancelled") == true) {
+        if (ConfigFeature.instance.data!!.getBoolean("matchpost.cancelled") == true) {
             cancel()
         }
         if (getTime() == removeFifteenMinutes(opening)) {
             cancel()
-            val host = Bukkit.getOfflinePlayer(SettingsFeature.instance.data!!.getString("game.host"))
+            val host = Bukkit.getOfflinePlayer(ConfigFeature.instance.data!!.getString("game.host"))
             var embed = EmbedBuilder()
             embed.setColor(Color(255, 61, 61))
-            embed.setTitle(SettingsFeature.instance.data!!.getString("matchpost.host"))
+            embed.setTitle(ConfigFeature.instance.data!!.getString("matchpost.host"))
             embed.setThumbnail("https://visage.surgeplay.com/bust/512/${host.uniqueId}")
-            val scenarios = SettingsFeature.instance.data!!.getStringList("matchpost.scenarios")
+            val scenarios = ConfigFeature.instance.data!!.getStringList("matchpost.scenarios")
             val fr = (System.currentTimeMillis() / 1000L) + (900000L) / 1000L
-            embed.addField("Teams", SettingsFeature.instance.data!!.getString("matchpost.team"), false)
+            embed.addField("Teams", ConfigFeature.instance.data!!.getString("matchpost.team"), false)
             embed.addField("Scenarios", scenarios.joinToString(", "), false)
             var flag = ":flag_ca:"
-            embed.addField("IP", "$flag `${if (SettingsFeature.instance.data!!.getString("config.chat.serverIp") != null) SettingsFeature.instance.data!!.getString("config.chat.serverIp") else "no server ip setup in config tough tits"}` (1.8.x)", false)
+            embed.addField("IP", "$flag `${if (ConfigFeature.instance.config!!.getString("chat.serverIp") != null) ConfigFeature.instance.config!!.getString("chat.serverIp") else "no server ip setup in config tough tits"}` (1.8.x)", false)
             embed.addField("Opening", "<t:${fr}:t> (<t:${fr}:R>)", false)
-            embed.addField("Matchpost", "[uhc.gg](https://hosts.uhc.gg/m/${SettingsFeature.instance.data!!.getInt("matchpost.id")})", false)
+            embed.addField("Matchpost", "[uhc.gg](https://hosts.uhc.gg/m/${ConfigFeature.instance.data!!.getInt("matchpost.id")})", false)
             if (Kraftwerk.instance.gameAlertsChannelId != null) {
                 Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Matchpost posted on discord!"))
                 if (Kraftwerk.instance.alertsRoleId != null) {
@@ -109,17 +109,19 @@ class ScheduleBroadcast(private val opening: String) : BukkitRunnable() {
             } else {
                 Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} A matchpost is coming in ${Chat.secondaryColor}15 minutes&7 but there's no configured game alerts channel!"))
             }
-            embed = EmbedBuilder()
-            embed.setColor(Color(255, 61, 61))
-            embed.setTitle(SettingsFeature.instance.data!!.getString("matchpost.host"))
-            embed.setThumbnail("https://visage.surgeplay.com/bust/512/${host.uniqueId}")
-            embed.addField("Pre-whitelists are on!", "You are now allowed to use the command `/wl` to request to pre-whitelist yourself in the server!", false)
-            if (Kraftwerk.instance.preWhitelistChannelId != null) {
-                Discord.instance!!.getTextChannelById(Kraftwerk.instance.preWhitelistChannelId!!)!!.sendMessageEmbeds(embed.build()).queue()
+            if (ConfigFeature.instance.config!!.getBoolean("options.whitelist-after-restart")) {
+                embed = EmbedBuilder()
+                embed.setColor(Color(255, 61, 61))
+                embed.setTitle(ConfigFeature.instance.data!!.getString("matchpost.host"))
+                embed.setThumbnail("https://visage.surgeplay.com/bust/512/${host.uniqueId}")
+                embed.addField("Pre-whitelists are on!", "You are now allowed to use the command `/wl` to request to pre-whitelist yourself in the server!", false)
+                if (Kraftwerk.instance.preWhitelistChannelId != null) {
+                    Discord.instance!!.getTextChannelById(Kraftwerk.instance.preWhitelistChannelId!!)!!.sendMessageEmbeds(embed.build()).queue()
+                }
             }
-            SettingsFeature.instance.data!!.set("whitelist.requests", true)
-            SettingsFeature.instance.data!!.set("matchpost.posted", true)
-            SettingsFeature.instance.saveData()
+            ConfigFeature.instance.data!!.set("whitelist.requests", true)
+            ConfigFeature.instance.data!!.set("matchpost.posted", true)
+            ConfigFeature.instance.saveData()
         }
     }
 }
@@ -185,28 +187,27 @@ class ScheduleOpening(private val opening: String) : BukkitRunnable() {
 
     override fun run() {
         print("Checking if the time corresponds with the opening...")
-        if (SettingsFeature.instance.data!!.getString("matchpost.opens") == null) {
+        if (ConfigFeature.instance.data!!.getString("matchpost.opens") == null) {
             cancel()
         }
-        if (SettingsFeature.instance.data!!.getBoolean("matchpost.cancelled") == true) {
+        if (ConfigFeature.instance.data!!.getBoolean("matchpost.cancelled") == true) {
             cancel()
         }
         if (getTime() == opening) {
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wl off")
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "timer cancel")
             val time: Long
-            if (SettingsFeature.instance.data!!.getBoolean("matchpost.teamsGame")) {
-                time = 8 * 60
+            if (ConfigFeature.instance.data!!.getBoolean("matchpost.teamsGame")) {
+                time = (ConfigFeature.instance.config!!.getLong("options.whitelist-timer-teams") * 60)
             } else {
-                time = 5 * 60
+                time = (ConfigFeature.instance.config!!.getLong("options.whitelist-timer-ffa") * 60)
             }
-            val host = Bukkit.getOfflinePlayer(SettingsFeature.instance.data!!.getString("game.host"))
+            val host = Bukkit.getOfflinePlayer(ConfigFeature.instance.data!!.getString("game.host"))
             val embed = EmbedBuilder()
-            embed.addField("Matchpost", "https://hosts.uhc.gg/m/${SettingsFeature.instance.data!!.getInt("matchpost.id")}", false)
+            embed.addField("Matchpost", "https://hosts.uhc.gg/m/${ConfigFeature.instance.data!!.getInt("matchpost.id")}", false)
             embed.setColor(Color(255, 61, 61))
-            embed.setTitle(SettingsFeature.instance.data!!.getString("matchpost.host"))
+            embed.setTitle(ConfigFeature.instance.data!!.getString("matchpost.host"))
             embed.setThumbnail("https://visage.surgeplay.com/bust/512/${host.uniqueId}")
-            embed.addField("Game Open!", "The game is now open at `${if (SettingsFeature.instance.data!!.getString("config.chat.serverIp") != null) SettingsFeature.instance.data!!.getString("config.chat.serverIp") else "no server ip setup in config tough tits"}`.", false)
+            embed.addField("Game Open!", "The game is now open at `${if (ConfigFeature.instance.config!!.getString("chat.serverIp") != null) ConfigFeature.instance.config!!.getString("chat.serverIp") else "no server ip setup in config tough tits"}`.", false)
             if (Kraftwerk.instance.gameAlertsChannelId != null) {
                 Discord.instance!!.getTextChannelById(Kraftwerk.instance.gameAlertsChannelId!!)!!.sendMessageEmbeds(embed.build()).queue()
             } else {
@@ -215,17 +216,17 @@ class ScheduleOpening(private val opening: String) : BukkitRunnable() {
             Bukkit.broadcastMessage(Chat.colored("${Chat.dash} The whitelist has been turned off automatically @ ${Chat.primaryColor}${opening}&7."))
             cancel()
             Opening(time).runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 20L)
-            SettingsFeature.instance.data!!.set("whitelist.requests", false)
-            SettingsFeature.instance.data!!.set("matchpost.opens", null)
-            SettingsFeature.instance.saveData()
+            ConfigFeature.instance.data!!.set("whitelist.requests", false)
+            ConfigFeature.instance.data!!.set("matchpost.opens", null)
+            ConfigFeature.instance.saveData()
             with (JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.getDatabase("applejuice").getCollection("opened_matches")) {
-                val filter = Filters.eq("id", SettingsFeature.instance.data!!.getInt("matchpost.id"))
-                val document = Document("id", SettingsFeature.instance.data!!.getInt("matchpost.id"))
-                    .append("server", SettingsFeature.instance.data!!.getString("matchpost.server"))
-                    .append("title", SettingsFeature.instance.data!!.getString("matchpost.host"))
-                    .append("teams", SettingsFeature.instance.data!!.getString("matchpost.team"))
-                    .append("scenarios", SettingsFeature.instance.data!!.get("matchpost.scenarios") as List<*>)
-                    .append("whitelist", SettingsFeature.instance.data!!.getBoolean("whitelist.enabled"))
+                val filter = Filters.eq("id", ConfigFeature.instance.data!!.getInt("matchpost.id"))
+                val document = Document("id", ConfigFeature.instance.data!!.getInt("matchpost.id"))
+                    .append("server", ConfigFeature.instance.data!!.getString("matchpost.server"))
+                    .append("title", ConfigFeature.instance.data!!.getString("matchpost.host"))
+                    .append("teams", ConfigFeature.instance.data!!.getString("matchpost.team"))
+                    .append("scenarios", ConfigFeature.instance.data!!.get("matchpost.scenarios") as List<*>)
+                    .append("whitelist", ConfigFeature.instance.data!!.getBoolean("whitelist.enabled"))
                     .append("pvp", false)
                     .append("needsDelete", false)
 
@@ -253,7 +254,7 @@ class MatchpostCommand : CommandExecutor {
                 Chat.sendMessage(sender, "&cYou must provide a valid matchpost ID.")
                 return false
             } else {
-                Chat.sendMessage(sender, "${Chat.prefix} Matchpost: &chttps://hosts.uhc.gg/m/${SettingsFeature.instance.data!!.getInt("matchpost.id")}")
+                Chat.sendMessage(sender, "${Chat.prefix} Matchpost: &chttps://hosts.uhc.gg/m/${ConfigFeature.instance.data!!.getInt("matchpost.id")}")
                 return false
             }
         }
@@ -351,19 +352,19 @@ class MatchpostCommand : CommandExecutor {
                 }
             }
         }
-        SettingsFeature.instance.data!!.set("matchpost.team", team)
-        SettingsFeature.instance.data!!.set("matchpost.teamsGame", teamsGame)
-        SettingsFeature.instance.data!!.set("matchpost.host", host)
-        SettingsFeature.instance.data!!.set("matchpost.id", id.toInt())
-        SettingsFeature.instance.data!!.set("matchpost.scenarioIds", scenarioList)
-        SettingsFeature.instance.data!!.set("matchpost.scenarios", scenarios)
-        SettingsFeature.instance.data!!.set("matchpost.opens", opening)
-        SettingsFeature.instance.data!!.set("matchpost.server", server)
+        ConfigFeature.instance.data!!.set("matchpost.team", team)
+        ConfigFeature.instance.data!!.set("matchpost.teamsGame", teamsGame)
+        ConfigFeature.instance.data!!.set("matchpost.host", host)
+        ConfigFeature.instance.data!!.set("matchpost.id", id.toInt())
+        ConfigFeature.instance.data!!.set("matchpost.scenarioIds", scenarioList)
+        ConfigFeature.instance.data!!.set("matchpost.scenarios", scenarios)
+        ConfigFeature.instance.data!!.set("matchpost.opens", opening)
+        ConfigFeature.instance.data!!.set("matchpost.server", server)
         ScheduleOpening(opening).runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, (5 * 20).toLong())
         ScheduleBroadcast(opening).runTaskTimer(JavaPlugin.getPlugin(Kraftwerk::class.java), 0L, 300L)
         Chat.sendMessage(sender, "${Chat.prefix} Set the matchpost to ${Chat.secondaryColor}https://hosts.uhc.gg/m/${id.toInt()}")
         Chat.sendMessage(sender, "${Chat.prefix} The server will now begin to check when the matchpost opens.")
-        SettingsFeature.instance.saveData()
+        ConfigFeature.instance.saveData()
         return true
     }
 

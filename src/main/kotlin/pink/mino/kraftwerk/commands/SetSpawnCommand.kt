@@ -4,7 +4,7 @@ import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
-import pink.mino.kraftwerk.features.SettingsFeature
+import pink.mino.kraftwerk.features.ConfigFeature
 import pink.mino.kraftwerk.utils.Chat
 
 class SetSpawnCommand : CommandExecutor {
@@ -22,13 +22,13 @@ class SetSpawnCommand : CommandExecutor {
             Chat.sendMessage(sender, "&cYou do not have permission to use this command.")
             return true
         }
-        SettingsFeature.instance.data!!.set("config.spawn.x", sender.location.x)
-        SettingsFeature.instance.data!!.set("config.spawn.y", sender.location.y)
-        SettingsFeature.instance.data!!.set("config.spawn.z", sender.location.z)
-        SettingsFeature.instance.data!!.set("config.spawn.yaw", sender.location.yaw)
-        SettingsFeature.instance.data!!.set("config.spawn.pitch", sender.location.pitch)
-        SettingsFeature.instance.data!!.set("config.spawn.world", sender.location.world.name)
-        SettingsFeature.instance.saveData()
+        ConfigFeature.instance.data!!.set("config.spawn.x", sender.location.x)
+        ConfigFeature.instance.data!!.set("config.spawn.y", sender.location.y)
+        ConfigFeature.instance.data!!.set("config.spawn.z", sender.location.z)
+        ConfigFeature.instance.data!!.set("config.spawn.yaw", sender.location.yaw)
+        ConfigFeature.instance.data!!.set("config.spawn.pitch", sender.location.pitch)
+        ConfigFeature.instance.data!!.set("config.spawn.world", sender.location.world.name)
+        ConfigFeature.instance.saveData()
         Chat.sendMessage(sender, "${Chat.prefix} The spawn has been set to your location, use ${Chat.primaryColor}/spawn&7 to teleport to the new location.")
         return true
     }

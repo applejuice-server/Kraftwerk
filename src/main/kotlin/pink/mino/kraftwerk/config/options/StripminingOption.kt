@@ -5,7 +5,7 @@ import pink.mino.kraftwerk.config.ConfigOption
 
 class StripminingOption: ConfigOption(
     "Stripmining",
-    "Allows people to mine in a straight line under y-32",
+    "Allows people to mine in a straight line under Y: 32",
     "rules",
     "stripmining",
     Material.GOLD_PICKAXE

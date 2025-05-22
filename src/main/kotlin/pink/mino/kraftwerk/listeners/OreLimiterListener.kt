@@ -6,7 +6,7 @@ import org.bukkit.block.Block
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import pink.mino.kraftwerk.events.ChunkModifiableEvent
-import pink.mino.kraftwerk.features.SettingsFeature
+import pink.mino.kraftwerk.features.ConfigFeature
 import pink.mino.kraftwerk.utils.BlockUtil
 import java.util.*
 
@@ -30,9 +30,9 @@ class OreLimiterListener : Listener {
 
         // Redstone removed 40% of the time (Just experimental, Inferno's is the same and gets no complaints)
         // Diamond/Gold removed from SettingsFeature
-        val goldRate = SettingsFeature.instance.worlds!!.getInt(chunk.world.name + ".orerates.gold")
-        val diamondRate = SettingsFeature.instance.worlds!!.getInt(chunk.world.name + ".orerates.diamond")
-        val oresOutsideCaves = SettingsFeature.instance.worlds!!.getBoolean("${chunk.world.name}.oresOutsideCaves")
+        val goldRate = ConfigFeature.instance.worlds!!.getInt(chunk.world.name + ".orerates.gold")
+        val diamondRate = ConfigFeature.instance.worlds!!.getInt(chunk.world.name + ".orerates.diamond")
+        val oresOutsideCaves = ConfigFeature.instance.worlds!!.getBoolean("${chunk.world.name}.oresOutsideCaves")
 
         for (x in 0..16) {
             for (y in 0..64) {

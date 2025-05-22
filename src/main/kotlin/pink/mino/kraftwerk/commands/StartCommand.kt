@@ -4,7 +4,7 @@ import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
-import pink.mino.kraftwerk.features.SettingsFeature
+import pink.mino.kraftwerk.features.ConfigFeature
 import pink.mino.kraftwerk.features.UHCFeature
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GameState
@@ -30,7 +30,7 @@ class StartCommand : CommandExecutor {
             Chat.sendMessage(sender, "&cA game is currently occurring right now.")
             return false
         }
-        if (SettingsFeature.instance.data!!.getString("pregen.world") == null) {
+        if (ConfigFeature.instance.data!!.getString("pregen.world") == null) {
             Chat.sendMessage(sender, "&cThere is no world currently setup.")
             return false
         }

@@ -5,7 +5,7 @@ import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
-import pink.mino.kraftwerk.features.SettingsFeature
+import pink.mino.kraftwerk.features.ConfigFeature
 import pink.mino.kraftwerk.utils.GuiBuilder
 import pink.mino.kraftwerk.utils.ItemBuilder
 import pink.mino.kraftwerk.utils.Perk
@@ -24,7 +24,7 @@ class DonatorCommand : CommandExecutor {
         }
         val perks = PerkChecker.checkPerks(sender)
         if (perks.isEmpty()) {
-            pink.mino.kraftwerk.utils.Chat.sendMessage(sender, "&cYou do not have any perks, buy some on the store at &e${if (SettingsFeature.instance.data!!.getString("config.chat.storeUrl") != null) SettingsFeature.instance.data!!.getString("config.chat.storeUrl") else "no store app set in config tough tits"}&7!")
+            pink.mino.kraftwerk.utils.Chat.sendMessage(sender, "&cYou do not have any perks, buy some on the store at &e${if (ConfigFeature.instance.config!!.getString("chat.storeUrl") != null) ConfigFeature.instance.config!!.getString("chat.storeUrl") else "no store app set in config tough tits"}&7!")
             return true
         }
         val gui = GuiBuilder().rows(perks.size / 9 + 1).name("&2&lDonator Perks").owner(sender)

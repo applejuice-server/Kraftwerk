@@ -13,7 +13,7 @@ import org.bukkit.event.player.PlayerItemConsumeEvent
 import org.bukkit.event.player.PlayerToggleFlightEvent
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
-import pink.mino.kraftwerk.features.SettingsFeature
+import pink.mino.kraftwerk.features.ConfigFeature
 import pink.mino.kraftwerk.features.SpecFeature
 import pink.mino.kraftwerk.features.TeamsFeature
 import pink.mino.kraftwerk.scenarios.Scenario
@@ -41,10 +41,10 @@ class SuperheroesScenario : Scenario(
                 PotionEffectType.DAMAGE_RESISTANCE,
                 PotionEffectType.INCREASE_DAMAGE,
             )
-            if (SettingsFeature.instance.data!!.getInt("game.teamSize") >= 6) {
+            if (ConfigFeature.instance.data!!.getInt("game.teamSize") >= 6) {
                 pool.add(PotionEffectType.INVISIBILITY)
             }
-            if (SettingsFeature.instance.data!!.getInt("game.teamSize") >= 5) {
+            if (ConfigFeature.instance.data!!.getInt("game.teamSize") >= 5) {
                 pool.add(PotionEffectType.JUMP)
             }
             if (TeamsFeature.manager.getTeam(player) != null) {
@@ -60,7 +60,7 @@ class SuperheroesScenario : Scenario(
     }
 
     fun assignPowers() {
-        if (SettingsFeature.instance.data!!.getInt("game.teamSize") > 1) {
+        if (ConfigFeature.instance.data!!.getInt("game.teamSize") > 1) {
             for (team in TeamsFeature.manager.getTeams()) {
                 if (team.size > 0) {
                     val pool = arrayListOf(
@@ -69,10 +69,10 @@ class SuperheroesScenario : Scenario(
                         PotionEffectType.DAMAGE_RESISTANCE,
                         PotionEffectType.INCREASE_DAMAGE,
                     )
-                    if (SettingsFeature.instance.data!!.getInt("game.teamSize") >= 6) {
+                    if (ConfigFeature.instance.data!!.getInt("game.teamSize") >= 6) {
                         pool.add(PotionEffectType.INVISIBILITY)
                     }
-                    if (SettingsFeature.instance.data!!.getInt("game.teamSize") >= 5) {
+                    if (ConfigFeature.instance.data!!.getInt("game.teamSize") >= 5) {
                         pool.add(PotionEffectType.JUMP)
                     }
                     for (player in team.players) {
@@ -97,10 +97,10 @@ class SuperheroesScenario : Scenario(
                     PotionEffectType.DAMAGE_RESISTANCE,
                     PotionEffectType.INCREASE_DAMAGE,
                 )
-                if (SettingsFeature.instance.data!!.getInt("game.teamSize") >= 6) {
+                if (ConfigFeature.instance.data!!.getInt("game.teamSize") >= 6) {
                     pool.add(PotionEffectType.INVISIBILITY)
                 }
-                if (SettingsFeature.instance.data!!.getInt("game.teamSize") >= 5) {
+                if (ConfigFeature.instance.data!!.getInt("game.teamSize") >= 5) {
                     pool.add(PotionEffectType.JUMP)
                 }
                 val hero = pool[Random.nextInt(pool.size)]
@@ -157,7 +157,7 @@ class SuperheroesScenario : Scenario(
     @EventHandler
     fun onGoldenAppleConsume(e: PlayerItemConsumeEvent) {
         if (!enabled) return
-        val absorption = SettingsFeature.instance.data!!.getBoolean("game.options.absorption")
+        val absorption = ConfigFeature.instance.data!!.getBoolean("game.options.absorption")
         if (superheroes[(e.player)] == PotionEffectType.HEALTH_BOOST && e.item.type == Material.GOLDEN_APPLE) {
             Schedulers.sync().runLater(runnable@ {
                 if (absorption) {
@@ -178,7 +178,7 @@ class SuperheroesScenario : Scenario(
     }
     fun givePower(player: Player) {
         if (SpecFeature.instance.isSpec(player)) return
-        val absorption = SettingsFeature.instance.data!!.getBoolean("game.options.absorption")
+        val absorption = ConfigFeature.instance.data!!.getBoolean("game.options.absorption")
         for (effect in player.activePotionEffects) {
             player.removePotionEffect(effect.type)
         }

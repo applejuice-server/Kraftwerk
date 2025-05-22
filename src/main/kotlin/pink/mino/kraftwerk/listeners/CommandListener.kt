@@ -28,7 +28,10 @@ class CommandListener : Listener {
     fun onPlayerCommand(e: PlayerCommandPreprocessEvent) {
         val command = e.message
         for (cmd in blockedCommands) {
-            if (cmd in command) {
+            if (cmd in command && !e.player.hasPermission("uhc.admin.sendBlockedCommands")) {
+                if ("/media" in command) {
+                    return
+                }
                 e.isCancelled = true
                 Chat.sendMessage(e.player, "&cYou don't have permission to perform that command.")
             }

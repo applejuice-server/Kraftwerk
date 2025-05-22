@@ -8,7 +8,7 @@ import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
-import pink.mino.kraftwerk.features.SettingsFeature
+import pink.mino.kraftwerk.features.ConfigFeature
 import pink.mino.kraftwerk.scenarios.ScenarioHandler
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GuiBuilder
@@ -18,7 +18,7 @@ import pink.mino.kraftwerk.utils.ItemBuilder
 class ConfigCommand : CommandExecutor {
 
     private fun getOption(option: String): String {
-        val op = SettingsFeature.instance.data!!.getString("game.options.${option}").toBoolean()
+        val op = ConfigFeature.instance.data!!.getString("game.options.${option}").toBoolean()
         return if (op) {
             "&aEnabled"
         } else {
@@ -27,7 +27,7 @@ class ConfigCommand : CommandExecutor {
     }
 
     private fun getFireWeapons(): String {
-        val op = SettingsFeature.instance.data!!.getString("game.options.fireweapons").toBoolean()
+        val op = ConfigFeature.instance.data!!.getString("game.options.fireweapons").toBoolean()
         return if (op) {
             "&aEnabled"
         } else {
@@ -36,7 +36,7 @@ class ConfigCommand : CommandExecutor {
     }
 
     private fun getNether(option: String): String {
-        val op = SettingsFeature.instance.data!!.getString("game.nether.${option}").toBoolean()
+        val op = ConfigFeature.instance.data!!.getString("game.nether.${option}").toBoolean()
         return if (op) {
             "&aEnabled"
         } else {
@@ -45,7 +45,7 @@ class ConfigCommand : CommandExecutor {
     }
 
     private fun getSpecials(option: String): String {
-        val op = SettingsFeature.instance.data!!.getString("game.specials.${option}").toBoolean()
+        val op = ConfigFeature.instance.data!!.getString("game.specials.${option}").toBoolean()
         return if (op) {
             "&aEnabled"
         } else {
@@ -54,11 +54,11 @@ class ConfigCommand : CommandExecutor {
     }
 
     private fun getEventTime(event: String): Int {
-        return SettingsFeature.instance.data!!.getInt("game.events.${event}")
+        return ConfigFeature.instance.data!!.getInt("game.events.${event}")
     }
 
     private fun getRule(rule: String): String {
-        val op = SettingsFeature.instance.data!!.getString("game.rules.${rule}").toBoolean()
+        val op = ConfigFeature.instance.data!!.getString("game.rules.${rule}").toBoolean()
         return if (op) {
             "&aAllowed"
         } else {
@@ -87,7 +87,7 @@ class ConfigCommand : CommandExecutor {
             .name(" ${Chat.primaryColor}&lGeneral Settings ")
             .addLore(" ")
             .addLore(" &7Horses ${Chat.dash} ${Chat.secondaryColor}${getOption("horses")} ")
-            .addLore(" &7Starter Food ${Chat.dash} ${Chat.secondaryColor}${SettingsFeature.instance.data!!.getInt("game.starterfood")} ")
+            .addLore(" &7Starter Food ${Chat.dash} ${Chat.secondaryColor}${ConfigFeature.instance.data!!.getInt("game.starterfood")} ")
             .addLore(" &7Permaday ${Chat.dash} ${Chat.secondaryColor}${getOption("permaday")} ")
             .addLore(" ")
             .addLore(" &7Statless ${Chat.dash} ${Chat.secondaryColor}${getOption("statless")} ")
@@ -104,20 +104,20 @@ class ConfigCommand : CommandExecutor {
                 Bukkit.dispatchCommand(sender, "editconfig options")
             }
         }
-        val ign = if (SettingsFeature.instance.data!!.getString("game.host") == null) {
+        val ign = if (ConfigFeature.instance.data!!.getString("game.host") == null) {
             "minota"
         } else {
-            SettingsFeature.instance.data!!.getString("game.host")
+            ConfigFeature.instance.data!!.getString("game.host")
         }
         val host = ItemBuilder(Material.SKULL_ITEM)
             .toSkull()
             .setOwner(ign)
             .name(" ${Chat.primaryColor}&lHost ")
             .addLore(" ")
-            .addLore(" &7Host ${Chat.dash} ${Chat.secondaryColor}${SettingsFeature.instance.data!!.getString("game.host")} ")
+            .addLore(" &7Host ${Chat.dash} ${Chat.secondaryColor}${ConfigFeature.instance.data!!.getString("game.host")} ")
             .addLore(" ")
-            .addLore(" &7Matchpost ${Chat.dash} ${Chat.secondaryColor}https://hosts.uhc.gg/m/${SettingsFeature.instance.data!!.getInt("matchpost.id")} ")
-            .addLore(" &7Game ${Chat.dash} ${Chat.secondaryColor}${SettingsFeature.instance.data!!.getString("matchpost.host")} ")
+            .addLore(" &7Matchpost ${Chat.dash} ${Chat.secondaryColor}https://hosts.uhc.gg/m/${ConfigFeature.instance.data!!.getInt("matchpost.id")} ")
+            .addLore(" &7Game ${Chat.dash} ${Chat.secondaryColor}${ConfigFeature.instance.data!!.getString("matchpost.host")} ")
             .addLore(" ")
             .make()
         gui.item(4, host).onClick runnable@ {
@@ -125,7 +125,7 @@ class ConfigCommand : CommandExecutor {
             if (sender.hasPermission("uhc.staff")) {
                 Bukkit.dispatchCommand(sender, "editconfig host")
             }
-            Chat.sendMessage(sender, "${Chat.prefix} Matchpost: ${Chat.secondaryColor}https://hosts.uhc.gg/m/${SettingsFeature.instance.data!!.getInt("matchpost.id")} ")
+            Chat.sendMessage(sender, "${Chat.prefix} Matchpost: ${Chat.secondaryColor}https://hosts.uhc.gg/m/${ConfigFeature.instance.data!!.getInt("matchpost.id")} ")
         }
         val events = ItemBuilder(Material.WATCH)
             .name(" &4&lEvents")
@@ -158,16 +158,16 @@ class ConfigCommand : CommandExecutor {
                 Bukkit.dispatchCommand(sender, "editconfig options")
             }
         }
-        val caneRates = if (SettingsFeature.instance.worlds!!.getInt("${SettingsFeature.instance.data!!.get("pregen.world")}.canerate") <= 0) {
+        val caneRates = if (ConfigFeature.instance.worlds!!.getInt("${ConfigFeature.instance.data!!.get("pregen.world")}.canerate") <= 0) {
             "Vanilla"
         } else {
-            "${SettingsFeature.instance.worlds!!.get("${SettingsFeature.instance.data!!.get("pregen.world")}.canerate")}% Increased"
+            "${ConfigFeature.instance.worlds!!.get("${ConfigFeature.instance.data!!.get("pregen.world")}.canerate")}% Increased"
         }
         val ratesConfig = ItemBuilder(Material.FLINT)
             .name(" &4&lRates Config")
             .addLore(" ")
-            .addLore(" &7Apple Rates ${Chat.dash} &a${SettingsFeature.instance.data!!.getInt("game.rates.apple")}% ")
-            .addLore(" &7Flint Rates ${Chat.dash} &a${SettingsFeature.instance.data!!.getInt("game.rates.flint")}% ")
+            .addLore(" &7Apple Rates ${Chat.dash} &a${ConfigFeature.instance.data!!.getInt("game.rates.apple")}% ")
+            .addLore(" &7Flint Rates ${Chat.dash} &a${ConfigFeature.instance.data!!.getInt("game.rates.flint")}% ")
             .addLore(" ")
             .addLore(" &7Sugar Cane Rates ${Chat.dash} &a${caneRates} ")
             .addLore(" ")
@@ -178,27 +178,27 @@ class ConfigCommand : CommandExecutor {
                 Bukkit.dispatchCommand(sender, "editconfig rates")
             }
         }
-        val ffa = if (SettingsFeature.instance.data!!.getBoolean("game.ffa")) {
+        val ffa = if (ConfigFeature.instance.data!!.getBoolean("game.ffa")) {
             "&cDisabled"
         } else {
             "&aEnabled"
         }
         val teamConfig = ItemBuilder(Material.IRON_SWORD)
-            .setAmount(SettingsFeature.instance.data!!.getInt("game.teamSize"))
+            .setAmount(ConfigFeature.instance.data!!.getInt("game.teamSize"))
             .name(" ${Chat.primaryColor}&lTeam Config")
             .noAttributes()
             .addLore("")
-        if (SettingsFeature.instance.data!!.getString("matchpost.team") == "Auctions") {
+        if (ConfigFeature.instance.data!!.getString("matchpost.team") == "Auctions") {
             teamConfig.addLore(" &7Team Size ${Chat.dash} ${Chat.secondaryColor}Auctions ")
         } else {
-            if (SettingsFeature.instance.data!!.getInt("game.teamSize") == 1) {
+            if (ConfigFeature.instance.data!!.getInt("game.teamSize") == 1) {
                 teamConfig.addLore(" &7Team Size ${Chat.dash} ${Chat.secondaryColor}FFA ")
             } else {
-                teamConfig.addLore(" &7Team Size ${Chat.dash} ${Chat.secondaryColor}To${SettingsFeature.instance.data!!.getInt("game.teamSize")} ")
+                teamConfig.addLore(" &7Team Size ${Chat.dash} ${Chat.secondaryColor}To${ConfigFeature.instance.data!!.getInt("game.teamSize")} ")
             }
         }
         teamConfig.addLore(" &7Team Management ${Chat.dash} ${Chat.secondaryColor}${ffa} ").addLore(" ")
-        teamConfig.addLore(" &7Friendly Fire ${Chat.dash} ${Chat.secondaryColor}${if (SettingsFeature.instance.data!!.getBoolean("game.friendlyFire")) "&aEnabled" else "&cDisabled"}")
+        teamConfig.addLore(" &7Friendly Fire ${Chat.dash} ${Chat.secondaryColor}${if (ConfigFeature.instance.data!!.getBoolean("game.friendlyFire")) "&aEnabled" else "&cDisabled"}")
         teamConfig.addLore(" ")
         val teamConf = teamConfig.make()
         gui.item(12, teamConf).onClick runnable@ {
@@ -240,7 +240,7 @@ class ConfigCommand : CommandExecutor {
         val border = ItemBuilder(Material.BEDROCK)
             .name(" ${Chat.primaryColor}&lBorder Config ")
             .addLore(" ")
-            .addLore(" &7Size ${Chat.dash} ${Chat.secondaryColor}${SettingsFeature.instance.data!!.getInt("pregen.border") * 2}x${SettingsFeature.instance.data!!.getInt("pregen.border") * 2} &8(${Chat.secondaryColor}±${SettingsFeature.instance.data!!.getInt("pregen.border")}&8) ")
+            .addLore(" &7Size ${Chat.dash} ${Chat.secondaryColor}${ConfigFeature.instance.data!!.getInt("pregen.border") * 2}x${ConfigFeature.instance.data!!.getInt("pregen.border") * 2} &8(${Chat.secondaryColor}±${ConfigFeature.instance.data!!.getInt("pregen.border")}&8) ")
             .addLore(" ")
             .addLore(" &7The border shrinks every &e5 minutes&7. ")
             .addLore(" &7The first shrink will be ${Chat.secondaryColor}1000x1000 (${Chat.secondaryColor}±500)&7. ")
@@ -250,15 +250,15 @@ class ConfigCommand : CommandExecutor {
         gui.item(15, border).onClick runnable@ {
             it.isCancelled = true
         }
-        val goldRates = if (SettingsFeature.instance.worlds!!.getInt("${SettingsFeature.instance.data!!.get("pregen.world")}.orerates.gold") <= 0) {
+        val goldRates = if (ConfigFeature.instance.worlds!!.getInt("${ConfigFeature.instance.data!!.get("pregen.world")}.orerates.gold") <= 0) {
             "&aVanilla"
         } else {
-            "&6${SettingsFeature.instance.worlds!!.get("${SettingsFeature.instance.data!!.get("pregen.world")}.orerates.gold")}% Removed"
+            "&6${ConfigFeature.instance.worlds!!.get("${ConfigFeature.instance.data!!.get("pregen.world")}.orerates.gold")}% Removed"
         }
-        val diaRates = if (SettingsFeature.instance.worlds!!.getInt("${SettingsFeature.instance.data!!.get("pregen.world")}.orerates.diamond") <= 0) {
+        val diaRates = if (ConfigFeature.instance.worlds!!.getInt("${ConfigFeature.instance.data!!.get("pregen.world")}.orerates.diamond") <= 0) {
             "&aVanilla"
         } else {
-            "&b${SettingsFeature.instance.worlds!!.get("${SettingsFeature.instance.data!!.get("pregen.world")}.orerates.diamond")}% Removed"
+            "&b${ConfigFeature.instance.worlds!!.get("${ConfigFeature.instance.data!!.get("pregen.world")}.orerates.diamond")}% Removed"
         }
         val miningConfig = ItemBuilder(Material.DIAMOND_PICKAXE)
             .name(" &4&lMining Config ")
@@ -270,7 +270,7 @@ class ConfigCommand : CommandExecutor {
             .addLore(" ")
             .addLore(" &7Diamond Ore Rates ${Chat.dash} ${Chat.secondaryColor}${diaRates} ")
             .addLore(" &7Gold Ore Rates ${Chat.dash} ${Chat.secondaryColor}${goldRates} ")
-            .addLore(" &7Ores Outside Caves ${Chat.dash} ${Chat.secondaryColor}${if (SettingsFeature.instance.worlds!!.getBoolean("${SettingsFeature.instance.data!!.get("pregen.world")}.oresOutsideCaves")) "&aEnabled" else "&cDisabled"} ")
+            .addLore(" &7Ores Outside Caves ${Chat.dash} ${Chat.secondaryColor}${if (ConfigFeature.instance.worlds!!.getBoolean("${ConfigFeature.instance.data!!.get("pregen.world")}.oresOutsideCaves")) "&aEnabled" else "&cDisabled"} ")
             .addLore(" ")
             .addLore(" &7Stripmining ${Chat.dash} ${Chat.secondaryColor}${getRule("stripmining")} ")
             .addLore(" &7Rollercoastering ${Chat.dash} ${Chat.secondaryColor}${getRule("rollarcoastering")} ")
@@ -333,11 +333,11 @@ class ConfigCommand : CommandExecutor {
             .addLore(" ")
             .addLore(" &7Private Mode ${Chat.dash} ${Chat.secondaryColor}${getOption("private")}" )
             .addLore(" &7No Branding ${Chat.dash} ${Chat.secondaryColor}${getOption("noBranding")} ")
-            .addLore(" &7Custom Branding ${Chat.dash} ${Chat.secondaryColor}${SettingsFeature.instance.data!!.getString("game.options.customBranding")} ")
+            .addLore(" &7Custom Branding ${Chat.dash} ${Chat.secondaryColor}${ConfigFeature.instance.data!!.getString("game.options.customBranding")} ")
             .addLore(" ")
             .addLore(" &7RR Mode ${Chat.dash} ${Chat.secondaryColor}${getOption("recordedRound")}")
-            .addLore(" &7Time between Episodes ${Chat.dash} ${Chat.secondaryColor}${SettingsFeature.instance.data!!.getInt("episodeTimer")} ")
-            .addLore(" &7Episodes ${Chat.dash} ${Chat.secondaryColor}${SettingsFeature.instance.data!!.getInt("episodeCount")} ")
+            .addLore(" &7Time between Episodes ${Chat.dash} ${Chat.secondaryColor}${ConfigFeature.instance.data!!.getInt("episodeTimer")} ")
+            .addLore(" &7Episodes ${Chat.dash} ${Chat.secondaryColor}${ConfigFeature.instance.data!!.getInt("episodeCount")} ")
             .addLore(" ")
             .make()
 
@@ -373,7 +373,7 @@ class ConfigCommand : CommandExecutor {
                 }
             }
         } else {
-            if (SettingsFeature.instance.data!!.getBoolean("game.options.private") == null || SettingsFeature.instance.data!!.getBoolean("game.options.private") == false) {
+            if (ConfigFeature.instance.data!!.getBoolean("game.options.private") == null || ConfigFeature.instance.data!!.getBoolean("game.options.private") == false) {
                 gui.item(21, pvpConfig).onClick runnable@ {
                     it.isCancelled = true
                     if (sender.hasPermission("uhc.staff")) {

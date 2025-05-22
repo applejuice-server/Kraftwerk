@@ -11,7 +11,7 @@ import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.potion.Potion
 import org.bukkit.potion.PotionType
 import pink.mino.kraftwerk.Kraftwerk
-import pink.mino.kraftwerk.features.SettingsFeature
+import pink.mino.kraftwerk.features.ConfigFeature
 import pink.mino.kraftwerk.features.SpecFeature
 import pink.mino.kraftwerk.scenarios.Scenario
 import pink.mino.kraftwerk.utils.Chat
@@ -49,7 +49,7 @@ class GenieScenario : Scenario(
 
     fun calculateRewards(player: Player): ArrayList<ItemStack> {
         val rewards = arrayListOf<ItemStack>()
-        if (SettingsFeature.instance.data!!.getInt("game.kills.${player.name}") == null || SettingsFeature.instance.data!!.getInt("game.kills.${player.name}") == 0) {
+        if (ConfigFeature.instance.data!!.getInt("game.kills.${player.name}") == null || ConfigFeature.instance.data!!.getInt("game.kills.${player.name}") == 0) {
             rewards.addAll(
                 arrayListOf(
                     ItemStack(Material.GOLDEN_APPLE, 1),
@@ -58,7 +58,7 @@ class GenieScenario : Scenario(
                 )
             )
         }
-        if (SettingsFeature.instance.data!!.getInt("game.kills.${player.name}") >= 1) {
+        if (ConfigFeature.instance.data!!.getInt("game.kills.${player.name}") >= 1) {
             rewards.addAll(
                 arrayListOf(
                     ItemBuilder(Material.SKULL_ITEM)
@@ -70,7 +70,7 @@ class GenieScenario : Scenario(
                 )
             )
         }
-        if (SettingsFeature.instance.data!!.getInt("game.kills.${player.name}") >= 2) {
+        if (ConfigFeature.instance.data!!.getInt("game.kills.${player.name}") >= 2) {
             rewards.addAll(
                 arrayListOf(
                     ItemStack(Material.ENCHANTMENT_TABLE, 1),
@@ -79,7 +79,7 @@ class GenieScenario : Scenario(
                 )
             )
         }
-        if (SettingsFeature.instance.data!!.getInt("game.kills.${player.name}") >= 4) {
+        if (ConfigFeature.instance.data!!.getInt("game.kills.${player.name}") >= 4) {
             rewards.addAll(
                 arrayListOf(
                     Potion(PotionType.INSTANT_HEAL, 2, false).toItemStack(1),
@@ -89,7 +89,7 @@ class GenieScenario : Scenario(
                 )
             )
         }
-        if (SettingsFeature.instance.data!!.getInt("game.kills.${player.name}") >= 5) {
+        if (ConfigFeature.instance.data!!.getInt("game.kills.${player.name}") >= 5) {
             rewards.addAll(
                 arrayListOf(
                     ItemStack(Material.OBSIDIAN, 64),

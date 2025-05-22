@@ -27,7 +27,7 @@ class FeedCommand : CommandExecutor {
             Chat.sendMessage(sender, "${Chat.prefix} &7You have fed yourself.")
             return true
         } else {
-            if (args[0] == "*") {
+            if (args[0] == "*" || args[0] == "all") {
                 for (online in ArrayList(Bukkit.getServer().onlinePlayers)) {
                     online.foodLevel = 20
                     online.saturation = 20F

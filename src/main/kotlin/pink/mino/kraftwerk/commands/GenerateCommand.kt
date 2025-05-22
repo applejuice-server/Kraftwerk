@@ -9,7 +9,7 @@ import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.scheduler.BukkitRunnable
 import pink.mino.kraftwerk.Kraftwerk
-import pink.mino.kraftwerk.features.SettingsFeature
+import pink.mino.kraftwerk.features.ConfigFeature
 import pink.mino.kraftwerk.scenarios.Scenario
 import pink.mino.kraftwerk.scenarios.ScenarioHandler
 import pink.mino.kraftwerk.utils.ActionBar
@@ -67,7 +67,7 @@ class GenerateCommand : CommandExecutor {
             Chat.sendMessage(sender, "&cYou cannot use this command in spawn or arena.")
             return false
         }
-        val border = SettingsFeature.instance.data!!.getInt("pregen.border")
+        val border = ConfigFeature.instance.data!!.getInt("pregen.border")
         val chunks = ArrayList<Location>()
         for (x in -border..border step 16) {
             for (z in -border..border step 16) {

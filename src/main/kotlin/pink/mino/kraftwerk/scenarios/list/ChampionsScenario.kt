@@ -36,8 +36,8 @@ import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 import org.bukkit.scheduler.BukkitRunnable
 import pink.mino.kraftwerk.Kraftwerk
+import pink.mino.kraftwerk.features.ConfigFeature
 import pink.mino.kraftwerk.features.Events
-import pink.mino.kraftwerk.features.SettingsFeature
 import pink.mino.kraftwerk.features.SpecFeature
 import pink.mino.kraftwerk.features.TeamsFeature
 import pink.mino.kraftwerk.scenarios.Scenario
@@ -811,13 +811,13 @@ class ChampionsScenario : Scenario(
         e.drops.add(ItemStack(Material.GOLD_NUGGET, 10))
         e.droppedExp = (e.droppedExp + floor((e.droppedExp * 0.50))).toInt()
         if (e.entity.killer.itemInHand != null && e.entity.killer.itemInHand.hasItemMeta() && e.entity.killer.itemInHand.itemMeta.displayName == Chat.colored("&eBloodlust")) {
-            if (SettingsFeature.instance.data!!.getInt("game.kills.${e.entity.killer.name}") == 1) {
+            if (ConfigFeature.instance.data!!.getInt("game.kills.${e.entity.killer.name}") == 1) {
                 e.entity.killer.itemInHand.addEnchantment(Enchantment.DAMAGE_ALL, 2)
-            } else if (SettingsFeature.instance.data!!.getInt("game.kills.${e.entity.killer.name}") == 3) {
+            } else if (ConfigFeature.instance.data!!.getInt("game.kills.${e.entity.killer.name}") == 3) {
                 e.entity.killer.itemInHand.addEnchantment(Enchantment.DAMAGE_ALL, 3)
-            } else if (SettingsFeature.instance.data!!.getInt("game.kills.${e.entity.killer.name}") == 6) {
+            } else if (ConfigFeature.instance.data!!.getInt("game.kills.${e.entity.killer.name}") == 6) {
                 e.entity.killer.itemInHand.addEnchantment(Enchantment.DAMAGE_ALL, 4)
-            } else if (SettingsFeature.instance.data!!.getInt("game.kills.${e.entity.killer.name}") == 10) {
+            } else if (ConfigFeature.instance.data!!.getInt("game.kills.${e.entity.killer.name}") == 10) {
                 e.entity.killer.itemInHand.addEnchantment(Enchantment.DAMAGE_ALL, 5)
             }
         }

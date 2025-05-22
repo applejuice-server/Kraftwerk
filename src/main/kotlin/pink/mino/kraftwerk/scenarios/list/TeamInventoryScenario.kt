@@ -7,7 +7,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.inventory.Inventory
 import org.bukkit.scoreboard.Team
-import pink.mino.kraftwerk.features.SettingsFeature
+import pink.mino.kraftwerk.features.ConfigFeature
 import pink.mino.kraftwerk.features.SpecFeature
 import pink.mino.kraftwerk.features.TeamsFeature
 import pink.mino.kraftwerk.scenarios.Scenario
@@ -37,7 +37,7 @@ class TeamInventoryScenario : Scenario(
         if (team != null) {
             for (member in team.entries) {
                 val p = Bukkit.getPlayer(member)
-                if (p != null && !SpecFeature.instance.isSpec(p) && SettingsFeature.instance.data!!.getString("game.list").contains(p.name)) {
+                if (p != null && !SpecFeature.instance.isSpec(p) && ConfigFeature.instance.data!!.getString("game.list").contains(p.name)) {
                     teammates.add(p)
                 }
             }

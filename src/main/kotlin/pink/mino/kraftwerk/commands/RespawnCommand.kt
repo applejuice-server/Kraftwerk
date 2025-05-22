@@ -14,7 +14,7 @@ import org.bukkit.event.inventory.InventoryType
 import org.bukkit.inventory.ItemStack
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
-import pink.mino.kraftwerk.features.SettingsFeature
+import pink.mino.kraftwerk.features.ConfigFeature
 import pink.mino.kraftwerk.features.SpecFeature
 import pink.mino.kraftwerk.features.TeamsFeature
 import pink.mino.kraftwerk.listeners.PlayerRespawnListener
@@ -170,11 +170,11 @@ class RespawnCommand : CommandExecutor {
             player.exp = RespawnFeature.instance.xp[player.uniqueId]!!
             player.level = RespawnFeature.instance.level[player.uniqueId]!!
 
-            var list = SettingsFeature.instance.data!!.getStringList("game.list")
+            var list = ConfigFeature.instance.data!!.getStringList("game.list")
             if (list == null) list = ArrayList()
             list.add(player.name)
-            SettingsFeature.instance.data!!.set("game.list", list)
-            SettingsFeature.instance.saveData()
+            ConfigFeature.instance.data!!.set("game.list", list)
+            ConfigFeature.instance.saveData()
             WhitelistCommand().addWhitelist(player.name.lowercase())
             player.addPotionEffect(PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 300, 1000, true, false))
             Chat.sendMessage(player, "${Chat.prefix} You have been respawned by ${Chat.secondaryColor}${sender.name}&7.")

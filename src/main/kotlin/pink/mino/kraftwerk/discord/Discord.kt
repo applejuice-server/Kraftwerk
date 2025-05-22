@@ -9,7 +9,7 @@ import net.dv8tion.jda.api.requests.GatewayIntent
 import net.dv8tion.jda.api.utils.cache.CacheFlag
 import pink.mino.kraftwerk.discord.listeners.MemberJoin
 import pink.mino.kraftwerk.discord.listeners.SlashCommand
-import pink.mino.kraftwerk.features.SettingsFeature
+import pink.mino.kraftwerk.features.ConfigFeature
 import javax.security.auth.login.LoginException
 
 
@@ -18,11 +18,11 @@ class Discord : ListenerAdapter() {
         var instance: JDA? = null
 
         fun main() {
-            if (SettingsFeature.instance.data!!.getString("discord.token") == null) {
+            if (ConfigFeature.instance.config!!.getString("discord.token") == null) {
                 throw(LoginException("No token found in config.yml"))
             }
             val jda = JDABuilder.createLight(
-                SettingsFeature.instance.data!!.getString("discord.token"),
+                ConfigFeature.instance.config!!.getString("discord.token"),
                 GatewayIntent.GUILD_MEMBERS,
                 GatewayIntent.GUILD_VOICE_STATES
             )

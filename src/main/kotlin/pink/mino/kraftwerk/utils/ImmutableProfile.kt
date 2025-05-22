@@ -19,7 +19,7 @@ class ImmutableProfile(
     var level: Int = 1,
     var chatMode: String = "PUBLIC",
     var coins: Double = 0.0,
-    var specSocialSpy: Boolean = false,
+    var specSocialSpy: Int = 0,
     var selectedTag: String? = null,
     var unlockedTags: ArrayList<String> = arrayListOf(),
     var arenaBlock: String? = "COBBLESTONE"

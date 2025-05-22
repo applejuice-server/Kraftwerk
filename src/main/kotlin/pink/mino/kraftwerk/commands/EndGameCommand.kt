@@ -41,14 +41,14 @@ class EndGameCommand : CommandExecutor {
             Chat.sendMessage(sender, "&cYou can't do this right now, there isn't a game started.")
             return false
         }
-        val winners = SettingsFeature.instance.data!!.getStringList("game.winners")
+        val winners = ConfigFeature.instance.data!!.getStringList("game.winners")
         if (winners.isEmpty()) {
             Chat.sendMessage(sender, "&cYou have no winners set! You need to set them using /winner <player>!")
             return false
         }
         val winnersList = arrayListOf<String>()
         val kills = hashMapOf<String, Int>()
-        val host = Bukkit.getOfflinePlayer(SettingsFeature.instance.data!!.getString("game.host"))
+        val host = Bukkit.getOfflinePlayer(ConfigFeature.instance.data!!.getString("game.host"))
 
         for (player in Bukkit.getOnlinePlayers()) {
             if (winners.contains(player.name)) {
@@ -64,7 +64,7 @@ class EndGameCommand : CommandExecutor {
                 Chat.sendMessage(sender, "&cInvalid player '${winner}', not adding to winner's list.")
             } else {
                 winnersList.add(player.uniqueId.toString())
-                kills[player.uniqueId.toString()] = SettingsFeature.instance.data!!.getInt("game.kills." + player.name)
+                kills[player.uniqueId.toString()] = ConfigFeature.instance.data!!.getInt("game.kills." + player.name)
                 if (!ConfigOptionHandler.getOption("statless")!!.enabled) XpFeature().add(player, 50.0)
                 if (!ConfigOptionHandler.getOption("statless")!!.enabled) {
                     val pr = JavaPlugin.getPlugin(Kraftwerk::class.java).statsHandler.lookupStatsPlayer(player)
@@ -75,7 +75,7 @@ class EndGameCommand : CommandExecutor {
         }
 
         JavaPlugin.getPlugin(Kraftwerk::class.java).game!!.winners = winnersList
-        val gameTitle = SettingsFeature.instance.data!!.getString("matchpost.host")
+        val gameTitle = ConfigFeature.instance.data!!.getString("matchpost.host")
         for (team in TeamsFeature.manager.getTeams()) {
             for (player in team.players) {
                 team.removePlayer(player)
@@ -102,7 +102,7 @@ class EndGameCommand : CommandExecutor {
         }
         try {
             with (JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.getDatabase("applejuice").getCollection("opened_matches")) {
-                val filter = Filters.eq("id", SettingsFeature.instance.data!!.getInt("matchpost.id"))
+                val filter = Filters.eq("id", ConfigFeature.instance.data!!.getInt("matchpost.id"))
                 val document = this.find(filter).first()
                 if (document != null) {
                     document["needsDelete"] = true
@@ -115,18 +115,18 @@ class EndGameCommand : CommandExecutor {
         }
         val embed = EmbedBuilder()
         embed.setColor(java.awt.Color(255, 61, 61))
-        embed.setTitle(SettingsFeature.instance.data!!.getString("matchpost.host"))
+        embed.setTitle(ConfigFeature.instance.data!!.getString("matchpost.host"))
         embed.setThumbnail("https://visage.surgeplay.com/bust/512/${host.uniqueId}")
-        val listOfWinners = winners.joinToString(", ", "", "", -1, "...") {
+        winners.joinToString(", ", "", "", -1, "...") {
             "$it [${
-                SettingsFeature.instance.data!!.getInt(
+                ConfigFeature.instance.data!!.getInt(
                     "game.kills.${Bukkit.getOfflinePlayer(it).name}"
                 )
             }]"
         }
         embed.addField("Winners", winners.joinToString(", ", "", "", -1, "...") {
             "**$it** [${
-                SettingsFeature.instance.data!!.getInt(
+                ConfigFeature.instance.data!!.getInt(
                     "game.kills.${Bukkit.getOfflinePlayer(it).name}"
                 )
             }]"
@@ -136,7 +136,7 @@ class EndGameCommand : CommandExecutor {
                 team.removePlayer(player)
             }
         }
-        embed.addField("Matchpost", "https://hosts.uhc.gg/m/${SettingsFeature.instance.data!!.getInt("matchpost.id")}", false)
+        embed.addField("Matchpost", "https://hosts.uhc.gg/m/${ConfigFeature.instance.data!!.getInt("matchpost.id")}", false)
         try {
             if (Kraftwerk.instance.winnersChannelId != null) {
                 Discord.instance!!.getTextChannelById(Kraftwerk.instance.winnersChannelId!!)!!.sendMessageEmbeds(embed.build()).queue()
@@ -147,17 +147,17 @@ class EndGameCommand : CommandExecutor {
             e.printStackTrace()
         }
 
-        SettingsFeature.instance.data!!.set("game.winners", ArrayList<String>())
-        SettingsFeature.instance.data!!.set("game.list", ArrayList<String>())
-        SettingsFeature.instance.data!!.set("game.kills", null)
-        SettingsFeature.instance.data!!.set("game.nether", false)
-        SettingsFeature.instance.data!!.set("game.nether.nether", false)
-        SettingsFeature.instance.data!!.set("whitelist.requests", false)
-        SettingsFeature.instance.data!!.set("whitelist.list", ArrayList<String>())
-        SettingsFeature.instance.data!!.set("matchpost.opens", null)
-        SettingsFeature.instance.data!!.set("matchpost.host", null)
-        SettingsFeature.instance.data!!.set("matchpost.posted", null)
-        SettingsFeature.instance.saveData()
+        ConfigFeature.instance.data!!.set("game.winners", ArrayList<String>())
+        ConfigFeature.instance.data!!.set("game.list", ArrayList<String>())
+        ConfigFeature.instance.data!!.set("game.kills", null)
+        ConfigFeature.instance.data!!.set("game.nether", false)
+        ConfigFeature.instance.data!!.set("game.nether.nether", false)
+        ConfigFeature.instance.data!!.set("whitelist.requests", false)
+        ConfigFeature.instance.data!!.set("whitelist.list", ArrayList<String>())
+        ConfigFeature.instance.data!!.set("matchpost.opens", null)
+        ConfigFeature.instance.data!!.set("matchpost.host", null)
+        ConfigFeature.instance.data!!.set("matchpost.posted", null)
+        ConfigFeature.instance.saveData()
         Bukkit.broadcastMessage(Chat.colored(Chat.line))
         for (player in Bukkit.getOnlinePlayers()) {
             if (SpecFeature.instance.isSpec(player)) SpecFeature.instance.unspec(player)
@@ -170,7 +170,7 @@ class EndGameCommand : CommandExecutor {
         for (world in Bukkit.getWorlds()) {
             world.pvp = true
         }
-        val world = Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world"))
+        val world = Bukkit.getWorld(ConfigFeature.instance.data!!.getString("pregen.world"))
         Bukkit.getServer().unloadWorld(world.name, true)
         for (file in Bukkit.getServer().worldContainer.listFiles()!!) {
             if (file.name.lowercase() == world.name.lowercase()) {
@@ -179,10 +179,10 @@ class EndGameCommand : CommandExecutor {
                 Log.info("Deleted world file for ${world.name}.")
             }
         }
-        SettingsFeature.instance.data!!.set("pregen.world", null)
-        SettingsFeature.instance.saveData()
-        SettingsFeature.instance.worlds!!.set(world.name, null)
-        SettingsFeature.instance.saveWorlds()
+        ConfigFeature.instance.data!!.set("pregen.world", null)
+        ConfigFeature.instance.saveData()
+        ConfigFeature.instance.worlds!!.set(world.name, null)
+        ConfigFeature.instance.saveWorlds()
         Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "restart")
         }, 900L)

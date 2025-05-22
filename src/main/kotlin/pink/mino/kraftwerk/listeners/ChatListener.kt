@@ -11,6 +11,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.plugin.java.JavaPlugin
 import pink.mino.kraftwerk.Kraftwerk
+import pink.mino.kraftwerk.features.ConfigFeature
 import pink.mino.kraftwerk.features.SpecFeature
 import pink.mino.kraftwerk.features.TeamsFeature
 import pink.mino.kraftwerk.scenarios.ScenarioHandler
@@ -139,7 +140,7 @@ class ChatListener : Listener {
                 val secondsLeft: Long = cooldowns[e.player.uniqueId]!! / 1000 + cooldownTime - System.currentTimeMillis() / 1000
                 if (secondsLeft > 0) {
                     e.isCancelled = true
-                    pink.mino.kraftwerk.utils.Chat.sendMessage(player, "&cYou are currently on cooldown for ${secondsLeft}s. Skip the cooldown by purchasing a rank at &ehttps://applejuice.tebex.io&c.")
+                    pink.mino.kraftwerk.utils.Chat.sendMessage(player, "&cYou are currently on cooldown for ${secondsLeft}s. Skip the cooldown by purchasing a rank at &e${if (ConfigFeature.instance.config!!.getString("chat.storeUrl") != null) ConfigFeature.instance.config!!.getString("chat.storeUrl") else "no store url setup in config soft titties"}&c.")
                     return
                 }
             }

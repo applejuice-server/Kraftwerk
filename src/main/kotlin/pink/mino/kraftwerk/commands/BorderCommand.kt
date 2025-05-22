@@ -8,7 +8,7 @@ import org.bukkit.command.ConsoleCommandSender
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 import pink.mino.kraftwerk.Kraftwerk
-import pink.mino.kraftwerk.features.SettingsFeature
+import pink.mino.kraftwerk.features.ConfigFeature
 import pink.mino.kraftwerk.utils.Chat
 
 class BorderCommand : CommandExecutor {
@@ -34,15 +34,15 @@ class BorderCommand : CommandExecutor {
         }
         Bukkit.dispatchCommand(
             Bukkit.getConsoleSender(),
-            "wb ${SettingsFeature.instance.data!!.getString("pregen.world")} setcorners ${args[0]} ${args[0]} -${args[0]} -${args[0]}"
+            "wb ${ConfigFeature.instance.data!!.getString("pregen.world")} setcorners ${args[0]} ${args[0]} -${args[0]} -${args[0]}"
         )
         Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-            val border = Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world")).worldBorder
+            val border = Bukkit.getWorld(ConfigFeature.instance.data!!.getString("pregen.world")).worldBorder
             border.size = args[0].toDouble() * 2
             border.setCenter(0.0, 0.0)
         }, 5L)
-        SettingsFeature.instance.data!!.set("pregen.border", args[0].toInt())
-        SettingsFeature.instance.saveData()
+        ConfigFeature.instance.data!!.set("pregen.border", args[0].toInt())
+        ConfigFeature.instance.saveData()
         if (sender !is ConsoleCommandSender) {
             Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} The world border has been set to ${Chat.secondaryColor}${args[0]}x${args[0]}&7."))
         }

@@ -9,7 +9,7 @@ import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
-import pink.mino.kraftwerk.features.SettingsFeature
+import pink.mino.kraftwerk.features.ConfigFeature
 import pink.mino.kraftwerk.features.SpawnFeature
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GuiBuilder
@@ -99,7 +99,7 @@ class WorldCommand : CommandExecutor {
                             .addLore("&8Right Click&7 to set this world as the current UHC world.")
                     }
                 }
-                if (SettingsFeature.instance.data!!.getString("pregen.world") == world.name) {
+                if (ConfigFeature.instance.data!!.getString("pregen.world") == world.name) {
                     item.addEnchantment(Enchantment.DURABILITY, 1)
                     item.name("&a${world.name} &8(&7Current UHC World&8)")
                 }
@@ -110,11 +110,11 @@ class WorldCommand : CommandExecutor {
                         sender.teleport(world.spawnLocation)
                         Chat.sendMessage(sender, "${Chat.dash} Teleported to ${Chat.primaryColor}${world.name}&7's spawn.")
                     } else if (it.isRightClick) {
-                        SettingsFeature.instance.data!!.set("pregen.world", world.name)
-                        SettingsFeature.instance.data!!.set("pregen.border", world.worldBorder.size / 2)
+                        ConfigFeature.instance.data!!.set("pregen.world", world.name)
+                        ConfigFeature.instance.data!!.set("pregen.border", world.worldBorder.size / 2)
                         Chat.sendMessage(sender, "${Chat.dash} Set ${Chat.primaryColor}${world.name}&7 as the current UHC world.")
                     }
-                    SettingsFeature.instance.saveData()
+                    ConfigFeature.instance.saveData()
                 }
             }
             sender.openInventory(gui.make())
@@ -145,8 +145,8 @@ class WorldCommand : CommandExecutor {
                     Log.info("Deleted world file for ${world.name}.")
                 }
             }
-            SettingsFeature.instance.worlds!!.set(world.name, null)
-            SettingsFeature.instance.saveWorlds()
+            ConfigFeature.instance.worlds!!.set(world.name, null)
+            ConfigFeature.instance.saveWorlds()
             Chat.sendMessage(sender, "${Chat.dash} &7Successfully deleted ${Chat.secondaryColor}${world.name}&7.")
         }
 

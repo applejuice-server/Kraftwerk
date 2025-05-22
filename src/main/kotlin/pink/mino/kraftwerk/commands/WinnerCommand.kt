@@ -5,7 +5,7 @@ import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
-import pink.mino.kraftwerk.features.SettingsFeature
+import pink.mino.kraftwerk.features.ConfigFeature
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GameState
 
@@ -26,10 +26,10 @@ class WinnerCommand : CommandExecutor {
             Chat.sendMessage(sender, "&cYou can't do this right now.")
             return false
         }
-        var winners = SettingsFeature.instance.data!!.getStringList("game.winners")
+        var winners = ConfigFeature.instance.data!!.getStringList("game.winners")
         if (winners == null) {
-            SettingsFeature.instance.data!!.set("game.winners", ArrayList<String>())
-            winners = SettingsFeature.instance.data!!.getStringList("game.winners")
+            ConfigFeature.instance.data!!.set("game.winners", ArrayList<String>())
+            winners = ConfigFeature.instance.data!!.getStringList("game.winners")
         }
         if (args.isEmpty()) {
             if (winners.isEmpty()) {
@@ -47,7 +47,7 @@ class WinnerCommand : CommandExecutor {
             }
             if (winners.contains(player.name)) {
                 winners.remove(player.name)
-                SettingsFeature.instance.data!!.set("game.winners", winners)
+                ConfigFeature.instance.data!!.set("game.winners", winners)
                 Chat.sendMessage(
                     sender,
                     "${Chat.prefix} ${Chat.secondaryColor}${player.name}&7 has been removed from the winner list.\n&7New list: ${Chat.secondaryColor}${
@@ -56,7 +56,7 @@ class WinnerCommand : CommandExecutor {
                 )
             } else {
                 winners.add(player.name)
-                SettingsFeature.instance.data!!.set("game.winners", winners)
+                ConfigFeature.instance.data!!.set("game.winners", winners)
                 Chat.sendMessage(
                     sender,
                     "${Chat.prefix} ${Chat.secondaryColor}${player.name}&7 has been added to the winner list.\n&7New list: ${Chat.secondaryColor}${
@@ -65,7 +65,7 @@ class WinnerCommand : CommandExecutor {
                 )
             }
         }
-        SettingsFeature.instance.saveData()
+        ConfigFeature.instance.saveData()
         return true
     }
 

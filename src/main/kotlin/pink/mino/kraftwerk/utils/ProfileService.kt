@@ -129,7 +129,7 @@ class ProfileService {
                             (document["level"] as? Int ?: 1),
                             (document["chatMode"] as? String ?: "PUBLIC"),
                             (document["coins"] as? Double ?: 0.0),
-                            (document["specSocialSpy"] as? Boolean ?: false),
+                            (document["specSocialSpy"] as? Int ?: 0),
                             (document["selectedTag"] as? String),
                             (document["unlockedTags"] as? ArrayList<String>) ?: arrayListOf(),
                             (document["arenaBlock"] as? String) ?: "COBBLESTONE"

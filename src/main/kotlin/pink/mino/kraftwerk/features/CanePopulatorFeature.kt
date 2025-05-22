@@ -7,7 +7,6 @@ import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
-import org.bukkit.generator.BlockPopulator
 import pink.mino.kraftwerk.events.ChunkModifiableEvent
 import java.util.*
 
@@ -23,9 +22,9 @@ class CanePopulatorFeature : Listener {
 
         if (chunk.world.environment != World.Environment.NORMAL) return
 
-        if (SettingsFeature.instance.worlds!!.getInt("${chunk.world!!.name}.canerate") == 0) return
+        if (ConfigFeature.instance.worlds!!.getInt("${chunk.world!!.name}.canerate") == 0) return
 
-        if (rand.nextInt(100) <= SettingsFeature.instance.worlds!!.getInt("${chunk.world!!.name}.canerate")) {
+        if (rand.nextInt(100) <= ConfigFeature.instance.worlds!!.getInt("${chunk.world!!.name}.canerate")) {
             for (x in 0..15) {
                 val block: Block? = if (rand.nextBoolean()) {
                     getHighestBlock(chunk, rand.nextInt(16), x)
