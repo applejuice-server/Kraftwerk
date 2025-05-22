@@ -41,7 +41,7 @@ class ExtremeSkyHighIterator : BukkitRunnable() {
 
 class ExtremeSkyHighScenario : Scenario(
     "Extreme SkyHigh",
-    "At PvP, if you're not above y-200, you will take 2 hearts of damage.",
+    "At PvP, if you're not above Y: 200, you will take 2 hearts of damage.",
     "extremeskyhigh",
     Material.FEATHER
 ) {

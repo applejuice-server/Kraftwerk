@@ -73,89 +73,96 @@ class SpawnFeature : Listener {
         var highestNpc: NPC? = null
         var recentNpc: NPC? = null
 
-        val recent = HologramsAPI.createHologram(JavaPlugin.getPlugin(Kraftwerk::class.java), Location(
-            Bukkit.getWorld("Spawn"),
-            -722.5,
-            109.0,
-            282.5,
-            61.5F,
-            -1.5F
+        if (ConfigFeature.instance.config!!.getString("thing.recent_purchase_holo.world") != null) {
+            val recent = HologramsAPI.createHologram(JavaPlugin.getPlugin(Kraftwerk::class.java), Location(
+                Bukkit.getWorld(ConfigFeature.instance.config!!.getString("thing.recent_purchase_holo.world")),
+                ConfigFeature.instance.config!!.getDouble("thing.recent_purchase_holo.x"),
+                ConfigFeature.instance.config!!.getDouble("thing.recent_purchase_holo.y"),
+                ConfigFeature.instance.config!!.getDouble("thing.recent_purchase_holo.z"),
+                ConfigFeature.instance.config!!.getDouble("thing.recent_purchase_holo.yaw").toFloat(),
+                ConfigFeature.instance.config!!.getDouble("thing.recent_purchase_holo.pitch").toFloat()
             )
-        )
-        val highestHolo = HologramsAPI.createHologram(JavaPlugin.getPlugin(Kraftwerk::class.java), Location(
-            Bukkit.getWorld("Spawn"),
-            -724.5,
-            109.0, 
-            280.5,
-            45.5F,
-            1.5F
-        ))
-        Schedulers.sync().runRepeating(Runnable {
-            Log.info("Updating Buycraft purchases...")
-            highestNpc?.destroy()
-            recentNpc?.destroy()
+            )
+            val highestHolo = HologramsAPI.createHologram(JavaPlugin.getPlugin(Kraftwerk::class.java), Location(
+                Bukkit.getWorld(ConfigFeature.instance.config!!.getString("thing.highest_purchase_holo.world")),
+                ConfigFeature.instance.config!!.getDouble("thing.highest_purchase_holo.x"),
+                ConfigFeature.instance.config!!.getDouble("thing.highest_purchase_holo.y"),
+                ConfigFeature.instance.config!!.getDouble("thing.highest_purchase_holo.z"),
+                ConfigFeature.instance.config!!.getDouble("thing.highest_purchase_holo.yaw").toFloat(),
+                ConfigFeature.instance.config!!.getDouble("thing.highest_purchase_holo.pitch").toFloat()
+            ))
+            if (ConfigFeature.instance.config!!.getBoolean("buycraft.scan")) {
+                Schedulers.sync().runRepeating(Runnable {
+                    Log.info("Updating Buycraft purchases...")
+                    highestNpc?.destroy()
+                    recentNpc?.destroy()
 
-            with(URL("https://plugin.tebex.io/payments").openConnection() as HttpURLConnection) {
-                requestMethod = "GET"
-                setRequestProperty("User-Agent", "Mozilla/5.0")
-                setRequestProperty("X-Tebex-Secret", SettingsFeature.instance.data!!.getString("buycraftToken"))
-                BufferedReader(InputStreamReader(inputStream)).use {
-                    val response = StringBuffer()
-                    var inputLine = it.readLine()
-                    while (inputLine != null) {
-                        response.append(inputLine)
-                        inputLine = it.readLine()
-                    }
-                    it.close()
-                    val type = object : TypeToken<List<Purchase>>() {}.type
-                    var purchases: List<Purchase> = Gson().fromJson(response.toString(), type)
-                    recent.clearLines()
-                    highestHolo.clearLines()
-                    recent.appendTextLine(Chat.colored("&4&lRecent Purchase"))
-                    highestHolo.appendTextLine(Chat.colored("&4&lHighest Purchase"))
-                    val loc1 = Location(
-                        Bukkit.getWorld("Spawn"),
-                        -722.5,
-                        106.5,
-                        282.5,
-                        61.5F,
-                        -1.5F
-                    )
-                    val loc2 = Location(
-                        Bukkit.getWorld("Spawn"),
-                        -724.5,
-                        106.5,
-                        280.5,
-                        45.5F,
-                        1.5F
-                    )
-                    for ((index, purchase) in purchases.withIndex()) {
-                        if (index == 0) {
-                            val npc = registry.createNPC(EntityType.PLAYER, purchase.player.name)
-                            npc.setAlwaysUseNameHologram(true)
-                            npc.name = purchase.player.name
-                            npc.spawn(loc1)
-                            recentNpc = npc
-                            recent.appendTextLine(Chat.colored("&a$${DecimalFormat("0.00").format(purchase.amount)}"))
+                    with(URL("https://plugin.tebex.io/payments").openConnection() as HttpURLConnection) {
+                        requestMethod = "GET"
+                        setRequestProperty("User-Agent", "Mozilla/5.0")
+                        setRequestProperty(
+                            "X-Tebex-Secret",
+                            ConfigFeature.instance.config!!.getString("buycraft.token")
+                        )
+                        BufferedReader(InputStreamReader(inputStream)).use {
+                            val response = StringBuffer()
+                            var inputLine = it.readLine()
+                            while (inputLine != null) {
+                                response.append(inputLine)
+                                inputLine = it.readLine()
+                            }
+                            it.close()
+                            val type = object : TypeToken<List<Purchase>>() {}.type
+                            var purchases: List<Purchase> = Gson().fromJson(response.toString(), type)
+                            recent.clearLines()
+                            highestHolo.clearLines()
+                            recent.appendTextLine(Chat.colored("${Chat.primaryColor}&lRecent Purchase"))
+                            highestHolo.appendTextLine(Chat.colored("${Chat.primaryColor}&lHighest Purchase"))
+                            val loc1 = Location(
+                                Bukkit.getWorld(ConfigFeature.instance.config!!.getString("thing.recent_purchase_holo.world")),
+                                ConfigFeature.instance.config!!.getDouble("thing.recent_purchase_holo.x"),
+                                ConfigFeature.instance.config!!.getDouble("thing.recent_purchase_holo.y"),
+                                ConfigFeature.instance.config!!.getDouble("thing.recent_purchase_holo.z"),
+                                ConfigFeature.instance.config!!.getDouble("thing.recent_purchase_holo.yaw").toFloat(),
+                                ConfigFeature.instance.config!!.getDouble("thing.recent_purchase_holo.pitch").toFloat()
+                            )
+                            val loc2 = Location(
+                                Bukkit.getWorld(ConfigFeature.instance.config!!.getString("thing.highest_purchase_holo.world")),
+                                ConfigFeature.instance.config!!.getDouble("thing.highest_purchase_holo.x"),
+                                ConfigFeature.instance.config!!.getDouble("thing.highest_purchase_holo.y"),
+                                ConfigFeature.instance.config!!.getDouble("thing.highest_purchase_holo.z"),
+                                ConfigFeature.instance.config!!.getDouble("thing.highest_purchase_holo.yaw").toFloat(),
+                                ConfigFeature.instance.config!!.getDouble("thing.highest_purchase_holo.pitch").toFloat()
+                            )
+                            for ((index, purchase) in purchases.withIndex()) {
+                                if (index == 0) {
+                                    val npc = registry.createNPC(EntityType.PLAYER, purchase.player.name)
+                                    npc.setAlwaysUseNameHologram(true)
+                                    npc.name = purchase.player.name
+                                    npc.spawn(loc1)
+                                    recentNpc = npc
+                                    recent.appendTextLine(Chat.colored("&a$${DecimalFormat("0.00").format(purchase.amount)}"))
+                                }
+                            }
+
+                            var highest: Purchase? = null
+                            for (purchase in purchases) {
+                                val amount = highest?.amount ?: 0.0
+                                if (purchase.amount > amount) highest = purchase
+                            }
+                            if (highest != null) {
+                                val npc = registry.createNPC(EntityType.PLAYER, highest.player.name)
+                                npc.setAlwaysUseNameHologram(true)
+                                npc.name = highest.player.name
+                                highestHolo.appendTextLine(Chat.colored("&a$${DecimalFormat("0.00").format(highest.amount)}"))
+                                npc.spawn(loc2)
+                                highestNpc = npc
+                            }
                         }
                     }
-
-                    var highest: Purchase? = null
-                    for (purchase in purchases) {
-                        val amount = highest?.amount ?: 0.0
-                        if (purchase.amount > amount) highest = purchase
-                    }
-                    if (highest != null) {
-                        val npc = registry.createNPC(EntityType.PLAYER, highest.player.name)
-                        npc.setAlwaysUseNameHologram(true)
-                        npc.name = highest.player.name
-                        highestHolo.appendTextLine(Chat.colored("&a$${DecimalFormat("0.00").format(highest.amount)}"))
-                        npc.spawn(loc2)
-                        highestNpc = npc
-                    }
-                }
+                }, 0L, 5 * 60 * 20)
             }
-        }, 0L, 5 * 60 * 20)
+        }
     }
 
     fun sendEditor(p: Player) {
@@ -259,23 +266,25 @@ class SpawnFeature : Listener {
         p.health = 20.0
         p.allowFlight = false
         p.isFlying = false
-        if (GameState.currentState == GameState.LOBBY) {
-            if (PerkChecker.checkPerks(p).contains(Perk.SPAWN_FLY)) {
-                p.allowFlight = true
-                p.isFlying = true
+        Schedulers.sync().runLater(Runnable@ {
+            if (GameState.currentState == GameState.LOBBY) {
+                if (PerkChecker.checkPerks(p).contains(Perk.SPAWN_FLY)) {
+                    p.allowFlight = true
+                    p.isFlying = true
+                }
+                Promise.start()
+                    .thenApplyAsync {
+                        JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.lookupProfile(p.uniqueId)
+                    }
+                    .thenAcceptSync {
+                        val xp = (it.get().xp as Double?) ?: 0.0
+                        val xpNeeded = (it.get().xpNeeded as Double?) ?: 0.0
+                        val level = (it.get().level as Int?) ?: 1
+                        p.level = level
+                        p.exp = (xp / xpNeeded).toFloat()
+                    }
             }
-            Promise.start()
-                .thenApplyAsync {
-                    JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.lookupProfile(p.uniqueId)
-                }
-                .thenAcceptSync {
-                    val xp = (it.get().xp as Double?) ?: 0.0
-                    val xpNeeded = (it.get().xpNeeded as Double?) ?: 0.0
-                    val level = (it.get().level as Int?) ?: 1
-                    p.level = level
-                    p.exp = (xp / xpNeeded).toFloat()
-                }
-        }
+        },  20L)
         p.foodLevel = 20
         val effects = p.activePotionEffects
         for (effect in effects) {
@@ -338,23 +347,35 @@ class SpawnFeature : Listener {
         } else {
             p.inventory.setItem(0, config)
         }
-        var location = if (SettingsFeature.instance.data!!.getDouble("config.location.x") == null) {
+        var location = if (ConfigFeature.instance.config!!.getDouble("spawn.x") == null) {
             Location(Bukkit.getWorlds().random(), 0.5, 95.0, 0.5)
         } else {
             Location(
-                Bukkit.getWorld(SettingsFeature.instance.data!!.getString("config.spawn.world")),
-                SettingsFeature.instance.data!!.getDouble("config.spawn.x"),
-                SettingsFeature.instance.data!!.getDouble("config.spawn.y"),
-                SettingsFeature.instance.data!!.getDouble("config.spawn.z"),
-                SettingsFeature.instance.data!!.getDouble("config.spawn.yaw").toFloat(),
-                SettingsFeature.instance.data!!.getDouble("config.spawn.pitch").toFloat()
+                Bukkit.getWorld(ConfigFeature.instance.config!!.getString("spawn.world")),
+                ConfigFeature.instance.config!!.getDouble("spawn.x"),
+                ConfigFeature.instance.config!!.getDouble("spawn.y"),
+                ConfigFeature.instance.config!!.getDouble("spawn.z"),
+                ConfigFeature.instance.config!!.getDouble("spawn.yaw").toFloat(),
+                ConfigFeature.instance.config!!.getDouble("spawn.pitch").toFloat()
             )
         }
         if (ScenarioHandler.getActiveScenarios().contains(ScenarioHandler.getScenario("auction"))) {
-            location = Location(Bukkit.getWorld("Spawn"), -278.0, 96.5, 7.0)
+            location = Location(Bukkit.getWorld(ConfigFeature.instance.config!!.getString("spawn.world")), -278.0, 96.5, 7.0)
         }
         editorList.remove(p.uniqueId)
         p.teleport(location)
+    }
+
+    @EventHandler
+    fun onPlayerMove(event: PlayerMoveEvent) {
+        if (
+            ConfigFeature.instance.config!!.getBoolean("void.enabled") &&
+            event.player.location.blockY < ConfigFeature.instance.config!!.getDouble("void.level") &&
+            event.player.world.name == ConfigFeature.instance.config!!.getString("spawn.world") &&
+            GameState.currentState == GameState.LOBBY
+        ) {
+            send(event.player)
+        }
     }
 
     @EventHandler

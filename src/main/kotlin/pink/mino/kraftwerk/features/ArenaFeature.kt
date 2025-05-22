@@ -47,7 +47,7 @@ class ArenaFeature : Listener {
         return item
     }
 
-    fun alias(value: String?): ItemStack {
+    fun alias(value: String?, player: Player): ItemStack {
         when (value) {
             "SWORD" -> {
                 return unbreakableItem(Material.DIAMOND_SWORD)
@@ -59,7 +59,7 @@ class ArenaFeature : Listener {
                 return unbreakableItem(Material.FISHING_ROD)
             }
             "BLOCKS" -> {
-                return ItemStack(Material.COBBLESTONE, 64)
+                return ItemStack(Material.valueOf(Kraftwerk.instance.profileHandler.getProfile(player.uniqueId)!!.arenaBlock!!), 64)
             }
             "WATER" -> {
                 return ItemStack(Material.WATER_BUCKET)
@@ -112,15 +112,15 @@ class ArenaFeature : Listener {
                 try {
                     val document = find(Filters.eq("uuid", p.uniqueId)).first()!!
                     Schedulers.sync().run {
-                        p.inventory.setItem(0, alias(document.getEmbedded(listOf("kit", "slot1"), String::class.java)))
-                        p.inventory.setItem(1, alias(document.getEmbedded(listOf("kit", "slot2"), String::class.java)))
-                        p.inventory.setItem(2, alias(document.getEmbedded(listOf("kit", "slot3"), String::class.java)))
-                        p.inventory.setItem(3, alias(document.getEmbedded(listOf("kit", "slot4"), String::class.java)))
-                        p.inventory.setItem(4, alias(document.getEmbedded(listOf("kit", "slot5"), String::class.java)))
-                        p.inventory.setItem(5, alias(document.getEmbedded(listOf("kit", "slot6"), String::class.java)))
-                        p.inventory.setItem(6, alias(document.getEmbedded(listOf("kit", "slot7"), String::class.java)))
-                        p.inventory.setItem(7, alias(document.getEmbedded(listOf("kit", "slot8"), String::class.java)))
-                        p.inventory.setItem(8, alias(document.getEmbedded(listOf("kit", "slot9"), String::class.java)))
+                        p.inventory.setItem(0, alias(document.getEmbedded(listOf("kit", "slot1"), String::class.java), p))
+                        p.inventory.setItem(1, alias(document.getEmbedded(listOf("kit", "slot2"), String::class.java), p))
+                        p.inventory.setItem(2, alias(document.getEmbedded(listOf("kit", "slot3"), String::class.java), p))
+                        p.inventory.setItem(3, alias(document.getEmbedded(listOf("kit", "slot4"), String::class.java), p))
+                        p.inventory.setItem(4, alias(document.getEmbedded(listOf("kit", "slot5"), String::class.java), p))
+                        p.inventory.setItem(5, alias(document.getEmbedded(listOf("kit", "slot6"), String::class.java), p))
+                        p.inventory.setItem(6, alias(document.getEmbedded(listOf("kit", "slot7"), String::class.java), p))
+                        p.inventory.setItem(7, alias(document.getEmbedded(listOf("kit", "slot8"), String::class.java), p))
+                        p.inventory.setItem(8, alias(document.getEmbedded(listOf("kit", "slot9"), String::class.java), p))
                         p.inventory.setItem(9, ItemStack(Material.ARROW, 64))
 
                         p.inventory.helmet = unbreakableItem(Material.IRON_HELMET)
@@ -133,7 +133,7 @@ class ArenaFeature : Listener {
                         p.inventory.setItem(0, unbreakableItem(Material.DIAMOND_SWORD))
                         p.inventory.setItem(1, unbreakableItem(Material.FISHING_ROD))
                         p.inventory.setItem(2, unbreakableItem(Material.BOW))
-                        p.inventory.setItem(3, ItemStack(Material.COBBLESTONE, 64))
+                        p.inventory.setItem(3, ItemStack(Material.valueOf(Kraftwerk.instance.profileHandler.getProfile(p.uniqueId)!!.arenaBlock!!), 64))
                         p.inventory.setItem(4, ItemStack(Material.WATER_BUCKET))
                         p.inventory.setItem(5, ItemStack(Material.LAVA_BUCKET))
                         p.inventory.setItem(6, ItemStack(Material.GOLDEN_CARROT, 64))
@@ -399,13 +399,14 @@ class ArenaFeature : Listener {
     fun onBlockPlace(e: BlockPlaceEvent) {
         if (e.block.world.name != "Arena") return
         if (e.block.location.y > 100.0) {
-            Chat.sendMessage(e.player, "$prefix You can't place blocks above &cy-100&7.")
+            Chat.sendMessage(e.player, "$prefix You can't place blocks above &cY: 100&7.")
             e.isCancelled = true
         }
         when (e.block.type) {
-            Material.COBBLESTONE -> {
+            Material.valueOf(Kraftwerk.instance.profileHandler.getProfile(e.player.uniqueId)!!.arenaBlock!!) -> {
                 Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                    e.player.inventory.addItem(ItemStack(Material.COBBLESTONE))
+
+                    e.player.inventory.addItem(ItemStack(Material.valueOf(Kraftwerk.instance.profileHandler.getProfile(e.player.uniqueId)!!.arenaBlock!!)))
                 }, 1L)
                 Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
                     BlockAnimation().blockCrackAnimation(e.player, e.block, 1)

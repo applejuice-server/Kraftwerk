@@ -41,7 +41,7 @@ class SkyHighIterator : BukkitRunnable() {
 
 class SkyHighScenario : Scenario(
     "SkyHigh",
-    "All players must go above y-101 when PvP occurs, lest they take damage.",
+    "All players must go above Y: 101 when PvP occurs, lest they take damage.",
     "skyhigh",
     Material.FEATHER
 ) {

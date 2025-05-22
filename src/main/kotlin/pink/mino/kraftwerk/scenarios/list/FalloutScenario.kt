@@ -37,7 +37,7 @@ class FalloutIterator : BukkitRunnable() {
 
 class FalloutScenario : Scenario(
     "Fallout",
-    "If you are not below y-60 at PvP, you will take damage.",
+    "If you are not below Y: 60 at PvP, you will take damage.",
     "fallout",
     Material.SPIDER_EYE
 ) {
