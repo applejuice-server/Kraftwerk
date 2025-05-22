@@ -5,7 +5,7 @@ plugins {
 }
 
 group 'pink.mino.Kraftwerk'
-version '1.2.0'
+version '1.3.0'
 
 repositories {
     mavenCentral()
@@ -19,7 +19,7 @@ repositories {
     maven { url = 'https://repo.lucko.me/' }
     maven { url = 'https://repo.codemc.io/repository/maven-public/' }
     maven { url = 'https://maven.enginehub.org/repo/' }
-    //maven { url = 'https://twitter4j.org/maven2' }
+    maven { url = 'https://repo.lunarclient.dev' }
     mavenLocal()
 }
 
@@ -44,6 +44,7 @@ dependencies {
     compileOnly files('lib/WorldBorder.jar')
     compileOnly files('lib/LunarClient.jar')
     compileOnly files('lib/LunarClient-NetHandler.jar')
+    compileOnly 'com.lunarclient:apollo-api:1.1.5'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
     //  implementation ('org.twitter4j:twitter4j-core:4.0.7')
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
