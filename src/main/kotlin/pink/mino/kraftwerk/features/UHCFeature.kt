@@ -64,22 +64,22 @@ enum class Events {
 class UHCTask : BukkitRunnable() {
     val portalLocations = hashMapOf<UUID, Location>()
 
-    val finalHeal = SettingsFeature.instance.data!!.getInt("game.events.final-heal") * 60 + 30
-    val pvp = ((SettingsFeature.instance.data!!.getInt("game.events.pvp") + SettingsFeature.instance.data!!.getInt("game.events.final-heal")) * 60) + 30
-    val meetup = ((SettingsFeature.instance.data!!.getInt("game.events.pvp") + SettingsFeature.instance.data!!.getInt("game.events.final-heal") + SettingsFeature.instance.data!!.getInt("game.events.meetup")) * 60) + 30
-    val borderShrink = (SettingsFeature.instance.data!!.getInt("game.events.final-heal") + SettingsFeature.instance.data!!.getInt("game.events.pvp") + SettingsFeature.instance.data!!.getInt("game.events.borderShrink")) * 60 + 30
+    val finalHeal = ConfigFeature.instance.data!!.getInt("game.events.final-heal") * 60 + 30
+    val pvp = ((ConfigFeature.instance.data!!.getInt("game.events.pvp") + ConfigFeature.instance.data!!.getInt("game.events.final-heal")) * 60) + 30
+    val meetup = ((ConfigFeature.instance.data!!.getInt("game.events.pvp") + ConfigFeature.instance.data!!.getInt("game.events.final-heal") + ConfigFeature.instance.data!!.getInt("game.events.meetup")) * 60) + 30
+    val borderShrink = (ConfigFeature.instance.data!!.getInt("game.events.final-heal") + ConfigFeature.instance.data!!.getInt("game.events.pvp") + ConfigFeature.instance.data!!.getInt("game.events.borderShrink")) * 60 + 30
 
-    val rawPvP = (SettingsFeature.instance.data!!.getInt("game.events.pvp") * 60) + 30
-    val rawMeetup = (SettingsFeature.instance.data!!.getInt("game.events.meetup") * 60) + 30
-    val rawBs = (SettingsFeature.instance.data!!.getInt("game.events.borderShrink") * 60) + 30
+    val rawPvP = (ConfigFeature.instance.data!!.getInt("game.events.pvp") * 60) + 30
+    val rawMeetup = (ConfigFeature.instance.data!!.getInt("game.events.meetup") * 60) + 30
+    val rawBs = (ConfigFeature.instance.data!!.getInt("game.events.borderShrink") * 60) + 30
 
     var timer = 0
     var currentEvent: Events = Events.PRE_START
 
-    var host = SettingsFeature.instance.data!!.getString("game.host")
-    var scenarios = SettingsFeature.instance.data!!.getStringList("matchpost.scenarios")
-    var id = SettingsFeature.instance.data!!.getInt("matchpost.id")
-    var team = SettingsFeature.instance.data!!.getString("matchpost.team")
+    var host = ConfigFeature.instance.data!!.getString("game.host")
+    var scenarios = ConfigFeature.instance.data!!.getStringList("matchpost.scenarios")
+    var id = ConfigFeature.instance.data!!.getInt("matchpost.id")
+    var team = ConfigFeature.instance.data!!.getString("matchpost.team")
     var winners: Any? = null
     var fill = Bukkit.getOnlinePlayers().size
 
@@ -92,12 +92,47 @@ class UHCTask : BukkitRunnable() {
 
     var pve = 0
 
+    fun checkWinner(): Boolean {
+        val list = ConfigFeature.instance.data!!.getStringList("game.list")
+        val teamSize = ConfigFeature.instance.data!!.getInt("game.teamSize")
+
+        if (list.isEmpty()) {
+            // No players left, no winner
+            Bukkit.getLogger().info("No players left.")
+            return false
+        }
+
+        if (teamSize <= 1) {
+            // Solo mode - last player wins
+            if (list.size == 1) {
+                val winnerName = list[0]
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "winner ${winnerName}")
+                return true
+            }
+        } else {
+            // Team mode - filter teams by whether they still have active players
+            val activeTeams = TeamsFeature.manager.getTeams().filter { team ->
+                val members = team.players.map { it -> it.name }
+                members.any { memberName -> list.contains(memberName) }
+            }
+
+            if (activeTeams.size == 1) {
+                val winnerTeam = activeTeams.first()
+                for (winner in winnerTeam.players) {
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "winner ${winner.name}")
+                }
+                return true
+            }
+        }
+        return false
+    }
+
     private fun displayTimer(player: Player) {
         val preference = JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.getProfile(player.uniqueId)!!.borderPreference
         val borderText = if (preference == "DIAMETER") {
-            "${SettingsFeature.instance.data!!.getInt("pregen.border") * 2}x${SettingsFeature.instance.data!!.getInt("pregen.border") * 2}"
+            "${ConfigFeature.instance.data!!.getInt("pregen.border") * 2}x${ConfigFeature.instance.data!!.getInt("pregen.border") * 2}"
         } else {
-            "±${SettingsFeature.instance.data!!.getInt("pregen.border")}"
+            "±${ConfigFeature.instance.data!!.getInt("pregen.border")}"
         }
         when (currentEvent) {
             Events.PRE_START -> {
@@ -195,7 +230,11 @@ class UHCTask : BukkitRunnable() {
     }
 
     override fun run() {
-        var list = SettingsFeature.instance.data!!.getStringList("game.list")
+        if (checkWinner()) {
+            cancel()
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "end")
+        }
+        var list = ConfigFeature.instance.data!!.getStringList("game.list")
         if (list == null) list = ArrayList<String>()
         when (timer) {
             0 -> {
@@ -217,13 +256,13 @@ class UHCTask : BukkitRunnable() {
                 Bukkit.broadcastMessage(" ")
                 for (player in Bukkit.getOnlinePlayers()) {
 
-                    if (SettingsFeature.instance.data!!.getBoolean("game.specials.frbp")) {
+                    if (ConfigFeature.instance.data!!.getBoolean("game.specials.frbp")) {
                         player.addPotionEffect(PotionEffect(PotionEffectType.FIRE_RESISTANCE, pvp * 20, 0, false, false))
                     }
-                    if (SettingsFeature.instance.data!!.getBoolean("game.specials.abp")) {
+                    if (ConfigFeature.instance.data!!.getBoolean("game.specials.abp")) {
                         player.addPotionEffect(PotionEffect(PotionEffectType.ABSORPTION, pvp * 20, 0, false, false))
                     }
-                    Chat.sendMessage(player, "&7You may &abegin&7! The host for this game is ${Chat.primaryColor}${SettingsFeature.instance.data!!.getString("game.host")}&7!")
+                    Chat.sendMessage(player, "&7You may &abegin&7! The host for this game is ${Chat.primaryColor}${ConfigFeature.instance.data!!.getString("game.host")}&7!")
 
                     Chat.sendMessage(player, "&7Scenarios: &f${scenarios.joinToString(", ")}&7")
                     Chat.sendCenteredMessage(player, " ")
@@ -231,22 +270,24 @@ class UHCTask : BukkitRunnable() {
                     player.playSound(player.location, Sound.ENDERDRAGON_GROWL, 10F, 1F)
                     player.sendTitle(Chat.colored("&a&lGO!"), Chat.colored("&7You may now play the game, do ${Chat.primaryColor}/helpop&7 for help!"))
                     if (!SpecFeature.instance.getSpecs().contains(player.name)) {
-                        if (SettingsFeature.instance.data!!.getInt("game.starterfood") > 0) {
-                            player.inventory.addItem(ItemStack(Material.COOKED_BEEF, SettingsFeature.instance.data!!.getInt("game.starterfood")))
+                        if (ConfigFeature.instance.data!!.getInt("game.starterfood") > 0) {
+                            player.inventory.addItem(ItemStack(Material.COOKED_BEEF, ConfigFeature.instance.data!!.getInt("game.starterfood")))
                         }
-                        list.add(player.name)
                     }
                     if (!ConfigOptionHandler.getOption("statless")!!.enabled) XpFeature().add(player, 30.0)
                 }
-                SettingsFeature.instance.data!!.set("game.list", list)
-                SettingsFeature.instance.saveData()
                 for (player in Bukkit.getOnlinePlayers()) {
                     player.addPotionEffect(PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 300, 100, true, true))
                 }
                 for (scenario in ScenarioHandler.getActiveScenarios()) {
                     scenario.onStart()
                 }
-                Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world")).setGameRuleValue("doDaylightCycle", true.toString())
+                if (ConfigOptionHandler.getOption("permaday")!!.enabled) {
+                    Bukkit.getWorld(ConfigFeature.instance.data!!.getString("pregen.world")).time = 6000
+                    Bukkit.getWorld(ConfigFeature.instance.data!!.getString("pregen.world")).setGameRuleValue("doDaylightCycle", false.toString())
+                } else {
+                    Bukkit.getWorld(ConfigFeature.instance.data!!.getString("pregen.world")).setGameRuleValue("doDaylightCycle", true.toString())
+                }
             }
             31 -> {
                 for (player in Bukkit.getOnlinePlayers()) {
@@ -291,12 +332,12 @@ class UHCTask : BukkitRunnable() {
                     Chat.sendMessage(player, Chat.line)
                     player.playSound(player.location, Sound.ANVIL_LAND, 10F, 1F)
                     if (!ConfigOptionHandler.getOption("statless")!!.enabled) XpFeature().add(player, 20.0)
-                    if (SettingsFeature.instance.data!!.getBoolean("game.specials.frbp")) {
+                    if (ConfigFeature.instance.data!!.getBoolean("game.specials.frbp")) {
                         if (player.hasPotionEffect(PotionEffectType.FIRE_RESISTANCE)) {
                             player.removePotionEffect(PotionEffectType.FIRE_RESISTANCE)
                         }
                     }
-                    if (SettingsFeature.instance.data!!.getBoolean("game.specials.abp")) {
+                    if (ConfigFeature.instance.data!!.getBoolean("game.specials.abp")) {
                         if (player.hasPotionEffect(PotionEffectType.ABSORPTION)) {
                             player.removePotionEffect(PotionEffectType.ABSORPTION)
                         }
@@ -318,11 +359,11 @@ class UHCTask : BukkitRunnable() {
                     }
                 }
                 Bukkit.broadcastMessage(Chat.colored(Chat.line))
-                if (SettingsFeature.instance.data!!.getInt("pregen.border") == 750) {
+                if (ConfigFeature.instance.data!!.getInt("pregen.border") == 750) {
                     UHCFeature().scheduleShrink(500)
-                } else if (SettingsFeature.instance.data!!.getInt("pregen.border") == 500) {
+                } else if (ConfigFeature.instance.data!!.getInt("pregen.border") == 500) {
                     UHCFeature().scheduleShrink(250)
-                } else if (SettingsFeature.instance.data!!.getInt("pregen.border") == 1000) {
+                } else if (ConfigFeature.instance.data!!.getInt("pregen.border") == 1000) {
                     UHCFeature().scheduleShrink(750)
                 } else {
                     UHCFeature().scheduleShrink(750)
@@ -330,7 +371,7 @@ class UHCTask : BukkitRunnable() {
             }
             meetup + 1 -> {
                 if (ConfigOptionHandler.getOption("permadayatmeetup")!!.enabled) {
-                    val world = Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world"))
+                    val world = Bukkit.getWorld(ConfigFeature.instance.data!!.getString("pregen.world"))
                     world.time = 6000
                     world.setGameRuleValue("doDaylightCycle", "false")
                 }
@@ -344,8 +385,8 @@ class UHCTask : BukkitRunnable() {
                 for (scenario in ScenarioHandler.getActiveScenarios()) {
                     scenario.onMeetup()
                 }
-                SettingsFeature.instance.data!!.set("game.nether.nether", false)
-                SettingsFeature.instance.saveData()
+                ConfigFeature.instance.data!!.set("game.nether.nether", false)
+                ConfigFeature.instance.saveData()
                 Bukkit.broadcastMessage(Chat.colored(Chat.line))
                 meetupHappened = true
             }
@@ -359,11 +400,11 @@ class UHCTask : BukkitRunnable() {
                 }
             }
             borderShrink + 300 -> {
-                if (SettingsFeature.instance.data!!.getInt("pregen.border") == 750) {
+                if (ConfigFeature.instance.data!!.getInt("pregen.border") == 750) {
                     UHCFeature().scheduleShrink(500)
-                } else if (SettingsFeature.instance.data!!.getInt("pregen.border") == 500) {
+                } else if (ConfigFeature.instance.data!!.getInt("pregen.border") == 500) {
                     UHCFeature().scheduleShrink(250)
-                } else if (SettingsFeature.instance.data!!.getInt("pregen.border") == 250) {
+                } else if (ConfigFeature.instance.data!!.getInt("pregen.border") == 250) {
                     UHCFeature().scheduleShrink(100)
                 } else {
                     UHCFeature().scheduleShrink(250)
@@ -371,11 +412,11 @@ class UHCTask : BukkitRunnable() {
                 currentEvent = Events.BORDER_SHRINK_TWO
             }
             borderShrink + 600 -> {
-                if (SettingsFeature.instance.data!!.getInt("pregen.border") == 500) {
+                if (ConfigFeature.instance.data!!.getInt("pregen.border") == 500) {
                     UHCFeature().scheduleShrink(250)
-                } else if (SettingsFeature.instance.data!!.getInt("pregen.border") == 250) {
+                } else if (ConfigFeature.instance.data!!.getInt("pregen.border") == 250) {
                     UHCFeature().scheduleShrink(100)
-                } else if (SettingsFeature.instance.data!!.getInt("pregen.border") == 100) {
+                } else if (ConfigFeature.instance.data!!.getInt("pregen.border") == 100) {
                     UHCFeature().scheduleShrink(75)
                 } else {
                     UHCFeature().scheduleShrink(100)
@@ -383,11 +424,11 @@ class UHCTask : BukkitRunnable() {
                 currentEvent = Events.BORDER_SHRINK_THREE
             }
             borderShrink + 900 -> {
-                if (SettingsFeature.instance.data!!.getInt("pregen.border") == 250) {
+                if (ConfigFeature.instance.data!!.getInt("pregen.border") == 250) {
                     UHCFeature().scheduleShrink(100)
-                } else if (SettingsFeature.instance.data!!.getInt("pregen.border") == 100) {
+                } else if (ConfigFeature.instance.data!!.getInt("pregen.border") == 100) {
                     UHCFeature().scheduleShrink(75)
-                } else if (SettingsFeature.instance.data!!.getInt("pregen.border") == 75) {
+                } else if (ConfigFeature.instance.data!!.getInt("pregen.border") == 75) {
                     UHCFeature().scheduleShrink(50)
                 } else {
                     UHCFeature().scheduleShrink(75)
@@ -398,11 +439,11 @@ class UHCTask : BukkitRunnable() {
                 if (ScenarioHandler.getScenario("bigcrack")!!.enabled) {
                     return
                 }
-                if (SettingsFeature.instance.data!!.getInt("pregen.border") == 100) {
+                if (ConfigFeature.instance.data!!.getInt("pregen.border") == 100) {
                     UHCFeature().scheduleShrink(75)
-                } else if (SettingsFeature.instance.data!!.getInt("pregen.border") == 75) {
+                } else if (ConfigFeature.instance.data!!.getInt("pregen.border") == 75) {
                     UHCFeature().scheduleShrink(50)
-                } else if (SettingsFeature.instance.data!!.getInt("pregen.border") == 50) {
+                } else if (ConfigFeature.instance.data!!.getInt("pregen.border") == 50) {
                     UHCFeature().scheduleShrink(25)
                     return
                 } else {
@@ -414,9 +455,9 @@ class UHCTask : BukkitRunnable() {
                 if (ScenarioHandler.getScenario("bigcrack")!!.enabled) {
                     return
                 }
-                if (SettingsFeature.instance.data!!.getInt("pregen.border") == 75) {
+                if (ConfigFeature.instance.data!!.getInt("pregen.border") == 75) {
                     UHCFeature().scheduleShrink(50)
-                } else if (SettingsFeature.instance.data!!.getInt("pregen.border") == 50) {
+                } else if (ConfigFeature.instance.data!!.getInt("pregen.border") == 50) {
                     UHCFeature().scheduleShrink(25)
                 } else {
                     UHCFeature().scheduleShrink(25)
@@ -434,15 +475,16 @@ class UHCTask : BukkitRunnable() {
 
 class UHCFeature : Listener {
     var scattering = false
+
     @EventHandler
     fun onPortalEvent(e: PlayerPortalEvent) {
-        if (e.player.world.name == SettingsFeature.instance.data!!.getString("pregen.world")) JavaPlugin.getPlugin(Kraftwerk::class.java).game!!.portalLocations[e.player.uniqueId] = e.player.location
+        if (e.player.world.name == ConfigFeature.instance.data!!.getString("pregen.world")) JavaPlugin.getPlugin(Kraftwerk::class.java).game!!.portalLocations[e.player.uniqueId] = e.player.location
     }
 
     fun start(mode: String) {
         GameState.setState(GameState.WAITING)
-        Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world")).time = 1000
-        Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world")).setGameRuleValue("doDaylightCycle", false.toString())
+        Bukkit.getWorld(ConfigFeature.instance.data!!.getString("pregen.world")).time = 1000
+        Bukkit.getWorld(ConfigFeature.instance.data!!.getString("pregen.world")).setGameRuleValue("doDaylightCycle", false.toString())
         for (world in Bukkit.getWorlds()) {
             world.pvp = false
         }
@@ -459,13 +501,13 @@ class UHCFeature : Listener {
                 }
             }
         }
-        var list = SettingsFeature.instance.data!!.getStringList("game.list")
+        var list = ConfigFeature.instance.data!!.getStringList("game.list")
         if (list == null) list = ArrayList<String>()
         for (player in Bukkit.getOnlinePlayers()) {
             if (!SpecFeature.instance.getSpecs().contains(player.name)) {
-            SpawnFeature.instance.send(player)
-            SpawnFeature.instance.editorList.remove(player.uniqueId)
-            CombatLogFeature.instance.removeCombatLog(player.name)
+                SpawnFeature.instance.send(player)
+                SpawnFeature.instance.editorList.remove(player.uniqueId)
+                CombatLogFeature.instance.removeCombatLog(player.name)
                 player.playSound(player.location, Sound.WOOD_CLICK, 10F, 1F)
                 player.enderChest.clear()
                 player.maxHealth = 20.0
@@ -488,14 +530,14 @@ class UHCFeature : Listener {
                 }
             }
         }
-        SettingsFeature.instance.data!!.set("game.list", list)
-        SettingsFeature.instance.saveData()
+        ConfigFeature.instance.data!!.set("game.list", list)
+        ConfigFeature.instance.saveData()
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wl all")
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "wl on")
 
         val teams = mode != "ffa"
-        val world = Bukkit.getWorld(SettingsFeature.instance.data!!.getString("pregen.world"))
-        val radius = SettingsFeature.instance.data!!.getInt("pregen.border")
+        val world = Bukkit.getWorld(ConfigFeature.instance.data!!.getString("pregen.world"))
+        val radius = ConfigFeature.instance.data!!.getInt("pregen.border")
 
         if (teams) {
             Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Attempting to start ${Chat.primaryColor}team &7scatter..."))
@@ -600,8 +642,8 @@ class UHCFeature : Listener {
                                     } else {
                                         JavaPlugin.getPlugin(Kraftwerk::class.java).scattering = false
                                         Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} &7Successfully scattered all players!"))
-                                        SettingsFeature.instance.data!!.set("game.list", list)
-                                        SettingsFeature.instance.saveData()
+                                        ConfigFeature.instance.data!!.set("game.list", list)
+                                        ConfigFeature.instance.saveData()
                                         Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
                                             freeze()
                                             JavaPlugin.getPlugin(Kraftwerk::class.java).game = UHCTask()
@@ -655,28 +697,97 @@ class UHCFeature : Listener {
     }
 
     fun scheduleShrink(newBorder: Int) {
-        Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-            Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Shrinking to ${Chat.secondaryColor}${newBorder*2}x${newBorder*2} (±${newBorder})&7 in &f10s&7."))
+        Bukkit.getScheduler().runTaskLater(Kraftwerk.instance, Runnable@{
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "border $newBorder")
+        }, 20 * 10L)
+        for (player in Bukkit.getOnlinePlayers()) {
+            val preference = JavaPlugin.getPlugin(Kraftwerk::class.java).profileHandler.getProfile(player.uniqueId)!!.borderPreference
+            val borderText = if (preference == "DIAMETER") {
+                "${newBorder*2}x${newBorder*2}"
+            } else {
+                "±${newBorder}"
+            }
             Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Shrinking to ${Chat.secondaryColor}${newBorder*2}x${newBorder*2} (±${newBorder})&7 in &f9s&7."))
+                Chat.sendMessage(player, "${Chat.prefix} Shrinking to ${Chat.secondaryColor}${borderText}&7 in &f10s&7.")
+                if (!SpecFeature.instance.getSpecs().contains(player.name)) {
+                    if (!insideBorder(player, newBorder)) {
+                        player.sendTitle(Chat.colored("&4 ! CAUTION ! "), Chat.colored("&7You are outside the border, you will be shrunk!"))
+                        player.playSound(player.location, Sound.CLICK, 1f, 1f)
+                    }
+                }
                 Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                    Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Shrinking to ${Chat.secondaryColor}${newBorder*2}x${newBorder*2} (±${newBorder})&7 in &f8s&7."))
+                    Chat.sendMessage(player, "${Chat.prefix} Shrinking to ${Chat.secondaryColor}${borderText}&7 in &f9s&7.")
+                    if (!SpecFeature.instance.getSpecs().contains(player.name)) {
+                        if (!insideBorder(player, newBorder)) {
+                            player.sendTitle(Chat.colored("&4 ! CAUTION ! "), Chat.colored("&7You are outside the border, you will be shrunk!"))
+                            player.playSound(player.location, Sound.CLICK, 1f, 1f)
+                        }
+                    }
                     Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                        Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Shrinking to ${Chat.secondaryColor}${newBorder*2}x${newBorder*2} (±${newBorder})&7 in &f7s&7."))
+                        Chat.sendMessage(player, "${Chat.prefix} Shrinking to ${Chat.secondaryColor}${borderText}&7 in &f8s&7.")
+                        if (!SpecFeature.instance.getSpecs().contains(player.name)) {
+                            if (!insideBorder(player, newBorder)) {
+                                player.sendTitle(Chat.colored("&4 ! CAUTION ! "), Chat.colored("&7You are outside the border, you will be shrunk!"))
+                                player.playSound(player.location, Sound.CLICK, 1f, 1f)
+                            }
+                        }
                         Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                            Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Shrinking to ${Chat.secondaryColor}${newBorder*2}x${newBorder*2} (±${newBorder})&7 in &f6s&7."))
+                            Chat.sendMessage(player, "${Chat.prefix} Shrinking to ${Chat.secondaryColor}${borderText}&7 in &f7s&7.")
+                            if (!SpecFeature.instance.getSpecs().contains(player.name)) {
+                                if (!insideBorder(player, newBorder)) {
+                                    player.sendTitle(Chat.colored("&4 ! CAUTION ! "), Chat.colored("&7You are outside the border, you will be shrunk!"))
+                                    player.playSound(player.location, Sound.CLICK, 1f, 1f)
+                                }
+                            }
                             Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Shrinking to ${Chat.secondaryColor}${newBorder*2}x${newBorder*2} (±${newBorder})&7 in &f5s&7."))
+                                Chat.sendMessage(player, "${Chat.prefix} Shrinking to ${Chat.secondaryColor}${borderText}&7 in &f6s&7.")
+                                if (!SpecFeature.instance.getSpecs().contains(player.name)) {
+                                    if (!insideBorder(player, newBorder)) {
+                                        player.sendTitle(Chat.colored("&4 ! CAUTION ! "), Chat.colored("&7You are outside the border, you will be shrunk!"))
+                                        player.playSound(player.location, Sound.CLICK, 1f, 1f)
+                                    }
+                                }
                                 Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                                    Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Shrinking to ${Chat.secondaryColor}${newBorder*2}x${newBorder*2} (±${newBorder})&7 in &f4s&7."))
+                                    Chat.sendMessage(player, "${Chat.prefix} Shrinking to ${Chat.secondaryColor}${borderText}&7 in &f5s&7.")
+                                    if (!SpecFeature.instance.getSpecs().contains(player.name)) {
+                                        if (!insideBorder(player, newBorder)) {
+                                            player.sendTitle(Chat.colored("&4 ! CAUTION ! "), Chat.colored("&7You are outside the border, you will be shrunk!"))
+                                            player.playSound(player.location, Sound.CLICK, 1f, 1f)
+                                        }
+                                    }
                                     Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                                        Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Shrinking to ${Chat.secondaryColor}${newBorder*2}x${newBorder*2} (±${newBorder})&7 in &f3s&7."))
+                                        Chat.sendMessage(player, "${Chat.prefix} Shrinking to ${Chat.secondaryColor}${borderText}&7 in &f4s&7.")
+                                        if (!SpecFeature.instance.getSpecs().contains(player.name)) {
+                                            if (!insideBorder(player, newBorder)) {
+                                                player.sendTitle(Chat.colored("&4 ! CAUTION ! "), Chat.colored("&7You are outside the border, you will be shrunk!"))
+                                                player.playSound(player.location, Sound.CLICK, 1f, 1f)
+                                            }
+                                        }
                                         Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                                            Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Shrinking to ${Chat.secondaryColor}${newBorder*2}x${newBorder*2} (±${newBorder})&7 in &f2s&7."))
+                                            Chat.sendMessage(player, "${Chat.prefix} Shrinking to ${Chat.secondaryColor}${borderText}&7 in &f3s&7.")
+                                            if (!SpecFeature.instance.getSpecs().contains(player.name)) {
+                                                if (!insideBorder(player, newBorder)) {
+                                                    player.sendTitle(Chat.colored("&4 ! CAUTION ! "), Chat.colored("&7You are outside the border, you will be shrunk!"))
+                                                    player.playSound(player.location, Sound.CLICK, 1f, 1f)
+                                                }
+                                            }
                                             Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                                                Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Shrinking to ${Chat.secondaryColor}${newBorder*2}x${newBorder*2} (±${newBorder})&7 in &f1s&7."))
+                                                Chat.sendMessage(player, "${Chat.prefix} Shrinking to ${Chat.secondaryColor}${borderText}&7 in &f2s&7.")
+                                                if (!SpecFeature.instance.getSpecs().contains(player.name)) {
+                                                    if (!insideBorder(player, newBorder)) {
+                                                        player.sendTitle(Chat.colored("&4 ! CAUTION ! "), Chat.colored("&7You are outside the border, you will be shrunk!"))
+                                                        player.playSound(player.location, Sound.CLICK, 1f, 1f)
+                                                    }
+                                                }
                                                 Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
-                                                    for (player in Bukkit.getOnlinePlayers()) {
+                                                    Chat.sendMessage(player, "${Chat.prefix} Shrinking to ${Chat.secondaryColor}${borderText}&7 in &f1s&7.")
+                                                    if (!SpecFeature.instance.getSpecs().contains(player.name)) {
+                                                        if (!insideBorder(player, newBorder)) {
+                                                            player.sendTitle(Chat.colored("&4 ! CAUTION ! "), Chat.colored("&7You are outside the border, you will be shrunk!"))
+                                                            player.playSound(player.location, Sound.CLICK, 1f, 1f)
+                                                        }
+                                                    }
+                                                    Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
                                                         if (!SpecFeature.instance.getSpecs().contains(player.name)) {
                                                             if (!insideBorder(player, newBorder)) {
                                                                 player.addPotionEffect(PotionEffect(PotionEffectType.WEAKNESS, 160, 10, true, false))
@@ -684,20 +795,19 @@ class UHCFeature : Listener {
                                                                 Chat.sendMessage(player, "${Chat.prefix} You have gained ${Chat.secondaryColor}8 seconds&7 of ${Chat.secondaryColor}Resistance X&7 as you are outside the border.")
                                                             }
                                                         }
-                                                    }
-                                                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "border $newBorder")
-                                                    Bukkit.broadcastMessage(Chat.colored(Chat.line))
-                                                    Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} The border has shrunken to ${Chat.secondaryColor}${newBorder*2}x${newBorder*2} (±${newBorder})&7."))
-                                                    if (ScenarioHandler.getScenario("bigcrack")!!.enabled) {
-                                                        if (newBorder != 75) {
-                                                            Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Next border shrink in ${Chat.secondaryColor}5 minutes."))
+                                                        Chat.sendMessage(player, Chat.line)
+                                                        Chat.sendMessage(player, "${Chat.prefix} The border has shrunken to ${Chat.secondaryColor}${borderText}&7.")
+                                                        if (ScenarioHandler.getScenario("bigcrack")!!.enabled) {
+                                                            if (newBorder != 75) {
+                                                                Chat.sendMessage(player, "${Chat.prefix} Next border shrink in ${Chat.secondaryColor}5 minutes.")
+                                                            }
+                                                        } else {
+                                                            if (newBorder != 25) {
+                                                                Chat.sendMessage(player, "${Chat.prefix} Next border shrink in ${Chat.secondaryColor}5 minutes.")
+                                                            }
                                                         }
-                                                    } else {
-                                                        if (newBorder != 25) {
-                                                            Bukkit.broadcastMessage(Chat.colored("${Chat.prefix} Next border shrink in ${Chat.secondaryColor}5 minutes."))
-                                                        }
-                                                    }
-                                                    Bukkit.broadcastMessage(Chat.colored(Chat.line))
+                                                        Chat.sendMessage(player, Chat.line)
+                                                    }, 20L)
                                                 }, 20L)
                                             }, 20L)
                                         }, 20L)
@@ -708,7 +818,7 @@ class UHCFeature : Listener {
                     }, 20L)
                 }, 20L)
             }, 20L)
-        }, 20L)
+        }
     }
     @EventHandler
     fun onBlockBreak(e: BlockBreakEvent) {
