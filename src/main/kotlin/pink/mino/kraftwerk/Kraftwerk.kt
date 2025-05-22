@@ -75,10 +75,10 @@ class Kraftwerk : ExtendedJavaPlugin() {
     }
 
     override fun enable() {
-        SettingsFeature.instance.setup(this)
+        instance = this
+        ConfigFeature.instance.setup(this)
 
         /* Registering listeners */
-        instance = this
         Bukkit.getServer().pluginManager.registerEvents(ServerListPingListener(), this)
         Bukkit.getServer().pluginManager.registerEvents(PlayerJoinListener(), this)
         Bukkit.getServer().pluginManager.registerEvents(PlayerQuitListener(), this)
@@ -249,43 +249,43 @@ class Kraftwerk : ExtendedJavaPlugin() {
         /* Discord */
         try {
             Discord.main()
-            if (!SettingsFeature.instance.data!!.getBoolean("matchpost.posted")) SettingsFeature.instance.data!!.set("whitelist.requests", false)
-            SettingsFeature.instance.saveData()
-            if (!SettingsFeature.instance.data!!.getBoolean("matchpost.cancelled")) {
-                if (SettingsFeature.instance.data!!.getString("matchpost.opens") != null) {
-                    ScheduleBroadcast(SettingsFeature.instance.data!!.getString("matchpost.opens")).runTaskTimer(this, 0L, 300L)
-                    ScheduleOpening(SettingsFeature.instance.data!!.getString("matchpost.opens")).runTaskTimer(this, 0L, 300L)
+            if (!ConfigFeature.instance.data!!.getBoolean("matchpost.posted")) ConfigFeature.instance.data!!.set("whitelist.requests", false)
+            ConfigFeature.instance.saveData()
+            if (!ConfigFeature.instance.data!!.getBoolean("matchpost.cancelled")) {
+                if (ConfigFeature.instance.data!!.getString("matchpost.opens") != null) {
+                    ScheduleBroadcast(ConfigFeature.instance.data!!.getString("matchpost.opens")).runTaskTimer(this, 0L, 300L)
+                    ScheduleOpening(ConfigFeature.instance.data!!.getString("matchpost.opens")).runTaskTimer(this, 0L, 300L)
                 }
-                if (SettingsFeature.instance.data!!.getString("matchpost.host") == null) {
-                    Discord.instance!!.presence.activity = Activity.playing(if (SettingsFeature.instance.data!!.getString("config.chat.serverIp") != null) SettingsFeature.instance.data!!.getString("config.chat.serverIp") else "no server ip setup in config tough tits")
+                if (ConfigFeature.instance.data!!.getString("matchpost.host") == null) {
+                    Discord.instance!!.presence.activity = Activity.playing(if (ConfigFeature.instance.config!!.getString("chat.serverIp") != null) ConfigFeature.instance.config!!.getString("chat.serverIp") else "no server ip setup in config tough tits")
                 }
-                else Discord.instance!!.presence.activity = Activity.playing(SettingsFeature.instance.data!!.getString("matchpost.host"))
+                else Discord.instance!!.presence.activity = Activity.playing(ConfigFeature.instance.data!!.getString("matchpost.host"))
             } else {
-                Discord.instance!!.presence.activity = Activity.playing(if (SettingsFeature.instance.data!!.getString("config.chat.serverIp") != null) SettingsFeature.instance.data!!.getString("config.chat.serverIp") else "no server ip setup in config tough tits")
-                SettingsFeature.instance.data!!.set("matchpost.cancelled", null)
-                SettingsFeature.instance.saveData()
+                Discord.instance!!.presence.activity = Activity.playing(if (ConfigFeature.instance.config!!.getString("chat.serverIp") != null) ConfigFeature.instance.config!!.getString("chat.serverIp") else "no server ip setup in config tough tits")
+                ConfigFeature.instance.data!!.set("matchpost.cancelled", null)
+                ConfigFeature.instance.saveData()
             }
         } catch (e: LoginException) {
             Log.severe("Failed to login to discord: " + e.message)
         }
 
-        if (SettingsFeature.instance.data!!.getLong("config.discord.welcomeChannelId") != null) {
-            welcomeChannelId = SettingsFeature.instance.data!!.getLong("config.discord.welcomeChannelId")
+        if (ConfigFeature.instance.config!!.getLong("discord.welcomeChannelId") != null) {
+            welcomeChannelId = ConfigFeature.instance.config!!.getLong("discord.welcomeChannelId")
         }
-        if (SettingsFeature.instance.data!!.getLong("config.discord.alertsRoleId") != null) {
-            alertsRoleId = SettingsFeature.instance.data!!.getLong("config.discord.alertsRoleId")
+        if (ConfigFeature.instance.config!!.getLong("discord.alertsRoleId") != null) {
+            alertsRoleId = ConfigFeature.instance.config!!.getLong("discord.alertsRoleId")
         }
-        if (SettingsFeature.instance.data!!.getLong("config.discord.gameAlertsChannelId") != null) {
-            gameAlertsChannelId = SettingsFeature.instance.data!!.getLong("config.discord.gameAlertsChannelId")
+        if (ConfigFeature.instance.config!!.getLong("discord.gameAlertsChannelId") != null) {
+            gameAlertsChannelId = ConfigFeature.instance.config!!.getLong("discord.gameAlertsChannelId")
         }
-        if (SettingsFeature.instance.data!!.getLong("config.discord.winnersChannelId") != null) {
-            winnersChannelId = SettingsFeature.instance.data!!.getLong("config.discord.winnersChannelId")
+        if (ConfigFeature.instance.config!!.getLong("discord.winnersChannelId") != null) {
+            winnersChannelId = ConfigFeature.instance.config!!.getLong("discord.winnersChannelId")
         }
-        if (SettingsFeature.instance.data!!.getLong("config.discord.preWhitelistChannelId") != null) {
-            preWhitelistChannelId = SettingsFeature.instance.data!!.getLong("config.discord.preWhitelistChannelId")
+        if (ConfigFeature.instance.config!!.getLong("discord.preWhitelistChannelId") != null) {
+            preWhitelistChannelId = ConfigFeature.instance.config!!.getLong("discord.preWhitelistChannelId")
         }
-        if (SettingsFeature.instance.data!!.getLong("config.discord.gameLogsChannelId") != null) {
-            gameLogsChannelId = SettingsFeature.instance.data!!.getLong("config.discord.gameLogsChannelId")
+        if (ConfigFeature.instance.config!!.getLong("discord.gameLogsChannelId") != null) {
+            gameLogsChannelId = ConfigFeature.instance.config!!.getLong("discord.gameLogsChannelId")
         }
         //twitterInstance.updateStatus("test")
 
@@ -297,11 +297,11 @@ class Kraftwerk : ExtendedJavaPlugin() {
                 server.createWorld(WorldCreator(world))
             } else {
                 val wc = WorldCreator(world)
-                if (SettingsFeature.instance.worlds!!.getString("${world}.type").lowercase() == "normal") {
+                if (ConfigFeature.instance.worlds!!.getString("${world}.type").lowercase() == "normal") {
                     wc.environment(World.Environment.NORMAL)
-                } else if (SettingsFeature.instance.worlds!!.getString("${world}.type").lowercase() == "nether") {
+                } else if (ConfigFeature.instance.worlds!!.getString("${world}.type").lowercase() == "nether") {
                     wc.environment(World.Environment.NETHER)
-                } else if (SettingsFeature.instance.worlds!!.getString("${world}.type").lowercase() == "end") {
+                } else if (ConfigFeature.instance.worlds!!.getString("${world}.type").lowercase() == "end") {
                     wc.environment(World.Environment.THE_END)
                 } else {
                     wc.environment(World.Environment.NORMAL)
@@ -320,14 +320,15 @@ class Kraftwerk : ExtendedJavaPlugin() {
         InfoFeature().runTaskTimerAsynchronously(this, 0L, 6000L)
         TabFeature().runTaskTimer(this, 0L, 20L)
 
-        SettingsFeature.instance.data!!.set("whitelist.enabled", false)
-        SettingsFeature.instance.saveData()
+        ConfigFeature.instance.data!!.set("whitelist.enabled", ConfigFeature.instance.config!!.getBoolean("options.whitelist-after-restart"))
+        ConfigFeature.instance.data!!.set("game.list", listOf<Any>())
+        ConfigFeature.instance.saveData()
         Leaderboards().runTaskTimer(this, 0L, 20L)
         Bukkit.getLogger().info("Kraftwerk enabled.")
     }
 
     fun setupDataSource() {
-        val uri = SettingsFeature.instance.data!!.getString("database.uri")
+        val uri = ConfigFeature.instance.config!!.getString("database.uri")
         if (uri == null) {
             Log.severe("No database URI set. Please set it in the config.")
             return
@@ -345,10 +346,10 @@ class Kraftwerk : ExtendedJavaPlugin() {
     }
 
     override fun disable() {
-        SettingsFeature.instance.data!!.set("game.winners", ArrayList<String>())
-        SettingsFeature.instance.data!!.set("game.list", ArrayList<String>())
-        SettingsFeature.instance.data!!.set("game.kills", null)
-        SettingsFeature.instance.saveData()
+        ConfigFeature.instance.data!!.set("game.winners", ArrayList<String>())
+        ConfigFeature.instance.data!!.set("game.list", ArrayList<String>())
+        ConfigFeature.instance.data!!.set("game.kills", null)
+        ConfigFeature.instance.saveData()
         Bukkit.getWorldContainer().listFiles()!!.forEach { file ->
             if (file.name == "Spawn") {
                 Files.walk(file.toPath()).sorted(Comparator.reverseOrder()).map(Path::toFile).forEach {
