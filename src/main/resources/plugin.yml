@@ -400,6 +400,20 @@ commands:
     description: Warns a player.
   alts:
     description: Gets a player's total alt accounts.
+  unhelpopmute:
+    aliases:
+      - unhm
+      - unhelpop
+      - unmutehelpop
+    description: Unmutes a player on helpop.
+  unban:
+    aliases:
+      - ub
+    description: Unbans a player.
+  unmute:
+    aliases:
+      - um
+    description: Unmutes a player.
 depend:
   - ProtocolLib
   - Vault

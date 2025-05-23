@@ -262,7 +262,9 @@ class PlayerJoinListener : Listener {
         }, 5L)
         Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
             checkAndMergeAlts(player)
-            checkEvaders(player)
+            if (!(player as Player).hasPermission("uhc.staff")) {
+                checkEvaders(player)
+            }
         }, 40L)
     }
 }

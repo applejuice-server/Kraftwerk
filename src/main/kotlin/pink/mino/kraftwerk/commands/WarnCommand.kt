@@ -67,7 +67,7 @@ class WarnCommand : CommandExecutor {
 
         PunishmentFeature.punish(target, punishment)
 
-        val message = Chat.colored("&e${target.name} has been warned. Reason: $reason")
+        val message = Chat.colored("&c${target.name} has been warned. Reason: $reason")
 
         if (!silent) {
             Bukkit.broadcast(message, "uhc.staff")

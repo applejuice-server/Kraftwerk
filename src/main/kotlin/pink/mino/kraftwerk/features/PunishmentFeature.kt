@@ -5,6 +5,7 @@ import com.mongodb.client.model.Filters
 import com.mongodb.client.model.FindOneAndReplaceOptions
 import com.mongodb.client.model.Sorts
 import me.lucko.helper.Schedulers
+import net.dv8tion.jda.api.EmbedBuilder
 import org.bson.Document
 import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
@@ -12,6 +13,7 @@ import org.bukkit.Sound
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 import pink.mino.kraftwerk.Kraftwerk
+import pink.mino.kraftwerk.discord.Discord
 import pink.mino.kraftwerk.utils.Chat
 import java.util.*
 
@@ -84,14 +86,31 @@ class PunishmentFeature {
             return number * millisPerUnit
         }
 
-        fun revokePunishment(punishmentUuid: UUID): Boolean {
-            with(JavaPlugin.getPlugin(Kraftwerk::class.java).dataSource.getDatabase("applejuice").getCollection("punishments")) {
-                val updateResult = this.updateOne(
-                    Filters.eq("uuid", punishmentUuid),
+        fun revokePunishment(punishmentUuid: UUID, type: PunishmentType): Boolean {
+            val plugin = JavaPlugin.getPlugin(Kraftwerk::class.java)
+            val collection = plugin.dataSource.getDatabase("applejuice").getCollection("punishments")
+
+            val filter = Filters.and(
+                Filters.eq("playerUniqueId", punishmentUuid),
+                Filters.eq("type", type.toString()),
+                Filters.eq("revoked", false)
+            )
+
+            val newestPunishment = collection.find(filter)
+                .sort(Sorts.descending("punishedAt"))
+                .firstOrNull()
+
+            if (newestPunishment != null) {
+                Bukkit.getLogger().info(newestPunishment.toString())
+                val updateResult = collection.updateOne(
+                    Filters.eq("uuid", newestPunishment.get("uuid", UUID::class.java)),
                     Document("\$set", Document("revoked", true))
                 )
+                Bukkit.getLogger().info("${updateResult.modifiedCount > 0}")
                 return updateResult.modifiedCount > 0
             }
+            Bukkit.getLogger().info("nope")
+            return false
         }
 
         fun getActivePunishment(player: OfflinePlayer, punishmentType: PunishmentType): Punishment? {
@@ -141,22 +160,23 @@ class PunishmentFeature {
                     (player as Player).kickPlayer(Chat.colored("${Chat.primaryColor}${Chat.scoreboardTitle}\n${Chat.line}\n\n&7You've been kicked from the server by ${Chat.secondaryColor}${punisher.name}&7.\n&7Reason: ${Chat.secondaryColor}${punishment.reason}\n\n${Chat.line}"))
                 }
                 if (punishment.type == PunishmentType.WARN) {
-                    (player as Player).sendTitle("&4WARNING!", "&7${punishment.reason}")
+                    (player as Player).sendTitle(Chat.colored("&4WARNING!"), Chat.colored("&7${punishment.reason}"))
                     Chat.sendMessage(player, Chat.line)
                     Chat.sendCenteredMessage(player, "&4&lWARNING!")
                     Chat.sendMessage(player, " ")
-                    Chat.sendMessage(player, "&7You've been warned by ${Chat.secondaryColor}${Bukkit.getOfflinePlayer(punishment.punisherUuid).name}&7!")
-                    Chat.sendMessage(player, "&7Reason: ${Chat.secondaryColor}${punishment.reason}")
+                    Chat.sendCenteredMessage(player, "&7You've been warned by ${Chat.secondaryColor}${Bukkit.getOfflinePlayer(punishment.punisherUuid).name}&7!")
+                    Chat.sendCenteredMessage(player, "&7Further warnings may result in further action.")
+                    Chat.sendCenteredMessage(player, "&7Reason: ${Chat.secondaryColor}${punishment.reason}")
                     Chat.sendMessage(player, Chat.line)
                     player.playSound(player.location, Sound.ANVIL_LAND, 1f, 1f)
                 }
                 if (punishment.type == PunishmentType.DISQUALIFICATION) {
-                    (player as Player).sendTitle("&4DISQUALIFIED!", "&7${punishment.reason}")
+                    (player as Player).sendTitle(Chat.colored("&4DISQUALIFIED!"), Chat.colored("&7${punishment.reason})"))
                     Chat.sendMessage(player, Chat.line)
                     Chat.sendCenteredMessage(player, "&4&lDISQUALIFIED!")
                     Chat.sendMessage(player, " ")
-                    Chat.sendMessage(player, "&7You've been disqualified by ${Chat.secondaryColor}${Bukkit.getOfflinePlayer(punishment.punisherUuid).name}&7!")
-                    Chat.sendMessage(player, "&7Reason: ${Chat.secondaryColor}${punishment.reason}")
+                    Chat.sendCenteredMessage(player, "&7You've been disqualified by ${Chat.secondaryColor}${Bukkit.getOfflinePlayer(punishment.punisherUuid).name}&7!")
+                    Chat.sendCenteredMessage(player, "&7Reason: ${Chat.secondaryColor}${punishment.reason}")
                     Chat.sendMessage(player, Chat.line)
                     player.playSound(player.location, Sound.WITHER_DEATH, 1f, 1f)
                     player.damage(player.maxHealth * 9999.0)
@@ -165,10 +185,10 @@ class PunishmentFeature {
                     Chat.sendMessage((player as Player), Chat.line)
                     Chat.sendCenteredMessage(player, "&4&lHELPOP MUTED!")
                     Chat.sendMessage(player, " ")
-                    Chat.sendMessage(player, "&7You've been helpop muted by ${Chat.secondaryColor}${Bukkit.getOfflinePlayer(punishment.punisherUuid).name}&7!")
-                    Chat.sendMessage(player, "&7You may no longer use ${Chat.secondaryColor}/helpop&7 to ask for help from Staff.")
-                    Chat.sendMessage(player, "&7This punishment expires in: ${Chat.secondaryColor}${timeToString(punishment.expiresAt - System.currentTimeMillis())}&7.")
-                    Chat.sendMessage(player, "&7Reason: ${Chat.secondaryColor}${punishment.reason}")
+                    Chat.sendCenteredMessage(player, "&7You've been helpop muted by ${Chat.secondaryColor}${Bukkit.getOfflinePlayer(punishment.punisherUuid).name}&7!")
+                    Chat.sendCenteredMessage(player, "&7You may no longer use ${Chat.secondaryColor}/helpop&7 to ask for help from Staff.")
+                    Chat.sendCenteredMessage(player, "&7This punishment expires in: ${Chat.secondaryColor}${timeToString(punishment.expiresAt - System.currentTimeMillis())}&7.")
+                    Chat.sendCenteredMessage(player, "&7Reason: ${Chat.secondaryColor}${punishment.reason}")
                     Chat.sendMessage(player, Chat.line)
                     player.playSound(player.location, Sound.NOTE_BASS, 1f, 1f)
                 }
@@ -176,10 +196,10 @@ class PunishmentFeature {
                     Chat.sendMessage((player as Player), Chat.line)
                     Chat.sendCenteredMessage(player, "&4&lMUTED!")
                     Chat.sendMessage(player, " ")
-                    Chat.sendMessage(player, "&7You've been muted by ${Chat.secondaryColor}${Bukkit.getOfflinePlayer(punishment.punisherUuid).name}&7!")
-                    Chat.sendMessage(player, "&7You may no longer talk in chat.")
-                    Chat.sendMessage(player, "&7This punishment expires in: ${Chat.secondaryColor}${timeToString(punishment.expiresAt - System.currentTimeMillis())}&7.")
-                    Chat.sendMessage(player, "&7Reason: ${Chat.secondaryColor}${punishment.reason}")
+                    Chat.sendCenteredMessage(player, "&7You've been muted by ${Chat.secondaryColor}${Bukkit.getOfflinePlayer(punishment.punisherUuid).name}&7!")
+                    Chat.sendCenteredMessage(player, "&7You may no longer talk in chat.")
+                    Chat.sendCenteredMessage(player, "&7This punishment expires in: ${Chat.secondaryColor}${timeToString(punishment.expiresAt - System.currentTimeMillis())}&7.")
+                    Chat.sendCenteredMessage(player, "&7Reason: ${Chat.secondaryColor}${punishment.reason}")
                     Chat.sendMessage(player, Chat.line)
                     player.playSound(player.location, Sound.NOTE_BASS, 1f, 1f)
                 }
@@ -202,6 +222,43 @@ class PunishmentFeature {
                             .append("punishedAt", punishment.punishedAt)
                             .append("revoked", false)
                         this.findOneAndReplace(Filters.eq("uuid", uuid), document, FindOneAndReplaceOptions().upsert(true))
+                        val embed = EmbedBuilder()
+                        val punishedName = Bukkit.getOfflinePlayer(punishment.uuid).name ?: "Unknown"
+                        val punisherName = Bukkit.getOfflinePlayer(punishment.punisherUuid).name ?: "Unknown"
+                        val expiresIn = timeToString(punishment.expiresAt - System.currentTimeMillis())
+                        val date = java.time.Instant.ofEpochMilli(punishment.punishedAt)
+                            .atZone(java.time.ZoneId.systemDefault())
+                            .toLocalDateTime()
+                            .format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+
+                        embed.setThumbnail("https://visage.surgeplay.com/face/512/${punishedName}")
+                        embed.setTitle("$punishedName's ${punishment.type}")
+
+                        embed.setDescription("""
+                            Type: **${punishment.type}**
+                            Player: **$punishedName**
+                            Punisher: **$punisherName**
+                            Reason: **${punishment.reason}**
+                            Silent: **${if (punishment.silent) "Yes" else "No"}**
+                            Expires in: **$expiresIn**
+                            Issued at: **$date**
+                            """.trimIndent()
+                        )
+
+                        embed.setColor(
+                            when (punishment.type) {
+                                PunishmentType.BAN -> java.awt.Color.RED
+                                PunishmentType.MUTE -> java.awt.Color.YELLOW
+                                PunishmentType.HELPOP_MUTE -> java.awt.Color.ORANGE
+                                else -> java.awt.Color.GRAY
+                            }
+                        )
+
+                        embed.setFooter("UUID: ${punishment.uuid}")
+
+                        Kraftwerk.instance.punishmentChannelId!!.let { channelId ->
+                            Discord.instance!!.getTextChannelById(channelId)!!.sendMessageEmbeds(embed.build()).queue()
+                        }
                     }
                 } catch (e: MongoException) {
                     e.printStackTrace()
