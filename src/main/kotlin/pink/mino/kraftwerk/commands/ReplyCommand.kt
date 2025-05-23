@@ -8,6 +8,8 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 import pink.mino.kraftwerk.Kraftwerk
+import pink.mino.kraftwerk.features.PunishmentFeature
+import pink.mino.kraftwerk.features.PunishmentType
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.ReplyTo
 
@@ -40,6 +42,15 @@ class ReplyCommand : CommandExecutor {
         if (list.contains(sender.uniqueId)) {
             Chat.sendMessage(sender, "&cThis person has you on their ignore list.")
             return false
+        }
+        val mutePunishment = PunishmentFeature.getActivePunishment(sender, PunishmentType.MUTE)
+        if (mutePunishment != null && !sender.hasPermission("uhc.staff")) {
+            val remaining = mutePunishment.expiresAt - System.currentTimeMillis()
+            if (remaining > 0) {
+                val timeLeft = PunishmentFeature.timeToString(remaining)
+                sender.sendMessage(Chat.colored("&cYou are muted for another $timeLeft. Reason: ${mutePunishment.reason}"))
+                return false
+            }
         }
 
         ReplyTo.setRepliedTo(sender.uniqueId, target.uniqueId)

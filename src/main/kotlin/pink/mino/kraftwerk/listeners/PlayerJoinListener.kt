@@ -1,5 +1,6 @@
 package pink.mino.kraftwerk.listeners
 
+import com.mongodb.client.model.Filters
 import net.md_5.bungee.api.chat.ClickEvent
 import net.md_5.bungee.api.chat.TextComponent
 import org.bukkit.*
@@ -18,6 +19,7 @@ import pink.mino.kraftwerk.commands.WhitelistCommand
 import pink.mino.kraftwerk.features.*
 import pink.mino.kraftwerk.scenarios.ScenarioHandler
 import pink.mino.kraftwerk.utils.*
+import java.util.*
 import net.milkbowl.vault.chat.Chat as VaultChat
 
 class PlayerJoinListener : Listener {
@@ -26,6 +28,85 @@ class PlayerJoinListener : Listener {
 
     init {
         vaultChat = Bukkit.getServer().servicesManager.load(VaultChat::class.java)
+    }
+
+    fun checkEvaders(player: OfflinePlayer) {
+        val profile = Kraftwerk.instance.profileHandler.getProfile(player.uniqueId) ?: return
+
+        val alts = profile.alts
+        if (alts.isEmpty()) return
+
+        // Only collect alts that have a punishment
+        val punishedAltStatuses = alts.mapNotNull { altUuid ->
+            val alt = Bukkit.getOfflinePlayer(altUuid)
+            val banned = PunishmentFeature.getActivePunishment(alt, PunishmentType.BAN)
+            val muted = PunishmentFeature.getActivePunishment(alt, PunishmentType.MUTE)
+
+            when {
+                banned != null -> "${ChatColor.RED}${alt.name ?: "Unknown"}${ChatColor.GRAY} (banned)"
+                muted != null -> "${ChatColor.YELLOW}${alt.name ?: "Unknown"}${ChatColor.GRAY} (muted)"
+                else -> null // Skip alts with no punishment
+            }
+        }
+
+        if (punishedAltStatuses.isEmpty()) return
+
+        val message = "${Chat.prefix} ${Chat.secondaryColor}${player.name}'s alts:${Chat.secondaryColor} ${punishedAltStatuses.joinToString(", ")}"
+        val coloredMessage = Chat.colored(message)
+
+        Bukkit.getOnlinePlayers()
+            .filter { it.hasPermission("uhc.staff") }
+            .forEach { staff ->
+                staff.sendMessage(coloredMessage)
+            }
+    }
+
+
+
+    fun checkAndMergeAlts(player: Player) {
+        val plugin = JavaPlugin.getPlugin(Kraftwerk::class.java)
+        val profile = plugin.profileHandler.getProfile(player.uniqueId)!!
+        val currentIp = player.address?.address?.hostAddress ?: return
+
+        // Update current IP if needed
+        if (profile.lastKnownIp != currentIp) {
+            profile.lastKnownIp = currentIp
+            plugin.profileHandler.saveProfile(profile)
+        }
+
+        val collection = plugin.dataSource.getDatabase("applejuice").getCollection("players")
+
+        with(collection) {
+            val matching = find(
+                Filters.and(
+                    Filters.eq("lastKnownIp", currentIp),
+                    Filters.ne("uuid", player.uniqueId) // use UUID object directly
+                )
+            ).toList()
+
+            for (doc in matching) {
+                val otherUuid = try {
+                    doc.get("uuid", UUID::class.java)
+                } catch (_: Exception) {
+                    continue
+                } ?: continue
+
+                val otherProfile = plugin.profileHandler.getProfile(otherUuid) ?: continue
+
+                var updated = false
+                if (!profile.alts.contains(otherUuid)) {
+                    profile.alts.add(otherUuid)
+                    updated = true
+                }
+                if (!otherProfile.alts.contains(player.uniqueId)) {
+                    otherProfile.alts.add(player.uniqueId)
+                    plugin.profileHandler.saveProfile(otherProfile)
+                }
+                if (updated) {
+                    plugin.profileHandler.saveProfile(profile)
+                }
+            }
+        }
     }
 
     @EventHandler
@@ -179,5 +260,9 @@ class PlayerJoinListener : Listener {
                 player.addPotionEffect(PotionEffect(PotionEffectType.NIGHT_VISION, 1028391820, 0, false, false))
             }
         }, 5L)
+        Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(Kraftwerk::class.java), {
+            checkAndMergeAlts(player)
+            checkEvaders(player)
+        }, 40L)
     }
 }

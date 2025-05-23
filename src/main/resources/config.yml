@@ -25,6 +25,7 @@ discord:
   winnersChannelId: 1284249293582106624
   preWhitelistChannelId: 1284248799556145222
   gameLogsChannelId: 1284249710919548991
+  punishmentChannelId: 1375360473188270141
   token: # This is ideally where you would put a token.
 buycraft:
   scan: false # Scans every 15 minutes using API to get highest donator or whatever.

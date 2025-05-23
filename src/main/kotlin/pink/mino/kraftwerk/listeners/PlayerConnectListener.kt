@@ -1,5 +1,6 @@
 package pink.mino.kraftwerk.listeners
 
+import org.bukkit.Bukkit
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerLoginEvent
@@ -7,12 +8,30 @@ import org.bukkit.plugin.java.JavaPlugin
 import pink.mino.kraftwerk.Kraftwerk
 import pink.mino.kraftwerk.features.ConfigFeature
 import pink.mino.kraftwerk.features.Events
+import pink.mino.kraftwerk.features.PunishmentFeature
+import pink.mino.kraftwerk.features.PunishmentType
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GameState
 
 class PlayerConnectListener : Listener {
     @EventHandler
     fun onPlayerConnect(e: PlayerLoginEvent) {
+        val ban = PunishmentFeature.getActivePunishment(e.player, PunishmentType.BAN)
+        if (ban != null && !e.player.hasPermission("uhc.staff")) {
+            val punisher = Bukkit.getOfflinePlayer(ban.punisherUuid)
+            val timeLeft = PunishmentFeature.timeToString(ban.expiresAt - System.currentTimeMillis())
+            e.disallow(
+                PlayerLoginEvent.Result.KICK_BANNED,
+                Chat.colored(
+                    "${Chat.primaryColor}${Chat.scoreboardTitle}\n${Chat.line}\n\n" +
+                            "&7You've been banned from the server by ${Chat.secondaryColor}${punisher.name}&7.\n" +
+                            "&7Your ban expires in ${Chat.secondaryColor}$timeLeft&7.\n" +
+                            "&7Reason: ${Chat.secondaryColor}${ban.reason}\n\n${Chat.line}"
+                )
+            )
+        }
+
+
         val player = e.player
         if (ConfigFeature.instance.data!!.getBoolean("whitelist.enabled")) {
             if (!ConfigFeature.instance.data!!.getList("whitelist.list").contains(player.name.lowercase())) {

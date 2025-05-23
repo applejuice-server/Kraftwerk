@@ -374,6 +374,32 @@ commands:
       - thanksforhost
       - thankhost
     description: Thanks the host, can be used once per-game.
+  ban:
+    aliases:
+      - b
+    description: Bans a player from the server.
+  mute:
+    aliases:
+      - m
+    description: Mutes a player on the server.
+  helpopmute:
+    aliases:
+      - hm
+    description: Mutes a player & prevents them from using /helpop, but doesn't mute them from chat.
+  disqualify:
+    aliases:
+      - dq
+    description: Kills a player and kicks them from the server, effectively disqualifying them.
+  kick:
+    aliases:
+      - k
+    description: Kicks a player from the server.
+  warn:
+    aliases:
+      - wa
+    description: Warns a player.
+  alts:
+    description: Gets a player's total alt accounts.
 depend:
   - ProtocolLib
   - Vault

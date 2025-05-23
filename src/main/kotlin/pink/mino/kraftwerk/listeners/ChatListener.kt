@@ -11,9 +11,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.plugin.java.JavaPlugin
 import pink.mino.kraftwerk.Kraftwerk
-import pink.mino.kraftwerk.features.ConfigFeature
-import pink.mino.kraftwerk.features.SpecFeature
-import pink.mino.kraftwerk.features.TeamsFeature
+import pink.mino.kraftwerk.features.*
 import pink.mino.kraftwerk.scenarios.ScenarioHandler
 import pink.mino.kraftwerk.scenarios.list.MolesScenario
 import pink.mino.kraftwerk.utils.Perk
@@ -32,13 +30,14 @@ class ChatListener : Listener {
 
     val slurs = arrayListOf(
         "tranny",
+        "troon",
         "nigger",
         "faggot",
         "retard",
         "kys",
         "nigga",
-        "negro",
-        "sreggin"
+        "nga",
+        "negro"
     )
 
     val cooldowns = hashMapOf<UUID, Long>()
@@ -144,6 +143,7 @@ class ChatListener : Listener {
                     return
                 }
             }
+
             e.isCancelled = false
             if (!PerkChecker.checkPerks(e.player).contains(Perk.WHITE_CHAT)) {
                 val words = e.message.split(" ")
@@ -162,6 +162,16 @@ class ChatListener : Listener {
             var display = ""
             if (tag != null) {
                 display = " ${Tags.valueOf(tag.uppercase()).display}"
+            }
+
+            val mutePunishment = PunishmentFeature.getActivePunishment(player, PunishmentType.MUTE)
+            if (mutePunishment != null && !player.hasPermission("uhc.staff")) {
+                val remaining = mutePunishment.expiresAt - System.currentTimeMillis()
+                if (remaining > 0) {
+                    e.isCancelled = true
+                    val timeLeft = PunishmentFeature.timeToString(remaining)
+                    player.sendMessage(pink.mino.kraftwerk.utils.Chat.colored("&cYou are muted for another $timeLeft. Reason: ${mutePunishment.reason}"))
+                }
             }
             e.format = prefix + pink.mino.kraftwerk.utils.Chat.colored("${PlayerUtils.getPrefix(player)}%s") + pink.mino.kraftwerk.utils.Chat.colored(display) + ChatColor.DARK_GRAY + " » " + pink.mino.kraftwerk.utils.Chat.colored(color) + "%s"
             cooldowns[player.uniqueId] = System.currentTimeMillis()

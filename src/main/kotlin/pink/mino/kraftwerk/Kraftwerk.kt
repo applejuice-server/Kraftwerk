@@ -65,6 +65,7 @@ class Kraftwerk : ExtendedJavaPlugin() {
     var winnersChannelId: Long? = null
     var preWhitelistChannelId: Long? = null
     var gameLogsChannelId: Long? = null
+    var punishmentChannelId: Long? = null
 
     companion object {
         lateinit var instance: Kraftwerk
@@ -210,6 +211,13 @@ class Kraftwerk : ExtendedJavaPlugin() {
         getCommand("resethealth").executor = ResetHealthCommand()
         getCommand("buildmode").executor = BuildModeCommand()
         getCommand("setthing").executor = SetThingCommand()
+        getCommand("alts").executor = AltsCommand()
+        getCommand("ban").executor = BanCommand()
+        getCommand("kick").executor = KickCommand()
+        getCommand("mute").executor = MuteCommand()
+        getCommand("helpopmute").executor = HelpopMuteCommand()
+        getCommand("disqualify").executor = DisqualifyCommand()
+        getCommand("warn").executor = WarnCommand()
         //getCommand("hotbar").executor = HotbarCommand()
 
         /* ProtocolLib stuff */
@@ -271,6 +279,9 @@ class Kraftwerk : ExtendedJavaPlugin() {
 
         if (ConfigFeature.instance.config!!.getLong("discord.welcomeChannelId") != null) {
             welcomeChannelId = ConfigFeature.instance.config!!.getLong("discord.welcomeChannelId")
+        }
+        if (ConfigFeature.instance.config!!.getLong("discord.punishmentChannelId") != null) {
+            punishmentChannelId = ConfigFeature.instance.config!!.getLong("discord.punishmentChannelId")
         }
         if (ConfigFeature.instance.config!!.getLong("discord.alertsRoleId") != null) {
             alertsRoleId = ConfigFeature.instance.config!!.getLong("discord.alertsRoleId")

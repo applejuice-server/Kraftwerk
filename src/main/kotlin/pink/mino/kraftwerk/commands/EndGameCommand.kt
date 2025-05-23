@@ -37,10 +37,7 @@ class EndGameCommand : CommandExecutor {
                 return false
             }
         }
-        if (GameState.currentState != GameState.INGAME) {
-            Chat.sendMessage(sender, "&cYou can't do this right now, there isn't a game started.")
-            return false
-        }
+        GameState.currentState = GameState.LOBBY
         val winners = ConfigFeature.instance.data!!.getStringList("game.winners")
         if (winners.isEmpty()) {
             Chat.sendMessage(sender, "&cYou have no winners set! You need to set them using /winner <player>!")

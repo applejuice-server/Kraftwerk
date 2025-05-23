@@ -8,6 +8,8 @@ import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
+import pink.mino.kraftwerk.features.PunishmentFeature
+import pink.mino.kraftwerk.features.PunishmentType
 import pink.mino.kraftwerk.features.SpecFeature
 import pink.mino.kraftwerk.utils.Chat
 import pink.mino.kraftwerk.utils.GameState
@@ -27,6 +29,16 @@ class HelpOpCommand : CommandExecutor {
             sender.sendMessage("Now, why would *you* need to use this command?")
             return false
         }
+        val mutePunishment = PunishmentFeature.getActivePunishment(sender, PunishmentType.HELPOP_MUTE)
+        if (mutePunishment != null && !sender.hasPermission("uhc.staff")) {
+            val remaining = mutePunishment.expiresAt - System.currentTimeMillis()
+            if (remaining > 0) {
+                val timeLeft = PunishmentFeature.timeToString(remaining)
+                sender.sendMessage(Chat.colored("&cYou are help-op muted for another $timeLeft. Reason: ${mutePunishment.reason}"))
+                return false
+            }
+        }
+
         val cooldownTime = 60 // Get number of seconds from wherever you want
         if (cooldowns.containsKey(sender.name)) {
             val secondsLeft: Long = cooldowns[sender.name]!! / 1000 + cooldownTime - System.currentTimeMillis() / 1000

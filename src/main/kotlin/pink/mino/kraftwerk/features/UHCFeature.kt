@@ -111,15 +111,14 @@ class UHCTask : BukkitRunnable() {
             }
         } else {
             // Team mode - filter teams by whether they still have active players
-            val activeTeams = TeamsFeature.manager.getTeams().filter { team ->
-                val members = team.players.map { it -> it.name }
-                members.any { memberName -> list.contains(memberName) }
+            val remainingTeams = TeamsFeature.manager.teamMap.entries.filter { (_, players) ->
+                players.any { list.contains(it.name) }
             }
 
-            if (activeTeams.size == 1) {
-                val winnerTeam = activeTeams.first()
-                for (winner in winnerTeam.players) {
-                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "winner ${winner.name}")
+            if (remainingTeams.size == 1) {
+                val (_, players) = remainingTeams.first()
+                for (player in players) {
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "winner ${player.name}")
                 }
                 return true
             }
@@ -230,6 +229,9 @@ class UHCTask : BukkitRunnable() {
     }
 
     override fun run() {
+        if (GameState.currentState == GameState.LOBBY) {
+            cancel()
+        }
         if (checkWinner()) {
             cancel()
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "end")
@@ -552,7 +554,7 @@ class UHCFeature : Listener {
                 if (teams) {
                     for ((index, team) in TeamsFeature.manager.getTeams().withIndex()) {
                         for (player in team.entries) {
-                            JavaPlugin.getPlugin(Kraftwerk::class.java).scatterLocs[player.lowercase()] = loc[index]
+                            JavaPlugin.getPlugin(Kraftwerk::class.java).scatterLocs[player] = loc[index]
                             WhitelistCommand().addWhitelist(player)
                         }
                     }
@@ -565,7 +567,7 @@ class UHCFeature : Listener {
                         if (TeamsFeature.manager.getTeam(Bukkit.getOfflinePlayer(online)) != null) {
                             continue
                         }
-                        JavaPlugin.getPlugin(Kraftwerk::class.java).scatterLocs[online.lowercase()] = loc[index]
+                        JavaPlugin.getPlugin(Kraftwerk::class.java).scatterLocs[online] = loc[index]
                     }
                 } else {
                     for ((index, online) in WhitelistCommand().getWhitelisted().withIndex()) {
@@ -573,7 +575,7 @@ class UHCFeature : Listener {
                         if (SpecFeature.instance.getSpecs().contains(player.name)) {
                             continue
                         }
-                        JavaPlugin.getPlugin(Kraftwerk::class.java).scatterLocs[online.lowercase()] = loc[index]
+                        JavaPlugin.getPlugin(Kraftwerk::class.java).scatterLocs[online] = loc[index]
                     }
                 }
             }

@@ -22,7 +22,9 @@ class ImmutableProfile(
     var specSocialSpy: Int = 0,
     var selectedTag: String? = null,
     var unlockedTags: ArrayList<String> = arrayListOf(),
-    var arenaBlock: String? = "COBBLESTONE"
+    var arenaBlock: String? = "COBBLESTONE",
+    var alts: ArrayList<UUID> = arrayListOf(),
+    var lastKnownIp: String? = null
 ) : Profile {
     override fun getUniqueId(): UUID {
         return this.uniqueId
