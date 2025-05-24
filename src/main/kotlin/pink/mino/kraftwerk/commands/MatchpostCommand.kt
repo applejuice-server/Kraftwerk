@@ -103,7 +103,7 @@ class ScheduleBroadcast(private val opening: String) : BukkitRunnable() {
                 if (Kraftwerk.instance.alertsRoleId != null) {
                     Discord.instance!!.getTextChannelById(Kraftwerk.instance.gameAlertsChannelId!!)!!.sendMessage("<@&${Kraftwerk.instance.alertsRoleId!!}> (Use `/togglematches` to toggle matchpost alerts)").queue()
                 } else {
-                    Discord.instance!!.getTextChannelById(Kraftwerk.instance.gameAlertsChannelId!!)!!.sendMessage("@everyone (Use `/togglematches` to toggle matchpost alerts)").queue()
+                    Discord.instance!!.getTextChannelById(Kraftwerk.instance.gameAlertsChannelId!!)!!.sendMessage("@everyone (Use `/togglealerts` to toggle matchpost alerts)").queue()
                 }
                 Discord.instance!!.getTextChannelById(Kraftwerk.instance.gameAlertsChannelId!!)!!.sendMessageEmbeds(embed.build()).queue()
             } else {
