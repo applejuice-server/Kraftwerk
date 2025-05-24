@@ -1,3 +1,5 @@
+### ⚠ Development has moved to https://github.com/limettadev/Kraftwerk, this repository will not receive any more support
+
 # Kraftwerk
 Plugin for managing **applejuice**.
 
